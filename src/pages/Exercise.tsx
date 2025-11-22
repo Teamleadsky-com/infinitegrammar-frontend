@@ -2,10 +2,12 @@ import { useState, useMemo } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
+import { getGrammarSectionById } from "@/data/grammarSections";
 
 // Backend response format
 interface BackendExercise {
@@ -137,6 +139,7 @@ const Exercise = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
 
   // Process backend exercise data
@@ -144,6 +147,7 @@ const Exercise = () => {
 
   const level = searchParams.get("level") || exerciseData.level;
   const section = searchParams.get("section") || exerciseData.section;
+  const grammarSection = searchParams.get("grammar");
 
   const handleOptionSelect = (gapId: string, optionIndex: number) => {
     if (submitted) return;
@@ -186,6 +190,22 @@ const Exercise = () => {
       markWaitlistSeen();
     }
   };
+
+  const handleSettingsApply = (newLevel: string, newSection: string, newGrammar: string | null) => {
+    const params = new URLSearchParams();
+    params.set("level", newLevel);
+    params.set("section", newSection);
+    if (newGrammar) {
+      params.set("grammar", newGrammar);
+    }
+    navigate(`/exercise?${params.toString()}`, { replace: true });
+    // In a real app, this would trigger loading new exercises
+  };
+
+  // Get grammar section name if set
+  const grammarSectionName = grammarSection
+    ? getGrammarSectionById(level, grammarSection)?.name
+    : null;
 
   const renderTextWithGaps = () => {
     const parts = [];
@@ -243,11 +263,28 @@ const Exercise = () => {
                 <span className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
                   {level}
                 </span>
+                <span className="text-muted-foreground">•</span>
                 <span className="px-3 py-1 bg-accent text-accent-foreground rounded-full text-sm font-medium">
                   {section}
                 </span>
+                {grammarSectionName && (
+                  <>
+                    <span className="text-muted-foreground">•</span>
+                    <span className="px-3 py-1 bg-secondary text-secondary-foreground rounded-full text-sm font-medium">
+                      {grammarSectionName}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowSettingsDialog(true)}
+              className="ml-2"
+            >
+              <Settings className="h-5 w-5" />
+            </Button>
           </div>
         </div>
       </header>
@@ -321,6 +358,16 @@ const Exercise = () => {
         open={showWaitlistModal}
         onOpenChange={handleWaitlistModalClose}
         exercisesCompleted={stats.totalExercisesCompleted}
+      />
+
+      {/* Exercise Settings Dialog */}
+      <ExerciseSettingsDialog
+        open={showSettingsDialog}
+        onOpenChange={setShowSettingsDialog}
+        currentLevel={level}
+        currentSection={section}
+        currentGrammar={grammarSection}
+        onApply={handleSettingsApply}
       />
     </div>
   );
