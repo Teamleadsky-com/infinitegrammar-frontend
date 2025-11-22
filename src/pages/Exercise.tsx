@@ -8,6 +8,7 @@ import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { getGrammarSectionById } from "@/data/grammarSections";
+import { getExercise } from "@/data/exerciseSelector";
 
 // Backend response format
 interface BackendExercise {
@@ -140,14 +141,20 @@ const Exercise = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [exerciseKey, setExerciseKey] = useState(0);
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
 
-  // Process backend exercise data
-  const exerciseData = useMemo(() => processBackendExercise(mockBackendExercise), []);
-
-  const level = searchParams.get("level") || exerciseData.level;
-  const section = searchParams.get("section") || exerciseData.section;
+  // Get level and section from URL, with defaults
+  const level = searchParams.get("level") || "b2";
+  const section = searchParams.get("section") || "verben";
   const grammarSection = searchParams.get("grammar");
+
+  // Load exercise based on URL parameters and exerciseKey
+  const exerciseData = useMemo(() => {
+    const exercise = getExercise(level, section, grammarSection);
+    // Fall back to mock if no exercise found
+    return exercise ? processBackendExercise(exercise) : processBackendExercise(mockBackendExercise);
+  }, [level, section, grammarSection, exerciseKey]);
 
   const handleOptionSelect = (gapId: string, optionIndex: number) => {
     if (submitted) return;
@@ -181,7 +188,7 @@ const Exercise = () => {
   const handleNext = () => {
     setSelectedAnswers({});
     setSubmitted(false);
-    // In a real app, load the next exercise
+    setExerciseKey(prev => prev + 1);
   };
 
   const handleWaitlistModalClose = (open: boolean) => {
