@@ -137,7 +137,7 @@ const Exercise = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
-  const { incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
+  const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
 
   // Process backend exercise data
   const exerciseData = useMemo(() => processBackendExercise(mockBackendExercise), []);
@@ -317,7 +317,11 @@ const Exercise = () => {
       )}
 
       {/* Waitlist Modal */}
-      <WaitlistModal open={showWaitlistModal} onOpenChange={handleWaitlistModalClose} />
+      <WaitlistModal
+        open={showWaitlistModal}
+        onOpenChange={handleWaitlistModalClose}
+        exercisesCompleted={stats.totalExercisesCompleted}
+      />
     </div>
   );
 };

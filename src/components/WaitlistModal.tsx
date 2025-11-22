@@ -12,11 +12,12 @@ import { Input } from "@/components/ui/input";
 interface WaitlistModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  exercisesCompleted: number;
 }
 
 const WAITLIST_STORAGE_KEY = "waitlistEmails";
 
-export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
+export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: WaitlistModalProps) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -66,7 +67,10 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent
+        className="sm:max-w-md"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         {!isSubmitted ? (
           <>
             <DialogHeader>
@@ -74,7 +78,7 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
                 🎉 Congratulations!
               </DialogTitle>
               <DialogDescription className="text-base pt-2">
-                You've completed 2 exercises! You're making great progress.
+                You've completed {exercisesCompleted} exercises! You're making great progress.
               </DialogDescription>
             </DialogHeader>
 
@@ -128,6 +132,7 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
                     }
                   }}
                   className={error ? "border-error" : ""}
+                  autoFocus={false}
                 />
                 {error && <p className="text-sm text-error">{error}</p>}
               </div>
