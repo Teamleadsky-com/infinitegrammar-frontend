@@ -23,6 +23,7 @@ const sections = [
 const LevelSelection = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -38,6 +39,16 @@ const LevelSelection = () => {
       title: "Logged out",
       description: "You've been successfully logged out.",
     });
+  };
+
+  const handleTopicClick = (sectionId: string) => {
+    if (selectedLevel) {
+      // Navigate with selected level and topic
+      navigate(`/exercise?level=${selectedLevel}&section=${sectionId}`);
+    } else {
+      // Navigate with just topic (random level)
+      navigate(`/exercise?section=${sectionId}`);
+    }
   };
 
   return (
@@ -117,13 +128,21 @@ const LevelSelection = () => {
               {levels.map((level) => (
                 <Card
                   key={level.id}
-                  className="p-6 text-center cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 bg-gradient-card border-2 hover:border-primary group"
-                  onClick={() => navigate(`/exercise?level=${level.id}`)}
+                  className={`p-6 text-center cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 group ${
+                    selectedLevel === level.id
+                      ? "bg-primary border-primary shadow-lg scale-105"
+                      : "bg-gradient-card hover:border-primary"
+                  }`}
+                  onClick={() => setSelectedLevel(level.id)}
                 >
-                  <div className="text-3xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform">
+                  <div className={`text-3xl font-bold mb-2 group-hover:scale-110 transition-transform ${
+                    selectedLevel === level.id ? "text-primary-foreground" : "text-primary"
+                  }`}>
                     {level.name}
                   </div>
-                  <div className="text-sm text-muted-foreground">{level.description}</div>
+                  <div className={`text-sm ${
+                    selectedLevel === level.id ? "text-primary-foreground/80" : "text-muted-foreground"
+                  }`}>{level.description}</div>
                 </Card>
               ))}
             </div>
@@ -138,7 +157,7 @@ const LevelSelection = () => {
                   key={section.id}
                   variant="outline"
                   size="lg"
-                  onClick={() => navigate(`/exercise?section=${section.id}`)}
+                  onClick={() => handleTopicClick(section.id)}
                   className="h-auto py-6 text-lg"
                 >
                   {section.name}
