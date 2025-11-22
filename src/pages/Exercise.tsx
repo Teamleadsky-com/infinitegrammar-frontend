@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useExerciseStats } from "@/hooks/useExerciseStats";
+import { WaitlistModal } from "@/components/WaitlistModal";
 
 // Backend response format
 interface BackendExercise {
@@ -134,6 +136,8 @@ const Exercise = () => {
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const { incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
 
   // Process backend exercise data
   const exerciseData = useMemo(() => processBackendExercise(mockBackendExercise), []);
@@ -156,9 +160,17 @@ const Exercise = () => {
       (gap) => selectedAnswers[gap.id] === gap.correct
     ).length;
 
+    // Track exercise completion
+    incrementExercise(correctCount, exerciseData.gaps.length);
+
     if (correctCount === exerciseData.gaps.length) {
       setShowCelebration(true);
       setTimeout(() => setShowCelebration(false), 2000);
+    }
+
+    // Check if we should show waitlist modal
+    if (shouldShowWaitlist()) {
+      setShowWaitlistModal(true);
     }
   };
 
@@ -166,6 +178,13 @@ const Exercise = () => {
     setSelectedAnswers({});
     setSubmitted(false);
     // In a real app, load the next exercise
+  };
+
+  const handleWaitlistModalClose = (open: boolean) => {
+    setShowWaitlistModal(open);
+    if (!open) {
+      markWaitlistSeen();
+    }
   };
 
   const renderTextWithGaps = () => {
@@ -296,6 +315,9 @@ const Exercise = () => {
           <div className="text-8xl animate-celebrate">🎉</div>
         </div>
       )}
+
+      {/* Waitlist Modal */}
+      <WaitlistModal open={showWaitlistModal} onOpenChange={handleWaitlistModalClose} />
     </div>
   );
 };
