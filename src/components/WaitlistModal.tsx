@@ -43,7 +43,7 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
     const emailList = existingEmails ? JSON.parse(existingEmails) : [];
 
     emailList.push({
-      email: email,
+      email,
       timestamp: new Date().toISOString(),
     });
 
@@ -70,7 +70,9 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
         {!isSubmitted ? (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl">🎉 Congratulations!</DialogTitle>
+              <DialogTitle className="text-2xl">
+                🎉 Congratulations!
+              </DialogTitle>
               <DialogDescription className="text-base pt-2">
                 You've completed 2 exercises! You're making great progress.
               </DialogDescription>
@@ -78,22 +80,34 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
 
             <div className="space-y-4 py-4">
               <div className="space-y-2">
-                <h3 className="font-semibold text-lg">Get infinite Lückentexte that never repeat</h3>
+                <h3 className="font-semibold text-lg">
+                  Get infinite Lückentexte that never repeat
+                </h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-0.5">✓</span>
-                    <span>AI-generated exercises tailored to your level</span>
+                    <span>Always-new Lückentexte tailored to your level</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-0.5">✓</span>
-                    <span>Never run out of practice material</span>
+                    <span>
+                      Never run out of material before your TestDaF or telc exam
+                    </span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-0.5">✓</span>
-                    <span>Focus on topics you need to improve</span>
+                    <span>
+                      Focus on the grammar sections you need to improve
+                    </span>
                   </li>
                 </ul>
               </div>
+
+              <p className="text-sm text-muted-foreground mt-2">
+                Over the next few weeks we’ll release many more exam-style
+                Lückentexte so you can practice as much as you want without ever
+                seeing the same text twice.
+              </p>
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
@@ -133,9 +147,12 @@ export const WaitlistModal = ({ open, onOpenChange }: WaitlistModalProps) => {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl">✨ You're on the list!</DialogTitle>
+              <DialogTitle className="text-2xl">
+                ✨ You're on the list!
+              </DialogTitle>
               <DialogDescription className="text-base pt-2">
-                We'll notify you when we launch. Get ready for unlimited German practice!
+                We'll notify you soon. Get ready for unlimited German grammar
+                practice!
               </DialogDescription>
             </DialogHeader>
 
