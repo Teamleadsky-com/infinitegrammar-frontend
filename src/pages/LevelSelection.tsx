@@ -113,7 +113,7 @@ const LevelSelection = () => {
               Choose Your Level
             </h2>
             <p className="text-lg text-muted-foreground">
-              Practice German grammar with interactive gap-fill exercises
+              Practice German grammar with endless interactive gap-fill exercises
             </p>
           </div>
 
