@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookOpen, BarChart3, User, LogOut } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { getAllGrammarUiTopics } from "@/data/grammarSections";
 
 const levels = [
   { id: "a1", name: "A1", description: "Beginner" },
@@ -13,12 +14,7 @@ const levels = [
   { id: "c1", name: "C1", description: "Advanced" },
 ];
 
-const sections = [
-  { id: "verben", name: "Verben" },
-  { id: "adjektive", name: "Adjektive" },
-  { id: "artikel", name: "Artikel" },
-  { id: "praepositionen", name: "Präpositionen" },
-];
+const sections = getAllGrammarUiTopics();
 
 const LevelSelection = () => {
   const navigate = useNavigate();

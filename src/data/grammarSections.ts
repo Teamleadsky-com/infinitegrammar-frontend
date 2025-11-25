@@ -1,7 +1,15 @@
+export type GrammarUiTopicId =
+  | "satzbau"
+  | "verben"
+  | "nomen"
+  | "adjektive"
+  | "praepositionen"
+  | "artikel";
+
 export interface GrammarSection {
   id: string;
   name: string;
-  topics: string[];
+  grammar_ui_topics: GrammarUiTopicId[];
   points: string[];
 }
 
@@ -14,7 +22,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "satzbau_wortstellung",
       name: "Satzbau und Wortstellung",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Verbzweitstellung im Hauptsatz",
         "Verbendstellung im Nebensatz",
@@ -27,7 +35,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "konnektoren_nebensaetze",
       name: "Konjunktionen und Nebensätze (erweitert)",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Kausale Konnektoren: weil, da",
         "Konzessive Konnektoren: obwohl, obgleich, trotzdem",
@@ -40,7 +48,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "konditionalsaetze_konjunktiv2",
       name: "Konditionalsätze und Konjunktiv II",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Irreale Bedingungen in der Gegenwart (wenn + Konjunktiv II / würde-Konstruktion)",
         "Irreale Bedingungen in der Vergangenheit (wenn + Plusquamperfekt / hätte …, wäre …)",
@@ -51,7 +59,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "passiv",
       name: "Passivformen (vertieft)",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Vorgangspassiv in verschiedenen Zeiten (wird repariert, wurde repariert, ist repariert worden …)",
         "Zustandspassiv (ist repariert, war geöffnet …)",
@@ -62,7 +70,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "indirekte_rede",
       name: "Indirekte Rede / Konjunktiv I und II",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Grundformen des Konjunktiv I in der indirekten Rede",
         "Wechsel zu Konjunktiv II bei Formgleichheit mit dem Indikativ",
@@ -73,7 +81,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "adjektivdeklination",
       name: "Adjektivdeklination (vollständiges System)",
-      topics: ["adjektive"],
+      grammar_ui_topics: ["adjektive"],
       points: [
         "Adjektivendungen nach bestimmtem Artikel (der, die, das …)",
         "Adjektivendungen nach unbestimmtem Artikel (ein, eine, kein, mein …)",
@@ -84,7 +92,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "relativsaetze",
       name: "Relativsätze (erweitert)",
-      topics: ["artikel"],
+      grammar_ui_topics: ["artikel"],
       points: [
         "Relativpronomen im Nominativ, Akkusativ, Dativ, Genitiv",
         "Relativsätze mit Präpositionen (der Mann, mit dem …; die Dinge, über die …)",
@@ -95,7 +103,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "infinitivsaetze",
       name: "Infinitivsätze",
-      topics: ["verben"],
+      grammar_ui_topics: ["verben"],
       points: [
         "Infinitivsätze mit um … zu",
         "Infinitivsätze mit ohne … zu",
@@ -106,7 +114,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "verben_praeposition",
       name: "Verben mit fester Präposition und Rektion",
-      topics: ["verben", "präpositionen"],
+      grammar_ui_topics: ["verben", "praepositionen"],
       points: [
         "Verb–Präposition-Kombinationen (warten auf, sich freuen über/auf, sich bewerben um, leiden an/unter, abhängen von …)",
         "Richtiger Kasus nach Präposition (Akkusativ vs. Dativ)",
@@ -116,7 +124,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "nominalisierung",
       name: "Nominalisierung und Nominalphrasen",
-      topics: ["artikel"],
+      grammar_ui_topics: ["artikel"],
       points: [
         "Verben als Nomen (das Rauchen, das Lernen, das Arbeiten …)",
         "Adjektive als Nomen (das Wichtige, das Neue …)",
@@ -126,7 +134,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "feste_verbindungen",
       name: "Nomen-Verb- und Adjektiv-Verb-Verbindungen",
-      topics: ["verben", "adjektive"],
+      grammar_ui_topics: ["verben", "adjektive"],
       points: [
         "Häufige Nomen-Verb-Verbindungen (eine Entscheidung treffen, in Frage kommen, Verantwortung übernehmen …)",
         "Häufige Adjektiv-Verb-Verbindungen (verantwortlich sein für, interessiert sein an …)",
@@ -136,7 +144,7 @@ export const grammarSections: GrammarSectionsByLevel = {
     {
       id: "genitiv",
       name: "Erweiterter Genitivgebrauch",
-      topics: ["artikel", "präpositionen"],
+      grammar_ui_topics: ["artikel", "praepositionen"],
       points: [
         "Genitiv zur Bezeichnung von Besitz und Zugehörigkeit (die Folgen des Klimawandels)",
         "Häufige Genitivpräpositionen (trotz, während, wegen, innerhalb, außerhalb …)",
@@ -149,8 +157,9 @@ export const grammarSections: GrammarSectionsByLevel = {
 // Helper function to get grammar sections for a specific level and topic
 export function getGrammarSections(level: string, topic: string): GrammarSection[] {
   const levelSections = grammarSections[level.toLowerCase()] || [];
+  const topicLower = topic.toLowerCase() as GrammarUiTopicId;
   return levelSections.filter((section) =>
-    section.topics.includes(topic.toLowerCase())
+    section.grammar_ui_topics.includes(topicLower)
   );
 }
 
@@ -158,4 +167,16 @@ export function getGrammarSections(level: string, topic: string): GrammarSection
 export function getGrammarSectionById(level: string, sectionId: string): GrammarSection | undefined {
   const levelSections = grammarSections[level.toLowerCase()] || [];
   return levelSections.find((section) => section.id === sectionId);
+}
+
+// Helper function to get all available grammar UI topics with display names
+export function getAllGrammarUiTopics(): Array<{ id: GrammarUiTopicId; name: string }> {
+  return [
+    { id: "satzbau", name: "Satzbau" },
+    { id: "verben", name: "Verben" },
+    { id: "nomen", name: "Nomen" },
+    { id: "adjektive", name: "Adjektive" },
+    { id: "praepositionen", name: "Präpositionen" },
+    { id: "artikel", name: "Artikel" },
+  ];
 }

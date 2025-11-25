@@ -10,22 +10,20 @@ import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { getGrammarSectionById } from "@/data/grammarSections";
 import { getExercise } from "@/data/exerciseSelector";
 
-// Backend response format
+// Backend response format (simplified structure)
+import { GrammarUiTopicId } from "@/data/grammarSections";
+
 interface BackendExercise {
-  config: {
-    grammar_section: string;
-    topic: string;
-    language_level: string;
-    exam_style: string;
-    min_gaps: number;
-    max_gaps: number;
-    model: string;
-  };
-  base_text: string;
-  cloze_text: string;
+  id: string;
+  level: string;
+  grammar_section_id: string;
+  grammar_ui_topics: GrammarUiTopicId[];
+  content_topic: string;
+  model: string;
+  text: string;
   gaps: Array<{
-    n: number;
-    original: string;
+    no: number;
+    correct: string;
     distractors: string[];
     explanation: string;
   }>;
@@ -43,39 +41,35 @@ interface ProcessedGap {
 
 // Mock exercise data in backend format
 const mockBackendExercise: BackendExercise = {
-  config: {
-    grammar_section: "Konjunktiv II in Konditionalsätzen",
-    topic: "Arbeit im Homeoffice",
-    language_level: "B2-C1",
-    exam_style: "TELC / TestDaF style",
-    min_gaps: 3,
-    max_gaps: 6,
-    model: "llama3.1:8b"
-  },
-  base_text: "Wenn ich nicht von zu Hause aus arbeiten müsste, würde ich wahrscheinlich viel mehr Zeit im Verkehr verlieren. Viele meiner Kolleginnen sagen, sie hätten gern die gleiche Flexibilität. Wenn wir ein größeres Büro hätten, könnten wir häufiger gemeinsam Workshops machen. Ich müsste dann aber wieder jeden Tag ins Zentrum fahren, und das würde ich eigentlich vermeiden wollen.",
-  cloze_text: "Wenn ich nicht von zu Hause aus arbeiten [1], [2] ich wahrscheinlich viel mehr Zeit im Verkehr verlieren. Viele meiner Kolleginnen sagen, sie [3] gern die gleiche Flexibilität. Wenn wir ein größeres Büro [4], könnten wir häufiger gemeinsam Workshops machen. Ich [1] dann aber wieder jeden Tag ins Zentrum fahren, und das [2] ich eigentlich vermeiden wollen.",
+  id: "mock_exercise_1",
+  level: "B2",
+  grammar_section_id: "konditionalsaetze_konjunktiv2",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Arbeit im Homeoffice",
+  model: "llama3.1:8b",
+  text: "Wenn ich nicht von zu Hause aus arbeiten [1], [2] ich wahrscheinlich viel mehr Zeit im Verkehr verlieren. Viele meiner Kolleginnen sagen, sie [3] gern die gleiche Flexibilität. Wenn wir ein größeres Büro [4], könnten wir häufiger gemeinsam Workshops machen. Ich [1] dann aber wieder jeden Tag ins Zentrum fahren, und das [2] ich eigentlich vermeiden wollen.",
   gaps: [
     {
-      n: 1,
-      original: "müsste",
+      no: 1,
+      correct: "müsste",
       distractors: ["muss", "musste", "müssten"],
       explanation: `„müsste" steht hier im Konjunktiv II und drückt eine hypothetische Verpflichtung aus. Die Formen „muss", „musste" und „müssten" passen entweder zeitlich oder formal nicht genau zur Bedingungssituation.`
     },
     {
-      n: 2,
-      original: "würde",
+      no: 2,
+      correct: "würde",
       distractors: ["werde", "wird", "würden"],
       explanation: `„würde" + Infinitiv ist hier eine typische Konjunktiv-II-Umschreibung für eine hypothetische Folge. „werde" und „wird" sind Indikativformen, „würden" wäre Plural und stimmt nicht mit dem Subjekt überein.`
     },
     {
-      n: 3,
-      original: "hätten",
+      no: 3,
+      correct: "hätten",
       distractors: ["haben", "hatten", "hätte"],
       explanation: `„hätten" ist Konjunktiv II und drückt einen nicht realen Wunsch der Kolleginnen aus. „haben" (Indikativ Präsens), „hatten" (Präteritum) und „hätte" (Singular) passen grammatisch oder inhaltlich nicht.`
     },
     {
-      n: 4,
-      original: "hätten",
+      no: 4,
+      correct: "hätten",
       distractors: ["haben", "hatten", "hätte"],
       explanation: `Auch hier signalisiert „hätten" eine irreale Bedingung („Wenn wir ein größeres Büro hätten …"). Die Alternativen sind Formen desselben Verbs, aber nicht im passenden Modus oder Numerus.`
     }
@@ -90,14 +84,14 @@ function processBackendExercise(exercise: BackendExercise): {
   section: string;
 } {
   const gaps: ProcessedGap[] = [];
-  let processedText = exercise.cloze_text;
+  let processedText = exercise.text;
 
   // Find all gap placeholders [n] in the text
   const gapPattern = /\[(\d+)\]/g;
   const matches: Array<{ index: number; gapNumber: number; length: number }> = [];
   let match;
 
-  while ((match = gapPattern.exec(exercise.cloze_text)) !== null) {
+  while ((match = gapPattern.exec(exercise.text)) !== null) {
     matches.push({
       index: match.index,
       gapNumber: parseInt(match[1]),
@@ -107,13 +101,13 @@ function processBackendExercise(exercise: BackendExercise): {
 
   // Create a unique gap entry for each occurrence
   matches.forEach((matchInfo, idx) => {
-    const gapData = exercise.gaps.find(g => g.n === matchInfo.gapNumber);
+    const gapData = exercise.gaps.find(g => g.no === matchInfo.gapNumber);
     if (!gapData) return;
 
-    // Shuffle options: original + distractors, then randomize
-    const allOptions = [gapData.original, ...gapData.distractors];
+    // Shuffle options: correct + distractors, then randomize
+    const allOptions = [gapData.correct, ...gapData.distractors];
     const shuffledOptions = [...allOptions].sort(() => Math.random() - 0.5);
-    const correctIndex = shuffledOptions.indexOf(gapData.original);
+    const correctIndex = shuffledOptions.indexOf(gapData.correct);
 
     gaps.push({
       id: `gap-${idx}`,
@@ -126,10 +120,10 @@ function processBackendExercise(exercise: BackendExercise): {
   });
 
   return {
-    text: exercise.cloze_text,
+    text: exercise.text,
     gaps: gaps,
-    level: exercise.config.language_level,
-    section: exercise.config.grammar_section
+    level: exercise.level,
+    section: exercise.grammar_section_id
   };
 }
 

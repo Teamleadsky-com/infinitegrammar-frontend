@@ -1,4 +1,5 @@
 import * as b2Exercises from "./b2_mock_exercises";
+import { GrammarUiTopicId } from "./grammarSections";
 
 // Map to convert grammar section names to exercise IDs
 const grammarSectionToExerciseMap: Record<string, string[]> = {
@@ -28,33 +29,17 @@ function getAllExercisesForLevel(level: string): any[] {
   return [];
 }
 
-// Get exercises filtered by topic
+// Get exercises filtered by topic using the grammar_ui_topics field
 function getExercisesByTopic(exercises: any[], topic: string): any[] {
-  const topicLower = topic.toLowerCase();
+  const topicLower = topic.toLowerCase() as GrammarUiTopicId;
 
-  // Map topic names to grammar sections
-  const topicToSectionMap: Record<string, string> = {
-    verben: "verben",
-    adjektive: "adjektive",
-    artikel: "artikel",
-    präpositionen: "präpositionen",
-    praepositionen: "präpositionen", // Alternative spelling
-  };
-
-  const mappedTopic = topicToSectionMap[topicLower] || topicLower;
-
-  return exercises.filter((ex) => {
-    const config = ex.config;
-    // Check if the grammar section topics array includes the mapped topic
-    const grammarSection = config.grammar_section;
-
-    // For now, do a simple string match
-    // In a more complete implementation, you'd look up the grammar section definition
-    return (
-      grammarSection.toLowerCase().includes(mappedTopic) ||
-      config.topic.toLowerCase().includes(mappedTopic)
-    );
+  // Filter exercises to only those that include this topic in their grammar_ui_topics
+  const filtered = exercises.filter((ex) => {
+    return ex.grammar_ui_topics && ex.grammar_ui_topics.includes(topicLower);
   });
+
+  // If no exercises found for this topic, return all exercises as fallback
+  return filtered.length > 0 ? filtered : exercises;
 }
 
 // Get exercises filtered by grammar section
@@ -81,17 +66,15 @@ export function getExercise(
     return null;
   }
 
-  // Filter by topic if provided
-  if (section) {
-    const filtered = getExercisesByTopic(exercises, section);
+  // If grammar section is provided, it takes priority over topic
+  if (grammarSection) {
+    const filtered = getExercisesByGrammarSection(exercises, grammarSection);
     if (filtered.length > 0) {
       exercises = filtered;
     }
-  }
-
-  // Filter by grammar section if provided
-  if (grammarSection) {
-    const filtered = getExercisesByGrammarSection(exercises, grammarSection);
+  } else if (section) {
+    // Only filter by topic if no grammar section is specified
+    const filtered = getExercisesByTopic(exercises, section);
     if (filtered.length > 0) {
       exercises = filtered;
     }
