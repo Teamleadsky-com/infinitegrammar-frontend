@@ -1,3 +1,5 @@
+// grammarSections.ts
+
 export type GrammarUiTopicId =
   | "satzbau"
   | "verben"
@@ -280,6 +282,28 @@ export const grammarSections: GrammarSectionsByLevel = {
       ],
     },
     {
+      id: "trennbare_verben",
+      name: "Trennbare Verben im Alltag (B1-Wiederholung)",
+      grammar_ui_topics: ["verben", "satzbau"],
+      points: [
+        "Wiederholung wichtiger trennbarer Verben aus dem Alltag (aufstehen, anmachen, aufräumen …)",
+        "Verbklammer im Hauptsatz mit trennbaren Verben (Ich stehe jeden Tag um sieben Uhr auf.)",
+        "Trennbare Verben in Verbindung mit Modalverben (Ich muss morgen früh aufstehen.)",
+        "Stellung der Verbpartikel in Sätzen mit Zeit- und Ortsangaben",
+      ],
+    },
+    {
+      id: "reflexive_verben",
+      name: "Reflexive Verben im Alltag (B1)",
+      grammar_ui_topics: ["verben"],
+      points: [
+        "Reflexive Verben mit Akkusativ (sich fühlen, sich setzen, sich entspannen …)",
+        "Stellung des Reflexivpronomens im Satz (Ich fühle mich gestresst.)",
+        "Reflexive Verben in Kombination mit Modalverben (Ich möchte mich heute entspannen.)",
+        "Unterschied zwischen reflexivem und nicht reflexivem Gebrauch (sich treffen – jemanden treffen)",
+      ],
+    },
+    {
       id: "konnektoren_b1",
       name: "Konnektoren im B1-Niveau",
       grammar_ui_topics: ["satzbau"],
@@ -324,6 +348,17 @@ export const grammarSections: GrammarSectionsByLevel = {
       ],
     },
     {
+      id: "vergleich_komparativ_superlativ",
+      name: "Komparativ und Superlativ (B1)",
+      grammar_ui_topics: ["adjektive"],
+      points: [
+        "Wiederholung der Komparativbildung (schneller, wichtiger, bequemer …)",
+        "Bildung des Superlativs mit Artikel und mit „am“ (die schönste Stadt, am günstigsten)",
+        "Vergleichssätze mit „als“ und „so … wie“ (schneller als, so bequem wie …)",
+        "Unregelmäßige Steigerungsformen (gut – besser – am besten, viel – mehr – am meisten)",
+      ],
+    },
+    {
       id: "praepositionen_wechselpraepositionen",
       name: "Wechselpräpositionen: Wohin? Wo?",
       grammar_ui_topics: ["praepositionen", "nomen"],
@@ -332,6 +367,17 @@ export const grammarSections: GrammarSectionsByLevel = {
         "Gebrauch von Dativ bei Ortsangabe (in, an, auf, über …)",
         "Typische Beispiele (Ich gehe in die Stadt. Ich bin in der Stadt.)",
         "Häufige Fehler und Strategien zur Unterscheidung",
+      ],
+    },
+    {
+      id: "praepositionen_ort_zeit",
+      name: "Präpositionen für Ort und Zeit (B1)",
+      grammar_ui_topics: ["praepositionen", "nomen"],
+      points: [
+        "Wichtige Präpositionen für Uhrzeiten und Tageszeiten (um, am, in …)",
+        "Zeitliche Verknüpfungen im Tagesablauf (nach dem Frühstück, vor der Arbeit …)",
+        "Lokale Ausdrücke im Alltag (in der Pause, nach draußen, zu Hause …)",
+        "Typische Fehler bei Präpositionen für Ort und Zeit und wie man sie vermeidet",
       ],
     },
     {
