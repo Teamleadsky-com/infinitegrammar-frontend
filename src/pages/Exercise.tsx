@@ -152,6 +152,11 @@ const Exercise = () => {
     lastShownIdRef.current = null;
   }, [level, section, grammarSection]);
 
+  // Scroll to top when exercise changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [exerciseKey, level, section, grammarSection]);
+
   // Detect progression and update URL when exercise changes
   useEffect(() => {
     if (!currentExercise) return;
