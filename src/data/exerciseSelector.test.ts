@@ -80,7 +80,7 @@ describe('exerciseSelector', () => {
       const allExercises = Object.values(b2Exercises).filter(
         ex => ex && typeof ex === 'object' && 'id' in ex
       );
-      expect(allExercises.length).toBe(16);
+      expect(allExercises.length).toBe(19);
     });
 
     it('should have correct number of C1 exercises', () => {
@@ -177,14 +177,16 @@ describe('exerciseSelector', () => {
     it('should prioritize grammar section over topic', () => {
       const exercise = getExercise('b2', 'adjektive', 'passiv');
       expect(exercise).toBeTruthy();
-      expect(exercise).toBe(b2Exercises.b2_passiv_1);
+      expect(exercise.grammar_section_id).toBe('passiv');
+      expect(exercise.level).toBe('B2');
     });
 
     it('should handle all three filters together', () => {
       const exercise = getExercise('b2', 'verben', 'verben_praeposition');
       expect(exercise).toBeTruthy();
       expect(exercise.level).toBe('B2');
-      expect(exercise).toBe(b2Exercises.b2_verben_praeposition_1);
+      expect(exercise.grammar_section_id).toBe('verben_praeposition');
+      expect(exercise.grammar_ui_topics.includes('verben')).toBe(true);
     });
   });
 

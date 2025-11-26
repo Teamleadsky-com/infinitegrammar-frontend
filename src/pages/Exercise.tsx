@@ -2,14 +2,13 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, XCircle, Settings, TrendingUp } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
-import { ProgressionBreadcrumb } from "@/components/ProgressionBreadcrumb";
 import { getGrammarSectionById } from "@/data/grammarSections";
-import { getExercise, getAllExercisesForLevel } from "@/data/exerciseSelector";
+import { getExercise } from "@/data/exerciseSelector";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
 
@@ -196,11 +195,6 @@ const Exercise = () => {
     }
   }, [currentExercise, level, section, grammarSection]);
 
-  // Get all exercises for current level (for progression breadcrumb)
-  const allLevelExercises = useMemo(() => {
-    return getAllExercisesForLevel(level);
-  }, [level]);
-
   // Load exercise based on URL parameters and exerciseKey
   const exerciseData = useMemo(() => {
     // Get exercise with progression enabled, avoiding last shown
@@ -368,16 +362,6 @@ const Exercise = () => {
               <Settings className="h-5 w-5" />
             </Button>
           </div>
-          {/* Progression Breadcrumb */}
-          {!grammarSection && (
-            <div className="pl-14">
-              <ProgressionBreadcrumb
-                level={level}
-                currentTopic={section}
-                allExercises={allLevelExercises}
-              />
-            </div>
-          )}
         </div>
       </header>
 
