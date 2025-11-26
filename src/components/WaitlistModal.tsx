@@ -115,7 +115,7 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
 
               <div className="space-y-2">
                 <label htmlFor="email" className="text-sm font-medium">
-                  Join the waitlist
+                  Join the waitlist to secure 2.99€/month early adopter price
                 </label>
                 <Input
                   id="email"

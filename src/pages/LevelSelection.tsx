@@ -5,6 +5,12 @@ import { Card } from "@/components/ui/card";
 import { BookOpen, BarChart3, User, LogOut } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
+import { WaitlistModal } from "@/components/WaitlistModal";
+
+// ⚙️ FEATURE SWITCH: Sign In button behavior
+// 0 = Normal sign in (navigate to /auth page)
+// 1 = Show waitlist popup instead of sign in
+const SIGN_IN_SHOWS_WAITLIST = 0;
 
 const levels = [
   { id: "a1", name: "A1", description: "Beginner" },
@@ -20,6 +26,7 @@ const LevelSelection = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
 
   useEffect(() => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -35,6 +42,16 @@ const LevelSelection = () => {
       title: "Logged out",
       description: "You've been successfully logged out.",
     });
+  };
+
+  const handleSignInClick = () => {
+    if (SIGN_IN_SHOWS_WAITLIST === 1) {
+      // Show waitlist modal instead of navigating to auth
+      setShowWaitlistModal(true);
+    } else {
+      // Normal behavior: navigate to auth page
+      navigate("/auth");
+    }
   };
 
   const handleTopicClick = (sectionId: string) => {
@@ -93,7 +110,7 @@ const LevelSelection = () => {
               <Button
                 variant="default"
                 size="sm"
-                onClick={() => navigate("/auth")}
+                onClick={handleSignInClick}
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
@@ -175,6 +192,13 @@ const LevelSelection = () => {
           </div>
         </div>
       </main>
+
+      {/* Waitlist Modal */}
+      <WaitlistModal
+        open={showWaitlistModal}
+        onOpenChange={setShowWaitlistModal}
+        exercisesCompleted={0}
+      />
     </div>
   );
 };
