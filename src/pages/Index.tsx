@@ -3,23 +3,28 @@
 const Index = () => {
   return (
     <>
-      {/* Hidden Netlify form stub so Netlify can detect the form at build time */}
+      {/* Hidden Netlify form so Netlify can detect "waitlist" at build time */}
       <form
         name="waitlist"
         method="POST"
         data-netlify="true"
         netlify-honeypot="bot-field"
-        hidden
+        style={{ display: "none" }}
       >
-        {/* Netlify needs this hidden form-name field */}
+        {/* Netlify will also inject its own hidden form-name,
+            but having it here is safe and recommended for JS/AJAX forms */}
         <input type="hidden" name="form-name" value="waitlist" />
 
-        {/* Fields your real popup form will also send */}
+        {/* These names MUST match what your popup sends */}
         <input type="email" name="email" />
         <input type="text" name="exercisesCompleted" />
 
-        {/* Honeypot field (must match netlify-honeypot value) */}
-        <input type="text" name="bot-field" />
+        {/* Honeypot field (must match netlify-honeypot="bot-field") */}
+        <p>
+          <label>
+            Don’t fill this out if you’re human: <input name="bot-field" />
+          </label>
+        </p>
       </form>
 
       <div className="flex min-h-screen items-center justify-center bg-background">
