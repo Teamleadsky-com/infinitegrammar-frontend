@@ -111,8 +111,8 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
               </div>
 
               <p className="text-sm text-muted-foreground mt-2">
-                Over the next few weeks we’ll release many more exam-style
-                Lückentexte so you can practice as much as you want without ever
+                In the next weeks many more exam-style
+                Lückentexte will be unlocked so you can practice every day without ever
                 seeing the same text twice.
               </p>
 
