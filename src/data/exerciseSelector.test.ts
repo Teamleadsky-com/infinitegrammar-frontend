@@ -80,7 +80,7 @@ describe('exerciseSelector', () => {
       const allExercises = Object.values(b2Exercises).filter(
         ex => ex && typeof ex === 'object' && 'id' in ex
       );
-      expect(allExercises.length).toBe(12);
+      expect(allExercises.length).toBe(16);
     });
 
     it('should have correct number of C1 exercises', () => {
@@ -143,7 +143,8 @@ describe('exerciseSelector', () => {
     it('should return specific B2 exercise for "konditionalsaetze_konjunktiv2"', () => {
       const exercise = getExercise('b2', undefined, 'konditionalsaetze_konjunktiv2');
       expect(exercise).toBeTruthy();
-      expect(exercise).toBe(b2Exercises.b2_konditionalsaetze_konjunktiv2_1);
+      expect(exercise.grammar_section_id).toBe('konditionalsaetze_konjunktiv2');
+      expect(exercise.level).toBe('B2');
     });
 
     it('should return specific B1 exercise for grammar section', () => {
@@ -203,14 +204,49 @@ describe('exerciseSelector', () => {
       expect(exercise2).toBeTruthy();
     });
 
-    it('should always return same exercise when pool has only one option', () => {
+    it('should avoid showing the same exercise twice in a row when multiple are available', () => {
+      // Get multiple exercises for A2 satzbau (has 3 exercises)
+      let lastId = null;
+      const exercises = new Set();
+
+      for (let i = 0; i < 10; i++) {
+        const exercise = getExercise('a2', 'satzbau', null, false, lastId);
+        exercises.add(exercise.id);
+        lastId = exercise.id;
+      }
+
+      // Should see at least 2 different exercises in 10 tries
+      expect(exercises.size).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should avoid returning last shown exercise when passed', () => {
+      const exercise1 = getExercise('b2', 'verben');
+      expect(exercise1).toBeTruthy();
+
+      // Get another exercise, passing the first one as lastShown
+      const exercise2 = getExercise('b2', 'verben', null, false, exercise1.id);
+      expect(exercise2).toBeTruthy();
+
+      // If there are multiple exercises, they should be different
+      const allVerbenExercises = Object.values(b2Exercises).filter(
+        ex => ex && typeof ex === 'object' && 'id' in ex &&
+        ex.grammar_ui_topics && ex.grammar_ui_topics.includes('verben')
+      );
+
+      if (allVerbenExercises.length > 1) {
+        expect(exercise2.id).not.toBe(exercise1.id);
+      }
+    });
+
+    it('should return exercises from correct grammar section', () => {
       const exercise1 = getExercise('b2', undefined, 'passiv');
       const exercise2 = getExercise('b2', undefined, 'passiv');
       const exercise3 = getExercise('b2', undefined, 'passiv');
 
-      expect(exercise1).toBe(exercise2);
-      expect(exercise2).toBe(exercise3);
-      expect(exercise1).toBe(b2Exercises.b2_passiv_1);
+      expect(exercise1.grammar_section_id).toBe('passiv');
+      expect(exercise2.grammar_section_id).toBe('passiv');
+      expect(exercise3.grammar_section_id).toBe('passiv');
+      expect(exercise1.level).toBe('B2');
     });
 
     it('should select randomly across the full pool', () => {

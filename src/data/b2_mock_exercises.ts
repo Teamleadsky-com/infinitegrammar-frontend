@@ -57,7 +57,47 @@ export const b2_satzbau_wortstellung_1: Exercise = {
   ]
 };
 
-// 2. B2 – Konjunktionen und Nebensätze (erweitert) – Exercise 1
+// 2. B2 – Satzbau und Wortstellung – Exercise 2
+export const b2_satzbau_wortstellung_2: Exercise = {
+  id: "b2_satzbau_wortstellung_1",
+  level: "B2",
+  grammar_section_id: "satzbau_wortstellung",
+  grammar_ui_topics: ["satzbau", "verben"],
+  content_topic: "Zeitmanagement im Studium",
+  model: "mvp-static",
+  text:
+    "[1] habe ich mir angewöhnt, meinen Tag genauer zu planen: Zuerst [2] ich kurz meinen Kalender, dann [3] ich mir, welche Aufgaben wirklich dringend sind, und [4] lege ich fest, wann ich Pausen mache. " +
+    "Wenn ich das nicht mache, verliere ich im Laufe des Tages schnell den Überblick.",
+  gaps: [
+    {
+      no: 1,
+      correct: "Inzwischen",
+      distractors: ["Ich", "Oft", "Normalerweise"],
+      explanation: `„Inzwischen" steht hier im Vorfeld und hebt die Veränderung gegenüber früher hervor. Danach folgt das konjugierte Verb an zweiter Stelle („habe"). „Ich" würde die neutrale Grundstellung ausdrücken, die anderen Adverbien passen semantisch weniger gut.`
+    },
+    {
+      no: 2,
+      correct: "prüfe",
+      distractors: ["ich prüfe", "prüft", "prüfen"],
+      explanation: `Nach dem vorangestellten Adverb „Zuerst" bleibt die Verbzweitstellung erhalten: „Zuerst prüfe ich kurz meinen Kalender". In der Lücke steht nur das konjugierte Verb; „ich prüfe" würde die Wortstellung stören.`
+    },
+    {
+      no: 3,
+      correct: "überlege",
+      distractors: ["ich überlege", "überlegt", "überlegen"],
+      explanation: `Auch hier steht im Hauptsatz das Verb an zweiter Stelle: „dann überlege ich mir ...". Die Form „ich überlege" wäre an dieser Stelle ungrammatisch, weil das Verb nicht mehr an Position zwei stünde.`
+    },
+    {
+      no: 4,
+      correct: "anschließend",
+      distractors: ["weil", "oft", "plötzlich"],
+      explanation: `„anschließend" knüpft zeitlich an die vorherigen Schritte an und steht vor dem Verb: „und anschließend lege ich fest ...". „weil" ist ein Konnektor, „oft" und „plötzlich" würden die Aussage verändern.`
+    }
+  ]
+};
+
+
+// 3. B2 – Konjunktionen und Nebensätze (erweitert) – Exercise 1
 export const b2_konnektoren_nebensaetze_1: Exercise = {
   id: "b2_konnektoren_nebensaetze_1",
   level: "B2",
@@ -97,7 +137,50 @@ export const b2_konnektoren_nebensaetze_1: Exercise = {
   ]
 };
 
-// 3. B2 – Konditionalsätze und Konjunktiv II – Exercise 1
+// 4. B2 – Konjunktionen und Nebensätze (erweitert) – Exercise 2
+export const b2_konnektoren_nebensaetze_2: Exercise = {
+  id: "b2_konnektoren_nebensaetze_2",
+  level: "B2",
+  grammar_section_id: "konnektoren_nebensaetze",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Berufliche Entscheidungen",
+  model: "mvp-static",
+  text:
+    "Lisa überlegt, ihren Job zu wechseln, [1] sie mit den aktuellen Arbeitsbedingungen unzufrieden ist. " +
+    "[2] sie gerne mehr Verantwortung übernehmen würde, hat sie das Gefühl, dass ihre Vorschläge im Team kaum beachtet werden. " +
+    "Ihr Chef hat ihr angeboten, an einem internen Projekt teilzunehmen, [3] sie neue Erfahrungen sammeln kann, " +
+    "[4] sie gleichzeitig in ihrer jetzigen Position bleibt.",
+  gaps: [
+    {
+      no: 1,
+      correct: "weil",
+      distractors: ["obwohl", "während", "falls"],
+      explanation: `„weil" leitet hier einen Kausalsatz ein: Sie überlegt den Jobwechsel, weil sie unzufrieden ist. Die anderen Konnektoren würden einen Gegensatz, eine Gleichzeitigkeit oder eine Bedingung ausdrücken.`
+    },
+    {
+      no: 2,
+      correct: "Obwohl",
+      distractors: ["Da", "Wenn", "Sodass"],
+      explanation: `„Obwohl" drückt einen Gegensatz aus: Sie würde gerne mehr Verantwortung übernehmen, trotzdem werden ihre Vorschläge kaum beachtet. „Da" wäre rein kausal, „Wenn" konditional, „Sodass" konsekutiv.`
+    },
+    {
+      no: 3,
+      correct: "damit",
+      distractors: ["weil", "obwohl", "während"],
+      explanation: `„damit" leitet einen Finalsatz ein: Das Angebot dient dem Zweck, dass sie neue Erfahrungen sammeln kann. „weil" wäre ein Grund, „obwohl" ein Gegensatz, „während" eine zeitliche Gleichzeitigkeit.`
+    },
+    {
+      no: 4,
+      correct: "während",
+      distractors: ["sodass", "falls", "da"],
+      explanation: `„während" beschreibt hier eine Gleichzeitigkeit: Sie sammelt neue Erfahrungen, während sie in ihrer jetzigen Position bleibt. „sodass" würde eine Folge, „falls" eine Bedingung, „da" einen Grund einleiten.`
+    }
+  ]
+};
+
+
+
+// 5. B2 – Konditionalsätze und Konjunktiv II – Exercise 1
 export const b2_konditionalsaetze_konjunktiv2_1: Exercise = {
   id: "b2_konditionalsaetze_konjunktiv2_1",
   level: "B2",
@@ -147,6 +230,59 @@ export const b2_konditionalsaetze_konjunktiv2_1: Exercise = {
   ]
 };
 
+// 6. B2 – Konditionalsätze und Konjunktiv II – Exercise 2
+export const b2_konditionalsaetze_konjunktiv2_2: Exercise = {
+  id: "b2_konditionalsaetze_konjunktiv2_2",
+  level: "B2",
+  grammar_section_id: "konditionalsaetze_konjunktiv2",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Work-Life-Balance",
+  model: "mvp-static",
+  text:
+    "Wenn mein Arbeitgeber mir die Möglichkeit [1], teilweise von zu Hause zu arbeiten, [2] ich mir jeden Tag mindestens eine Stunde Pendelzeit sparen. " +
+    "Ich [3] wahrscheinlich auch mehr Sport machen, wenn ich abends nicht so müde [4]. " +
+    "[5] ich im Studium schon gewusst, wie wichtig Pausen für die Konzentration sind, [6] ich mir von Anfang an einen festen Zeitplan erstellt.",
+  gaps: [
+    {
+      no: 1,
+      correct: "gäbe",
+      distractors: ["gibt", "geben würde", "gegeben hat"],
+      explanation: `„gäbe" ist Konjunktiv II von „geben" und drückt eine irreale Bedingung in der Gegenwart aus: „Wenn mein Arbeitgeber mir die Möglichkeit gäbe …".`
+    },
+    {
+      no: 2,
+      correct: "könnte",
+      distractors: ["kann", "werde", "würde"],
+      explanation: `„könnte" steht im Konjunktiv II und beschreibt eine hypothetische Folge der Bedingung: „… könnte ich mir Pendelzeit sparen".`
+    },
+    {
+      no: 3,
+      correct: "würde",
+      distractors: ["werde", "habe", "konnte"],
+      explanation: `„würde" + Infinitiv („würde … machen") ist die übliche Form für eine hypothetische Handlung in der Gegenwart.`
+    },
+    {
+      no: 4,
+      correct: "wäre",
+      distractors: ["bin", "war", "sein würde"],
+      explanation: `„wäre" ist Konjunktiv II von „sein" und passt zur irreale Bedingung: „wenn ich abends nicht so müde wäre".`
+    },
+    {
+      no: 5,
+      correct: "Hätte",
+      distractors: ["Wenn", "Würde", "Wäre"],
+      explanation: `Im verkürzten Konditionalsatz ohne „wenn" steht die Verbform an erster Stelle: „Hätte ich im Studium schon gewusst …".`
+    },
+    {
+      no: 6,
+      correct: "hätte",
+      distractors: ["würde", "habe", "hatte"],
+      explanation: `Für die irreale Vergangenheit verwendet man „hätte" + Partizip II: „hätte ich mir … erstellt". „würde" + Partizip ist hier ungrammatisch.`
+    }
+  ]
+};
+
+
 // 4. B2 – Passivformen (vertieft) – Exercise 1
 export const b2_passiv_1: Exercise = {
   id: "b2_passiv_1",
@@ -185,7 +321,59 @@ export const b2_passiv_1: Exercise = {
   ]
 };
 
-// 5. B2 – Indirekte Rede / Konjunktiv I und II – Exercise 1
+// 5. B2 – Passivformen (vertieft) – Exercise 2
+export const b2_passiv_2: Exercise = {
+  id: "b2_passiv_2",
+  level: "B2",
+  grammar_section_id: "passiv",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Datenschutz im Unternehmen",
+  model: "mvp-static",
+  text:
+    "In vielen Unternehmen [1] in den letzten Jahren strenge Datenschutzrichtlinien eingeführt, doch nicht alle Mitarbeitenden [2] ausreichend geschult. " +
+    "In vielen Systemen [3] sensible Daten zwar verschlüsselt gespeichert, aber sie [4] trotzdem immer wieder über unsichere Verbindungen übertragen. " +
+    "Dadurch [5] das Risiko von Angriffen unnötig erhöht.",
+  gaps: [
+    {
+      no: 1,
+      correct: "wurden",
+      distractors: ["werden", "sind", "wären"],
+      explanation:
+        "„wurden eingeführt“ ist Vorgangspassiv im Präteritum und passt zur abgeschlossenen Entwicklung „in den letzten Jahren“."
+    },
+    {
+      no: 2,
+      correct: "sind",
+      distractors: ["werden", "wurden", "sein"],
+      explanation:
+        "„sind geschult“ beschreibt einen Zustand (Zustandspassiv) und bezieht sich auf das aktuelle Ergebnis der Schulungen."
+    },
+    {
+      no: 3,
+      correct: "werden",
+      distractors: ["wurden", "sind", "wird"],
+      explanation:
+        "„werden gespeichert“ ist Vorgangspassiv im Präsens und drückt eine allgemeine, immer noch gültige Praxis aus."
+    },
+    {
+      no: 4,
+      correct: "werden",
+      distractors: ["wurden", "worden", "wären"],
+      explanation:
+        "Auch hier ist das Vorgangspassiv im Präsens gemeint: „sie werden übertragen“. „worden“ ist nur Partizip II, kein finites Verb."
+    },
+    {
+      no: 5,
+      correct: "wird",
+      distractors: ["wurde", "ist", "werden"],
+      explanation:
+        "„das Risiko wird erhöht“ ist Passiv im Präsens mit dem Singular-Subjekt „das Risiko“. „werden“ würde ein Plural-Subjekt verlangen."
+    }
+  ]
+};
+
+
+// 6. B2 – Indirekte Rede / Konjunktiv I und II – Exercise 1
 export const b2_indirekte_rede_1: Exercise = {
   id: "b2_indirekte_rede_1",
   level: "B2",
@@ -217,7 +405,52 @@ export const b2_indirekte_rede_1: Exercise = {
   ]
 };
 
-// 6. B2 – Adjektivdeklination – Exercise 1
+// 5. B2 – Indirekte Rede / Konjunktiv I und II – Exercise 2
+export const b2_indirekte_rede_2: Exercise = {
+  id: "b2_indirekte_rede_2",
+  level: "B2",
+  grammar_section_id: "indirekte_rede",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Medienberichte",
+  model: "mvp-static",
+  text:
+    "In einem Interview erklärte der Geschäftsführer, das Unternehmen [1] im vergangenen Jahr trotz der Krise gewachsen. " +
+    "Er fügte hinzu, man [2] die geplanten Investitionen nicht streichen, sondern lediglich verschieben. " +
+    "Auf die Frage nach möglichen Entlassungen sagte er, es [3] im Moment keine konkreten Pläne, aber er [4], pauschale Versprechen abzugeben.",
+  gaps: [
+    {
+      no: 1,
+      correct: "sei",
+      distractors: ["ist", "war", "wäre"],
+      explanation:
+        "In der indirekten Rede wird meist der Konjunktiv I verwendet: „das Unternehmen sei gewachsen“. „ist/war“ wären Indikativ, „wäre gewachsen“ wäre Konjunktiv II und würde eine Irrealität andeuten."
+    },
+    {
+      no: 2,
+      correct: "wolle",
+      distractors: ["will", "wollte", "würde wollen"],
+      explanation:
+        "„man wolle“ ist Konjunktiv I und signalisiert, dass hier eine Aussage wiedergegeben wird. „will/wollte“ stehen im Indikativ; „würde wollen“ klingt umständlich und ist hier stilistisch unüblich."
+    },
+    {
+      no: 3,
+      correct: "gebe",
+      distractors: ["gibt", "gäbe", "gegeben"],
+      explanation:
+        "„es gebe keine konkreten Pläne“ ist typische indirekte Rede mit Konjunktiv I. „gibt“ wäre Indikativ, „gäbe“ Konjunktiv II (würde eher eine hypothetische Situation ausdrücken). „gegeben“ ist nur das Partizip II."
+    },
+    {
+      no: 4,
+      correct: "zögere",
+      distractors: ["zögert", "zögerte", "würde zögern"],
+      explanation:
+        "Mit „er zögere“ bleibt der Bericht im Konjunktiv I. „zögert/zögerte“ wären Indikativformen, „würde zögern“ ist zwar möglich, aber stilistisch weniger elegant als Konjunktiv I in der Nachrichten- und Berichtssprache."
+    }
+  ]
+};
+
+
+// 7. B2 – Adjektivdeklination – Exercise 1
 export const b2_adjektivdeklination_1: Exercise = {
   id: "b2_adjektivdeklination_1",
   level: "B2",
@@ -261,7 +494,59 @@ export const b2_adjektivdeklination_1: Exercise = {
   ]
 };
 
-// 7. B2 – Relativsätze (erweitert) – Exercise 1
+// 8. B2 – Adjektivdeklination – Exercise 2
+export const b2_adjektivdeklination_2: Exercise = {
+  id: "b2_adjektivdeklination_2",
+  level: "B2",
+  grammar_section_id: "adjektivdeklination",
+  grammar_ui_topics: ["adjektive"],
+  content_topic: "Arbeiten im internationalen Team",
+  model: "mvp-static",
+  text:
+    "In meinem jetzigen Unternehmen arbeite ich in einem [1] Team mit Kolleginnen und Kollegen aus sehr [2] Ländern. " +
+    "Für unsere Kundinnen und Kunden erstellen wir regelmäßig [3] Berichte, die wir anschließend in [4] Präsentationen zusammenfassen. " +
+    "Besonders wichtig ist dabei eine [5] Kommunikation, damit alle Beteiligten die gleichen Informationen haben.",
+  gaps: [
+    {
+      no: 1,
+      correct: "internationalen",
+      distractors: ["internationale", "internationaler", "internationales"],
+      explanation:
+        "„in einem internationalen Team“ steht im Dativ Singular Neutrum mit unbestimmtem Artikel. In diesem Fall bekommt das Adjektiv die Endung „-en“."
+    },
+    {
+      no: 2,
+      correct: "unterschiedlichen",
+      distractors: ["unterschiedliche", "unterschiedlicher", "unterschiedlich"],
+      explanation:
+        "„aus sehr unterschiedlichen Ländern“: Präposition „aus“ fordert den Dativ, hier im Plural ohne Artikel → stark dekliniert, Dativ Plural mit Endung „-en“."
+    },
+    {
+      no: 3,
+      correct: "detaillierte",
+      distractors: ["detaillierten", "detaillierter", "detailliertes"],
+      explanation:
+        "„regelmäßig detaillierte Berichte“ steht im Akkusativ Plural ohne Artikel. Beim starken Deklinationsmuster lautet die Endung im Akkusativ Plural „-e“."
+    },
+    {
+      no: 4,
+      correct: "kurzen",
+      distractors: ["kurze", "kurzer", "kurzem"],
+      explanation:
+        "„in kurzen Präsentationen“: „in“ + Dativ Plural ohne Artikel → stark dekliniert, Dativ Plural mit Endung „-en“."
+    },
+    {
+      no: 5,
+      correct: "klare",
+      distractors: ["klaren", "klarer", "klares"],
+      explanation:
+        "„eine klare Kommunikation“: Akkusativ Singular Feminin mit unbestimmtem Artikel („eine“) → gemischte Deklination, hier mit Endung „-e“."
+    }
+  ]
+};
+
+
+// 9. B2 – Relativsätze (erweitert) – Exercise 1
 export const b2_relativsaetze_1: Exercise = {
   id: "b2_relativsaetze_1",
   level: "B2",
@@ -292,6 +577,59 @@ export const b2_relativsaetze_1: Exercise = {
     }
   ]
 };
+
+// 10. B2 – Relativsätze (erweitert) – Exercise 2
+export const b2_relativsaetze_2: Exercise = {
+  id: "b2_relativsaetze_2",
+  level: "B2",
+  grammar_section_id: "relativsaetze",
+  grammar_ui_topics: ["artikel"],
+  content_topic: "Stadtviertel im Wandel",
+  model: "mvp-static",
+  text:
+    "Ich wohne in einem Viertel, [1] sich in den letzten Jahren stark verändert hat. " +
+    "Die meisten Häuser, [2] früher kleinen Handwerksbetrieben gehört haben, wurden zu modernen Wohnungen umgebaut. " +
+    "Viele der Menschen, mit [3] ich früher täglich auf der Straße gesprochen habe, sind weggezogen. " +
+    "Gleichzeitig sind neue Cafés entstanden, in [4] sich vor allem junge Familien treffen, [5] großen Wert auf regionale Produkte legen.",
+  gaps: [
+    {
+      no: 1,
+      correct: "das",
+      distractors: ["der", "dem", "dessen"],
+      explanation:
+        "Bezug auf „Viertel“ (Neutrum Singular). Im Nominativ Singular Neutrum lautet das Relativpronomen „das“: „ein Viertel, das sich … verändert hat“."
+    },
+    {
+      no: 2,
+      correct: "die",
+      distractors: ["denen", "deren", "das"],
+      explanation:
+        "Bezug auf „Häuser“ (Plural). Subjekt im Relativsatz → Nominativ Plural „die“: „Häuser, die früher … gehört haben“."
+    },
+    {
+      no: 3,
+      correct: "denen",
+      distractors: ["die", "deren", "dem"],
+      explanation:
+        "„mit“ fordert den Dativ; Bezug auf „Menschen“ im Plural → Dativ Plural „denen“: „Menschen, mit denen ich früher … gesprochen habe“."
+    },
+    {
+      no: 4,
+      correct: "denen",
+      distractors: ["die", "dessen", "der"],
+      explanation:
+        "„in“ mit lokaler Bedeutung + Dativ Plural; Bezug auf „Cafés“ → „in denen sich … Familien treffen“."
+    },
+    {
+      no: 5,
+      correct: "die",
+      distractors: ["denen", "deren", "welche"],
+      explanation:
+        "Bezug auf „Familien“ (Plural) als Subjekt im Relativsatz → Nominativ Plural „die“: „Familien, die großen Wert auf … legen“."
+    }
+  ]
+};
+
 
 // 8. B2 – Infinitivsätze – Exercise 1 (überarbeitet, Lücken besser verteilt)
 export const b2_infinitivsaetze_1: Exercise = {

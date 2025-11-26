@@ -1,14 +1,17 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, XCircle, Settings } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Settings, TrendingUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
+import { ProgressionBreadcrumb } from "@/components/ProgressionBreadcrumb";
 import { getGrammarSectionById } from "@/data/grammarSections";
-import { getExercise } from "@/data/exerciseSelector";
+import { getExercise, getAllExercisesForLevel } from "@/data/exerciseSelector";
+import { markExerciseCompleted } from "@/utils/exerciseCompletion";
+import { toast } from "@/hooks/use-toast";
 
 // Backend response format (simplified structure)
 import { GrammarUiTopicId } from "@/data/grammarSections";
@@ -129,13 +132,15 @@ function processBackendExercise(exercise: BackendExercise): {
 
 const Exercise = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [exerciseKey, setExerciseKey] = useState(0);
+  const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
+  const lastShownIdRef = useRef<string | null>(null);
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
 
   // Get level and section from URL, with defaults
@@ -143,11 +148,74 @@ const Exercise = () => {
   const section = searchParams.get("section") || "verben";
   const grammarSection = searchParams.get("grammar");
 
+  // Reset last shown exercise ID when level or section changes
+  useEffect(() => {
+    lastShownIdRef.current = null;
+  }, [level, section, grammarSection]);
+
+  // Detect progression and update URL when exercise changes
+  useEffect(() => {
+    if (!currentExercise) return;
+
+    const exerciseLevel = currentExercise.level.toLowerCase();
+    const exerciseTopics = currentExercise.grammar_ui_topics;
+    const currentLevelLower = level.toLowerCase();
+    const currentSectionLower = section.toLowerCase();
+
+    // Check if level has progressed
+    if (exerciseLevel !== currentLevelLower) {
+      const params = new URLSearchParams();
+      params.set("level", exerciseLevel);
+      params.set("section", exerciseTopics[0]);
+      if (grammarSection) {
+        params.delete("grammar");
+      }
+      setSearchParams(params, { replace: true });
+
+      toast({
+        title: "Level Up!",
+        description: `Congratulations! You've advanced to ${exerciseLevel.toUpperCase()}`,
+      });
+      return;
+    }
+
+    // Check if topic has progressed
+    if (!exerciseTopics.includes(currentSectionLower as any)) {
+      const params = new URLSearchParams();
+      params.set("level", level);
+      params.set("section", exerciseTopics[0]);
+      if (grammarSection) {
+        params.delete("grammar");
+      }
+      setSearchParams(params, { replace: true });
+
+      toast({
+        title: "Topic Completed!",
+        description: `Moving to ${exerciseTopics[0]} exercises`,
+      });
+    }
+  }, [currentExercise, level, section, grammarSection]);
+
+  // Get all exercises for current level (for progression breadcrumb)
+  const allLevelExercises = useMemo(() => {
+    return getAllExercisesForLevel(level);
+  }, [level]);
+
   // Load exercise based on URL parameters and exerciseKey
   const exerciseData = useMemo(() => {
-    const exercise = getExercise(level, section, grammarSection);
+    // Get exercise with progression enabled, avoiding last shown
+    const exercise = getExercise(level, section, grammarSection, true, lastShownIdRef.current);
+
+    if (exercise) {
+      setCurrentExercise(exercise);
+      lastShownIdRef.current = exercise.id;
+      return processBackendExercise(exercise);
+    }
+
     // Fall back to mock if no exercise found
-    return exercise ? processBackendExercise(exercise) : processBackendExercise(mockBackendExercise);
+    setCurrentExercise(mockBackendExercise);
+    lastShownIdRef.current = mockBackendExercise.id;
+    return processBackendExercise(mockBackendExercise);
   }, [level, section, grammarSection, exerciseKey]);
 
   const handleOptionSelect = (gapId: string, optionIndex: number) => {
@@ -165,9 +233,20 @@ const Exercise = () => {
       (gap) => selectedAnswers[gap.id] === gap.correct
     ).length;
 
-    // Track exercise completion
+    // Track exercise completion for stats
     incrementExercise(correctCount, exerciseData.gaps.length);
 
+    // IMPORTANT: Mark exercise as seen/attempted regardless of score
+    // This enables progression to next topic when all exercises have been attempted
+    if (currentExercise) {
+      markExerciseCompleted(
+        currentExercise.id,
+        currentExercise.level,
+        currentExercise.grammar_ui_topics
+      );
+    }
+
+    // Show celebration only if all answers correct
     if (correctCount === exerciseData.gaps.length) {
       setShowCelebration(true);
       setTimeout(() => setShowCelebration(false), 2000);
@@ -182,6 +261,8 @@ const Exercise = () => {
   const handleNext = () => {
     setSelectedAnswers({});
     setSubmitted(false);
+
+    // Just increment the key - progression detection happens in useMemo
     setExerciseKey(prev => prev + 1);
   };
 
@@ -251,7 +332,7 @@ const Exercise = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 mb-3">
             <Button
               variant="ghost"
               size="icon"
@@ -287,6 +368,16 @@ const Exercise = () => {
               <Settings className="h-5 w-5" />
             </Button>
           </div>
+          {/* Progression Breadcrumb */}
+          {!grammarSection && (
+            <div className="pl-14">
+              <ProgressionBreadcrumb
+                level={level}
+                currentTopic={section}
+                allExercises={allLevelExercises}
+              />
+            </div>
+          )}
         </div>
       </header>
 
