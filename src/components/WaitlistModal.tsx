@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { FormEvent } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +18,17 @@ interface WaitlistModalProps {
 
 const WAITLIST_STORAGE_KEY = "waitlistEmails";
 
-export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: WaitlistModalProps) => {
+// Helper to URL-encode form data for Netlify
+const encode = (data: Record<string, string>) =>
+  Object.keys(data)
+    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+    .join("&");
+
+export const WaitlistModal = ({
+  open,
+  onOpenChange,
+  exercisesCompleted,
+}: WaitlistModalProps) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -27,7 +38,9 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
     return emailRegex.test(email);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
+    if (e) e.preventDefault();
+
     // Validate email
     if (!email.trim()) {
       setError("Please enter your email");
@@ -39,20 +52,36 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
       return;
     }
 
-    // Store email in localStorage
-    const existingEmails = localStorage.getItem(WAITLIST_STORAGE_KEY);
-    const emailList = existingEmails ? JSON.parse(existingEmails) : [];
+    try {
+      // Send to Netlify Forms
+      await fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: encode({
+          "form-name": "waitlist",
+          email,
+          exercisesCompleted: String(exercisesCompleted),
+        }),
+      });
 
-    emailList.push({
-      email,
-      timestamp: new Date().toISOString(),
-    });
+      // Optionally also store email locally
+      const existingEmails = localStorage.getItem(WAITLIST_STORAGE_KEY);
+      const emailList = existingEmails ? JSON.parse(existingEmails) : [];
 
-    localStorage.setItem(WAITLIST_STORAGE_KEY, JSON.stringify(emailList));
+      emailList.push({
+        email,
+        timestamp: new Date().toISOString(),
+      });
 
-    // Show success state
-    setIsSubmitted(true);
-    setError("");
+      localStorage.setItem(WAITLIST_STORAGE_KEY, JSON.stringify(emailList));
+
+      // Show success state
+      setIsSubmitted(true);
+      setError("");
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   const handleClose = () => {
@@ -74,14 +103,11 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
         {!isSubmitted ? (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl">
-                🎉 Congratulations!
-              </DialogTitle>
+              <DialogTitle className="text-2xl">🎉 Congratulations!</DialogTitle>
               <DialogDescription className="text-base pt-2">
                 {exercisesCompleted === 0
                   ? "You are in the right place to learn! Start making great progress."
-                  : `You've completed ${exercisesCompleted} exercises! You're making great progress.`
-                }
+                  : `You've completed ${exercisesCompleted} exercises! You're making great progress.`}
               </DialogDescription>
             </DialogHeader>
 
@@ -103,61 +129,74 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary mt-0.5">✓</span>
-                    <span>
-                      Focus on the grammar sections you need to improve
-                    </span>
+                    <span>Focus on the grammar sections you need to improve</span>
                   </li>
                 </ul>
               </div>
 
               <p className="text-sm text-muted-foreground mt-2">
-                In the next weeks many more exam-style
-                Lückentexte will be unlocked so you can practice every day without ever
-                seeing the same text twice.
+                Over the next weeks we’ll unlock more exam-style Lückentexte, so
+                you can practice daily without ever seeing the same text twice.
               </p>
 
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Join the waitlist to secure 2.99€/month early adopter price
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => {
-                    setEmail(e.target.value);
-                    setError("");
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      handleSubmit();
-                    }
-                  }}
-                  className={error ? "border-error" : ""}
-                  autoFocus={false}
-                />
-                {error && <p className="text-sm text-error">{error}</p>}
-              </div>
-
-              <Button onClick={handleSubmit} className="w-full" size="lg">
-                Join Waitlist
-              </Button>
-
-              <button
-                onClick={handleClose}
-                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+              {/* Netlify form */}
+              <form
+                name="waitlist"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                onSubmit={handleSubmit}
+                className="space-y-4"
               >
-                Maybe later
-              </button>
+                {/* Required hidden input for Netlify */}
+                <input type="hidden" name="form-name" value="waitlist" />
+
+                {/* Honeypot field */}
+                <p className="hidden">
+                  <label>
+                    Don’t fill this out if you're human:{" "}
+                    <input name="bot-field" />
+                  </label>
+                </p>
+
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Join the waitlist to secure 2.99€/month early adopter price
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="your.email@example.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setError("");
+                    }}
+                    className={error ? "border-error" : ""}
+                    autoFocus={false}
+                  />
+                  {error && <p className="text-sm text-error">{error}</p>}
+                </div>
+
+                <Button type="submit" className="w-full" size="lg">
+                  Join Waitlist
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={handleClose}
+                  className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Maybe later
+                </button>
+              </form>
             </div>
           </>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle className="text-2xl">
-                ✨ You're on the list!
-              </DialogTitle>
+              <DialogTitle className="text-2xl">✨ You're on the list!</DialogTitle>
               <DialogDescription className="text-base pt-2">
                 We'll notify you soon. Get ready for unlimited German grammar
                 practice!
