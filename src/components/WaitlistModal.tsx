@@ -78,7 +78,10 @@ export const WaitlistModal = ({ open, onOpenChange, exercisesCompleted }: Waitli
                 🎉 Congratulations!
               </DialogTitle>
               <DialogDescription className="text-base pt-2">
-                You've completed {exercisesCompleted} exercises! You're making great progress.
+                {exercisesCompleted === 0
+                  ? "You are in the right place to learn! Start making great progress."
+                  : `You've completed ${exercisesCompleted} exercises! You're making great progress.`
+                }
               </DialogDescription>
             </DialogHeader>
 

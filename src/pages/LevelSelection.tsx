@@ -10,7 +10,7 @@ import { WaitlistModal } from "@/components/WaitlistModal";
 // ⚙️ FEATURE SWITCH: Sign In button behavior
 // 0 = Normal sign in (navigate to /auth page)
 // 1 = Show waitlist popup instead of sign in
-const SIGN_IN_SHOWS_WAITLIST = 0;
+const SIGN_IN_SHOWS_WAITLIST = 1;
 
 const levels = [
   { id: "a1", name: "A1", description: "Beginner" },
