@@ -68,7 +68,7 @@ const Statistics = () => {
       </header>
 
       {/* Main Content - Blurred */}
-      <main className="container mx-auto px-4 py-8 blur-md pointer-events-none">
+      <main className="container mx-auto px-4 py-8 blur-sm pointer-events-none">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
