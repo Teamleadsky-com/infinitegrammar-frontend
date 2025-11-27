@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Target, Award } from "lucide-react";
+import { WaitlistModal } from "@/components/WaitlistModal";
+import { useExerciseStats } from "@/hooks/useExerciseStats";
 import {
   BarChart,
   Bar,
@@ -47,9 +50,11 @@ const progressData = [
 
 const Statistics = () => {
   const navigate = useNavigate();
+  const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const { stats } = useExerciseStats();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background relative">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -62,8 +67,8 @@ const Statistics = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
+      {/* Main Content - Blurred */}
+      <main className="container mx-auto px-4 py-8 blur-md pointer-events-none">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
@@ -214,6 +219,26 @@ const Statistics = () => {
           </div>
         </div>
       </main>
+
+      {/* Register Button Overlay */}
+      <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none">
+        <div className="pointer-events-auto">
+          <Button
+            size="lg"
+            onClick={() => setShowWaitlistModal(true)}
+            className="text-lg px-8 py-6 shadow-2xl"
+          >
+            Register
+          </Button>
+        </div>
+      </div>
+
+      {/* Waitlist Modal */}
+      <WaitlistModal
+        open={showWaitlistModal}
+        onOpenChange={setShowWaitlistModal}
+        exercisesCompleted={stats.totalExercisesCompleted}
+      />
     </div>
   );
 };
