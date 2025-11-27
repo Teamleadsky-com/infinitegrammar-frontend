@@ -468,6 +468,7 @@ const Exercise = () => {
         onOpenChange={setShowReportModal}
         exerciseId={currentExercise?.id || "unknown"}
         exerciseText={currentExercise?.text || ""}
+        gaps={currentExercise?.gaps || []}
       />
     </div>
   );

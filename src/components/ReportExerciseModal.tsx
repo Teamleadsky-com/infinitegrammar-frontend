@@ -10,11 +10,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
+interface Gap {
+  no: number;
+  correct: string;
+  distractors: string[];
+  explanation: string;
+}
+
 interface ReportExerciseModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   exerciseId: string;
   exerciseText: string;
+  gaps: Gap[];
 }
 
 // Helper to URL-encode form data for Netlify
@@ -28,11 +36,25 @@ export const ReportExerciseModal = ({
   onOpenChange,
   exerciseId,
   exerciseText,
+  gaps,
 }: ReportExerciseModalProps) => {
   const [reportText, setReportText] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Format gaps data for submission
+  const formatGapsData = () => {
+    return gaps
+      .map((gap) => {
+        const allOptions = [gap.correct, ...gap.distractors].sort();
+        const optionsText = allOptions
+          .map((opt) => (opt === gap.correct ? `✓ ${opt} (correct)` : `  ${opt}`))
+          .join("\n    ");
+        return `Gap ${gap.no}:\n    ${optionsText}`;
+      })
+      .join("\n\n");
+  };
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
@@ -59,6 +81,7 @@ export const ReportExerciseModal = ({
           "form-name": "exercise-report",
           exerciseId,
           exerciseText: exerciseText.substring(0, 200), // Limit text length
+          gaps: formatGapsData(),
           reportText,
           timestamp: new Date().toISOString(),
         }),
