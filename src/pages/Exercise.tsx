@@ -2,11 +2,12 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, CheckCircle2, XCircle, Settings } from "lucide-react";
+import { ArrowLeft, CheckCircle2, XCircle, Settings, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
+import { ReportExerciseModal } from "@/components/ReportExerciseModal";
 import { getGrammarSectionById } from "@/data/grammarSections";
 import { getExercise } from "@/data/exerciseSelector";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
@@ -137,6 +138,7 @@ const Exercise = () => {
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
   const [exerciseKey, setExerciseKey] = useState(0);
   const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
   const lastShownIdRef = useRef<string | null>(null);
@@ -361,6 +363,15 @@ const Exercise = () => {
             <Button
               variant="ghost"
               size="icon"
+              onClick={() => setShowReportModal(true)}
+              className="text-muted-foreground hover:text-foreground"
+              title="Report an issue with this exercise"
+            >
+              <Flag className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setShowSettingsDialog(true)}
               className="ml-2"
             >
@@ -449,6 +460,14 @@ const Exercise = () => {
         currentSection={section}
         currentGrammar={grammarSection}
         onApply={handleSettingsApply}
+      />
+
+      {/* Report Exercise Modal */}
+      <ReportExerciseModal
+        open={showReportModal}
+        onOpenChange={setShowReportModal}
+        exerciseId={currentExercise?.id || "unknown"}
+        exerciseText={currentExercise?.text || ""}
       />
     </div>
   );
