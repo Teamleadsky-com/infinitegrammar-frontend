@@ -49,11 +49,11 @@ export const ReportExerciseModal = ({
       .map((gap) => {
         const allOptions = [gap.correct, ...gap.distractors].sort();
         const optionsText = allOptions
-          .map((opt) => (opt === gap.correct ? `✓ ${opt} (correct)` : `  ${opt}`))
-          .join("\n    ");
-        return `Gap ${gap.no}:\n    ${optionsText}`;
+          .map((opt) => (opt === gap.correct ? `${opt} (correct)` : opt))
+          .join(", ");
+        return `Gap ${gap.no}: ${optionsText}`;
       })
-      .join("\n\n");
+      .join(", ");
   };
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
@@ -79,6 +79,7 @@ export const ReportExerciseModal = ({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode({
           "form-name": "exercise-report",
+          subject: exerciseId, // Subject line for email notifications
           exerciseId,
           exerciseText: exerciseText.substring(0, 200), // Limit text length
           gaps: formatGapsData(),
