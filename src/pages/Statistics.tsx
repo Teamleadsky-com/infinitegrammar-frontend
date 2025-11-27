@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, TrendingUp, Target, Award } from "lucide-react";
 import {
   BarChart,
@@ -58,6 +59,9 @@ const Statistics = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <h1 className="text-2xl font-bold">Your Statistics</h1>
+            <Badge variant="secondary" className="ml-2">
+              Work in progress
+            </Badge>
           </div>
         </div>
       </header>
