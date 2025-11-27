@@ -70,7 +70,60 @@ export const b1_zeiten_praesens_perfekt_1: Exercise = {
   ]
 };
 
-// 2. B1 – Modalverben – Exercise 1
+
+
+// 2. B1 – Zeiten: Präsens / Perfekt – Exercise 2
+export const b1_zeiten_praesens_perfekt_2: Exercise = {
+  id: "b1_zeiten_praesens_perfekt_2",
+  level: "B1",
+  grammar_section_id: "tempus_perfekt_praeteritum",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Alltag in der WG",
+  model: "mvp-static",
+  text:
+    "Unter der Woche [1] ich meistens erst gegen sieben Uhr nach Hause. Dann [2] ich schnell etwas zu Abend und [3] mich noch kurz mit meinen Mitbewohnern. " +
+    "In den letzten Tagen [4] ich allerdings so viel gearbeitet, dass ich abends oft sofort eingeschlafen [5].",
+  gaps: [
+    {
+      no: 1,
+      correct: "komme",
+      distractors: ["bin gekommen", "kam", "werde kommen"],
+      explanation:
+        "Es geht um eine regelmäßige Gewohnheit in der Gegenwart („unter der Woche“), daher Präsens: „ich komme nach Hause“."
+    },
+    {
+      no: 2,
+      correct: "koche",
+      distractors: ["habe gekocht", "kochte", "gekocht"],
+      explanation:
+        "Auch hier wird eine feste Routine beschrieben. Im Präsens: „Dann koche ich schnell etwas zu Abend.“"
+    },
+    {
+      no: 3,
+      correct: "unterhalte",
+      distractors: ["habe unterhalten", "unterhielt", "mich unterhalten"],
+      explanation:
+        "Das Verb heißt „sich unterhalten“. Mit „ich“ im Präsens: „ich unterhalte mich“. Das Reflexivpronomen „mich“ steht schon im Satz."
+    },
+    {
+      no: 4,
+      correct: "habe",
+      distractors: ["bin", "hatte", "werde"],
+      explanation:
+        "„Ich habe gearbeitet“ – das Perfekt von „arbeiten“ wird mit „haben“ gebildet: „In den letzten Tagen habe ich so viel gearbeitet …“."
+    },
+    {
+      no: 5,
+      correct: "bin",
+      distractors: ["habe", "war", "gewesen"],
+      explanation:
+        "„einschlafen“ bildet das Perfekt mit „sein“: „ich bin eingeschlafen“. Deshalb: „dass ich abends oft sofort eingeschlafen bin“."
+    }
+  ]
+};
+
+
+// 3. B1 – Modalverben – Exercise 1
 export const b1_modalverben_1: Exercise = {
   id: "b1_modalverben_1",
   level: "B1",
@@ -120,7 +173,59 @@ export const b1_modalverben_1: Exercise = {
   ]
 };
 
-// 3. B1 – Trennbare Verben – Exercise 1
+// 4. B1 – Modalverben – Exercise 2
+export const b1_modalverben_2: Exercise = {
+  id: "b1_modalverben_2",
+  level: "B1",
+  grammar_section_id: "modalverben_praeteritum",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Regeln zu Hause",
+  model: "mvp-static",
+  text:
+    "Zu Hause habe ich mit meinen Eltern klare Regeln: Unter der Woche [1] ich nicht länger als eine Stunde am Computer spielen. " +
+    "Vor dem Abendessen [2] ich meiner Mutter in der Küche helfen. Am Wochenende [3] ich länger wach bleiben, wenn ich am nächsten Tag keine Schule habe. " +
+    "Wenn ich schlechte Noten schreibe, [4] ich mir mehr Zeit zum Lernen nehmen. Meine Eltern sagen, ich [5] selbst entscheiden lernen, wie ich meine Freizeit nutze.",
+  gaps: [
+    {
+      no: 1,
+      correct: "darf",
+      distractors: ["kann", "muss", "soll"],
+      explanation:
+        "„nicht länger als eine Stunde am Computer spielen“ beschreibt eine Erlaubnis mit Grenze – darum steht hier „ich darf … nicht länger spielen“."
+    },
+    {
+      no: 2,
+      correct: "soll",
+      distractors: ["muss", "kann", "darf"],
+      explanation:
+        "Die Eltern erwarten Hilfe, aber es klingt eher nach einer Regel/Empfehlung als nach strenger Pflicht – deshalb „ich soll meiner Mutter helfen“."
+    },
+    {
+      no: 3,
+      correct: "darf",
+      distractors: ["muss", "kann", "soll"],
+      explanation:
+        "Am Wochenende ist es erlaubt, länger wach zu bleiben: „ich darf länger wach bleiben“ drückt diese Erlaubnis aus."
+    },
+    {
+      no: 4,
+      correct: "muss",
+      distractors: ["kann", "darf", "möchte"],
+      explanation:
+        "Bei schlechten Noten handelt es sich um eine Notwendigkeit: „ich muss mir mehr Zeit zum Lernen nehmen“."
+    },
+    {
+      no: 5,
+      correct: "soll",
+      distractors: ["muss", "kann", "darf"],
+      explanation:
+        "Die Eltern formulieren eine Erwartung für die Zukunft: „ich soll selbst entscheiden lernen“ – eine Art Aufgabe oder Ziel."
+    }
+  ]
+};
+
+
+// 5. B1 – Trennbare Verben – Exercise 1
 export const b1_trennbare_verben_1: Exercise = {
   id: "b1_trennbare_verben_1",
   level: "B1",
@@ -191,7 +296,80 @@ export const b1_trennbare_verben_1: Exercise = {
   ]
 };
 
-// 4. B1 – Reflexive Verben – Exercise 1
+// 6. B1 – Trennbare Verben – Exercise 2
+export const b1_trennbare_verben_2: Exercise = {
+  id: "b1_trennbare_verben_2",
+  level: "B1",
+  grammar_section_id: "trennbare_verben",
+  grammar_ui_topics: ["verben", "satzbau"],
+  content_topic: "Feierabend",
+  model: "mvp-static",
+  text:
+    "Am Freitag [1] ich meistens pünktlich um 17 Uhr mit der Arbeit [2]. " +
+    "Zu Hause [3] ich mir zuerst die bequeme Hose [4] und [5] den Fernseher [6], um kurz abzuschalten. " +
+    "Später [7] ich meine Freundin [8], ob sie noch Lust auf einen Spaziergang hat.",
+  gaps: [
+    {
+      no: 1,
+      correct: "höre",
+      distractors: ["höre auf", "hörte", "habe"],
+      explanation:
+        "Das Verb heißt „aufhören“. Im Satz steht das konjugierte Verb an Position 2: „Am Freitag höre ich … auf“. In die Lücke kommt nur „höre“."
+    },
+    {
+      no: 2,
+      correct: "auf",
+      distractors: ["zu", "an", "aus"],
+      explanation:
+        "Die Vorsilbe von „aufhören“ steht am Satzende: „mit der Arbeit auf“. Andere Präfixe würden ein anderes oder kein korrektes Verb ergeben."
+    },
+    {
+      no: 3,
+      correct: "ziehe",
+      distractors: ["ziehe aus", "zog", "habe"],
+      explanation:
+        "Das trennbare Verb ist „ausziehen“: „Zu Hause ziehe ich mir … aus“. Verbzweitstellung → „ziehe“ steht an Position 2."
+    },
+    {
+      no: 4,
+      correct: "aus",
+      distractors: ["an", "auf", "ein"],
+      explanation:
+        "Die Verbpartikel von „ausziehen“ steht am Ende des Satzteils: „die bequeme Hose aus“."
+    },
+    {
+      no: 5,
+      correct: "mache",
+      distractors: ["mache an", "mach", "machte"],
+      explanation:
+        "Hier steht das Verb „anmachen“ im Präsens: „ich mache den Fernseher an“. Die konjugierte Form „mache“ steht an Position 2."
+    },
+    {
+      no: 6,
+      correct: "an",
+      distractors: ["auf", "aus", "ein"],
+      explanation:
+        "Die Vorsilbe von „anmachen“ ist „an“: „den Fernseher an“. Andere Präfixe würden eine andere Bedeutung haben oder wären falsch."
+    },
+    {
+      no: 7,
+      correct: "rufe",
+      distractors: ["rufe an", "rief", "habe"],
+      explanation:
+        "Das Verb lautet „anrufen“: „Später rufe ich meine Freundin an“. Wegen der Verbzweitstellung steht „rufe“ allein in der Lücke."
+    },
+    {
+      no: 8,
+      correct: "an",
+      distractors: ["auf", "aus", "ein"],
+      explanation:
+        "Die Partikel von „anrufen“ kommt ans Satzende: „meine Freundin an“. „auf-/aus-/einrufen“ gibt es in diesem Zusammenhang nicht."
+    }
+  ]
+};
+
+
+// 7. B1 – Reflexive Verben – Exercise 1
 export const b1_reflexive_verben_1: Exercise = {
   id: "b1_reflexive_verben_1",
   level: "B1",
@@ -255,7 +433,80 @@ export const b1_reflexive_verben_1: Exercise = {
   ]
 };
 
-// 5. B1 – Nebensätze mit weil / dass / wenn – Exercise 1
+// 8. B1 – Reflexive Verben – Exercise 2
+export const b1_reflexive_verben_2: Exercise = {
+  id: "b1_reflexive_verben_2",
+  level: "B1",
+  grammar_section_id: "reflexive_verben",
+  grammar_ui_topics: ["verben"],
+  content_topic: "Vorbereitung auf ein Vorstellungsgespräch",
+  model: "mvp-static",
+  text:
+    "Am Tag vor einem wichtigen Vorstellungsgespräch [1] ich [2] immer besonders gut vor. " +
+    "Zuerst [3] ich [4] alle Unterlagen zurecht und überlege, welche Fragen gestellt werden könnten. " +
+    "Dann [5] ich [6] im Spiegel an und übe, wie ich mich vorstellen kann. " +
+    "Wenn ich merke, dass ich nervös werde, [7] ich [8] bewusst ein paar Minuten, um ruhig zu atmen.",
+  gaps: [
+    {
+      no: 1,
+      correct: "bereite",
+      distractors: ["bereiten", "bereitete", "habe bereitet"],
+      explanation:
+        "Das Verb heißt „sich vorbereiten“. Mit „ich“ steht es im Präsens als „ich bereite … vor“."
+    },
+    {
+      no: 2,
+      correct: "mich",
+      distractors: ["mir", "dich", "uns"],
+      explanation:
+        "Bei „sich vorbereiten“ steht das Reflexivpronomen im Akkusativ: „ich bereite mich vor“."
+    },
+    {
+      no: 3,
+      correct: "lege",
+      distractors: ["lege mir", "legte", "habe gelegt"],
+      explanation:
+        "Das Verb ist „sich etwas zurechtlegen“. Das konjugierte Verb steht an Position 2: „ich lege mir … zurecht“."
+    },
+    {
+      no: 4,
+      correct: "mir",
+      distractors: ["mich", "dich", "uns"],
+      explanation:
+        "„sich etwas zurechtlegen“ verwendet das Reflexivpronomen im Dativ: „ich lege mir alle Unterlagen zurecht“."
+    },
+    {
+      no: 5,
+      correct: "sehe",
+      distractors: ["schaue", "sehe mir", "sehe an"],
+      explanation:
+        "Das Verb lautet „sich ansehen“: „Dann sehe ich mich im Spiegel an“. Im Mittelfeld steht nur das konjugierte Verb „sehe“."
+    },
+    {
+      no: 6,
+      correct: "mich",
+      distractors: ["mir", "dich", "ihn"],
+      explanation:
+        "Bei „sich etwas ansehen“ steht das Reflexivpronomen im Akkusativ: „ich sehe mich im Spiegel an“."
+    },
+    {
+      no: 7,
+      correct: "nehme",
+      distractors: ["nehme mir", "nahm", "genommen"],
+      explanation:
+        "Das Verb heißt „sich Zeit nehmen“. Wegen der Verbzweitstellung steht hier nur „nehme“: „nehme ich mir …“."
+    },
+    {
+      no: 8,
+      correct: "mir",
+      distractors: ["mich", "uns", "dir"],
+      explanation:
+        "Bei „sich Zeit nehmen“ steht das Reflexivpronomen im Dativ: „ich nehme mir ein paar Minuten“."
+    }
+  ]
+};
+
+// 9. B1 – Nebensätze mit weil / dass / wenn – Exercise 1
 export const b1_nebensaetze_weil_dass_wenn_1: Exercise = {
   id: "b1_nebensaetze_weil_dass_wenn_1",
   level: "B1",
@@ -298,6 +549,51 @@ export const b1_nebensaetze_weil_dass_wenn_1: Exercise = {
     }
   ]
 };
+
+// 10. B1 – Nebensätze mit weil / dass / wenn – Exercise 2
+export const b1_nebensaetze_weil_dass_wenn_2: Exercise = {
+  id: "b1_nebensaetze_weil_dass_wenn_2",
+  level: "B1",
+  grammar_section_id: "satzbau_komplex",
+  grammar_ui_topics: ["satzbau", "verben"],
+  content_topic: "Zur Arbeit pendeln",
+  model: "mvp-static",
+  text:
+    "Ich fahre meistens mit dem Zug zur Arbeit, [1] ich so die Staus auf der Autobahn vermeiden kann. " +
+    "Mein Chef hat mir erklärt, [2] es sehr wichtig ist, pünktlich zu sein. " +
+    "[3] der Zug Verspätung hat, schreibe ich ihm sofort eine Nachricht, [4] er sonst nicht weiß, dass ich später komme.",
+  gaps: [
+    {
+      no: 1,
+      correct: "weil",
+      distractors: ["wenn", "dass", "obwohl"],
+      explanation:
+        "„weil ich so die Staus … vermeiden kann“ – hier wird ein Grund genannt, warum die Person mit dem Zug fährt. Dafür verwendet man „weil“."
+    },
+    {
+      no: 2,
+      correct: "dass",
+      distractors: ["weil", "wenn", "ob"],
+      explanation:
+        "Nach Verben wie „erklären“ steht häufig ein „dass“-Satz: „Mein Chef hat mir erklärt, dass es sehr wichtig ist …“."
+    },
+    {
+      no: 3,
+      correct: "Wenn",
+      distractors: ["Weil", "Dass", "Obwohl"],
+      explanation:
+        "„Wenn der Zug Verspätung hat“ beschreibt eine Bedingung bzw. eine Situation, unter der etwas passiert. Deshalb passt „Wenn“."
+    },
+    {
+      no: 4,
+      correct: "weil",
+      distractors: ["wenn", "dass", "damit"],
+      explanation:
+        "Hier wird wieder ein Grund genannt: Er schreibt eine Nachricht, weil der Chef sonst nicht weiß, dass er später kommt."
+    }
+  ]
+};
+
 
 // 6. B1 – Relativsätze (Basis) – Exercise 1
 export const b1_relativsaetze_basis_1: Exercise = {
