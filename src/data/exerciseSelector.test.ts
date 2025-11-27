@@ -80,7 +80,7 @@ describe('exerciseSelector', () => {
       const allExercises = Object.values(b2Exercises).filter(
         ex => ex && typeof ex === 'object' && 'id' in ex
       );
-      expect(allExercises.length).toBe(19);
+      expect(allExercises.length).toBe(23);
     });
 
     it('should have correct number of C1 exercises', () => {
