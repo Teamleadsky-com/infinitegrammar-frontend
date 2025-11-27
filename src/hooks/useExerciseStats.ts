@@ -11,7 +11,7 @@ const STORAGE_KEY = "exerciseStats";
 
 // ⚙️ CONFIGURATION: Change this value to set after how many completed exercises the waitlist popup appears
 // Example: 2 = show after 2 exercises, 5 = show after 5 exercises, 10 = show after 10 exercises
-const WAITLIST_TRIGGER_EXERCISE_COUNT = 1;
+const WAITLIST_TRIGGER_EXERCISE_COUNT = 4;
 
 const defaultStats: ExerciseStats = {
   totalExercisesCompleted: 0,
