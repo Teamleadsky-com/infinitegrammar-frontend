@@ -79,6 +79,7 @@ export const ReportExerciseModal = ({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode({
           "form-name": "exercise-report",
+          "bot-field": "", // Honeypot field (must be empty)
           subject: exerciseId, // Subject line for email notifications
           exerciseId,
           exerciseText: exerciseText.substring(0, 200), // Limit text length

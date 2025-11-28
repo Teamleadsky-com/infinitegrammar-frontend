@@ -60,6 +60,7 @@ export const WaitlistModal = ({
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: encode({
             "form-name": "waitlist-popup-open",
+            "bot-field": "", // Honeypot field (must be empty)
             timestamp: new Date().toISOString(),
             source: openSource,
             exercisesCompleted: String(exercisesCompleted),
@@ -99,6 +100,7 @@ export const WaitlistModal = ({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode({
           "form-name": "waitlist",
+          "bot-field": "", // Honeypot field (must be empty)
           email,
           exercisesCompleted: String(exercisesCompleted),
         }),
