@@ -450,6 +450,7 @@ const Exercise = () => {
         open={showWaitlistModal}
         onOpenChange={handleWaitlistModalClose}
         exercisesCompleted={stats.totalExercisesCompleted}
+        openSource="exercise-completion"
       />
 
       {/* Exercise Settings Dialog */}

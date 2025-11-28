@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import {
   Dialog,
@@ -14,6 +14,7 @@ interface WaitlistModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   exercisesCompleted: number;
+  openSource?: string; // "exercise-completion", "sign-in-button", "statistics-page"
 }
 
 const WAITLIST_STORAGE_KEY = "waitlistEmails";
@@ -24,14 +25,53 @@ const encode = (data: Record<string, string>) =>
     .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
     .join("&");
 
+// Helper to get or create session ID
+const getSessionId = () => {
+  let sessionId = sessionStorage.getItem("sessionId");
+  if (!sessionId) {
+    sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    sessionStorage.setItem("sessionId", sessionId);
+  }
+  return sessionId;
+};
+
 export const WaitlistModal = ({
   open,
   onOpenChange,
   exercisesCompleted,
+  openSource = "unknown",
 }: WaitlistModalProps) => {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+
+  // Track popup opens (only once per session per source)
+  useEffect(() => {
+    if (open && openSource) {
+      const trackingKey = `waitlist-open-tracked-${openSource}`;
+      const alreadyTracked = sessionStorage.getItem(trackingKey);
+
+      if (!alreadyTracked) {
+        // Track this open event
+        const sessionId = getSessionId();
+
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: encode({
+            "form-name": "waitlist-popup-open",
+            timestamp: new Date().toISOString(),
+            source: openSource,
+            exercisesCompleted: String(exercisesCompleted),
+            sessionId: sessionId,
+          }),
+        }).catch(err => console.error("Failed to track popup open:", err));
+
+        // Mark as tracked for this session
+        sessionStorage.setItem(trackingKey, "true");
+      }
+    }
+  }, [open, openSource, exercisesCompleted]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -198,6 +198,7 @@ const LevelSelection = () => {
         open={showWaitlistModal}
         onOpenChange={setShowWaitlistModal}
         exercisesCompleted={0}
+        openSource="sign-in-button"
       />
     </div>
   );

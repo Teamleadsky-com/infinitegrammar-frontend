@@ -238,6 +238,7 @@ const Statistics = () => {
         open={showWaitlistModal}
         onOpenChange={setShowWaitlistModal}
         exercisesCompleted={stats.totalExercisesCompleted}
+        openSource="statistics-page"
       />
     </div>
   );
