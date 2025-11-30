@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // ⚙️ FEATURE SWITCH: Sign In button behavior
 // 0 = Normal sign in (navigate to /auth page)
 // 1 = Show waitlist popup instead of sign in
-const SIGN_IN_SHOWS_WAITLIST = 1;
+const SIGN_IN_SHOWS_WAITLIST = 0;
 
 const levels = [
   { id: "a1", name: "A1", description: "Beginner" },
@@ -107,7 +107,7 @@ const LevelSelection = () => {
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
-                Sign In
+                Account
               </Button>
             )}
           </div>
