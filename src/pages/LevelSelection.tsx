@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -6,6 +6,7 @@ import { BookOpen, BarChart3, User, LogOut } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { useAuth } from "@/contexts/AuthContext";
 
 // ⚙️ FEATURE SWITCH: Sign In button behavior
 // 0 = Normal sign in (navigate to /auth page)
@@ -24,20 +25,12 @@ const sections = getAllGrammarUiTopics();
 
 const LevelSelection = () => {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
 
-  useEffect(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-  }, []);
-
   const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userEmail");
-    localStorage.removeItem("userName");
-    setIsLoggedIn(false);
+    logout();
     toast({
       title: "Logged out",
       description: "You've been successfully logged out.",
@@ -85,7 +78,7 @@ const LevelSelection = () => {
               <BarChart3 className="h-4 w-4" />
               Statistics
             </Button>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 <Button
                   variant="ghost"

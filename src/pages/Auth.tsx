@@ -6,73 +6,92 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { login, register, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Login form state
+  // Login form state (email-only for MVP)
   const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
-  const [registerPassword, setRegisterPassword] = useState("");
   const [registerName, setRegisterName] = useState("");
 
-  // Magic link state
+  // Magic link state (for future implementation)
   const [magicEmail, setMagicEmail] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userEmail", loginEmail);
-      localStorage.setItem("userName", "User");
+
+    try {
+      await login(loginEmail);
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
       });
-      setIsLoading(false);
       navigate("/");
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "User not found. Please register first.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("userEmail", registerEmail);
-      localStorage.setItem("userName", registerName);
+
+    try {
+      await register(registerEmail, registerName);
       toast({
         title: "Account created!",
-        description: "Welcome to the app.",
+        description: "Welcome to Infinite Grammar.",
       });
-      setIsLoading(false);
       navigate("/");
-    }, 1000);
+    } catch (error: any) {
+      // Check if user already exists
+      if (error.message.includes("already exists")) {
+        toast({
+          title: "Email already registered",
+          description: "Please use the login tab instead.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Registration failed",
+          description: error.message || "Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleMagicLink = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
+
+    // TODO: Implement magic link functionality
     setTimeout(() => {
       toast({
-        title: "Magic link sent!",
-        description: "Check your email for the login link.",
+        title: "Coming soon!",
+        description: "Magic link authentication will be available soon.",
       });
       setIsLoading(false);
       setMagicEmail("");
     }, 1000);
   };
+
+  const loading = isLoading || authLoading;
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex items-center justify-center p-4">
@@ -100,21 +119,14 @@ const Auth = () => {
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
                     required
+                    disabled={loading}
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Enter your registered email to login (no password needed for MVP)
+                  </p>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="login-password">Password</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Signing in..." : "Sign In"}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Signing in..." : "Sign In"}
                 </Button>
               </form>
 
@@ -137,10 +149,11 @@ const Auth = () => {
                     value={magicEmail}
                     onChange={(e) => setMagicEmail(e.target.value)}
                     required
+                    disabled={loading}
                   />
                 </div>
-                <Button type="submit" variant="outline" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Sending..." : "Send Magic Link"}
+                <Button type="submit" variant="outline" className="w-full" disabled={loading}>
+                  {loading ? "Sending..." : "Send Magic Link (Coming Soon)"}
                 </Button>
               </form>
             </TabsContent>
@@ -156,6 +169,7 @@ const Auth = () => {
                     value={registerName}
                     onChange={(e) => setRegisterName(e.target.value)}
                     required
+                    disabled={loading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -167,25 +181,14 @@ const Auth = () => {
                     value={registerEmail}
                     onChange={(e) => setRegisterEmail(e.target.value)}
                     required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">Password</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    placeholder="••••••••"
-                    value={registerPassword}
-                    onChange={(e) => setRegisterPassword(e.target.value)}
-                    required
-                    minLength={6}
+                    disabled={loading}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Password must be at least 6 characters
+                    No password needed for MVP - just email and name
                   </p>
                 </div>
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Creating account..." : "Create Account"}
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? "Creating account..." : "Create Account"}
                 </Button>
               </form>
             </TabsContent>
