@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Target, Award } from "lucide-react";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   BarChart,
   Bar,
@@ -52,6 +53,16 @@ const Statistics = () => {
   const navigate = useNavigate();
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const { stats } = useExerciseStats();
+  const { user, isAuthenticated } = useAuth();
+
+  // Use real user stats if authenticated, otherwise use mock data
+  const displayStats = isAuthenticated && user?.stats ? {
+    totalExercises: user.stats.total_exercises_completed || 0,
+    correctAnswers: user.stats.correct_answers || 0,
+    totalAnswers: user.stats.total_answers || 0,
+    accuracy: user.stats.accuracy || 0,
+    streak: user.stats.current_streak || 0,
+  } : overallStats;
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -67,8 +78,8 @@ const Statistics = () => {
         </div>
       </header>
 
-      {/* Main Content - Blurred */}
-      <main className="container mx-auto px-4 py-8 blur-sm pointer-events-none">
+      {/* Main Content */}
+      <main className={`container mx-auto px-4 py-8 ${!isAuthenticated ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Overview Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-fade-in">
@@ -76,7 +87,7 @@ const Statistics = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Total Exercises</p>
-                  <p className="text-3xl font-bold">{overallStats.totalExercises}</p>
+                  <p className="text-3xl font-bold">{displayStats.totalExercises}</p>
                 </div>
                 <div className="p-3 bg-primary/10 rounded-lg">
                   <Target className="h-6 w-6 text-primary" />
@@ -88,7 +99,7 @@ const Statistics = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Accuracy</p>
-                  <p className="text-3xl font-bold">{overallStats.accuracy}%</p>
+                  <p className="text-3xl font-bold">{displayStats.accuracy}%</p>
                 </div>
                 <div className="p-3 bg-success/10 rounded-lg">
                   <TrendingUp className="h-6 w-6 text-success" />
@@ -101,7 +112,7 @@ const Statistics = () => {
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Correct Answers</p>
                   <p className="text-3xl font-bold">
-                    {overallStats.correctAnswers}/{overallStats.totalAnswers}
+                    {displayStats.correctAnswers}/{displayStats.totalAnswers}
                   </p>
                 </div>
                 <div className="p-3 bg-primary/10 rounded-lg">
@@ -114,7 +125,7 @@ const Statistics = () => {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground mb-1">Current Streak</p>
-                  <p className="text-3xl font-bold">{overallStats.streak} days</p>
+                  <p className="text-3xl font-bold">{displayStats.streak} days</p>
                 </div>
                 <div className="p-3 bg-accent/50 rounded-lg text-2xl">🔥</div>
               </div>
@@ -220,18 +231,20 @@ const Statistics = () => {
         </div>
       </main>
 
-      {/* Register Button Overlay */}
-      <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none">
-        <div className="pointer-events-auto">
-          <Button
-            size="lg"
-            onClick={() => navigate('/auth?tab=register')}
-            className="text-lg px-8 py-6 shadow-2xl"
-          >
-            Register
-          </Button>
+      {/* Register Button Overlay - Only show for non-authenticated users */}
+      {!isAuthenticated && (
+        <div className="fixed inset-0 flex items-center justify-center z-20 pointer-events-none">
+          <div className="pointer-events-auto">
+            <Button
+              size="lg"
+              onClick={() => navigate('/auth?tab=register')}
+              className="text-lg px-8 py-6 shadow-2xl"
+            >
+              Register/Sign In
+            </Button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Waitlist Modal */}
       <WaitlistModal
