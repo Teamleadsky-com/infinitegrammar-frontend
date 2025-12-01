@@ -305,38 +305,36 @@ const Profile = () => {
             </form>
           </Card>
 
-          {/* User Stats (if available) */}
-          {user.stats && (
-            <Card className="p-6 shadow-lg animate-fade-in">
-              <h2 className="text-2xl font-semibold mb-4">Your Stats</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Exercises Completed</p>
-                  <p className="text-2xl font-bold text-primary">
-                    {user.stats.total_exercises_completed}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Accuracy</p>
-                  <p className="text-2xl font-bold text-primary">
-                    {user.stats.accuracy}%
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Total Answers</p>
-                  <p className="text-2xl font-bold text-primary">
-                    {user.stats.total_answers}
-                  </p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-sm text-muted-foreground">Current Streak</p>
-                  <p className="text-2xl font-bold text-primary">
-                    {user.stats.current_streak} days
-                  </p>
-                </div>
+          {/* User Stats */}
+          <Card className="p-6 shadow-lg animate-fade-in">
+            <h2 className="text-2xl font-semibold mb-4">Your Stats</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Exercises Completed</p>
+                <p className="text-2xl font-bold text-primary">
+                  {user.stats?.total_exercises_completed || 0}
+                </p>
               </div>
-            </Card>
-          )}
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Accuracy</p>
+                <p className="text-2xl font-bold text-primary">
+                  {user.stats?.accuracy || 0}%
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Total Answers</p>
+                <p className="text-2xl font-bold text-primary">
+                  {user.stats?.total_answers || 0}
+                </p>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm text-muted-foreground">Current Streak</p>
+                <p className="text-2xl font-bold text-primary">
+                  {user.stats?.current_streak || 0} days
+                </p>
+              </div>
+            </div>
+          </Card>
 
           {/* Account Info */}
           <Card className="p-6 shadow-lg animate-fade-in">
