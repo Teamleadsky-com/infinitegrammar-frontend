@@ -229,8 +229,16 @@ const Exercise = () => {
   // Submit exercise completion to backend
   const submitExerciseToBackend = async (exerciseId: string, correctAnswers: number, totalAnswers: number) => {
     if (!isAuthenticated || !user) {
+      console.log('⏭️  Skipping backend sync - user not authenticated');
       return; // Skip backend sync for non-authenticated users
     }
+
+    console.log('📤 Submitting exercise completion to backend:', {
+      exerciseId,
+      correctAnswers,
+      totalAnswers,
+      userId: user.id,
+    });
 
     try {
       const API_BASE = import.meta.env.DEV
@@ -255,10 +263,14 @@ const Exercise = () => {
         throw new Error(error.error || 'Failed to submit exercise');
       }
 
+      const result = await response.json();
+      console.log('✅ Exercise completion submitted successfully:', result);
+
       // Refresh user data to get updated stats
+      console.log('🔄 Refreshing user data...');
       refreshUser();
     } catch (error) {
-      console.error('Error submitting exercise completion:', error);
+      console.error('❌ Error submitting exercise completion:', error);
       // Don't show error to user - this is a background sync
     }
   };

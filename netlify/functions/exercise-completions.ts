@@ -65,7 +65,64 @@ export const handler: Handler = async (event) => {
       `;
 
       if (exerciseResult.length === 0) {
-        throw new Error('Exercise not found');
+        // Exercise not found in database - this is OK for mock/local exercises
+        // Just update user's overall stats without section-specific progress
+        console.log(`⚠️  Exercise ${exercise_id} not found in database - updating user stats only`);
+
+        await sql`
+          UPDATE users
+          SET
+            total_exercises_completed = total_exercises_completed + 1,
+            total_correct_answers = total_correct_answers + ${correct_answers},
+            total_answers = total_answers + ${total_answers},
+            last_login = NOW()
+          WHERE id = ${user_id}::uuid
+        `;
+
+        // Update streak
+        const streakResult = await sql`
+          WITH user_data AS (
+            SELECT
+              last_streak_date,
+              current_streak,
+              CURRENT_DATE as today
+            FROM users
+            WHERE id = ${user_id}::uuid
+          )
+          SELECT
+            CASE
+              WHEN last_streak_date = CURRENT_DATE THEN current_streak
+              WHEN last_streak_date = CURRENT_DATE - INTERVAL '1 day' THEN current_streak + 1
+              ELSE 1
+            END as new_streak,
+            CASE
+              WHEN last_streak_date = CURRENT_DATE THEN false
+              ELSE true
+            END as should_update
+          FROM user_data
+        `;
+
+        if (streakResult.length > 0 && streakResult[0].should_update) {
+          await sql`
+            UPDATE users
+            SET
+              current_streak = ${streakResult[0].new_streak},
+              last_streak_date = CURRENT_DATE
+            WHERE id = ${user_id}::uuid
+          `;
+        }
+
+        await sql`COMMIT`;
+
+        return createResponse(200, {
+          success: true,
+          completion: {
+            id: 'local_only',
+            completed_at: new Date().toISOString(),
+          },
+          streak: streakResult[0]?.new_streak || 1,
+          note: 'Exercise not in database - stats updated without exercise history',
+        });
       }
 
       const exercise = exerciseResult[0];

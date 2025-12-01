@@ -62,9 +62,44 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   };
 
-  const refreshUser = () => {
+  const refreshUser = async () => {
     const currentUser = getCurrentUser();
-    setUser(currentUser);
+    if (!currentUser) {
+      setUser(null);
+      return;
+    }
+
+    try {
+      // Fetch fresh user data from backend
+      const API_BASE = import.meta.env.DEV
+        ? 'http://localhost:8888/api'
+        : '/api';
+
+      const response = await fetch(`${API_BASE}/user-stats?user_id=${currentUser.id}`);
+
+      if (!response.ok) {
+        console.error('Failed to refresh user data');
+        return;
+      }
+
+      const data = await response.json();
+
+      // Update user data with fresh stats
+      const updatedUser = {
+        ...currentUser,
+        stats: data.stats,
+      };
+
+      // Save to localStorage
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      // Update state
+      setUser(updatedUser);
+
+      console.log('✅ User data refreshed:', updatedUser.stats);
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
   };
 
   const value = {
