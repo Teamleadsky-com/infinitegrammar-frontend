@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -27,7 +27,7 @@ const overallStats = {
   streak: 7,
 };
 
-const levelData = [
+const defaultLevelData = [
   { name: "A1", accuracy: 92 },
   { name: "A2", accuracy: 87 },
   { name: "B1", accuracy: 81 },
@@ -35,7 +35,7 @@ const levelData = [
   { name: "C1", accuracy: 68 },
 ];
 
-const sectionData = [
+const defaultTopicData = [
   { name: "Verben", accuracy: 85 },
   { name: "Adjektive", accuracy: 88 },
   { name: "Artikel", accuracy: 79 },
@@ -54,6 +54,8 @@ const Statistics = () => {
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const { stats } = useExerciseStats();
   const { user, isAuthenticated } = useAuth();
+  const [levelData, setLevelData] = useState(defaultLevelData);
+  const [topicData, setTopicData] = useState(defaultTopicData);
 
   // Use real user stats if authenticated, otherwise use mock data
   const displayStats = isAuthenticated && user?.stats ? {
@@ -63,6 +65,49 @@ const Statistics = () => {
     accuracy: user.stats.accuracy || 0,
     streak: user.stats.current_streak || 0,
   } : overallStats;
+
+  // Fetch accuracy stats by level and topic for authenticated users
+  useEffect(() => {
+    if (!isAuthenticated || !user) {
+      // Reset to mock data for non-authenticated users
+      setLevelData(defaultLevelData);
+      setTopicData(defaultTopicData);
+      return;
+    }
+
+    const fetchLevelTopicStats = async () => {
+      try {
+        const API_BASE = import.meta.env.DEV
+          ? 'http://localhost:8888/api'
+          : '/api';
+
+        const response = await fetch(`${API_BASE}/stats-by-level-topic?user_id=${user.id}`);
+
+        if (!response.ok) {
+          console.error('Failed to fetch level/topic stats');
+          return;
+        }
+
+        const data = await response.json();
+
+        // Update level data if we have real data
+        if (data.levelData && data.levelData.length > 0) {
+          setLevelData(data.levelData);
+        }
+
+        // Update topic data if we have real data
+        if (data.topicData && data.topicData.length > 0) {
+          setTopicData(data.topicData);
+        }
+
+        console.log('✅ Fetched level/topic stats:', data);
+      } catch (error) {
+        console.error('Error fetching level/topic stats:', error);
+      }
+    };
+
+    fetchLevelTopicStats();
+  }, [isAuthenticated, user]);
 
   return (
     <div className="min-h-screen bg-background relative">
@@ -198,7 +243,7 @@ const Statistics = () => {
           <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
             <h2 className="text-xl font-bold mb-6">Accuracy by Topic</h2>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={sectionData}>
+              <BarChart data={topicData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                 <XAxis
                   dataKey="name"

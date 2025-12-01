@@ -238,6 +238,8 @@ const Exercise = () => {
       correctAnswers,
       totalAnswers,
       userId: user.id,
+      level,
+      section,
     });
 
     try {
@@ -255,6 +257,8 @@ const Exercise = () => {
           exercise_id: exerciseId,
           correct_answers: correctAnswers,
           total_answers: totalAnswers,
+          practiced_level: level,
+          practiced_topic: section,
         }),
       });
 

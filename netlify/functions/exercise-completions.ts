@@ -31,7 +31,7 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Request body is required' });
     }
 
-    const { user_id, exercise_id, correct_answers, total_answers, time_spent_seconds } =
+    const { user_id, exercise_id, correct_answers, total_answers, time_spent_seconds, practiced_level, practiced_topic } =
       JSON.parse(event.body);
 
     // Validate required fields
@@ -41,6 +41,11 @@ export const handler: Handler = async (event) => {
       });
     }
 
+    // Validate optional level/topic fields
+    if (!practiced_level || !practiced_topic) {
+      console.warn('⚠️  practiced_level or practiced_topic not provided - stats by level/topic will be incomplete');
+    }
+
     // Start transaction
     await sql`BEGIN`;
 
@@ -48,10 +53,10 @@ export const handler: Handler = async (event) => {
       // 1. Insert exercise completion
       const completionResult = await sql`
         INSERT INTO exercise_completions
-          (user_id, exercise_id, correct_answers, total_answers, time_spent_seconds, completed_at)
+          (user_id, exercise_id, correct_answers, total_answers, time_spent_seconds, practiced_level, practiced_topic, completed_at)
         VALUES
           (${user_id}::uuid, ${exercise_id}, ${correct_answers}, ${total_answers},
-           ${time_spent_seconds || null}, NOW())
+           ${time_spent_seconds || null}, ${practiced_level || null}, ${practiced_topic || null}, NOW())
         RETURNING id, completed_at
       `;
 
