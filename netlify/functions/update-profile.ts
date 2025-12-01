@@ -16,6 +16,7 @@
 import { Handler } from '@netlify/functions';
 import bcrypt from 'bcryptjs';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
+import { sendPasswordChangeNotification, sendEmailChangeNotification } from './_shared/email';
 
 export const handler: Handler = async (event) => {
   // Handle CORS preflight
@@ -174,6 +175,25 @@ export const handler: Handler = async (event) => {
     }
 
     const updatedUser = updateResult[0];
+
+    // Send email notifications (don't fail update if email fails)
+    if (updates.email) {
+      try {
+        await sendEmailChangeNotification(currentUser.email, updates.email, updatedUser.name);
+      } catch (emailError) {
+        console.error('Failed to send email change notification:', emailError);
+        // Continue anyway - don't fail the update
+      }
+    }
+
+    if (updates.password_hash) {
+      try {
+        await sendPasswordChangeNotification(updatedUser.email, updatedUser.name);
+      } catch (emailError) {
+        console.error('Failed to send password change notification:', emailError);
+        // Continue anyway - don't fail the update
+      }
+    }
 
     return createResponse(200, {
       success: true,

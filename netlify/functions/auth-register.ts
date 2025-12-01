@@ -14,6 +14,7 @@
 import { Handler } from '@netlify/functions';
 import bcrypt from 'bcryptjs';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
+import { sendWelcomeEmail } from './_shared/email';
 
 export const handler: Handler = async (event) => {
   // Handle CORS preflight
@@ -70,6 +71,14 @@ export const handler: Handler = async (event) => {
     `;
 
     const user = result[0];
+
+    // Send welcome email (don't fail registration if email fails)
+    try {
+      await sendWelcomeEmail(user.email, user.name);
+    } catch (emailError) {
+      console.error('Failed to send welcome email:', emailError);
+      // Continue with registration even if email fails
+    }
 
     return createResponse(201, {
       success: true,
