@@ -9,6 +9,10 @@ interface ExerciseStats {
 
 const STORAGE_KEY = "exerciseStats";
 
+// ⚙️ FEATURE SWITCH: Enable/disable waitlist popup
+// Set to false to completely disable waitlist, set to true to enable it
+const WAITLIST_ENABLED = false;
+
 // ⚙️ CONFIGURATION: Change this value to set after how many completed exercises the waitlist popup appears
 // Example: 2 = show after 2 exercises, 5 = show after 5 exercises, 10 = show after 10 exercises
 const WAITLIST_TRIGGER_EXERCISE_COUNT = 4;
@@ -55,6 +59,7 @@ export function useExerciseStats() {
   };
 
   const shouldShowWaitlist = () => {
+    if (!WAITLIST_ENABLED) return false;
     return stats.totalExercisesCompleted >= WAITLIST_TRIGGER_EXERCISE_COUNT && !stats.hasSeenWaitlist;
   };
 

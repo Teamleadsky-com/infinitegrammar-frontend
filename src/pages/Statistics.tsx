@@ -225,7 +225,7 @@ const Statistics = () => {
         <div className="pointer-events-auto">
           <Button
             size="lg"
-            onClick={() => setShowWaitlistModal(true)}
+            onClick={() => navigate('/auth?tab=register')}
             className="text-lg px-8 py-6 shadow-2xl"
           >
             Register
