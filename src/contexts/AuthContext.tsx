@@ -10,8 +10,8 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string) => Promise<void>;
-  register: (email: string, name?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => void;
 }
@@ -33,10 +33,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string) => {
+  const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const result = await apiLogin({ email });
+      const result = await apiLogin({ email, password });
       setUser(result.user);
     } catch (error) {
       throw error;
@@ -45,10 +45,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const register = async (email: string, name?: string) => {
+  const register = async (email: string, password: string, name?: string) => {
     setIsLoading(true);
     try {
-      const result = await apiRegister({ email, name });
+      const result = await apiRegister({ email, password, name });
       setUser(result.user);
     } catch (error) {
       throw error;

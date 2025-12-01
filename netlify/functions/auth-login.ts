@@ -1,15 +1,17 @@
 /**
  * POST /api/auth/login
  *
- * Login user (simple email-based login for MVP)
+ * Login user with password authentication
  *
  * Request body:
  * {
- *   email: string
+ *   email: string,
+ *   password: string
  * }
  */
 
 import { Handler } from '@netlify/functions';
+import bcrypt from 'bcryptjs';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
 
 export const handler: Handler = async (event) => {
@@ -27,10 +29,14 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Request body is required' });
     }
 
-    const { email } = JSON.parse(event.body);
+    const { email, password } = JSON.parse(event.body);
 
     if (!email) {
       return createResponse(400, { error: 'Email is required' });
+    }
+
+    if (!password) {
+      return createResponse(400, { error: 'Password is required' });
     }
 
     // Find user
@@ -39,6 +45,7 @@ export const handler: Handler = async (event) => {
         u.id,
         u.email,
         u.name,
+        u.password_hash,
         u.created_at,
         u.last_login,
         u.total_exercises_completed,
@@ -51,10 +58,21 @@ export const handler: Handler = async (event) => {
     `;
 
     if (result.length === 0) {
-      return createResponse(404, { error: 'User not found' });
+      return createResponse(401, { error: 'Invalid email or password' });
     }
 
     const user = result[0];
+
+    // Verify password
+    if (!user.password_hash) {
+      return createResponse(401, { error: 'Password not set for this account. Please reset your password.' });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!isPasswordValid) {
+      return createResponse(401, { error: 'Invalid email or password' });
+    }
 
     // Update last login
     await sql`

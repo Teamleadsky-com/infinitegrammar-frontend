@@ -13,12 +13,15 @@ const Auth = () => {
   const { login, register, isLoading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Login form state (email-only for MVP)
+  // Login form state
   const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
   // Register form state
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerName, setRegisterName] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
+  const [registerPasswordConfirm, setRegisterPasswordConfirm] = useState("");
 
   // Magic link state (for future implementation)
   const [magicEmail, setMagicEmail] = useState("");
@@ -28,7 +31,7 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      await login(loginEmail);
+      await login(loginEmail, loginPassword);
       toast({
         title: "Welcome back!",
         description: "You've successfully logged in.",
@@ -37,7 +40,7 @@ const Auth = () => {
     } catch (error: any) {
       toast({
         title: "Login failed",
-        description: error.message || "User not found. Please register first.",
+        description: error.message || "Invalid email or password.",
         variant: "destructive",
       });
     } finally {
@@ -49,8 +52,30 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    // Validate password match
+    if (registerPassword !== registerPasswordConfirm) {
+      toast({
+        title: "Passwords don't match",
+        description: "Please make sure both passwords are identical.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate password length
+    if (registerPassword.length < 8) {
+      toast({
+        title: "Password too short",
+        description: "Password must be at least 8 characters long.",
+        variant: "destructive",
+      });
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      await register(registerEmail, registerName);
+      await register(registerEmail, registerPassword, registerName);
       toast({
         title: "Account created!",
         description: "Welcome to Infinite Grammar.",
@@ -121,9 +146,18 @@ const Auth = () => {
                     required
                     disabled={loading}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Enter your registered email to login (no password needed for MVP)
-                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="login-password">Password</Label>
+                  <Input
+                    id="login-password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={loginPassword}
+                    onChange={(e) => setLoginPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Signing in..." : "Sign In"}
@@ -183,9 +217,35 @@ const Auth = () => {
                     required
                     disabled={loading}
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-password">Password</Label>
+                  <Input
+                    id="register-password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={registerPassword}
+                    onChange={(e) => setRegisterPassword(e.target.value)}
+                    required
+                    minLength={8}
+                    disabled={loading}
+                  />
                   <p className="text-xs text-muted-foreground">
-                    No password needed for MVP - just email and name
+                    Must be at least 8 characters
                   </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="register-password-confirm">Confirm Password</Label>
+                  <Input
+                    id="register-password-confirm"
+                    type="password"
+                    placeholder="••••••••"
+                    value={registerPasswordConfirm}
+                    onChange={(e) => setRegisterPasswordConfirm(e.target.value)}
+                    required
+                    minLength={8}
+                    disabled={loading}
+                  />
                 </div>
                 <Button type="submit" className="w-full" disabled={loading}>
                   {loading ? "Creating account..." : "Create Account"}

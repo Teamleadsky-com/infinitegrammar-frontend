@@ -1,16 +1,18 @@
 /**
  * POST /api/auth/register
  *
- * Register a new user (simple email-based registration for MVP)
+ * Register a new user with password authentication
  *
  * Request body:
  * {
  *   email: string,
+ *   password: string,
  *   name: string (optional)
  * }
  */
 
 import { Handler } from '@netlify/functions';
+import bcrypt from 'bcryptjs';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
 
 export const handler: Handler = async (event) => {
@@ -28,11 +30,16 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Request body is required' });
     }
 
-    const { email, name } = JSON.parse(event.body);
+    const { email, password, name } = JSON.parse(event.body);
 
     // Validate email
     if (!email || !email.includes('@')) {
       return createResponse(400, { error: 'Valid email is required' });
+    }
+
+    // Validate password
+    if (!password || password.length < 8) {
+      return createResponse(400, { error: 'Password must be at least 8 characters long' });
     }
 
     // Check if user already exists
@@ -51,10 +58,14 @@ export const handler: Handler = async (event) => {
       });
     }
 
+    // Hash password
+    const saltRounds = 10;
+    const passwordHash = await bcrypt.hash(password, saltRounds);
+
     // Create new user
     const result = await sql`
-      INSERT INTO users (email, name, created_at, last_login)
-      VALUES (${email.toLowerCase()}, ${name || null}, NOW(), NOW())
+      INSERT INTO users (email, name, password_hash, created_at, last_login)
+      VALUES (${email.toLowerCase()}, ${name || null}, ${passwordHash}, NOW(), NOW())
       RETURNING id, email, name, created_at
     `;
 
