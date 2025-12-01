@@ -1,6 +1,6 @@
 # ✅ Authentication Implementation Complete
 
-Real API-based authentication has been implemented to replace the localStorage mock system.
+Real API-based authentication with password security has been fully implemented.
 
 ---
 
@@ -31,7 +31,8 @@ Global authentication state management:
 ### **2. `src/pages/Auth.tsx`**
 - **Before:** Mock authentication with setTimeout
 - **After:** Real API calls to `/api/auth-register` and `/api/auth-login`
-- Simplified to email-only (no password for MVP)
+- **Password Authentication:** Secure password-based login and registration
+- Password validation: minimum 8 characters, confirmation required
 - Proper error handling and user feedback
 
 ### **3. `src/pages/LevelSelection.tsx`**
@@ -44,7 +45,11 @@ Global authentication state management:
 - **After:** Uses `useAuth()` hook → `user`, `isAuthenticated`, `refreshUser()`
 - Shows user stats if available from login
 - Displays user ID, creation date, last login
-- Email-only authentication note added
+
+### **5. Database Migration**
+- Added `password_hash` column to `users` table
+- Supports bcrypt hashed passwords
+- Nullable to support existing users (if any)
 
 ---
 
@@ -67,6 +72,8 @@ netlify dev
 3. Enter:
    - Name: `Test User`
    - Email: `test@example.com`
+   - Password: `password123` (at least 8 characters)
+   - Confirm Password: `password123`
 4. Click **"Create Account"**
 5. Should see: ✅ "Account created!" toast
 6. Should redirect to home page `/`
@@ -75,9 +82,11 @@ netlify dev
 ### **3. Test Login Flow**
 
 1. Click **"Logout"** in header
-2. Click **"Sign In"** (or go to `/auth`)
+2. Click **"Account"** button (or go to `/auth`)
 3. Click **"Login"** tab
-4. Enter: `test@example.com`
+4. Enter:
+   - Email: `test@example.com`
+   - Password: `password123`
 5. Click **"Sign In"**
 6. Should see: ✅ "Welcome back!" toast
 7. Should redirect to home page
@@ -120,6 +129,7 @@ netlify dev
 POST /api/auth-register
 {
   "email": "user@example.com",
+  "password": "securepassword123",
   "name": "John Doe"
 }
 // Response: { success: true, user: { id, email, name, created_at } }
@@ -127,7 +137,8 @@ POST /api/auth-register
 // Login
 POST /api/auth-login
 {
-  "email": "user@example.com"
+  "email": "user@example.com",
+  "password": "securepassword123"
 }
 // Response: {
 //   success: true,
@@ -173,8 +184,10 @@ POST /api/auth-login
 
 ## ✅ What Works Now
 
-- ✅ **Register:** Email + name → Creates user in database
-- ✅ **Login:** Email-only → Fetches user with stats
+- ✅ **Register:** Email + password + name → Creates user with hashed password in database
+- ✅ **Login:** Email + password → Verifies password and fetches user with stats
+- ✅ **Password Security:** bcrypt hashing with salt rounds
+- ✅ **Password Validation:** Minimum 8 characters, confirmation required
 - ✅ **Logout:** Clears localStorage
 - ✅ **Persistence:** User stays logged in on refresh
 - ✅ **Profile:** View and edit name, view user ID
@@ -193,20 +206,29 @@ POST /api/auth-login
 3. **Show progress** - GET from `/api/user-progress`
 
 ### **Future Enhancements:**
-- Password-based authentication
 - Magic link email authentication
-- JWT tokens for security
+- JWT tokens for enhanced security
 - Password reset flow
 - Email verification
 - Social login (Google, etc.)
+- Two-factor authentication (2FA)
 
 ---
 
 ## 🐛 Troubleshooting
 
-### **"Login failed - User not found"**
-- The email isn't registered yet
-- Go to Register tab and create account first
+### **"Invalid email or password"**
+- Check that email and password are correct
+- Passwords are case-sensitive
+- The email might not be registered yet - try Register tab
+
+### **"Password must be at least 8 characters long"**
+- Password needs minimum 8 characters
+- Choose a stronger password
+
+### **"Passwords don't match"**
+- Password and Confirm Password fields must be identical
+- Re-enter both passwords carefully
 
 ### **"Email already registered"**
 - This email already exists in database
@@ -226,11 +248,11 @@ POST /api/auth-login
 
 ## 💡 Key Features
 
-### **Simplified MVP Authentication**
-- No passwords (email-only for speed)
-- Perfect for MVP/testing
-- Can add password auth later
-- Reduces friction for users
+### **Secure Password Authentication**
+- Industry-standard bcrypt password hashing
+- Salt rounds: 10 (good balance of security and performance)
+- Passwords never stored in plain text
+- Secure against rainbow table attacks
 
 ### **Real Database Integration**
 - Users stored in Neon PostgreSQL
@@ -282,14 +304,16 @@ useEffect(() => {
 
 ## ✨ Summary
 
-**Authentication Status: FULLY FUNCTIONAL** 🎉
+**Authentication Status: FULLY FUNCTIONAL WITH PASSWORD SECURITY** 🎉
 
-- Real API integration
-- Database-backed users
-- Clean React Context architecture
-- Type-safe with TypeScript
-- User-friendly error handling
-- Persistent sessions
-- Ready for exercise tracking integration
+- ✅ Real API integration
+- ✅ Database-backed users with password hashing
+- ✅ bcrypt password security (salt rounds: 10)
+- ✅ Password validation (minimum 8 characters, confirmation)
+- ✅ Clean React Context architecture
+- ✅ Type-safe with TypeScript
+- ✅ User-friendly error handling
+- ✅ Persistent sessions
+- ✅ Ready for exercise tracking integration
 
 **Test it now:** `netlify dev` → `http://localhost:8888/auth`
