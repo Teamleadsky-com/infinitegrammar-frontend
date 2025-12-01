@@ -18,6 +18,11 @@ const Profile = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
+  // Password change state
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   useEffect(() => {
     // Check if user is logged in
     if (!isAuthenticated) {
@@ -37,21 +42,94 @@ const Profile = () => {
     setIsLoading(true);
 
     try {
-      // Update user data locally (API endpoint for updating user would go here)
-      if (user) {
-        const updatedUser = { ...user, name };
-        updateUserData(updatedUser);
-        refreshUser();
+      if (!user) return;
 
-        toast({
-          title: "Profile updated!",
-          description: "Your changes have been saved.",
-        });
+      // Validate password change if requested
+      if (newPassword || confirmPassword || currentPassword) {
+        if (!currentPassword) {
+          toast({
+            title: "Current password required",
+            description: "Please enter your current password to change it.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        if (!newPassword) {
+          toast({
+            title: "New password required",
+            description: "Please enter a new password.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        if (newPassword !== confirmPassword) {
+          toast({
+            title: "Passwords don't match",
+            description: "New password and confirmation must match.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        if (newPassword.length < 8) {
+          toast({
+            title: "Password too short",
+            description: "Password must be at least 8 characters.",
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
       }
-    } catch (error) {
+
+      // Call API to update profile
+      const API_BASE = import.meta.env.DEV
+        ? 'http://localhost:8888/api'
+        : '/api';
+
+      const response = await fetch(`${API_BASE}/update-profile`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          name,
+          email,
+          currentPassword: currentPassword || undefined,
+          newPassword: newPassword || undefined,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Update failed');
+      }
+
+      const result = await response.json();
+
+      // Update local user data
+      updateUserData(result.user);
+      refreshUser();
+
+      // Clear password fields
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+      toast({
+        title: "Profile updated!",
+        description: result.message || "Your changes have been saved.",
+      });
+    } catch (error: any) {
       toast({
         title: "Update failed",
-        description: "Could not update profile. Please try again.",
+        description: error.message || "Could not update profile. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -102,26 +180,58 @@ const Profile = () => {
                   id="email"
                   type="email"
                   value={email}
-                  disabled
-                  className="bg-muted cursor-not-allowed"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  disabled={isLoading}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Email cannot be changed
-                </p>
               </div>
-              <div className="space-y-2">
-                <Label>User ID</Label>
-                <Input
-                  type="text"
-                  value={user.id}
-                  disabled
-                  className="bg-muted cursor-not-allowed font-mono text-xs"
-                />
-                <p className="text-xs text-muted-foreground">
-                  Your unique user identifier
-                </p>
+
+              {/* Password Change Section */}
+              <div className="pt-4 border-t">
+                <h3 className="text-lg font-semibold mb-4">Change Password</h3>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <Input
+                      id="currentPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      disabled={isLoading}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Leave blank to keep your current password
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input
+                      id="newPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      disabled={isLoading}
+                      minLength={8}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="••••••••"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      disabled={isLoading}
+                      minLength={8}
+                    />
+                  </div>
+                </div>
               </div>
-              <Button type="submit" disabled={isLoading}>
+
+              <Button type="submit" disabled={isLoading} className="w-full">
                 {isLoading ? "Saving..." : "Save Changes"}
               </Button>
             </form>
@@ -176,10 +286,6 @@ const Profile = () => {
                   {new Date(user.last_login).toLocaleString()}
                 </p>
               )}
-              <p className="text-xs pt-4">
-                <strong>Note:</strong> Password authentication is not yet implemented in
-                this MVP. We use email-only authentication.
-              </p>
             </div>
           </Card>
         </div>
