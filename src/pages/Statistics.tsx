@@ -42,7 +42,7 @@ const defaultTopicData = [
   { name: "Präpositionen", accuracy: 82 },
 ];
 
-const progressData = [
+const defaultProgressData = [
   { week: "Week 1", accuracy: 72 },
   { week: "Week 2", accuracy: 76 },
   { week: "Week 3", accuracy: 79 },
@@ -56,6 +56,7 @@ const Statistics = () => {
   const { user, isAuthenticated } = useAuth();
   const [levelData, setLevelData] = useState(defaultLevelData);
   const [topicData, setTopicData] = useState(defaultTopicData);
+  const [progressData, setProgressData] = useState(defaultProgressData);
 
   // Use real user stats if authenticated, otherwise use mock data
   const displayStats = isAuthenticated && user?.stats ? {
@@ -66,47 +67,69 @@ const Statistics = () => {
     streak: user.stats.current_streak || 0,
   } : overallStats;
 
-  // Fetch accuracy stats by level and topic for authenticated users
+  // Fetch accuracy stats by level, topic, and progress for authenticated users
   useEffect(() => {
     if (!isAuthenticated || !user) {
       // Reset to mock data for non-authenticated users
       setLevelData(defaultLevelData);
       setTopicData(defaultTopicData);
+      setProgressData(defaultProgressData);
       return;
     }
 
-    const fetchLevelTopicStats = async () => {
+    const fetchStats = async () => {
       try {
         const API_BASE = import.meta.env.DEV
           ? 'http://localhost:8888/api'
           : '/api';
 
-        const response = await fetch(`${API_BASE}/stats-by-level-topic?user_id=${user.id}`);
+        // Fetch level/topic stats
+        const levelTopicResponse = await fetch(`${API_BASE}/stats-by-level-topic?user_id=${user.id}`);
+        if (levelTopicResponse.ok) {
+          const levelTopicData = await levelTopicResponse.json();
 
-        if (!response.ok) {
-          console.error('Failed to fetch level/topic stats');
-          return;
+          // Update level data if we have real data
+          if (levelTopicData.levelData && levelTopicData.levelData.length > 0) {
+            setLevelData(levelTopicData.levelData);
+          }
+
+          // Update topic data if we have real data
+          if (levelTopicData.topicData && levelTopicData.topicData.length > 0) {
+            setTopicData(levelTopicData.topicData);
+          }
+
+          console.log('✅ Fetched level/topic stats:', levelTopicData);
         }
 
-        const data = await response.json();
+        // Fetch user stats (includes activity by day for progress chart)
+        const userStatsResponse = await fetch(`${API_BASE}/user-stats?user_id=${user.id}`);
+        if (userStatsResponse.ok) {
+          const userStatsData = await userStatsResponse.json();
 
-        // Update level data if we have real data
-        if (data.levelData && data.levelData.length > 0) {
-          setLevelData(data.levelData);
+          // Format activity data for the progress chart
+          if (userStatsData.activityByDay && userStatsData.activityByDay.length > 0) {
+            // Reverse to show oldest to newest (left to right)
+            const formattedProgress = userStatsData.activityByDay
+              .reverse()
+              .slice(-10) // Show last 10 days
+              .map((activity: any) => ({
+                week: new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                accuracy: activity.accuracy,
+              }));
+
+            if (formattedProgress.length > 0) {
+              setProgressData(formattedProgress);
+            }
+          }
+
+          console.log('✅ Fetched user stats with progress:', userStatsData);
         }
-
-        // Update topic data if we have real data
-        if (data.topicData && data.topicData.length > 0) {
-          setTopicData(data.topicData);
-        }
-
-        console.log('✅ Fetched level/topic stats:', data);
       } catch (error) {
-        console.error('Error fetching level/topic stats:', error);
+        console.error('Error fetching stats:', error);
       }
     };
 
-    fetchLevelTopicStats();
+    fetchStats();
   }, [isAuthenticated, user]);
 
   return (
