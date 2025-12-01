@@ -14,6 +14,10 @@ import { getExercise } from "@/data/exerciseSelector";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
 
+// ⚙️ FEATURE SWITCH: Enable/disable report exercise button
+// Set to false to hide the report button, set to true to show it
+const REPORT_EXERCISE_ENABLED = false;
+
 // Backend response format (simplified structure)
 import { GrammarUiTopicId } from "@/data/grammarSections";
 
@@ -422,20 +426,22 @@ const Exercise = () => {
                 )}
               </div>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowReportModal(true)}
-              className="text-muted-foreground hover:text-foreground"
-              title="Report an issue with this exercise"
-            >
-              <Flag className="h-4 w-4" />
-            </Button>
+            {REPORT_EXERCISE_ENABLED && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowReportModal(true)}
+                className="text-muted-foreground hover:text-foreground"
+                title="Report an issue with this exercise"
+              >
+                <Flag className="h-4 w-4" />
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setShowSettingsDialog(true)}
-              className="ml-2"
+              className={REPORT_EXERCISE_ENABLED ? "ml-2" : ""}
             >
               <Settings className="h-5 w-5" />
             </Button>
@@ -526,13 +532,15 @@ const Exercise = () => {
       />
 
       {/* Report Exercise Modal */}
-      <ReportExerciseModal
-        open={showReportModal}
-        onOpenChange={setShowReportModal}
-        exerciseId={currentExercise?.id || "unknown"}
-        exerciseText={currentExercise?.text || ""}
-        gaps={currentExercise?.gaps || []}
-      />
+      {REPORT_EXERCISE_ENABLED && (
+        <ReportExerciseModal
+          open={showReportModal}
+          onOpenChange={setShowReportModal}
+          exerciseId={currentExercise?.id || "unknown"}
+          exerciseText={currentExercise?.text || ""}
+          gaps={currentExercise?.gaps || []}
+        />
+      )}
     </div>
   );
 };
