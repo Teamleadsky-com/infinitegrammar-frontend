@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, CheckCircle2, XCircle, Settings, Flag } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
+import { useAuth } from "@/contexts/AuthContext";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
@@ -143,6 +144,7 @@ const Exercise = () => {
   const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
   const lastShownIdRef = useRef<string | null>(null);
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
+  const { user, isAuthenticated, refreshUser } = useAuth();
 
   // Get level and section from URL, with defaults
   const level = searchParams.get("level") || "b2";
@@ -224,7 +226,44 @@ const Exercise = () => {
     setSelectedAnswers({ ...selectedAnswers, [gapId]: optionIndex });
   };
 
-  const handleSubmit = () => {
+  // Submit exercise completion to backend
+  const submitExerciseToBackend = async (exerciseId: string, correctAnswers: number, totalAnswers: number) => {
+    if (!isAuthenticated || !user) {
+      return; // Skip backend sync for non-authenticated users
+    }
+
+    try {
+      const API_BASE = import.meta.env.DEV
+        ? 'http://localhost:8888/api'
+        : '/api';
+
+      const response = await fetch(`${API_BASE}/exercise-completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          exercise_id: exerciseId,
+          correct_answers: correctAnswers,
+          total_answers: totalAnswers,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to submit exercise');
+      }
+
+      // Refresh user data to get updated stats
+      refreshUser();
+    } catch (error) {
+      console.error('Error submitting exercise completion:', error);
+      // Don't show error to user - this is a background sync
+    }
+  };
+
+  const handleSubmit = async () => {
     if (Object.keys(selectedAnswers).length !== exerciseData.gaps.length) {
       return;
     }
@@ -244,6 +283,13 @@ const Exercise = () => {
         currentExercise.id,
         currentExercise.level,
         currentExercise.grammar_ui_topics
+      );
+
+      // Submit to backend if user is authenticated
+      await submitExerciseToBackend(
+        currentExercise.id,
+        correctCount,
+        exerciseData.gaps.length
       );
     }
 

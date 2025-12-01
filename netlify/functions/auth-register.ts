@@ -80,6 +80,9 @@ export const handler: Handler = async (event) => {
       // Continue with registration even if email fails
     }
 
+    // Calculate accuracy (will be 0 for new users)
+    const accuracy = 0;
+
     return createResponse(201, {
       success: true,
       user: {
@@ -87,6 +90,14 @@ export const handler: Handler = async (event) => {
         email: user.email,
         name: user.name,
         created_at: user.created_at,
+        stats: {
+          total_exercises_completed: 0,
+          total_correct_answers: 0,
+          total_answers: 0,
+          accuracy,
+          current_streak: 0,
+          last_streak_date: null,
+        },
       },
     });
 

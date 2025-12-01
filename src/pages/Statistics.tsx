@@ -58,7 +58,7 @@ const Statistics = () => {
   // Use real user stats if authenticated, otherwise use mock data
   const displayStats = isAuthenticated && user?.stats ? {
     totalExercises: user.stats.total_exercises_completed || 0,
-    correctAnswers: user.stats.correct_answers || 0,
+    correctAnswers: user.stats.total_correct_answers || 0,
     totalAnswers: user.stats.total_answers || 0,
     accuracy: user.stats.accuracy || 0,
     streak: user.stats.current_streak || 0,
@@ -240,7 +240,7 @@ const Statistics = () => {
               onClick={() => navigate('/auth?tab=register')}
               className="text-lg px-8 py-6 shadow-2xl"
             >
-              Register/Sign In
+              Sign In or Register
             </Button>
           </div>
         </div>
