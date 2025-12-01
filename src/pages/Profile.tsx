@@ -4,14 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateUserData } from "@/utils/auth";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, refreshUser } = useAuth();
+  const { user, isAuthenticated, refreshUser, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   // Profile state
@@ -22,6 +32,11 @@ const Profile = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Delete account state
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deletePassword, setDeletePassword] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -134,6 +149,59 @@ const Profile = () => {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+
+    setIsDeleting(true);
+
+    try {
+      const API_BASE = import.meta.env.DEV
+        ? 'http://localhost:8888/api'
+        : '/api';
+
+      const response = await fetch(`${API_BASE}/delete-account`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          password: deletePassword,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Account deletion failed');
+      }
+
+      // Close dialog
+      setShowDeleteDialog(false);
+
+      // Show success message
+      toast({
+        title: "Account deleted",
+        description: "Your account has been permanently deleted.",
+      });
+
+      // Logout and redirect to home
+      logout();
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+
+    } catch (error: any) {
+      toast({
+        title: "Deletion failed",
+        description: error.message || "Could not delete account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+      setDeletePassword("");
     }
   };
 
@@ -288,8 +356,65 @@ const Profile = () => {
               )}
             </div>
           </Card>
+
+          {/* Danger Zone - Delete Account */}
+          <Card className="p-6 shadow-lg animate-fade-in border-destructive">
+            <h2 className="text-2xl font-semibold mb-4 text-destructive">Danger Zone</h2>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                Once you delete your account, there is no going back. This action cannot be undone.
+                All your data, including progress and statistics, will be permanently deleted.
+              </p>
+              <Button
+                variant="destructive"
+                onClick={() => setShowDeleteDialog(true)}
+                className="gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete Account
+              </Button>
+            </div>
+          </Card>
         </div>
       </div>
+
+      {/* Delete Account Confirmation Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3">
+              <p>
+                This action cannot be undone. This will permanently delete your account
+                and remove all your data from our servers.
+              </p>
+              <div className="space-y-2">
+                <Label htmlFor="delete-password" className="text-foreground">
+                  Enter your password to confirm:
+                </Label>
+                <Input
+                  id="delete-password"
+                  type="password"
+                  placeholder="Your password"
+                  value={deletePassword}
+                  onChange={(e) => setDeletePassword(e.target.value)}
+                  disabled={isDeleting}
+                />
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteAccount}
+              disabled={isDeleting || !deletePassword}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete Account"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
