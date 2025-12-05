@@ -144,6 +144,7 @@ const Exercise = () => {
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showExplanations, setShowExplanations] = useState(false);
   const [exerciseKey, setExerciseKey] = useState(0);
   const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
   const lastShownIdRef = useRef<string | null>(null);
@@ -328,6 +329,7 @@ const Exercise = () => {
   const handleNext = () => {
     setSelectedAnswers({});
     setSubmitted(false);
+    setShowExplanations(false);
 
     // Just increment the key - progression detection happens in useMemo
     setExerciseKey(prev => prev + 1);
@@ -388,6 +390,56 @@ const Exercise = () => {
 
     parts.push(exerciseData.text.slice(lastIndex));
     return parts;
+  };
+
+  const renderTextWithExplanations = () => {
+    const items = [];
+    let lastIndex = 0;
+
+    const sortedGaps = [...exerciseData.gaps].sort((a, b) => a.position - b.position);
+
+    sortedGaps.forEach((gap, idx) => {
+      // Add text before the gap
+      const textBefore = exerciseData.text.slice(lastIndex, gap.position);
+
+      const correctOption = gap.options[gap.correct];
+
+      // Find the length of the gap placeholder (e.g., [1], [2])
+      const gapMatch = exerciseData.text.slice(gap.position).match(/^\[\d+\]/);
+      const gapLength = gapMatch ? gapMatch[0].length : 0;
+
+      lastIndex = gap.position + gapLength;
+
+      // Create an item with text + answer + explanation
+      items.push(
+        <div key={gap.id} className="mb-8">
+          {/* Text before the gap + the correct answer */}
+          <div className="text-lg mb-3 leading-relaxed">
+            <span className="text-foreground">{textBefore}</span>
+            <span className="px-3 py-1.5 mx-1 bg-success/20 text-success font-semibold rounded border-2 border-success/40">
+              {correctOption}
+            </span>
+          </div>
+          {/* Explanation box */}
+          <div className="ml-4 pl-4 border-l-4 border-primary/30 bg-primary/5 p-3 rounded-r-lg">
+            <div className="text-xs font-semibold text-primary mb-1">Explanation:</div>
+            <div className="text-sm text-muted-foreground">{gap.explanation}</div>
+          </div>
+        </div>
+      );
+    });
+
+    // Add remaining text after the last gap
+    const remainingText = exerciseData.text.slice(lastIndex);
+    if (remainingText.trim()) {
+      items.push(
+        <div key="remaining" className="text-lg text-foreground leading-relaxed">
+          {remainingText}
+        </div>
+      );
+    }
+
+    return items;
   };
 
   const correctCount = submitted
@@ -453,9 +505,15 @@ const Exercise = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Card className="p-8 mb-6 bg-gradient-card shadow-lg animate-fade-in">
-            <div className="text-lg leading-relaxed">
-              <p className="text-foreground flex flex-wrap items-center gap-y-3">{renderTextWithGaps()}</p>
-            </div>
+            {showExplanations && submitted ? (
+              <div className="space-y-2">
+                {renderTextWithExplanations()}
+              </div>
+            ) : (
+              <div className="text-lg leading-relaxed">
+                <p className="text-foreground flex flex-wrap items-center gap-y-3">{renderTextWithGaps()}</p>
+              </div>
+            )}
           </Card>
 
           {/* Submit Button */}
@@ -493,9 +551,16 @@ const Exercise = () => {
                 </div>
               </Card>
 
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-4 flex-wrap">
                 <Button size="lg" onClick={handleNext} variant="success">
                   Next Exercise
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => setShowExplanations(!showExplanations)}
+                >
+                  {showExplanations ? "Hide" : "Show"} Explanations
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => navigate("/")}>
                   Back to Menu
