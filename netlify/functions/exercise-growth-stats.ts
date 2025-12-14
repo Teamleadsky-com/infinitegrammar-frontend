@@ -29,80 +29,146 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'period must be daily, weekly, or monthly' });
     }
 
-    // Determine date truncation and interval based on period
-    let dateTrunc: string;
-    let interval: string;
-    let defaultDays: number;
+    let overallGrowth, growthByLevel, growthBySection, growthByTopic;
 
-    switch (period) {
-      case 'weekly':
-        dateTrunc = 'week';
-        interval = '12 weeks';
-        defaultDays = 12;
-        break;
-      case 'monthly':
-        dateTrunc = 'month';
-        interval = '6 months';
-        defaultDays = 6;
-        break;
-      case 'daily':
-      default:
-        dateTrunc = 'day';
-        interval = '30 days';
-        defaultDays = 30;
-        break;
+    // Execute queries based on period type
+    if (period === 'daily') {
+      overallGrowth = await sql`
+        SELECT
+          DATE_TRUNC('day', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('day', created_at)
+        ORDER BY period ASC
+      `;
+
+      growthByLevel = await sql`
+        SELECT
+          DATE_TRUNC('day', created_at) as period,
+          level,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('day', created_at), level
+        ORDER BY period ASC, level
+      `;
+
+      growthBySection = await sql`
+        SELECT
+          DATE_TRUNC('day', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('day', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
+      `;
+
+      growthByTopic = await sql`
+        SELECT
+          DATE_TRUNC('day', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('day', created_at), content_topic
+        ORDER BY period ASC, content_topic
+      `;
+    } else if (period === 'weekly') {
+      overallGrowth = await sql`
+        SELECT
+          DATE_TRUNC('week', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('week', created_at)
+        ORDER BY period ASC
+      `;
+
+      growthByLevel = await sql`
+        SELECT
+          DATE_TRUNC('week', created_at) as period,
+          level,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('week', created_at), level
+        ORDER BY period ASC, level
+      `;
+
+      growthBySection = await sql`
+        SELECT
+          DATE_TRUNC('week', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('week', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
+      `;
+
+      growthByTopic = await sql`
+        SELECT
+          DATE_TRUNC('week', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('week', created_at), content_topic
+        ORDER BY period ASC, content_topic
+      `;
+    } else {
+      // monthly
+      overallGrowth = await sql`
+        SELECT
+          DATE_TRUNC('month', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('month', created_at)
+        ORDER BY period ASC
+      `;
+
+      growthByLevel = await sql`
+        SELECT
+          DATE_TRUNC('month', created_at) as period,
+          level,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('month', created_at), level
+        ORDER BY period ASC, level
+      `;
+
+      growthBySection = await sql`
+        SELECT
+          DATE_TRUNC('month', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('month', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
+      `;
+
+      growthByTopic = await sql`
+        SELECT
+          DATE_TRUNC('month', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('month', created_at), content_topic
+        ORDER BY period ASC, content_topic
+      `;
     }
-
-    const days = params.days ? parseInt(params.days, 10) : defaultDays;
-
-    // Get overall growth data (all time)
-    const overallGrowth = await sql`
-      SELECT
-        DATE_TRUNC(${dateTrunc}, created_at) as period,
-        COUNT(*) as count
-      FROM exercises
-      WHERE is_active = true
-      GROUP BY DATE_TRUNC(${dateTrunc}, created_at)
-      ORDER BY period ASC
-    `;
-
-    // Get growth by level (all time)
-    const growthByLevel = await sql`
-      SELECT
-        DATE_TRUNC(${dateTrunc}, created_at) as period,
-        level,
-        COUNT(*) as count
-      FROM exercises
-      WHERE is_active = true
-      GROUP BY DATE_TRUNC(${dateTrunc}, created_at), level
-      ORDER BY period ASC, level
-    `;
-
-    // Get growth by grammar section (all time)
-    const growthBySection = await sql`
-      SELECT
-        DATE_TRUNC(${dateTrunc}, e.created_at) as period,
-        gs.name as section,
-        COUNT(*) as count
-      FROM exercises e
-      JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-      WHERE e.is_active = true
-      GROUP BY DATE_TRUNC(${dateTrunc}, e.created_at), gs.name
-      ORDER BY period ASC, gs.name
-    `;
-
-    // Get growth by content topic (all time)
-    const growthByTopic = await sql`
-      SELECT
-        DATE_TRUNC(${dateTrunc}, created_at) as period,
-        content_topic as topic,
-        COUNT(*) as count
-      FROM exercises
-      WHERE is_active = true
-        AND content_topic IS NOT NULL
-      GROUP BY DATE_TRUNC(${dateTrunc}, created_at), content_topic
-      ORDER BY period ASC, content_topic
-    `;
 
     // Format the response
     const formatPeriod = (date: Date) => {
