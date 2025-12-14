@@ -120,8 +120,8 @@ const ExerciseStats = () => {
     fetchStats();
   }, [period]);
 
-  // Get unique sections from growth data
-  const uniqueSections = Array.from(
+  // Get unique sections and their final counts
+  const allSections = Array.from(
     new Set(
       growthBySection.flatMap((item) =>
         Object.keys(item).filter((key) => key !== 'period')
@@ -129,8 +129,37 @@ const ExerciseStats = () => {
     )
   );
 
-  // Get unique topics from growth data
-  const uniqueTopics = Array.from(
+  // Get final count for each section (last data point)
+  const sectionFinalCounts = allSections.map((section) => {
+    const lastEntry = growthBySection
+      .slice()
+      .reverse()
+      .find((item) => item[section] !== undefined);
+    return {
+      section,
+      count: lastEntry?.[section] || 0,
+    };
+  });
+
+  // Sort by count and take top 10
+  const topSections = sectionFinalCounts
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+    .map((item) => item.section);
+
+  // Filter growth data to only include top sections
+  const filteredGrowthBySection = growthBySection.map((item) => {
+    const filtered: any = { period: item.period };
+    topSections.forEach((section) => {
+      if (item[section] !== undefined) {
+        filtered[section] = item[section];
+      }
+    });
+    return filtered;
+  });
+
+  // Get unique topics and their final counts
+  const allTopics = Array.from(
     new Set(
       growthByTopic.flatMap((item) =>
         Object.keys(item).filter((key) => key !== 'period')
@@ -138,14 +167,43 @@ const ExerciseStats = () => {
     )
   );
 
-  // Generate colors for sections and topics
-  const sectionColors = uniqueSections.reduce((acc, section, idx) => {
-    acc[section] = `hsl(${(idx * 360) / uniqueSections.length}, 70%, 50%)`;
+  // Get final count for each topic
+  const topicFinalCounts = allTopics.map((topic) => {
+    const lastEntry = growthByTopic
+      .slice()
+      .reverse()
+      .find((item) => item[topic] !== undefined);
+    return {
+      topic,
+      count: lastEntry?.[topic] || 0,
+    };
+  });
+
+  // Sort by count and take top 10
+  const topTopics = topicFinalCounts
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 10)
+    .map((item) => item.topic);
+
+  // Filter growth data to only include top topics
+  const filteredGrowthByTopic = growthByTopic.map((item) => {
+    const filtered: any = { period: item.period };
+    topTopics.forEach((topic) => {
+      if (item[topic] !== undefined) {
+        filtered[topic] = item[topic];
+      }
+    });
+    return filtered;
+  });
+
+  // Generate colors for top sections and topics
+  const sectionColors = topSections.reduce((acc, section, idx) => {
+    acc[section] = `hsl(${(idx * 360) / topSections.length}, 70%, 50%)`;
     return acc;
   }, {} as Record<string, string>);
 
-  const topicColors = uniqueTopics.reduce((acc, topic, idx) => {
-    acc[topic] = `hsl(${(idx * 360) / uniqueTopics.length}, 65%, 55%)`;
+  const topicColors = topTopics.reduce((acc, topic, idx) => {
+    acc[topic] = `hsl(${(idx * 360) / topTopics.length}, 65%, 55%)`;
     return acc;
   }, {} as Record<string, string>);
 
@@ -267,9 +325,9 @@ const ExerciseStats = () => {
 
                 {/* Growth by Grammar Section */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Grammar Section</h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={growthBySection}>
+                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Grammar Section (Top 10)</h3>
+                  <ResponsiveContainer width="100%" height={450}>
+                    <AreaChart data={filteredGrowthBySection}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis
                         dataKey="period"
@@ -287,8 +345,12 @@ const ExerciseStats = () => {
                           borderRadius: "8px",
                         }}
                       />
-                      <Legend />
-                      {uniqueSections.map((section) => (
+                      <Legend
+                        layout="horizontal"
+                        verticalAlign="bottom"
+                        wrapperStyle={{ paddingTop: "20px", fontSize: "12px" }}
+                      />
+                      {topSections.map((section) => (
                         <Area
                           key={section}
                           type="monotone"
@@ -304,11 +366,11 @@ const ExerciseStats = () => {
                 </Card>
 
                 {/* Growth by Content Topic */}
-                {uniqueTopics.length > 0 && (
+                {topTopics.length > 0 && (
                   <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                    <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Content Topic</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <AreaChart data={growthByTopic}>
+                    <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Content Topic (Top 10)</h3>
+                    <ResponsiveContainer width="100%" height={450}>
+                      <AreaChart data={filteredGrowthByTopic}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis
                           dataKey="period"
@@ -326,8 +388,12 @@ const ExerciseStats = () => {
                             borderRadius: "8px",
                           }}
                         />
-                        <Legend />
-                        {uniqueTopics.map((topic) => (
+                        <Legend
+                          layout="horizontal"
+                          verticalAlign="bottom"
+                          wrapperStyle={{ paddingTop: "20px", fontSize: "12px" }}
+                        />
+                        {topTopics.map((topic) => (
                           <Area
                             key={topic}
                             type="monotone"
