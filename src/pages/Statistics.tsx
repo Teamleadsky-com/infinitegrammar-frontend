@@ -54,9 +54,9 @@ const Statistics = () => {
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const { stats } = useExerciseStats();
   const { user, isAuthenticated } = useAuth();
-  const [levelData, setLevelData] = useState(defaultLevelData);
-  const [topicData, setTopicData] = useState(defaultTopicData);
-  const [progressData, setProgressData] = useState(defaultProgressData);
+  const [levelData, setLevelData] = useState(isAuthenticated ? [] : defaultLevelData);
+  const [topicData, setTopicData] = useState(isAuthenticated ? [] : defaultTopicData);
+  const [progressData, setProgressData] = useState(isAuthenticated ? [] : defaultProgressData);
 
   // Use real user stats if authenticated, otherwise use mock data
   const displayStats = isAuthenticated && user?.stats ? {
@@ -77,6 +77,11 @@ const Statistics = () => {
       return;
     }
 
+    // For authenticated users, start with empty data
+    setLevelData([]);
+    setTopicData([]);
+    setProgressData([]);
+
     const fetchStats = async () => {
       try {
         const API_BASE = import.meta.env.DEV
@@ -88,15 +93,9 @@ const Statistics = () => {
         if (levelTopicResponse.ok) {
           const levelTopicData = await levelTopicResponse.json();
 
-          // Update level data if we have real data
-          if (levelTopicData.levelData && levelTopicData.levelData.length > 0) {
-            setLevelData(levelTopicData.levelData);
-          }
-
-          // Update topic data if we have real data
-          if (levelTopicData.topicData && levelTopicData.topicData.length > 0) {
-            setTopicData(levelTopicData.topicData);
-          }
+          // Always update with real data (even if empty)
+          setLevelData(levelTopicData.levelData || []);
+          setTopicData(levelTopicData.topicData || []);
 
           console.log('✅ Fetched level/topic stats:', levelTopicData);
         }
@@ -117,9 +116,10 @@ const Statistics = () => {
                 accuracy: activity.accuracy,
               }));
 
-            if (formattedProgress.length > 0) {
-              setProgressData(formattedProgress);
-            }
+            setProgressData(formattedProgress);
+          } else {
+            // No activity data - keep empty array
+            setProgressData([]);
           }
 
           console.log('✅ Fetched user stats with progress:', userStatsData);
