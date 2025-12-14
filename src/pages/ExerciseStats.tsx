@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp } from "lucide-react";
+import { ArrowLeft, TrendingUp, BarChart3, Grid3x3 } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -226,26 +226,11 @@ const ExerciseStats = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <h1 className="text-2xl font-bold">Exercise Statistics</h1>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">Period:</span>
-              <Select value={period} onValueChange={(value) => setPeriod(value as PeriodType)}>
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            <h1 className="text-2xl font-bold">Exercise Statistics</h1>
           </div>
         </div>
       </header>
@@ -260,10 +245,25 @@ const ExerciseStats = () => {
           ) : (
             <>
               {/* Growth Over Time Section */}
-              <div className="space-y-6">
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5 text-primary" />
-                  <h2 className="text-2xl font-bold">Growth Over Time</h2>
+              <div className="space-y-6 pb-12 border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <TrendingUp className="h-6 w-6 text-primary" />
+                    <h2 className="text-2xl font-bold">Growth Over Time</h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Period:</span>
+                    <Select value={period} onValueChange={(value) => setPeriod(value as PeriodType)}>
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                        <SelectItem value="monthly">Monthly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Overall Growth */}
@@ -425,8 +425,11 @@ const ExerciseStats = () => {
               </div>
 
               {/* Snapshot Section */}
-              <div className="space-y-6 mt-12">
-                <h2 className="text-2xl font-bold">Current Snapshot</h2>
+              <div className="space-y-6 pt-12 pb-12 border-b border-border">
+                <div className="flex items-center gap-2">
+                  <BarChart3 className="h-6 w-6 text-primary" />
+                  <h2 className="text-2xl font-bold">Current Snapshot</h2>
+                </div>
 
                 {/* Snapshot by Level */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.4s" }}>
@@ -531,8 +534,11 @@ const ExerciseStats = () => {
               </div>
 
               {/* Coverage Analysis Section */}
-              <div className="space-y-6 mt-12">
-                <h2 className="text-2xl font-bold">Coverage Analysis</h2>
+              <div className="space-y-6 pt-12">
+                <div className="flex items-center gap-2">
+                  <Grid3x3 className="h-6 w-6 text-primary" />
+                  <h2 className="text-2xl font-bold">Coverage Analysis</h2>
+                </div>
 
                 {/* Heatmap */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.7s" }}>
