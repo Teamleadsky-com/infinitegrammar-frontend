@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import LevelSelection from "./pages/LevelSelection";
 import Exercise from "./pages/Exercise";
 import Statistics from "./pages/Statistics";
+import ExerciseStats from "./pages/ExerciseStats";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<LevelSelection />} />
             <Route path="/exercise" element={<Exercise />} />
             <Route path="/statistics" element={<Statistics />} />
+            <Route path="/exercise-stats" element={<ExerciseStats />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
