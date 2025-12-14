@@ -34,222 +34,167 @@ export const handler: Handler = async (event) => {
     // Execute queries based on period type
     if (period === 'daily') {
       overallGrowth = await sql`
-        WITH daily_counts AS (
-          SELECT
-            DATE_TRUNC('day', created_at) as period,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('day', created_at)
-        )
         SELECT
-          period,
-          SUM(count) OVER (ORDER BY period) as count
-        FROM daily_counts
+          DATE_TRUNC('day', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('day', created_at)
         ORDER BY period ASC
       `;
 
       growthByLevel = await sql`
-        WITH daily_level_counts AS (
-          SELECT
-            DATE_TRUNC('day', created_at) as period,
-            level,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('day', created_at), level
-        )
         SELECT
-          period,
+          DATE_TRUNC('day', created_at) as period,
           level,
-          SUM(count) OVER (PARTITION BY level ORDER BY period) as count
-        FROM daily_level_counts
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('day', created_at), level
         ORDER BY period ASC, level
       `;
 
       growthBySection = await sql`
-        WITH daily_section_counts AS (
-          SELECT
-            DATE_TRUNC('day', e.created_at) as period,
-            gs.name as section,
-            COUNT(*) as count
-          FROM exercises e
-          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.is_active = true
-          GROUP BY DATE_TRUNC('day', e.created_at), gs.name
-        )
         SELECT
-          period,
-          section,
-          SUM(count) OVER (PARTITION BY section ORDER BY period) as count
-        FROM daily_section_counts
-        ORDER BY period ASC, section
+          DATE_TRUNC('day', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('day', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
       `;
 
       growthByTopic = await sql`
-        WITH daily_topic_counts AS (
-          SELECT
-            DATE_TRUNC('day', created_at) as period,
-            content_topic as topic,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-            AND content_topic IS NOT NULL
-          GROUP BY DATE_TRUNC('day', created_at), content_topic
-        )
         SELECT
-          period,
-          topic,
-          SUM(count) OVER (PARTITION BY topic ORDER BY period) as count
-        FROM daily_topic_counts
-        ORDER BY period ASC, topic
+          DATE_TRUNC('day', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('day', created_at), content_topic
+        ORDER BY period ASC, content_topic
       `;
     } else if (period === 'weekly') {
       overallGrowth = await sql`
-        WITH weekly_counts AS (
-          SELECT
-            DATE_TRUNC('week', created_at) as period,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('week', created_at)
-        )
         SELECT
-          period,
-          SUM(count) OVER (ORDER BY period) as count
-        FROM weekly_counts
+          DATE_TRUNC('week', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('week', created_at)
         ORDER BY period ASC
       `;
 
       growthByLevel = await sql`
-        WITH weekly_level_counts AS (
-          SELECT
-            DATE_TRUNC('week', created_at) as period,
-            level,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('week', created_at), level
-        )
         SELECT
-          period,
+          DATE_TRUNC('week', created_at) as period,
           level,
-          SUM(count) OVER (PARTITION BY level ORDER BY period) as count
-        FROM weekly_level_counts
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('week', created_at), level
         ORDER BY period ASC, level
       `;
 
       growthBySection = await sql`
-        WITH weekly_section_counts AS (
-          SELECT
-            DATE_TRUNC('week', e.created_at) as period,
-            gs.name as section,
-            COUNT(*) as count
-          FROM exercises e
-          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.is_active = true
-          GROUP BY DATE_TRUNC('week', e.created_at), gs.name
-        )
         SELECT
-          period,
-          section,
-          SUM(count) OVER (PARTITION BY section ORDER BY period) as count
-        FROM weekly_section_counts
-        ORDER BY period ASC, section
+          DATE_TRUNC('week', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('week', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
       `;
 
       growthByTopic = await sql`
-        WITH weekly_topic_counts AS (
-          SELECT
-            DATE_TRUNC('week', created_at) as period,
-            content_topic as topic,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-            AND content_topic IS NOT NULL
-          GROUP BY DATE_TRUNC('week', created_at), content_topic
-        )
         SELECT
-          period,
-          topic,
-          SUM(count) OVER (PARTITION BY topic ORDER BY period) as count
-        FROM weekly_topic_counts
-        ORDER BY period ASC, topic
+          DATE_TRUNC('week', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('week', created_at), content_topic
+        ORDER BY period ASC, content_topic
       `;
     } else {
       // monthly
       overallGrowth = await sql`
-        WITH monthly_counts AS (
-          SELECT
-            DATE_TRUNC('month', created_at) as period,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('month', created_at)
-        )
         SELECT
-          period,
-          SUM(count) OVER (ORDER BY period) as count
-        FROM monthly_counts
+          DATE_TRUNC('month', created_at) as period,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('month', created_at)
         ORDER BY period ASC
       `;
 
       growthByLevel = await sql`
-        WITH monthly_level_counts AS (
-          SELECT
-            DATE_TRUNC('month', created_at) as period,
-            level,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-          GROUP BY DATE_TRUNC('month', created_at), level
-        )
         SELECT
-          period,
+          DATE_TRUNC('month', created_at) as period,
           level,
-          SUM(count) OVER (PARTITION BY level ORDER BY period) as count
-        FROM monthly_level_counts
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+        GROUP BY DATE_TRUNC('month', created_at), level
         ORDER BY period ASC, level
       `;
 
       growthBySection = await sql`
-        WITH monthly_section_counts AS (
-          SELECT
-            DATE_TRUNC('month', e.created_at) as period,
-            gs.name as section,
-            COUNT(*) as count
-          FROM exercises e
-          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.is_active = true
-          GROUP BY DATE_TRUNC('month', e.created_at), gs.name
-        )
         SELECT
-          period,
-          section,
-          SUM(count) OVER (PARTITION BY section ORDER BY period) as count
-        FROM monthly_section_counts
-        ORDER BY period ASC, section
+          DATE_TRUNC('month', e.created_at) as period,
+          gs.name as section,
+          COUNT(*) as count
+        FROM exercises e
+        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY DATE_TRUNC('month', e.created_at), gs.name
+        ORDER BY period ASC, gs.name
       `;
 
       growthByTopic = await sql`
-        WITH monthly_topic_counts AS (
-          SELECT
-            DATE_TRUNC('month', created_at) as period,
-            content_topic as topic,
-            COUNT(*) as count
-          FROM exercises
-          WHERE is_active = true
-            AND content_topic IS NOT NULL
-          GROUP BY DATE_TRUNC('month', created_at), content_topic
-        )
         SELECT
-          period,
-          topic,
-          SUM(count) OVER (PARTITION BY topic ORDER BY period) as count
-        FROM monthly_topic_counts
-        ORDER BY period ASC, topic
+          DATE_TRUNC('month', created_at) as period,
+          content_topic as topic,
+          COUNT(*) as count
+        FROM exercises
+        WHERE is_active = true
+          AND content_topic IS NOT NULL
+        GROUP BY DATE_TRUNC('month', created_at), content_topic
+        ORDER BY period ASC, content_topic
       `;
     }
+
+    // Calculate cumulative totals
+    const calculateCumulative = (data: any[]) => {
+      let cumulative = 0;
+      return data.map((row: any) => {
+        cumulative += parseInt(row.count, 10);
+        return { ...row, count: cumulative };
+      });
+    };
+
+    const calculateCumulativeByCategory = (data: any[], categoryKey: string) => {
+      const cumulativeMap = new Map<string, number>();
+      return data.map((row: any) => {
+        const category = row[categoryKey];
+        const currentCount = cumulativeMap.get(category) || 0;
+        const newCount = currentCount + parseInt(row.count, 10);
+        cumulativeMap.set(category, newCount);
+        return { ...row, count: newCount };
+      });
+    };
+
+    // Apply cumulative calculations
+    overallGrowth = calculateCumulative(overallGrowth);
+    growthByLevel = calculateCumulativeByCategory(growthByLevel, 'level');
+    growthBySection = calculateCumulativeByCategory(growthBySection, 'section');
+    growthByTopic = calculateCumulativeByCategory(growthByTopic, 'topic');
 
     // Format the response
     const formatPeriod = (date: Date) => {
