@@ -13,6 +13,8 @@ import {
   ResponsiveContainer,
   LineChart,
   Line,
+  AreaChart,
+  Area,
   Legend,
 } from "recharts";
 import {
@@ -194,7 +196,7 @@ const ExerciseStats = () => {
 
                 {/* Overall Growth */}
                 <Card className="p-6 animate-fade-in">
-                  <h3 className="text-lg font-semibold mb-4">Overall Exercise Count</h3>
+                  <h3 className="text-lg font-semibold mb-4">Total Exercise Count Over Time</h3>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={overallGrowth}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -227,9 +229,9 @@ const ExerciseStats = () => {
 
                 {/* Growth by Level */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Exercise Count by Level</h3>
+                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Level</h3>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={growthByLevel}>
+                    <AreaChart data={growthByLevel}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis
                         dataKey="period"
@@ -249,24 +251,25 @@ const ExerciseStats = () => {
                       />
                       <Legend />
                       {['A1', 'A2', 'B1', 'B2', 'C1'].map((level) => (
-                        <Line
+                        <Area
                           key={level}
                           type="monotone"
                           dataKey={level}
+                          stackId="1"
                           stroke={COLORS[level as keyof typeof COLORS]}
-                          strokeWidth={2}
-                          dot={{ strokeWidth: 2, r: 3 }}
+                          fill={COLORS[level as keyof typeof COLORS]}
+                          fillOpacity={0.6}
                         />
                       ))}
-                    </LineChart>
+                    </AreaChart>
                   </ResponsiveContainer>
                 </Card>
 
                 {/* Growth by Grammar Section */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Exercise Count by Grammar Section</h3>
+                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Grammar Section</h3>
                   <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={growthBySection}>
+                    <AreaChart data={growthBySection}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis
                         dataKey="period"
@@ -286,25 +289,26 @@ const ExerciseStats = () => {
                       />
                       <Legend />
                       {uniqueSections.map((section) => (
-                        <Line
+                        <Area
                           key={section}
                           type="monotone"
                           dataKey={section}
+                          stackId="1"
                           stroke={sectionColors[section]}
-                          strokeWidth={2}
-                          dot={{ strokeWidth: 2, r: 3 }}
+                          fill={sectionColors[section]}
+                          fillOpacity={0.6}
                         />
                       ))}
-                    </LineChart>
+                    </AreaChart>
                   </ResponsiveContainer>
                 </Card>
 
                 {/* Growth by Content Topic */}
                 {uniqueTopics.length > 0 && (
                   <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                    <h3 className="text-lg font-semibold mb-4">Exercise Count by Content Topic</h3>
+                    <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Content Topic</h3>
                     <ResponsiveContainer width="100%" height={300}>
-                      <LineChart data={growthByTopic}>
+                      <AreaChart data={growthByTopic}>
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis
                           dataKey="period"
@@ -324,16 +328,17 @@ const ExerciseStats = () => {
                         />
                         <Legend />
                         {uniqueTopics.map((topic) => (
-                          <Line
+                          <Area
                             key={topic}
                             type="monotone"
                             dataKey={topic}
+                            stackId="1"
                             stroke={topicColors[topic]}
-                            strokeWidth={2}
-                            dot={{ strokeWidth: 2, r: 3 }}
+                            fill={topicColors[topic]}
+                            fillOpacity={0.6}
                           />
                         ))}
-                      </LineChart>
+                      </AreaChart>
                     </ResponsiveContainer>
                   </Card>
                 )}
