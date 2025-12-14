@@ -52,6 +52,10 @@ const ExerciseStats = () => {
   const [countsBySection, setCountsBySection] = useState<any[]>([]);
   const [countsByTopic, setCountsByTopic] = useState<any[]>([]);
 
+  // State for coverage data
+  const [heatmapData, setHeatmapData] = useState<any[]>([]);
+  const [underCoveredSections, setUnderCoveredSections] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
@@ -108,6 +112,16 @@ const ExerciseStats = () => {
           setCountsByLevel(snapshotData.byLevel || []);
           setCountsBySection(snapshotData.bySection || []);
           setCountsByTopic(snapshotData.byTopic || []);
+        }
+
+        // Fetch coverage stats
+        const coverageResponse = await fetch(
+          `${API_BASE}/exercise-coverage-stats`
+        );
+        if (coverageResponse.ok) {
+          const coverageData = await coverageResponse.json();
+          setHeatmapData(coverageData.heatmap || []);
+          setUnderCoveredSections(coverageData.underCovered || []);
         }
 
       } catch (error) {
@@ -516,8 +530,133 @@ const ExerciseStats = () => {
                 )}
               </div>
 
+              {/* Coverage Analysis Section */}
+              <div className="space-y-6 mt-12">
+                <h2 className="text-2xl font-bold">Coverage Analysis</h2>
+
+                {/* Heatmap */}
+                <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.7s" }}>
+                  <h3 className="text-lg font-semibold mb-4">Exercise Count Heatmap: Level × Grammar Section</h3>
+                  <div className="overflow-x-auto">
+                    {(() => {
+                      // Transform heatmap data into a grid
+                      const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
+                      const sectionsMap = new Map<string, any>();
+
+                      heatmapData.forEach((item) => {
+                        if (!sectionsMap.has(item.sectionId)) {
+                          sectionsMap.set(item.sectionId, {
+                            id: item.sectionId,
+                            name: item.sectionName,
+                            orderInLevel: item.orderInLevel,
+                            counts: {},
+                          });
+                        }
+                        const section = sectionsMap.get(item.sectionId);
+                        if (section && item.level !== 'NULL') {
+                          section.counts[item.level] = item.count;
+                        }
+                      });
+
+                      const sections = Array.from(sectionsMap.values())
+                        .sort((a, b) => {
+                          if (a.orderInLevel !== null && b.orderInLevel !== null) {
+                            return a.orderInLevel - b.orderInLevel;
+                          }
+                          return a.name.localeCompare(b.name);
+                        });
+
+                      const maxCount = Math.max(...heatmapData.map(d => d.count), 1);
+
+                      const getColor = (count: number) => {
+                        if (count === 0) return 'hsl(var(--muted))';
+                        const intensity = Math.min(count / maxCount, 1);
+                        return `hsl(var(--primary) / ${0.2 + intensity * 0.8})`;
+                      };
+
+                      return (
+                        <div className="min-w-max">
+                          <table className="w-full border-collapse">
+                            <thead>
+                              <tr>
+                                <th className="border border-border p-2 text-left bg-muted/50 sticky left-0 z-10">
+                                  Grammar Section
+                                </th>
+                                {levels.map((level) => (
+                                  <th key={level} className="border border-border p-2 text-center bg-muted/50 min-w-[80px]">
+                                    {level}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {sections.map((section) => (
+                                <tr key={section.id}>
+                                  <td className="border border-border p-2 bg-background sticky left-0 z-10 font-medium text-sm">
+                                    {section.name}
+                                  </td>
+                                  {levels.map((level) => {
+                                    const count = section.counts[level] || 0;
+                                    return (
+                                      <td
+                                        key={level}
+                                        className="border border-border p-2 text-center font-semibold"
+                                        style={{ backgroundColor: getColor(count) }}
+                                      >
+                                        {count}
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </Card>
+
+                {/* Under-covered Sections */}
+                {underCoveredSections.length > 0 && (
+                  <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.8s" }}>
+                    <h3 className="text-lg font-semibold mb-4">Under-Covered Sections ({"<"}5 exercises)</h3>
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-border">
+                            <th className="text-left p-2 font-semibold">Section Name</th>
+                            <th className="text-left p-2 font-semibold">Level</th>
+                            <th className="text-left p-2 font-semibold">Category</th>
+                            <th className="text-center p-2 font-semibold">Exercise Count</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {underCoveredSections.map((section, idx) => (
+                            <tr key={idx} className="border-b border-border hover:bg-muted/50">
+                              <td className="p-2">{section.sectionName}</td>
+                              <td className="p-2">{section.level || 'N/A'}</td>
+                              <td className="p-2">{section.category}</td>
+                              <td className="p-2 text-center">
+                                <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-semibold ${
+                                  section.count === 0
+                                    ? 'bg-destructive/20 text-destructive'
+                                    : 'bg-warning/20 text-warning'
+                                }`}>
+                                  {section.count}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </Card>
+                )}
+              </div>
+
               {/* Action Button */}
-              <div className="flex justify-center animate-fade-in" style={{ animationDelay: "0.7s" }}>
+              <div className="flex justify-center animate-fade-in mt-12" style={{ animationDelay: "0.9s" }}>
                 <Button size="lg" onClick={() => navigate("/exercise")}>
                   Continue Learning
                 </Button>
