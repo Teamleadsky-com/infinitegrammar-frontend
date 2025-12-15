@@ -1,7 +1,9 @@
 /**
  * Email sending utilities using SMTP (Microsoft 365)
  *
- * Environment variables required:
+ * To use this instead of Resend:
+ * 1. Rename this file to email.ts (backup the current email.ts first)
+ * 2. Set these environment variables in Netlify:
  *    - SMTP_HOST=smtp.office365.com
  *    - SMTP_PORT=587
  *    - SMTP_USER=info@infinitegrammar.de

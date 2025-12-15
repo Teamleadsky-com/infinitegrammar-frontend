@@ -1,27 +1,13 @@
 /**
- * Email sending utilities using SMTP (Microsoft 365)
- *
- * Environment variables required:
- *    - SMTP_HOST=smtp.office365.com
- *    - SMTP_PORT=587
- *    - SMTP_USER=info@infinitegrammar.de
- *    - SMTP_PASS=[your Microsoft 365 password or app password]
- *    - FROM_EMAIL=Infinite Grammar <info@infinitegrammar.de>
+ * Email sending utilities using Resend
  */
 
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-// Create reusable transporter
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp.office365.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+// Initialize Resend with API key from environment
+const resend = new Resend(process.env.RESEND_API_KEY);
 
+// Use your verified domain
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Infinite Grammar <info@infinitegrammar.de>';
 
 /**
@@ -31,7 +17,7 @@ export async function sendWelcomeEmail(email: string, name: string | null): Prom
   const displayName = name || 'there';
 
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: 'Welcome to Infinite Grammar! 🎉',
@@ -96,7 +82,7 @@ export async function sendPasswordChangeNotification(email: string, name: string
   });
 
   try {
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: email,
       subject: '🔒 Your password has been changed',
@@ -160,7 +146,7 @@ export async function sendEmailChangeNotification(
 
   try {
     // Send notification to OLD email address
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: oldEmail,
       subject: '📧 Your email address has been changed',
@@ -209,7 +195,7 @@ export async function sendEmailChangeNotification(
     console.log(`✅ Email change notification sent to old email: ${oldEmail}`);
 
     // Send confirmation to NEW email address
-    await transporter.sendMail({
+    await resend.emails.send({
       from: FROM_EMAIL,
       to: newEmail,
       subject: '✅ Your email address has been updated',
