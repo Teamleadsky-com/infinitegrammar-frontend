@@ -104,19 +104,29 @@ function generateHTML(meta) {
     <meta name="twitter:title" content="${meta.title}" />
     <meta name="twitter:description" content="${meta.description}" />
 
-    <!-- Redirect to SPA after crawlers see meta tags -->
     <script>
-      // Only redirect if not a crawler
-      var userAgent = navigator.userAgent.toLowerCase();
-      var isCrawler = /bot|crawler|spider|crawling|facebook|twitter|linkedin|whatsapp|telegram|pinterest|discord|google|bing|yandex|baidu/i.test(userAgent);
-      if (!isCrawler) {
-        window.location.href = '${meta.url}?spa=true';
-      }
+      // Redirect non-crawlers to SPA
+      (function() {
+        var userAgent = navigator.userAgent.toLowerCase();
+        var isCrawler = /bot|crawler|spider|crawling|facebook|twitter|linkedin|whatsapp|telegram|pinterest|discord|google|bing|yandex|baidu/i.test(userAgent);
+
+        // If not a crawler and not already redirected, go to index.html (SPA)
+        if (!isCrawler && !window.location.search.includes('static=1')) {
+          window.location.replace('/');
+        }
+      })();
     </script>
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: system-ui;">
+        <div style="text-align: center;">
+          <div style="font-size: 24px; margin-bottom: 16px;">Loading...</div>
+          <div style="color: #666;">Please wait while the page loads</div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
