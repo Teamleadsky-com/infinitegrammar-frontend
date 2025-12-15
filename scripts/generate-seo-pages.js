@@ -104,18 +104,6 @@ function generateHTML(meta) {
     <meta name="twitter:title" content="${meta.title}" />
     <meta name="twitter:description" content="${meta.description}" />
 
-    <script>
-      // Redirect non-crawlers to SPA
-      (function() {
-        var userAgent = navigator.userAgent.toLowerCase();
-        var isCrawler = /bot|crawler|spider|crawling|facebook|twitter|linkedin|whatsapp|telegram|pinterest|discord|google|bing|yandex|baidu/i.test(userAgent);
-
-        // If not a crawler and not already redirected, go to index.html (SPA)
-        if (!isCrawler && !window.location.search.includes('static=1')) {
-          window.location.replace('/');
-        }
-      })();
-    </script>
   </head>
 
   <body>
