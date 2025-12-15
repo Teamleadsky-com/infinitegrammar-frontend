@@ -74,51 +74,51 @@ const SEO_PAGES = {
   },
 };
 
-function generateHTML(meta) {
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-569909YP8G');
-    </script>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${meta.title}</title>
-    <meta name="description" content="${meta.description}" />
-    <meta name="author" content="Infinite Grammar" />
+function generateHTML(baseHtml, meta) {
+  // Replace title
+  let html = baseHtml.replace(
+    /<title>.*?<\/title>/,
+    `<title>${escapeHtml(meta.title)}</title>`
+  );
 
-    <meta property="og:title" content="${meta.title}" />
-    <meta property="og:description" content="${meta.description}" />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="${meta.url}" />
+  // Replace meta description
+  html = html.replace(
+    /<meta name="description" content="[^"]*"/,
+    `<meta name="description" content="${escapeHtml(meta.description)}"`
+  );
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${meta.title}" />
-    <meta name="twitter:description" content="${meta.description}" />
+  // Replace Open Graph tags
+  html = html.replace(
+    /<meta property="og:title" content="[^"]*"/,
+    `<meta property="og:title" content="${escapeHtml(meta.title)}"`
+  );
 
-  </head>
+  html = html.replace(
+    /<meta property="og:description" content="[^"]*"/,
+    `<meta property="og:description" content="${escapeHtml(meta.description)}"`
+  );
 
-  <body>
-    <div id="root">
-      <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: system-ui;">
-        <div style="text-align: center;">
-          <div style="font-size: 24px; margin-bottom: 16px;">Loading...</div>
-          <div style="color: #666;">Please wait while the page loads</div>
-        </div>
-      </div>
-    </div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
-`;
+  html = html.replace(
+    /<meta property="og:url" content="[^"]*"/,
+    `<meta property="og:url" content="${escapeHtml(meta.url)}"`
+  );
+
+  // Replace Twitter tags
+  html = html.replace(
+    /<meta name="twitter:title" content="[^"]*"/,
+    `<meta name="twitter:title" content="${escapeHtml(meta.title)}"`
+  );
+
+  html = html.replace(
+    /<meta name="twitter:description" content="[^"]*"/,
+    `<meta name="twitter:description" content="${escapeHtml(meta.description)}"`
+  );
+
+  return html;
+}
+
+function escapeHtml(str) {
+  return str.replace(/"/g, '&quot;');
 }
 
 // Generate HTML files
@@ -126,8 +126,12 @@ const distDir = path.join(__dirname, '..', 'dist');
 
 console.log('Generating SEO pages...');
 
+// Read the base index.html
+const baseIndexPath = path.join(distDir, 'index.html');
+const baseHtml = fs.readFileSync(baseIndexPath, 'utf-8');
+
 for (const [urlPath, meta] of Object.entries(SEO_PAGES)) {
-  const html = generateHTML(meta);
+  const html = generateHTML(baseHtml, meta);
 
   // Create directory structure
   const filePath = urlPath === '/pruefungszentren'
