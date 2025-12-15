@@ -134,14 +134,14 @@ const PruefungsZentren = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 md:gap-4">
               <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-xl font-bold">Prüfungszentren</h1>
+              <h1 className="text-base md:text-xl font-bold">Prüfungszentren</h1>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+            <Button variant="outline" size="sm" onClick={() => navigate("/")} className="shrink-0">
               Grammatik üben
             </Button>
           </div>
