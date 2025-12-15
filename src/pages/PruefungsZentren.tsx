@@ -17,11 +17,43 @@ const PruefungsZentren = () => {
 
   // SEO: Update page title dynamically
   useEffect(() => {
-    document.title = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute) | Infinite Grammar";
+    const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute) | Infinite Grammar";
+    const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
+    const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
 
+    document.title = pageTitle;
+
+    // Update meta description
     const metaDescription = document.querySelector('meta[name="description"]');
     if (metaDescription) {
-      metaDescription.setAttribute('content', 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.');
+      metaDescription.setAttribute('content', pageDescription);
+    }
+
+    // Update Open Graph tags for social media previews
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) {
+      ogTitle.setAttribute('content', pageTitle);
+    }
+
+    const ogDescription = document.querySelector('meta[property="og:description"]');
+    if (ogDescription) {
+      ogDescription.setAttribute('content', pageDescription);
+    }
+
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) {
+      ogUrl.setAttribute('content', pageUrl);
+    }
+
+    // Update Twitter Card tags
+    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twitterTitle) {
+      twitterTitle.setAttribute('content', pageTitle);
+    }
+
+    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+    if (twitterDescription) {
+      twitterDescription.setAttribute('content', pageDescription);
     }
   }, []);
 
@@ -514,6 +546,160 @@ const PruefungsZentren = () => {
               </p>
             </Card>
           </div>
+        </div>
+
+        {/* Popular Cities - Internal Links for SEO */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6">
+            Beliebte Prüfungsorte
+          </h2>
+          <Card className="p-6">
+            <div className="space-y-4">
+              {/* telc Cities */}
+              <div>
+                <h3 className="text-sm font-semibold text-muted-foreground mb-3">telc Prüfungszentren</h3>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href="/pruefungszentren/telc-berlin"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-berlin');
+                    }}
+                  >
+                    telc Berlin
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/telc-muenchen"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-muenchen');
+                    }}
+                  >
+                    telc München
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/telc-hamburg"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-hamburg');
+                    }}
+                  >
+                    telc Hamburg
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/telc-koeln"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-koeln');
+                    }}
+                  >
+                    telc Köln
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/telc-frankfurt"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-frankfurt');
+                    }}
+                  >
+                    telc Frankfurt
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/telc-stuttgart"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/telc-stuttgart');
+                    }}
+                  >
+                    telc Stuttgart
+                  </a>
+                </div>
+              </div>
+
+              {/* TestDaF Cities */}
+              <div>
+                <h3 className="text-sm font-semibold text-muted-foreground mb-3">TestDaF Testzentren</h3>
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href="/pruefungszentren/testdaf-berlin"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-berlin');
+                    }}
+                  >
+                    TestDaF Berlin
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/testdaf-muenchen"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-muenchen');
+                    }}
+                  >
+                    TestDaF München
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/testdaf-hamburg"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-hamburg');
+                    }}
+                  >
+                    TestDaF Hamburg
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/testdaf-koeln"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-koeln');
+                    }}
+                  >
+                    TestDaF Köln
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/testdaf-frankfurt"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-frankfurt');
+                    }}
+                  >
+                    TestDaF Frankfurt
+                  </a>
+                  <span className="text-muted-foreground">·</span>
+                  <a
+                    href="/pruefungszentren/testdaf-stuttgart"
+                    className="text-primary hover:underline font-medium"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate('/pruefungszentren/testdaf-stuttgart');
+                    }}
+                  >
+                    TestDaF Stuttgart
+                  </a>
+                </div>
+              </div>
+            </div>
+          </Card>
         </div>
       </main>
     </div>
