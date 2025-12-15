@@ -109,15 +109,38 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    // TODO: Implement magic link functionality
-    setTimeout(() => {
-      toast({
-        title: "Coming soon!",
-        description: "Magic link authentication will be available soon.",
+    try {
+      const API_BASE = import.meta.env.DEV
+        ? 'http://localhost:8888/api'
+        : '/api';
+
+      const response = await fetch(`${API_BASE}/send-magic-link`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: magicEmail }),
       });
-      setIsLoading(false);
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to send magic link');
+      }
+
+      toast({
+        title: "Magic link sent!",
+        description: "Check your email for a link to sign in.",
+      });
       setMagicEmail("");
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Failed to send magic link",
+        description: error.message || "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const loading = isLoading || authLoading;
@@ -191,7 +214,7 @@ const Auth = () => {
                   />
                 </div>
                 <Button type="submit" variant="outline" className="w-full" disabled={loading}>
-                  {loading ? "Sending..." : "Send Magic Link (Coming Soon)"}
+                  {loading ? "Sending..." : "Send Magic Link"}
                 </Button>
               </form>
             </TabsContent>
