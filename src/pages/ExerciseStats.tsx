@@ -230,7 +230,7 @@ const ExerciseStats = () => {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold">Exercise Statistics</h1>
+            <h1 className="text-2xl font-bold">Exercises Statistics</h1>
           </div>
         </div>
       </header>
