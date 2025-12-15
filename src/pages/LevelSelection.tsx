@@ -182,12 +182,18 @@ const LevelSelection = () => {
             >
               Start Random Exercise
             </Button>
-            <div className="mt-3">
+            <div className="mt-3 flex items-center justify-center gap-4">
               <button
                 onClick={() => navigate("/exercise-stats")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
                 Exercises Stats
+              </button>
+              <button
+                onClick={() => navigate("/pruefungszentren")}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+              >
+                Exam Centers
               </button>
             </div>
           </div>
