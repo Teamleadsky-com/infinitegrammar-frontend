@@ -59,14 +59,14 @@ export async function sendWelcomeEmail(email: string, name: string | null): Prom
               </p>
 
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${process.env.SITE_URL || 'https://infinitegrammar.com'}/exercise"
+                <a href="https://www.infinitegrammar.de/"
                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
                   Start Learning Now
                 </a>
               </div>
 
               <p style="font-size: 14px; color: #666; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
-                Need help? Reply to this email or visit our support page.
+                Need help? Reply to this email.
               </p>
             </div>
 
