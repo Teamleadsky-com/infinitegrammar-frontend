@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
 import VerifyMagicLink from "./pages/VerifyMagicLink";
 import PruefungsZentren from "./pages/PruefungsZentren";
+import CityExamPage from "./pages/CityExamPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/profile" element={<Profile />} />
             <Route path="/verify-magic-link" element={<VerifyMagicLink />} />
             <Route path="/pruefungszentren" element={<PruefungsZentren />} />
+            <Route path="/pruefungszentren/:examCity" element={<CityExamPage />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

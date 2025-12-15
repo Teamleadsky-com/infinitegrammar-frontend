@@ -28,6 +28,91 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- City/Exam Landing Pages -->
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-berlin</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-berlin</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-muenchen</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-muenchen</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-hamburg</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-hamburg</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-koeln</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-koeln</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-frankfurt</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-frankfurt</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/telc-stuttgart</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://www.infinitegrammar.de/pruefungszentren/testdaf-stuttgart</loc>
+    <lastmod>2025-12-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
   <!-- Statistics -->
   <url>
     <loc>https://www.infinitegrammar.de/statistics</loc>
