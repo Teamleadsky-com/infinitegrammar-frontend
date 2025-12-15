@@ -6,6 +6,13 @@
 [build.environment]
   NPM_CONFIG_PRODUCTION = "false"
 
+# Enable prerendering for SEO-critical pages
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
+
+[[plugins]]
+  package = "netlify-plugin-prerender"
+
 [dev]
   # Tell Netlify CLI that Vite runs on port 8080
   targetPort = 8080

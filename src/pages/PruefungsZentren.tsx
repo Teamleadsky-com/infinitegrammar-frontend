@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -15,47 +16,9 @@ const PruefungsZentren = () => {
   const [filterExam, setFilterExam] = useState("all");
   const [searchOrg, setSearchOrg] = useState("");
 
-  // SEO: Update page title dynamically
-  useEffect(() => {
-    const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute) | Infinite Grammar";
-    const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
-    const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
-
-    document.title = pageTitle;
-
-    // Update meta description
-    const metaDescription = document.querySelector('meta[name="description"]');
-    if (metaDescription) {
-      metaDescription.setAttribute('content', pageDescription);
-    }
-
-    // Update Open Graph tags for social media previews
-    const ogTitle = document.querySelector('meta[property="og:title"]');
-    if (ogTitle) {
-      ogTitle.setAttribute('content', pageTitle);
-    }
-
-    const ogDescription = document.querySelector('meta[property="og:description"]');
-    if (ogDescription) {
-      ogDescription.setAttribute('content', pageDescription);
-    }
-
-    const ogUrl = document.querySelector('meta[property="og:url"]');
-    if (ogUrl) {
-      ogUrl.setAttribute('content', pageUrl);
-    }
-
-    // Update Twitter Card tags
-    const twitterTitle = document.querySelector('meta[name="twitter:title"]');
-    if (twitterTitle) {
-      twitterTitle.setAttribute('content', pageTitle);
-    }
-
-    const twitterDescription = document.querySelector('meta[name="twitter:description"]');
-    if (twitterDescription) {
-      twitterDescription.setAttribute('content', pageDescription);
-    }
-  }, []);
+  const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute) | Infinite Grammar";
+  const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
+  const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
 
   // Filter centers based on search and filters
   const filteredCenters = useMemo(() => {
@@ -79,6 +42,18 @@ const PruefungsZentren = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Helmet>
+
       {/* Structured Data - FAQ Schema */}
       <script type="application/ld+json">
         {JSON.stringify({
