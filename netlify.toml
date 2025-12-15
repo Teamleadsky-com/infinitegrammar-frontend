@@ -10,11 +10,6 @@
 [[plugins]]
   package = "@netlify/plugin-sitemap"
 
-# Edge function for SEO meta tag injection
-[[edge_functions]]
-  function = "seo-meta-injector"
-  path = "/pruefungszentren/*"
-
 [dev]
   # Tell Netlify CLI that Vite runs on port 8080
   targetPort = 8080
@@ -29,6 +24,19 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Serve static HTML for SEO pages (for crawlers)
+[[redirects]]
+  from = "/pruefungszentren"
+  to = "/pruefungszentren.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/pruefungszentren/:city"
+  to = "/pruefungszentren/:city.html"
+  status = 200
+  force = false
 
 # SPA fallback: redirect all other routes to index.html
 # This allows React Router to handle client-side routing

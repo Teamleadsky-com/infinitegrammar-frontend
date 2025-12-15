@@ -152,31 +152,48 @@ function injectMetaTags(html: string, meta: { title: string; description: string
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const userAgent = request.headers.get('user-agent') || '';
+  const pathname = url.pathname;
 
-  // Only process crawler requests for SEO pages
-  if (!isCrawler(userAgent)) {
-    return context.next();
-  }
+  console.log('Edge function called for:', pathname);
+  console.log('User-Agent:', userAgent);
 
-  // Check if this is an SEO page
-  const meta = getCityPageMeta(url.pathname);
+  // Check if this is an SEO page first
+  const meta = getCityPageMeta(pathname);
 
   if (!meta) {
+    console.log('Not an SEO page, passing through');
     return context.next();
   }
+
+  // Only process crawler requests for SEO pages
+  const isCrawlerRequest = isCrawler(userAgent);
+  console.log('Is crawler:', isCrawlerRequest);
+
+  if (!isCrawlerRequest) {
+    console.log('Not a crawler, serving normal SPA');
+    return context.next();
+  }
+
+  console.log('Processing crawler request with meta:', meta);
 
   // Get the original HTML response
   const response = await context.next();
   const html = await response.text();
 
+  console.log('Original HTML length:', html.length);
+
   // Inject the correct meta tags
   const modifiedHtml = injectMetaTags(html, meta);
+
+  console.log('Modified HTML length:', modifiedHtml.length);
+  console.log('Injected meta tags for:', pathname);
 
   // Return modified HTML
   return new Response(modifiedHtml, {
     headers: {
       'content-type': 'text/html; charset=utf-8',
-      'cache-control': 'public, max-age=3600',
+      'cache-control': 'public, max-age=0, must-revalidate', // Don't cache for debugging
+      'x-seo-injected': 'true',
     },
   });
 };
