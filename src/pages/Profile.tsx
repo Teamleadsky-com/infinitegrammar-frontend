@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "@/hooks/use-toast";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateUserData } from "@/utils/auth";
 
@@ -352,6 +352,33 @@ const Profile = () => {
                   {new Date(user.last_login).toLocaleString()}
                 </p>
               )}
+            </div>
+          </Card>
+
+          {/* Log Out */}
+          <Card className="p-6 shadow-lg animate-fade-in">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold mb-2">Session</h2>
+                <p className="text-sm text-muted-foreground">
+                  Sign out of your account
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  logout();
+                  toast({
+                    title: "Logged out",
+                    description: "You've been successfully logged out.",
+                  });
+                  navigate("/");
+                }}
+                className="gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                Log Out
+              </Button>
             </div>
           </Card>
 
