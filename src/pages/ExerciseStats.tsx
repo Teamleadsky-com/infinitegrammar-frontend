@@ -336,92 +336,6 @@ const ExerciseStats = () => {
                     </AreaChart>
                   </ResponsiveContainer>
                 </Card>
-
-                {/* Growth by Grammar Section */}
-                <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Grammar Section (Top 10)</h3>
-                  <ResponsiveContainer width="100%" height={450}>
-                    <AreaChart data={filteredGrowthBySection}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis
-                        dataKey="period"
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <YAxis
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                      />
-                      <Legend
-                        layout="horizontal"
-                        verticalAlign="bottom"
-                        wrapperStyle={{ paddingTop: "20px", fontSize: "12px" }}
-                      />
-                      {topSections.map((section) => (
-                        <Area
-                          key={section}
-                          type="monotone"
-                          dataKey={section}
-                          stackId="1"
-                          stroke={sectionColors[section]}
-                          fill={sectionColors[section]}
-                          fillOpacity={0.6}
-                        />
-                      ))}
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </Card>
-
-                {/* Growth by Content Topic */}
-                {topTopics.length > 0 && (
-                  <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                    <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Content Topic (Top 10)</h3>
-                    <ResponsiveContainer width="100%" height={450}>
-                      <AreaChart data={filteredGrowthByTopic}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis
-                          dataKey="period"
-                          stroke="hsl(var(--muted-foreground))"
-                          style={{ fontSize: "12px" }}
-                        />
-                        <YAxis
-                          stroke="hsl(var(--muted-foreground))"
-                          style={{ fontSize: "12px" }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--popover))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px",
-                          }}
-                        />
-                        <Legend
-                          layout="horizontal"
-                          verticalAlign="bottom"
-                          wrapperStyle={{ paddingTop: "20px", fontSize: "12px" }}
-                        />
-                        {topTopics.map((topic) => (
-                          <Area
-                            key={topic}
-                            type="monotone"
-                            dataKey={topic}
-                            stackId="1"
-                            stroke={topicColors[topic]}
-                            fill={topicColors[topic]}
-                            fillOpacity={0.6}
-                          />
-                        ))}
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </Card>
-                )}
               </div>
 
               {/* Snapshot Section */}
@@ -495,42 +409,6 @@ const ExerciseStats = () => {
                     </BarChart>
                   </ResponsiveContainer>
                 </Card>
-
-                {/* Snapshot by Content Topic */}
-                {countsByTopic.length > 0 && (
-                  <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-                    <h3 className="text-lg font-semibold mb-4">Total Exercises by Content Topic</h3>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <BarChart data={countsByTopic}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                        <XAxis
-                          dataKey="topic"
-                          stroke="hsl(var(--muted-foreground))"
-                          style={{ fontSize: "12px" }}
-                          angle={-45}
-                          textAnchor="end"
-                          height={100}
-                        />
-                        <YAxis
-                          stroke="hsl(var(--muted-foreground))"
-                          style={{ fontSize: "12px" }}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--popover))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "8px",
-                          }}
-                        />
-                        <Bar
-                          dataKey="count"
-                          fill="hsl(var(--chart-3))"
-                          radius={[8, 8, 0, 0]}
-                        />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </Card>
-                )}
               </div>
 
               {/* Coverage Analysis Section */}

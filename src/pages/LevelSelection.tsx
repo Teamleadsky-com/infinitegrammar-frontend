@@ -185,9 +185,9 @@ const LevelSelection = () => {
             <div className="mt-3">
               <button
                 onClick={() => navigate("/exercise-stats")}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors underline"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
-                Exercise Stats
+                Exercises Stats
               </button>
             </div>
           </div>
