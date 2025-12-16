@@ -2455,8 +2455,704 @@ export const grammarContentData: Record<string, GrammarContent> = {
     ],
     exerciseSection: 'Verben',
   },
+  
+  // B2 - Feste Präposition / Rektion
+  'b2-feste-praeposition-rektion': {
+    topicId: 'b2-feste-praeposition-rektion',
+    shortExplanation:
+      'Bei <strong>Rektion</strong> ist die Präposition (und oft der Kasus) <strong>fest</strong>: Man sagt z. B. „abhängen <strong>von</strong> + Dativ“ oder „bestehen <strong>aus</strong> + Dativ“. Diese Kombinationen lernst du am besten als <strong>Chunk</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst Rektion, wenn du in Texten/Prüfungen präzise formulieren willst – ohne „falsche Präpositionen“:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Das hängt <strong>von</strong> den Umständen <strong>ab</strong>.</li>
+        <li>Der Kurs besteht <strong>aus</strong> drei Teilen.</li>
+        <li>Wir verzichten <strong>auf</strong> unnötige Details.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Merksatz:</p>
+        <p class="text-sm mt-2">Nicht die „Logik“, sondern die <strong class="text-primary">Konvention</strong> entscheidet: Verb/Adjektiv/Nomen + Präposition + Kasus.</p>
+      </div>
 
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Typische Rektion (Auswahl):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>abhängen <strong>von</strong> + Dat: Das hängt <strong>von dem</strong> Termin ab.</li>
+            <li>bestehen <strong>aus</strong> + Dat: Die Prüfung besteht <strong>aus drei</strong> Teilen.</li>
+            <li>teilnehmen <strong>an</strong> + Dat: Ich nehme <strong>an dem</strong> Kurs teil.</li>
+            <li>verzichten <strong>auf</strong> + Akk: Wir verzichten <strong>auf den</strong> Plan.</li>
+            <li>sich beziehen <strong>auf</strong> + Akk: Das bezieht sich <strong>auf die</strong> Frage.</li>
+          </ul>
+        </div>
 
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Da-/wo- (B2-typisch):</p>
+          <p class="text-sm">Wovon hängt das ab? – Es hängt <strong>davon</strong> ab. / Worauf beziehst du dich? – Ich beziehe mich <strong>darauf</strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 1: falsche Präposition</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ abhängen <strong>auf</strong></p>
+            <p>✓ abhängen <strong>von</strong></p>
+          </div>
+        </div>
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 2: falscher Kasus</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ teilnehmen an <strong>den</strong> Kurs</p>
+            <p>✓ teilnehmen an <strong>dem</strong> Kurs (an + Dativ)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Kombination als Einheit lernen (Verb/Adj/Nomen + Präposition)',
+      'Kasus mitlernen (auf+Akk, an+Dat, von+Dat, …)',
+      'Bei Pronomen: da-/wo- korrekt verwenden (darauf/worauf)',
+    ],
+    faq: [
+      {
+        question: 'Gibt es verlässliche Regeln für die Präposition?',
+        answer:
+          '<p>Nur selten. In den meisten Fällen musst du die Kombinationen als feste Einheiten lernen und häufig üben.</p>',
+      },
+      {
+        question: 'Was ist der Unterschied zu „Verben mit Präposition“ (B1)?',
+        answer:
+          '<p>B2 geht stärker in die Tiefe: mehr formelle Verben, mehr Rektion + häufig da-/wo-Formen und typische Prüfungsfehler.</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
+
+  // B2 - Adjektivdeklination: das System (vollständig)
+  'b2-adjektivdeklination-system-komplett': {
+    topicId: 'b2-adjektivdeklination-system-komplett',
+    shortExplanation:
+      'Die Adjektivdeklination folgt drei Mustern: <strong>stark</strong> (ohne Artikel), <strong>schwach</strong> (mit der/die/das) und <strong>gemischt</strong> (mit ein-). Entscheidend ist: <strong>Wer „zeigt“ Kasus/Genus?</strong>',
+    whenToUse: `
+      <p class="mb-3">Du brauchst das vollständige System, wenn du in Texten korrekt und sicher formulieren willst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>mit bestimmten Artikeln: <em>den neu<strong>en</strong> Vertrag</em></li>
+        <li>mit unbestimmten Artikeln: <em>ein neu<strong>er</strong> Vertrag</em></li>
+        <li>ohne Artikel: <em>neu<strong>er</strong> Vertrag</em></li>
+        <li>in Dativ/Genitiv: <em>mit neu<strong>em</strong> Vertrag</em>, <em>wegen neu<strong>er</strong> Regeln</em></li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Prinzip:</p>
+        <p class="text-sm mt-2">Wenn der Artikel Kasus/Genus schon deutlich markiert → Adjektiv eher <strong class="text-primary">schwach</strong> (-e/-en). Wenn nicht → Adjektiv übernimmt Markierung (<strong class="text-primary">stark</strong>).</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Schnell-Orientierung (sehr praxisnah):</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>der/die/das</strong> → meistens <strong>-e/-en</strong>: der gut<strong>e</strong>, den gut<strong>en</strong>, dem gut<strong>en</strong> …</li>
+            <li><strong>ein-/kein-/mein-</strong> → Mischung: ein gut<strong>er</strong> (Nom m.), einen gut<strong>en</strong> (Akk m.), einem gut<strong>en</strong> (Dat m.)</li>
+            <li><strong>ohne Artikel</strong> → starke Endungen: gut<strong>er</strong> Wein, gut<strong>e</strong> Idee, gut<strong>es</strong> Wetter, mit gut<strong>em</strong> Wein</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">B2-Merktipp:</p>
+          <p class="text-sm">Achte zuerst auf den Artikel. Wenn er „alles zeigt“, ist das Adjektiv oft „kurz“ (-e/-en). Wenn er wenig zeigt, muss das Adjektiv stärker markieren.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Endungen „raten“ statt System anwenden</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ mit ein neu<strong>es</strong> Auto</p>
+            <p>✓ mit ein<strong>em</strong> neu<strong>en</strong> Auto (Dativ)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Artikeltyp erkennen: der-/ein-/kein Artikel',
+      'Kasus bestimmen (Nom/Akk/Dat/Gen)',
+      'Danach Endung wählen (schwach/gemischt/stark)',
+    ],
+    faq: [
+      {
+        question: 'Was ist der häufigste „Knackpunkt“ auf B2?',
+        answer:
+          '<p>Dativ/Genitiv + „ein-“ sowie Pluralformen („mit den gut<strong>en</strong> Leuten“, „wegen gut<strong>er</strong> Gründe“).</p>',
+      },
+      {
+        question: 'Muss ich das komplett auswendig lernen?',
+        answer:
+          '<p>Du brauchst kein perfektes Tabellen-Auswendiglernen, aber ein stabiles Entscheidungsprinzip + viel Übung (genau dafür sind Lückentexte ideal).</p>',
+      },
+    ],
+    exerciseSection: 'Adjektive',
+  },
+
+  // B2 - Passiv vertieft
+  'b2-passiv-vertieft': {
+    topicId: 'b2-passiv-vertieft',
+    shortExplanation:
+      'Auf B2 erweiterst du das Passiv über das Präsens hinaus: <strong>Präteritum</strong>, <strong>Perfekt</strong> und typische Strukturen mit Modalverben. Außerdem unterscheidest du sicher zwischen <strong>Vorgangspassiv</strong> und <strong>Zustandspassiv</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst vertieftes Passiv besonders in formellen Texten, Anleitungen, Nachrichten und Prüfungen:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Der Antrag <strong>wird</strong> online <strong>ausgefüllt</strong>. (Präsens)</li>
+        <li>Der Antrag <strong>wurde</strong> gestern <strong>abgeschickt</strong>. (Präteritum)</li>
+        <li>Der Antrag <strong>ist</strong> schon <strong>abgeschickt worden</strong>. (Perfekt)</li>
+        <li>Die Daten <strong>müssen</strong> gespeichert <strong>werden</strong>. (Modalverb)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Vorgangspassiv (werden):</p>
+        <p class="text-sm mt-2"><strong class="text-primary">werden</strong> + Partizip II (Prozess/Handlung)</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Zeitformen im Passiv (Beispiele):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Präsens: Der Vertrag <strong>wird</strong> unterschrieben.</li>
+            <li>Präteritum: Der Vertrag <strong>wurde</strong> unterschrieben.</li>
+            <li>Perfekt: Der Vertrag <strong>ist</strong> unterschrieben <strong>worden</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Zustandspassiv (sein):</p>
+          <p class="text-sm">Der Vertrag <strong>ist</strong> unterschrieben. (Ergebnis/Zustand: „fertig“)</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Mit Modalverben:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Die Aufgabe <strong>muss</strong> gemacht <strong>werden</strong>.</li>
+            <li>Das Formular <strong>kann</strong> online ausgefüllt <strong>werden</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „worden“ im Perfekt vergessen</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Der Antrag ist abgeschickt.</p>
+            <p>✓ Der Antrag ist abgeschickt <strong>worden</strong>. (Vorgang/Passiv)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Vorgangspassiv: werden + Partizip II',
+      'Perfekt Passiv: sein + Partizip II + <strong>worden</strong>',
+      'Zustandspassiv nur für Ergebnis: sein + Partizip II',
+      'Mit Modalverb: Partizip II + werden am Ende',
+    ],
+    faq: [
+      {
+        question: 'Wann ist „ist gemacht“ korrekt?',
+        answer:
+          '<p>Wenn du den <strong>Zustand</strong> meinst (fertig/erledigt). Für den Prozess nutzt du „wird gemacht“.</p>',
+      },
+      {
+        question: 'Warum heißt es „ist gemacht worden“?',
+        answer:
+          '<p>Das ist Perfekt im Vorgangspassiv: „sein“ trägt die Zeitform, „worden“ zeigt Passiv.</p>',
+      },
+    ],
+    exerciseSection: 'Passiv',
+  },
+
+  // B2 - Nominalisierung / Nominalphrasen
+  'b2-nominalisierung': {
+    topicId: 'b2-nominalisierung',
+    shortExplanation:
+      'Bei der <strong>Nominalisierung</strong> machst du aus Verben/Adjektiven <strong>Nomen</strong> („entscheiden“ → „die Entscheidung“, „wichtig“ → „die Wichtigkeit“). Das ist typisch für formelle Texte und verdichtet Information.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Nominalisierung besonders …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>in formellen Texten (E-Mail, Bericht, Bewerbung)</li>
+        <li>für kompakte, „sachliche“ Formulierungen</li>
+        <li>um Sätze zu verkürzen: weniger Verben, mehr Nomen</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Umformungen:</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li>Verb → Nomen: entscheiden → <strong>die Entscheidung</strong></li>
+          <li>Adjektiv → Nomen: wichtig → <strong>die Wichtigkeit</strong></li>
+          <li>Satz → Phrase: „Wir diskutieren“ → „die Diskussion“</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (vergleich):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Verb-Stil: Wir <strong>entscheiden</strong> morgen.</li>
+            <li>Nominalstil: Die <strong>Entscheidung</strong> fällt morgen.</li>
+            <li>Verb-Stil: Wir <strong>analysieren</strong> die Daten.</li>
+            <li>Nominalstil: Die <strong>Analyse</strong> der Daten erfolgt morgen.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Warnung (B2 realistisch):</p>
+          <p class="text-sm">Nominalstil kann schnell schwer lesbar werden. Nutze ihn gezielt – nicht in jedem Satz.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: zu viele Nomen hintereinander</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Die Durchführung der Implementierung der Optimierung …</p>
+            <p>✓ Wir optimieren und implementieren … (oder: klare, kurze Nominalgruppen)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Nominalisierung nur dort einsetzen, wo sie wirklich verdichtet',
+      'Nominalgruppen nicht zu lang werden lassen',
+      'Artikel/Kasus der neuen Nomen korrekt setzen',
+    ],
+    faq: [
+      {
+        question: 'Ist Nominalisierung immer „besser“?',
+        answer:
+          '<p>Nein. Sie wirkt formeller, aber oft auch schwerer. Gute Texte mischen Verb-Stil und Nominalstil.</p>',
+      },
+      {
+        question: 'Woran erkenne ich Nominalstil?',
+        answer:
+          '<p>An vielen Nomen, häufigen Endungen wie -ung/-tion/-heit/-keit und weniger Verben.</p>',
+      },
+    ],
+    exerciseSection: 'Nominalstil',
+  },
+
+  // B2 - Erweiterter Genitivgebrauch
+  'b2-genitiv-erweiterung': {
+    topicId: 'b2-genitiv-erweiterung',
+    shortExplanation:
+      'Auf B2 nutzt du den <strong>Genitiv</strong> sicherer: nach bestimmten Präpositionen („während“, „trotz“, „wegen“), in festen Wendungen und zur präzisen Zuordnung („die Bedeutung <strong>des</strong> Wortes“).',
+    whenToUse: `
+      <p class="mb-3">Du brauchst den Genitiv, wenn du …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Besitz/Zugehörigkeit ausdrückst: die Farbe <strong>des</strong> Autos</li>
+        <li>formelle Präpositionen nutzt: <strong>während</strong> des Kurses</li>
+        <li>formell schreibst (Prüfung/Brief/Bericht)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Genitiv-Präpositionen:</p>
+        <p class="text-sm mt-2"><strong class="text-primary">während</strong>, <strong class="text-primary">trotz</strong>, <strong class="text-primary">wegen</strong>, <strong class="text-primary">innerhalb</strong>, <strong class="text-primary">außerhalb</strong>, <strong class="text-primary">anstatt/statt</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>während</strong> <strong>des</strong> Unterrichts</li>
+            <li><strong>trotz</strong> <strong>der</strong> Probleme</li>
+            <li><strong>wegen</strong> <strong>des</strong> Wetters (formell)</li>
+            <li>die Bedeutung <strong>des</strong> Begriffs</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Hinweis:</p>
+          <p class="text-sm">Im Alltag hört man teils Dativ („wegen dem Wetter“). Für Prüfungen und formelles Deutsch ist Genitiv meist sicherer.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Genitiv-Artikel falsch</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ während <strong>den</strong> Kurses</p>
+            <p>✓ während <strong>des</strong> Kurses</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Genitiv-Präposition erkannt (während/trotz/wegen/…)',
+      'Artikel korrekt: des/der (Genitiv)',
+      'In formellen Texten Genitiv bevorzugen',
+    ],
+    faq: [
+      {
+        question: 'Ist „wegen dem“ immer falsch?',
+        answer:
+          '<p>Umgangssprachlich kommt Dativ vor. In vielen Prüfungs- und Standardkontexten gilt Genitiv als die sicherere Wahl.</p>',
+      },
+      {
+        question: 'Wie erkenne ich Genitiv im Satz?',
+        answer:
+          '<p>Oft an den Artikeln <strong>des/der</strong> und bei mask./neutr. Nomen am <strong>-s/-es</strong>: „des Tag<strong>es</strong>“.</p>',
+      },
+    ],
+    exerciseSection: 'Genitiv',
+  },
+
+  // C1 - Komplexer Satzbau
+  'c1-komplexer-satzbau': {
+    topicId: 'c1-komplexer-satzbau',
+    shortExplanation:
+      'Auf C1 geht es um <strong>komplexe Satzstrukturen</strong>: verschachtelte Nebensätze, längere Satzklammern, präzise Vorfeldgestaltung und saubere Kommasetzung – ohne dass der Satz unlesbar wird.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst komplexen Satzbau vor allem für anspruchsvolle Texte (Studium, Beruf, Argumentation):</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Begründungen, Einschränkungen und Gegenargumente sauber strukturieren</li>
+        <li>Informationen verdichten, ohne Details zu verlieren</li>
+        <li>Stil variieren (nicht nur kurze Hauptsätze)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">C1-Strategie:</p>
+        <p class="text-sm mt-2">Lieber <strong class="text-primary">klar strukturiert</strong> als maximal verschachtelt. Kommas helfen beim „Lesen“.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiel mit mehreren Ebenen:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>
+              Viele unterschätzen, <strong>dass</strong> man, <strong>wenn</strong> man unter Zeitdruck <strong>steht</strong>,
+              Fehler macht, <strong>die</strong> sich später kaum korrigieren <strong>lassen</strong>.
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Lesbarkeit erhöhen:</p>
+          <p class="text-sm">Lange Vorfelder vermeiden, Nebensätze nicht unnötig stapeln, ggf. Satz teilen.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: zu viele Einschübe ohne Struktur</h4>
+          <p class="text-sm">Wenn du den Satz beim Vorlesen nicht mehr kontrollierst, ist er zu lang – lieber teilen oder umstellen.</p>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Nebensätze klar mit Kommas abgrenzen',
+      'Satzklammer stabil halten (Verbpositionen stimmen)',
+      'Lesbarkeit prüfen: notfalls Satz teilen',
+    ],
+    faq: [
+      {
+        question: 'Was ist ein guter Kompromiss auf C1?',
+        answer:
+          '<p>Komplexität ja – aber mit klarer Struktur. Ein sauberer, gut lesbarer Satz wirkt stärker als ein überladener Satz.</p>',
+      },
+      {
+        question: 'Ist „verschachteln“ immer erwünscht?',
+        answer:
+          '<p>Nein. Es kommt auf Textsorte und Stil an. Gute C1-Texte variieren und bleiben verständlich.</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // C1 - Konjunktiv I in der Berichtssprache
+  'c1-konjunktiv-1-berichtssprache': {
+    topicId: 'c1-konjunktiv-1-berichtssprache',
+    shortExplanation:
+      'In der <strong>Berichtssprache</strong> nutzt man den <strong>Konjunktiv I</strong>, um Aussagen zu distanzieren: „Die Sprecherin erklärte, sie <strong>sei</strong> optimistisch.“ Das wirkt neutral und journalistisch.',
+    whenToUse: `
+      <p class="mb-3">Du verwendest Konjunktiv I besonders …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>in Berichten, Protokollen, wissenschaftlichen Texten</li>
+        <li>wenn du Aussagen wiedergibst, ohne sie zu bewerten</li>
+        <li>wenn du Quellen markierst: „laut …“, „sie erklärte …“</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Formen (3. Person):</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li>sein → er <strong class="text-primary">sei</strong>, sie <strong class="text-primary">sei</strong></li>
+          <li>haben → er <strong class="text-primary">habe</strong></li>
+          <li>werden → er <strong class="text-primary">werde</strong></li>
+          <li>kommen → er <strong class="text-primary">komme</strong></li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Er sagt, er <strong>sei</strong> krank.</li>
+            <li>Die Expertin erklärt, die Lage <strong>habe</strong> sich verbessert.</li>
+            <li>Der Sprecher betont, man <strong>werde</strong> reagieren.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Wenn Konjunktiv I nicht eindeutig ist:</p>
+          <p class="text-sm">Dann weicht man oft auf Konjunktiv II aus: „Sie sagte, sie <strong>hätte</strong> keine Zeit.“</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Indikativ statt Berichtsdistanz</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Er sagt, er <strong>ist</strong> krank.</p>
+            <p>✓ Er sagt, er <strong>sei</strong> krank.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Aussage wird wiedergegeben? → Konjunktiv I prüfen',
+      'Besonders wichtig: Formen von sein/haben/werden',
+      'Bei Unklarheit: Konjunktiv II als Ausweichform',
+    ],
+    faq: [
+      {
+        question: 'Warum wirkt Konjunktiv I „formell“?',
+        answer:
+          '<p>Weil er in Standard- und Mediensprache die Distanz zur Aussage markiert („Berichtston“).</p>',
+      },
+      {
+        question: 'Muss ich das im Alltag sprechen?',
+        answer:
+          '<p>Nicht zwingend. Für C1/Prüfung und formelle Texte ist es aber ein großer Pluspunkt.</p>',
+      },
+    ],
+    exerciseSection: 'Konjunktiv',
+  },
+
+  // C1 - Funktionsverbgefüge
+  'c1-funktionsverbgefuege': {
+    topicId: 'c1-funktionsverbgefuege',
+    shortExplanation:
+      'Funktionsverbgefüge sind feste Kombinationen aus Nomen + „leichtem“ Verb (z. B. <strong>in Betracht ziehen</strong>, <strong>zur Verfügung stellen</strong>). Sie sind typisch für formelle, schriftliche Sprache.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Funktionsverbgefüge besonders …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>in Berichten, Fachtexten, Bewerbungen</li>
+        <li>um neutral/sachlich zu klingen</li>
+        <li>um Varianz und Präzision im Ausdruck zu erhöhen</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Beispiele:</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li>etwas <strong class="text-primary">in Betracht ziehen</strong> (= erwägen)</li>
+          <li>etwas <strong class="text-primary">zur Verfügung stellen</strong> (= bereitstellen)</li>
+          <li>eine Entscheidung <strong class="text-primary">treffen</strong> (= entscheiden)</li>
+          <li>eine Maßnahme <strong class="text-primary">ergreifen</strong> (= handeln)</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele im Satz:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Wir ziehen mehrere Optionen <strong>in Betracht</strong>.</li>
+            <li>Die Unterlagen werden Ihnen <strong>zur Verfügung gestellt</strong>.</li>
+            <li>Die Regierung ergreift Maßnahmen, um …</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Stil-Tipp:</p>
+          <p class="text-sm">Übertreibe es nicht: Zu viele Funktionsverbgefüge machen Texte schwerfällig.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: freie Kombination statt feste Wendung</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ eine Entscheidung <strong>machen</strong></p>
+            <p>✓ eine Entscheidung <strong>treffen</strong></p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Wendung als feste Einheit lernen',
+      'Kasus/Präposition beachten (in Betracht ziehen, zur Verfügung stellen)',
+      'Dosiert einsetzen (Lesbarkeit!)',
+    ],
+    faq: [
+      {
+        question: 'Ist das dasselbe wie „Nomen-Verb-Verbindungen“?',
+        answer:
+          '<p>Verwandt: Funktionsverbgefüge sind eine besonders typische, formelle Untergruppe fester Nomen-Verb-Kombinationen.</p>',
+      },
+      {
+        question: 'Bringt das Punkte in Prüfungen?',
+        answer:
+          '<p>Es kann den Ausdruck aufwerten, wenn es korrekt und passend eingesetzt wird (vor allem in schriftlichen Texten).</p>',
+      },
+    ],
+    exerciseSection: 'Verben',
+  },
+
+  // C1 - Feste Verbindungen
+  'c1-feste-verbindungen': {
+    topicId: 'c1-feste-verbindungen',
+    shortExplanation:
+      '„Feste Verbindungen“ sind typische Wortkombinationen (Kollokationen), die im Deutschen so „üblich“ sind: <strong>eine Rolle spielen</strong>, <strong>in Frage stellen</strong>, <strong>großen Wert legen auf</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt feste Verbindungen, um natürlicher, idiomatischer und präziser zu formulieren:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Das spielt eine wichtige <strong>Rolle</strong>.</li>
+        <li>Man sollte die Ergebnisse <strong>in Frage stellen</strong>.</li>
+        <li>Wir legen <strong>großen Wert</strong> auf Qualität.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Prinzip:</p>
+        <p class="text-sm mt-2">Nicht jedes Wort lässt sich frei kombinieren. Gute C1-Texte nutzen <strong class="text-primary">typische Kollokationen</strong> statt „übersetztem“ Deutsch.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (Auswahl):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>eine Entscheidung <strong>treffen</strong></li>
+            <li>eine Maßnahme <strong>ergreifen</strong></li>
+            <li>eine Aussage <strong>treffen</strong> / eine Aussage <strong>machen</strong> (je nach Kontext)</li>
+            <li>etwas <strong>in Frage stellen</strong></li>
+            <li>großen Wert <strong>auf</strong> etwas legen</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">C1-Strategie:</p>
+          <p class="text-sm">Beim Lesen gezielt Kollokationen markieren und als „Bausteine“ wiederverwenden.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „wörtliche Übersetzung“</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ starken Wert <strong>machen</strong> auf</p>
+            <p>✓ großen Wert <strong>legen</strong> auf</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Kollokation als Einheit merken (Verb + Nomen + Präposition)',
+      'Nicht „frei“ variieren (sonst unidiomatisch)',
+      'Im Zweifel: Beispiele/Corpus/Lesetexte als Referenz nutzen',
+    ],
+    faq: [
+      {
+        question: 'Wie lerne ich das effizient?',
+        answer:
+          '<p>Mit Listen + Kontext: Jede Verbindung mit 1–2 Beispielsätzen speichern und regelmäßig aktiv verwenden (Schreiben/Sprechen).</p>',
+      },
+      {
+        question: 'Sind Redewendungen dasselbe?',
+        answer:
+          '<p>Teilweise überlappend. „Feste Verbindungen“ können neutral sein (Kollokationen), Redewendungen sind oft bildhaft/idiomatisch.</p>',
+      },
+    ],
+    exerciseSection: 'Verben',
+  },
+
+  // C1 - Verben mit Präposition (Advanced)
+  'c1-verben-mit-praeposition-advanced': {
+    topicId: 'c1-verben-mit-praeposition-advanced',
+    shortExplanation:
+      'Auf C1 geht es um <strong>präzise</strong> und oft <strong>formelle</strong> Verb-Präposition-Kombinationen (inkl. Kasus): z. B. „absehen <strong>von</strong> + Dativ“, „sich befassen <strong>mit</strong> + Dativ“, „sich berufen <strong>auf</strong> + Akkusativ“.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst diese Verben besonders in Texten, Argumentationen und formeller Kommunikation:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Wir sehen <strong>von</strong> weiteren Schritten <strong>ab</strong>.</li>
+        <li>Ich befasse mich <strong>mit</strong> dem Thema.</li>
+        <li>Er beruft sich <strong>auf</strong> seine Erfahrung.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">C1-Merksatz:</p>
+        <p class="text-sm mt-2">Präposition + Kasus sind <strong class="text-primary">fest</strong>. Fehler wirken sofort unprofessionell → konsequent als Einheit lernen.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Typische Advanced-Kombinationen:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>absehen <strong>von</strong> + Dat: Wir sehen <strong>von dem</strong> Plan ab.</li>
+            <li>sich befassen <strong>mit</strong> + Dat: Ich befasse mich <strong>mit der</strong> Frage.</li>
+            <li>sich berufen <strong>auf</strong> + Akk: Er beruft sich <strong>auf das</strong> Gesetz.</li>
+            <li>sich orientieren <strong>an</strong> + Dat: Wir orientieren uns <strong>an den</strong> Vorgaben.</li>
+            <li>bestehen <strong>aus</strong> + Dat: Der Text besteht <strong>aus</strong> drei Teilen.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Da-/wo- (C1 sicher beherrschen):</p>
+          <p class="text-sm">Wovon siehst du ab? – Ich sehe <strong>davon</strong> ab. / Worauf berufst du dich? – Ich berufe mich <strong>darauf</strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Präposition oder Kasus „nach Gefühl“</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ sich berufen <strong>an</strong> …</p>
+            <p>✓ sich berufen <strong>auf</strong> …</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Verb + Präposition + Kasus als Einheit speichern',
+      'Bei Pronomen: da-/wo- korrekt anwenden',
+      'In Texten aktiv einsetzen (nicht nur passiv erkennen)',
+    ],
+    faq: [
+      {
+        question: 'Wie finde ich heraus, welche Präposition richtig ist?',
+        answer:
+          '<p>Am zuverlässigsten über Wörterbuch/Beispiele. Dann als Chunk lernen und in eigenen Sätzen wiederholen.</p>',
+      },
+      {
+        question: 'Warum sind diese Verben wichtig?',
+        answer:
+          '<p>Sie sind typisch für formelle Texte und Argumentationen. Korrekte Rektion verbessert Stil, Präzision und Bewertung in C1-Kontexten.</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
 
 };
 
