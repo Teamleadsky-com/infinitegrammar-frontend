@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { BookOpen, BarChart3, User, LogOut } from "lucide-react";
@@ -7,27 +8,29 @@ import { toast } from "@/hooks/use-toast";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { useAuth } from "@/contexts/AuthContext";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 // ⚙️ FEATURE SWITCH: Sign In button behavior
 // 0 = Normal sign in (navigate to /auth page)
 // 1 = Show waitlist popup instead of sign in
 const SIGN_IN_SHOWS_WAITLIST = 0;
 
-const levels = [
-  { id: "a1", name: "A1", description: "Beginner" },
-  { id: "a2", name: "A2", description: "Elementary" },
-  { id: "b1", name: "B1", description: "Intermediate" },
-  { id: "b2", name: "B2", description: "Upper Intermediate" },
-  { id: "c1", name: "C1", description: "Advanced" },
-];
-
 const sections = getAllGrammarUiTopics();
 
 const LevelSelection = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { isAuthenticated, logout } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+
+  const levels = [
+    { id: "a1", name: "A1", description: t('levelSelection.beginner') },
+    { id: "a2", name: "A2", description: t('levelSelection.elementary') },
+    { id: "b1", name: "B1", description: t('levelSelection.intermediate') },
+    { id: "b2", name: "B2", description: t('levelSelection.upperIntermediate') },
+    { id: "c1", name: "C1", description: t('levelSelection.advanced') },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -65,10 +68,11 @@ const LevelSelection = () => {
           <div className="flex items-center gap-2">
             <BookOpen className="h-6 w-6 text-primary" />
             <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              Infinite Grammar
+              {t('common.appName')}
             </h1>
           </div>
           <div className="flex gap-2">
+            <LanguageSwitcher />
             <Button
               variant="ghost"
               size="sm"
@@ -76,7 +80,7 @@ const LevelSelection = () => {
               className="gap-2"
             >
               <BarChart3 className="h-4 w-4" />
-              Statistics
+              {t('nav.statistics')}
             </Button>
             {isAuthenticated ? (
               <>
@@ -87,7 +91,7 @@ const LevelSelection = () => {
                   className="gap-2"
                 >
                   <User className="h-4 w-4" />
-                  Profile
+                  {t('nav.profile')}
                 </Button>
                 <Button
                   variant="ghost"
@@ -96,7 +100,7 @@ const LevelSelection = () => {
                   className="gap-2"
                 >
                   <LogOut className="h-4 w-4" />
-                  Logout
+                  {t('nav.logout')}
                 </Button>
               </>
             ) : (
@@ -107,7 +111,7 @@ const LevelSelection = () => {
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
-                Account
+                {t('nav.account')}
               </Button>
             )}
           </div>
@@ -120,16 +124,16 @@ const LevelSelection = () => {
           {/* Hero Section */}
           <div className="text-center mb-12 animate-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Choose Your Level
+              {t('levelSelection.title')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Practice German grammar with endless interactive gap-fill exercises
+              {t('levelSelection.subtitle')}
             </p>
           </div>
 
           {/* Level Selection */}
           <div className="mb-12 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h3 className="text-xl font-semibold mb-4">Select Level</h3>
+            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h3>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {levels.map((level) => (
                 <Card
@@ -156,7 +160,7 @@ const LevelSelection = () => {
 
           {/* Section Selection */}
           <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h3 className="text-xl font-semibold mb-4">Select Topic</h3>
+            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sections.map((section) => (
                 <Button
@@ -174,32 +178,32 @@ const LevelSelection = () => {
 
           {/* Quick Start */}
           <div className="mt-12 text-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <p className="text-muted-foreground mb-4">Or jump right in</p>
+            <p className="text-muted-foreground mb-4">{t('levelSelection.quickStart')}</p>
             <Button
               size="lg"
               onClick={() => navigate("/exercise")}
               className="text-lg"
             >
-              Start Random Exercise
+              {t('levelSelection.startRandom')}
             </Button>
             <div className="mt-3 flex items-center justify-center gap-4">
               <button
                 onClick={() => navigate("/exercise-stats")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
-                Exercises Stats
+                {t('levelSelection.exerciseStats')}
               </button>
               <button
                 onClick={() => navigate("/pruefungszentren")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
-                Exam Centers
+                {t('levelSelection.examCenters')}
               </button>
               <button
                 onClick={() => navigate("/grammatik")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
-                Grammar Reference
+                {t('levelSelection.grammarReference')}
               </button>
             </div>
           </div>

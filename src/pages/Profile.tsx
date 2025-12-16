@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,9 +19,11 @@ import { toast } from "@/hooks/use-toast";
 import { ArrowLeft, Trash2, LogOut } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateUserData } from "@/utils/auth";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { user, isAuthenticated, refreshUser, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 

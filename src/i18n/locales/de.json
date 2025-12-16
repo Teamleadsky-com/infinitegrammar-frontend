@@ -1,0 +1,77 @@
+{
+  "common": {
+    "appName": "Infinite Grammar",
+    "language": "Sprache"
+  },
+  "nav": {
+    "statistics": "Statistiken",
+    "profile": "Profil",
+    "logout": "Abmelden",
+    "account": "Konto"
+  },
+  "levelSelection": {
+    "title": "Wähle dein Niveau",
+    "subtitle": "Übe deutsche Grammatik mit endlosen interaktiven Lückentextübungen",
+    "selectLevel": "Niveau wählen",
+    "selectTopic": "Thema wählen",
+    "beginner": "Anfänger",
+    "elementary": "Grundstufe",
+    "intermediate": "Mittelstufe",
+    "upperIntermediate": "Obere Mittelstufe",
+    "advanced": "Fortgeschritten",
+    "quickStart": "Oder direkt loslegen",
+    "startRandom": "Zufällige Übung starten",
+    "exerciseStats": "Übungsstatistiken",
+    "examCenters": "Prüfungszentren",
+    "grammarReference": "Grammatikreferenz"
+  },
+  "exercise": {
+    "title": "Übung",
+    "level": "Niveau",
+    "section": "Bereich",
+    "checkAnswer": "Antwort prüfen",
+    "nextExercise": "Nächste Übung",
+    "correct": "Richtig!",
+    "incorrect": "Falsch",
+    "correctAnswer": "Richtige Antwort",
+    "completed": "Übung abgeschlossen!",
+    "score": "Punktzahl",
+    "timeSpent": "Benötigte Zeit",
+    "backToHome": "Zurück zur Startseite"
+  },
+  "profile": {
+    "title": "Profil",
+    "email": "E-Mail",
+    "name": "Name",
+    "memberSince": "Mitglied seit",
+    "settings": "Einstellungen",
+    "saveChanges": "Änderungen speichern",
+    "changesSaved": "Änderungen erfolgreich gespeichert"
+  },
+  "statistics": {
+    "title": "Statistiken",
+    "overview": "Übersicht",
+    "totalExercises": "Gesamte Übungen",
+    "averageScore": "Durchschnittliche Punktzahl",
+    "timeSpent": "Verbrachte Zeit",
+    "byLevel": "Nach Niveau",
+    "bySection": "Nach Bereich",
+    "recentActivity": "Letzte Aktivität",
+    "exercises": "Übungen",
+    "minutes": "Minuten",
+    "date": "Datum",
+    "score": "Punktzahl",
+    "level": "Niveau",
+    "section": "Bereich"
+  },
+  "exerciseStats": {
+    "title": "Übungsstatistiken",
+    "totalGenerated": "Generierte Übungen insgesamt",
+    "byLevel": "Übungsanzahl nach Niveau",
+    "bySection": "Übungsanzahl nach Grammatikbereich",
+    "heatmap": "Übungsanzahl-Heatmap",
+    "levelLabel": "Niveau",
+    "sectionLabel": "Grammatikbereich",
+    "countLabel": "Anzahl"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "common": {
+    "appName": "Infinite Grammar",
+    "language": "Language"
+  },
+  "nav": {
+    "statistics": "Statistics",
+    "profile": "Profile",
+    "logout": "Logout",
+    "account": "Account"
+  },
+  "levelSelection": {
+    "title": "Choose Your Level",
+    "subtitle": "Practice German grammar with endless interactive gap-fill exercises",
+    "selectLevel": "Select Level",
+    "selectTopic": "Select Topic",
+    "beginner": "Beginner",
+    "elementary": "Elementary",
+    "intermediate": "Intermediate",
+    "upperIntermediate": "Upper Intermediate",
+    "advanced": "Advanced",
+    "quickStart": "Or jump right in",
+    "startRandom": "Start Random Exercise",
+    "exerciseStats": "Exercises Stats",
+    "examCenters": "Exam Centers",
+    "grammarReference": "Grammar Reference"
+  },
+  "exercise": {
+    "title": "Exercise",
+    "level": "Level",
+    "section": "Section",
+    "checkAnswer": "Check Answer",
+    "nextExercise": "Next Exercise",
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "correctAnswer": "Correct answer",
+    "completed": "Exercise completed!",
+    "score": "Score",
+    "timeSpent": "Time spent",
+    "backToHome": "Back to Home"
+  },
+  "profile": {
+    "title": "Profile",
+    "email": "Email",
+    "name": "Name",
+    "memberSince": "Member since",
+    "settings": "Settings",
+    "saveChanges": "Save Changes",
+    "changesSaved": "Changes saved successfully"
+  },
+  "statistics": {
+    "title": "Statistics",
+    "overview": "Overview",
+    "totalExercises": "Total Exercises",
+    "averageScore": "Average Score",
+    "timeSpent": "Time Spent",
+    "byLevel": "By Level",
+    "bySection": "By Section",
+    "recentActivity": "Recent Activity",
+    "exercises": "exercises",
+    "minutes": "minutes",
+    "date": "Date",
+    "score": "Score",
+    "level": "Level",
+    "section": "Section"
+  },
+  "exerciseStats": {
+    "title": "Exercise Statistics",
+    "totalGenerated": "Total Exercises Generated",
+    "byLevel": "Exercise Count by Level",
+    "bySection": "Exercise Count by Grammar Section",
+    "heatmap": "Exercise Count Heatmap",
+    "levelLabel": "Level",
+    "sectionLabel": "Grammar Section",
+    "countLabel": "Count"
+  }
+}

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, CheckCircle2, XCircle, Settings, Flag } from "lucide-react";
@@ -9,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
 import { getExercise } from "@/data/exerciseSelector";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
@@ -137,6 +139,7 @@ function processBackendExercise(exercise: BackendExercise): {
 
 const Exercise = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -478,6 +481,7 @@ const Exercise = () => {
                 )}
               </div>
             </div>
+            <LanguageSwitcher />
             {REPORT_EXERCISE_ENABLED && (
               <Button
                 variant="ghost"
@@ -493,7 +497,6 @@ const Exercise = () => {
               variant="ghost"
               size="icon"
               onClick={() => setShowSettingsDialog(true)}
-              className={REPORT_EXERCISE_ENABLED ? "ml-2" : ""}
             >
               <Settings className="h-5 w-5" />
             </Button>
@@ -525,7 +528,7 @@ const Exercise = () => {
                 disabled={Object.keys(selectedAnswers).length !== exerciseData.gaps.length}
                 className="min-w-48"
               >
-                Check Answers
+                {t('exercise.checkAnswer')}
               </Button>
             </div>
           )}
@@ -553,7 +556,7 @@ const Exercise = () => {
 
               <div className="flex justify-center gap-4 flex-wrap">
                 <Button size="lg" onClick={handleNext} variant="success">
-                  Next Exercise
+                  {t('exercise.nextExercise')}
                 </Button>
                 <Button
                   size="lg"
