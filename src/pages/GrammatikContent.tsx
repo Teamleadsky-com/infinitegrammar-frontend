@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/accordion';
 import { getTopicBySlugAndLevel, type GrammarLevel, grammarTopics } from '@/data/grammarTopics';
 import { getTopicContent, getRelatedTopics } from '@/data/grammarContent';
+import { ShareButton } from '@/components/ShareButton';
 
 const GrammatikContent = () => {
   const { level, slug } = useParams<{ level: string; slug: string }>();
@@ -100,7 +101,14 @@ const GrammatikContent = () => {
 
         {/* Hero */}
         <div className="mb-4 md:mb-8 animate-fade-in">
-          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">{topic.title}</h2>
+          <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
+            <h2 className="text-2xl md:text-4xl font-bold">{topic.title}</h2>
+            <ShareButton
+              url={pageUrl}
+              title={pageTitle}
+              description={pageDescription}
+            />
+          </div>
           <div className="text-lg text-muted-foreground leading-relaxed">
             <strong>Kurz erklärt:</strong>{' '}
             <span dangerouslySetInnerHTML={{ __html: content?.shortExplanation || topic.shortDescription }} />

@@ -8,6 +8,7 @@ import {
   grammarCategories,
   type GrammarLevel,
 } from '@/data/grammarTopics';
+import { ShareButton } from '@/components/ShareButton';
 
 const GrammatikLevel = () => {
   const { level } = useParams<{ level: string }>();
@@ -97,14 +98,21 @@ const GrammatikLevel = () => {
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Hero */}
         <div className="mb-8 animate-fade-in">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-              <span className="text-2xl font-bold text-primary">{normalizedLevel}</span>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+                <span className="text-2xl font-bold text-primary">{normalizedLevel}</span>
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold">{levelNames[normalizedLevel]}</h2>
+                <p className="text-muted-foreground">{levelDescriptions[normalizedLevel]}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold">{levelNames[normalizedLevel]}</h2>
-              <p className="text-muted-foreground">{levelDescriptions[normalizedLevel]}</p>
-            </div>
+            <ShareButton
+              url={pageUrl}
+              title={pageTitle}
+              description={pageDescription}
+            />
           </div>
         </div>
 

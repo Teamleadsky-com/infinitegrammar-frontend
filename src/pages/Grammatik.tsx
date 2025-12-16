@@ -13,6 +13,7 @@ import {
   type GrammarLevel,
   type GrammarCategory,
 } from '@/data/grammarTopics';
+import { ShareButton } from '@/components/ShareButton';
 
 const Grammatik = () => {
   const navigate = useNavigate();
@@ -81,9 +82,16 @@ const Grammatik = () => {
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 gradient-primary bg-clip-text text-transparent">
-            Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)
-          </h2>
+          <div className="flex items-start justify-center gap-2 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold gradient-primary bg-clip-text text-transparent">
+              Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)
+            </h2>
+            <ShareButton
+              url="https://www.infinitegrammar.de/grammatik"
+              title="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)"
+              description="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
+            />
+          </div>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen –
             und passende Lückentext-Übungen zum direkten Anwenden.

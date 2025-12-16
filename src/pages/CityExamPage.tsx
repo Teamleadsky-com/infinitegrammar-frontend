@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowLeft, ExternalLink, BookOpen } from "lucide-react";
 import { examCenters } from "@/data/examCenters";
 import { getCityExamContent } from "@/data/cityExamContent";
+import { ShareButton } from "@/components/ShareButton";
 
 const CityExamPage = () => {
   const { examCity } = useParams<{ examCity: string }>();
@@ -114,9 +115,16 @@ const CityExamPage = () => {
       <main className="container mx-auto px-4 py-12 max-w-4xl">
         {/* Hero Section */}
         <div className="mb-8 animate-fade-in">
-          <h1 className="text-3xl md:text-4xl font-bold mb-4">
-            {content.title}
-          </h1>
+          <div className="flex items-start justify-between gap-2 mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold">
+              {content.title}
+            </h1>
+            <ShareButton
+              url={pageUrl}
+              title={pageTitle}
+              description={pageDescription}
+            />
+          </div>
 
           {/* Intro Text */}
           <div className="prose prose-gray dark:prose-invert max-w-none mb-6">

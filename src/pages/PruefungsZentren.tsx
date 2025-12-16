@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Search, ExternalLink, Info } from "lucide-react";
 import { examCenters, uniqueStates, uniqueTypes } from "@/data/examCenters";
+import { ShareButton } from "@/components/ShareButton";
 
 const PruefungsZentren = () => {
   const navigate = useNavigate();
@@ -159,9 +160,16 @@ const PruefungsZentren = () => {
       <main className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Hero Section */}
         <div className="mb-12 animate-fade-in">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            telc & TestDaF Prüfungszentren in Deutschland finden
-          </h1>
+          <div className="flex items-start justify-between gap-2 mb-4">
+            <h1 className="text-4xl md:text-5xl font-bold">
+              telc & TestDaF Prüfungszentren in Deutschland finden
+            </h1>
+            <ShareButton
+              url={pageUrl}
+              title={pageTitle}
+              description={pageDescription}
+            />
+          </div>
           <p className="text-lg text-muted-foreground mb-6">
             Suche nach Stadt und finde passende Prüfungsanbieter wie Volkshochschulen (VHS),
             Universitäts-Sprachzentren und große Institute.

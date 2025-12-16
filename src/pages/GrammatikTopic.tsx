@@ -8,6 +8,7 @@ import {
   grammarCategories,
   type GrammarCategory,
 } from '@/data/grammarTopics';
+import { ShareButton } from '@/components/ShareButton';
 
 const GrammatikTopic = () => {
   const { topic } = useParams<{ topic: string }>();
@@ -81,7 +82,14 @@ const GrammatikTopic = () => {
       <main className="container mx-auto px-4 py-8 max-w-5xl">
         {/* Hero */}
         <div className="mb-8 animate-fade-in">
-          <h2 className="text-2xl md:text-3xl font-bold mb-2">{category.name}</h2>
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <h2 className="text-2xl md:text-3xl font-bold">{category.name}</h2>
+            <ShareButton
+              url={pageUrl}
+              title={pageTitle}
+              description={pageDescription}
+            />
+          </div>
           <p className="text-lg text-muted-foreground">{category.description}</p>
         </div>
 
