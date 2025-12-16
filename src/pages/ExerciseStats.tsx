@@ -418,87 +418,65 @@ const ExerciseStats = () => {
                   <h2 className="text-2xl font-bold">Coverage Analysis</h2>
                 </div>
 
-                {/* Heatmap */}
+                {/* Exercise Count Table */}
                 <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.7s" }}>
-                  <h3 className="text-base md:text-lg font-semibold mb-4">Exercise Count Heatmap: Level × Grammar Section</h3>
+                  <h3 className="text-base md:text-lg font-semibold mb-4">Exercise Count by Level and Grammar Section</h3>
                   <div className="overflow-x-auto -mx-4 md:mx-0">
                     <div className="px-4 md:px-0">
-                    {(() => {
-                      // Transform heatmap data into a grid
-                      const levels = ['A1', 'A2', 'B1', 'B2', 'C1'];
-                      const sectionsMap = new Map<string, any>();
+                      {(() => {
+                        // Transform heatmap data into flat list
+                        const tableData = heatmapData
+                          .filter((item) => item.level !== 'NULL' && item.count > 0)
+                          .sort((a, b) => {
+                            // Sort by level first
+                            const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
+                            const levelDiff = levelOrder.indexOf(a.level) - levelOrder.indexOf(b.level);
+                            if (levelDiff !== 0) return levelDiff;
 
-                      heatmapData.forEach((item) => {
-                        if (!sectionsMap.has(item.sectionId)) {
-                          sectionsMap.set(item.sectionId, {
-                            id: item.sectionId,
-                            name: item.sectionName,
-                            orderInLevel: item.orderInLevel,
-                            counts: {},
+                            // Then by order in level
+                            if (a.orderInLevel !== null && b.orderInLevel !== null) {
+                              return a.orderInLevel - b.orderInLevel;
+                            }
+
+                            // Finally by name
+                            return a.sectionName.localeCompare(b.sectionName);
                           });
-                        }
-                        const section = sectionsMap.get(item.sectionId);
-                        if (section && item.level !== 'NULL') {
-                          section.counts[item.level] = item.count;
-                        }
-                      });
 
-                      const sections = Array.from(sectionsMap.values())
-                        .sort((a, b) => {
-                          if (a.orderInLevel !== null && b.orderInLevel !== null) {
-                            return a.orderInLevel - b.orderInLevel;
-                          }
-                          return a.name.localeCompare(b.name);
-                        });
-
-                      const maxCount = Math.max(...heatmapData.map(d => d.count), 1);
-
-                      const getColor = (count: number) => {
-                        if (count === 0) return 'hsl(var(--muted))';
-                        const intensity = Math.min(count / maxCount, 1);
-                        return `hsl(var(--primary) / ${0.2 + intensity * 0.8})`;
-                      };
-
-                      return (
-                        <div className="min-w-max">
-                          <table className="w-full border-collapse text-sm md:text-base">
-                            <thead>
-                              <tr>
-                                <th className="border border-border p-1.5 md:p-2 text-left bg-muted/50 sticky left-0 z-10 text-xs md:text-sm">
-                                  Grammar Section
-                                </th>
-                                {levels.map((level) => (
-                                  <th key={level} className="border border-border p-1.5 md:p-2 text-center bg-muted/50 min-w-[60px] md:min-w-[80px] text-xs md:text-sm">
-                                    {level}
+                        return (
+                          <div className="min-w-max">
+                            <table className="w-full border-collapse text-sm md:text-base">
+                              <thead>
+                                <tr>
+                                  <th className="border border-border p-2 md:p-3 text-left bg-muted/50 text-xs md:text-sm">
+                                    Level
                                   </th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {sections.map((section) => (
-                                <tr key={section.id}>
-                                  <td className="border border-border p-1.5 md:p-2 bg-background sticky left-0 z-10 font-medium text-xs md:text-sm max-w-[150px] md:max-w-none truncate">
-                                    {section.name}
-                                  </td>
-                                  {levels.map((level) => {
-                                    const count = section.counts[level] || 0;
-                                    return (
-                                      <td
-                                        key={level}
-                                        className="border border-border p-1.5 md:p-2 text-center font-semibold text-xs md:text-sm"
-                                        style={{ backgroundColor: getColor(count) }}
-                                      >
-                                        {count}
-                                      </td>
-                                    );
-                                  })}
+                                  <th className="border border-border p-2 md:p-3 text-left bg-muted/50 text-xs md:text-sm">
+                                    Grammar Section
+                                  </th>
+                                  <th className="border border-border p-2 md:p-3 text-center bg-muted/50 text-xs md:text-sm">
+                                    Count
+                                  </th>
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      );
-                    })()}
+                              </thead>
+                              <tbody>
+                                {tableData.map((item, idx) => (
+                                  <tr key={idx} className="hover:bg-muted/30">
+                                    <td className="border border-border p-2 md:p-3 font-medium text-xs md:text-sm">
+                                      {item.level}
+                                    </td>
+                                    <td className="border border-border p-2 md:p-3 text-xs md:text-sm">
+                                      {item.sectionName}
+                                    </td>
+                                    <td className="border border-border p-2 md:p-3 text-center font-semibold text-xs md:text-sm">
+                                      {item.count}
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
                 </Card>
