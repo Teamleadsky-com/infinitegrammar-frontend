@@ -413,7 +413,7 @@ const ExerciseStats = () => {
               <div className="space-y-6 pt-12">
                 <div className="flex items-center gap-2">
                   <Grid3x3 className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">Coverage Analysis</h2>
+                  <h2 className="text-2xl font-bold">Coverage</h2>
                 </div>
 
                 {/* Exercise Count Table */}

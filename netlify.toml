@@ -38,6 +38,32 @@
   status = 200
   force = false
 
+# Serve static HTML for Grammar pages
+[[redirects]]
+  from = "/grammatik"
+  to = "/grammatik.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/grammatik/:level"
+  to = "/grammatik/:level.html"
+  status = 200
+  force = false
+  conditions = {Level = ["a1", "a2", "b1", "b2", "c1"]}
+
+[[redirects]]
+  from = "/grammatik/thema/:topic"
+  to = "/grammatik/thema/:topic.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/grammatik/b1/wechselpraepositionen-wo-wohin"
+  to = "/grammatik/b1/wechselpraepositionen-wo-wohin.html"
+  status = 200
+  force = false
+
 # SPA fallback: redirect all other routes to index.html
 # This allows React Router to handle client-side routing
 [[redirects]]

@@ -14,6 +14,10 @@ import Profile from "./pages/Profile";
 import VerifyMagicLink from "./pages/VerifyMagicLink";
 import PruefungsZentren from "./pages/PruefungsZentren";
 import CityExamPage from "./pages/CityExamPage";
+import Grammatik from "./pages/Grammatik";
+import GrammatikLevel from "./pages/GrammatikLevel";
+import GrammatikTopic from "./pages/GrammatikTopic";
+import WechselpraepositionenWoWohin from "./pages/grammar-content/WechselpraepositionenWoWohin";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +40,10 @@ const App = () => (
               <Route path="/verify-magic-link" element={<VerifyMagicLink />} />
               <Route path="/pruefungszentren" element={<PruefungsZentren />} />
               <Route path="/pruefungszentren/:examCity" element={<CityExamPage />} />
+              <Route path="/grammatik" element={<Grammatik />} />
+              <Route path="/grammatik/thema/:topic" element={<GrammatikTopic />} />
+              <Route path="/grammatik/:level" element={<GrammatikLevel />} />
+              <Route path="/grammatik/b1/wechselpraepositionen-wo-wohin" element={<WechselpraepositionenWoWohin />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

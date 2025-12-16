@@ -72,6 +72,83 @@ const SEO_PAGES = {
     description: 'TestDaF in Stuttgart: Universität Stuttgart, Goethe-Institut. Alle Infos zu Terminen, Anmeldung und Vorbereitung.',
     url: 'https://www.infinitegrammar.de/pruefungszentren/testdaf-stuttgart',
   },
+
+  // Grammar pages
+  '/grammatik': {
+    title: 'Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1) | Infinite Grammar',
+    description: 'Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden.',
+    url: 'https://www.infinitegrammar.de/grammatik',
+  },
+  '/grammatik/a1': {
+    title: 'A1 – Basis sicher machen – Deutsche Grammatik | Infinite Grammar',
+    description: 'Deutsche Grammatik A1: Grundlagen der deutschen Grammatik: Wortstellung, Präsens, Artikel, Pronomen und einfache Präpositionen. Mit Regeln, Beispielen und Übungen.',
+    url: 'https://www.infinitegrammar.de/grammatik/a1',
+  },
+  '/grammatik/a2': {
+    title: 'A2 – Alltag & Perfekt – Deutsche Grammatik | Infinite Grammar',
+    description: 'Deutsche Grammatik A2: Erweiterte Grundlagen: Kasus, Perfekt, Modalverben und erste komplexe Sätze. Mit Regeln, Beispielen und Übungen.',
+    url: 'https://www.infinitegrammar.de/grammatik/a2',
+  },
+  '/grammatik/b1': {
+    title: 'B1 – komplexer werden – Deutsche Grammatik | Infinite Grammar',
+    description: 'Deutsche Grammatik B1: Mittelstufe: Relativsätze, Konjunktiv II, Wechselpräpositionen und reflexive Verben. Mit Regeln, Beispielen und Übungen.',
+    url: 'https://www.infinitegrammar.de/grammatik/b1',
+  },
+  '/grammatik/b2': {
+    title: 'B2 – präzise & formal – Deutsche Grammatik | Infinite Grammar',
+    description: 'Deutsche Grammatik B2: Fortgeschritten: Indirekte Rede, Nominalisierung, Passiv und komplexe Satzstrukturen. Mit Regeln, Beispielen und Übungen.',
+    url: 'https://www.infinitegrammar.de/grammatik/b2',
+  },
+  '/grammatik/c1': {
+    title: 'C1 – anspruchsvolle Texte – Deutsche Grammatik | Infinite Grammar',
+    description: 'Deutsche Grammatik C1: Gehobene Sprache: Nominalstil, Partizipialkonstruktionen und komplexe Genitivkonstruktionen. Mit Regeln, Beispielen und Übungen.',
+    url: 'https://www.infinitegrammar.de/grammatik/c1',
+  },
+  '/grammatik/thema/satzbau': {
+    title: 'Satzbau & Satzarten – Deutsche Grammatik | Infinite Grammar',
+    description: 'Satzbau & Satzarten: Wortstellung, Nebensätze, Konjunktionen und komplexe Sätze. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/satzbau',
+  },
+  '/grammatik/thema/zeiten': {
+    title: 'Zeiten & Modi – Deutsche Grammatik | Infinite Grammar',
+    description: 'Zeiten & Modi: Verbformen, Zeitformen und Modalverben. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/zeiten',
+  },
+  '/grammatik/thema/verben': {
+    title: 'Verben & Ergänzungen – Deutsche Grammatik | Infinite Grammar',
+    description: 'Verben & Ergänzungen: Trennbare Verben, reflexive Verben und Verben mit Präposition. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/verben',
+  },
+  '/grammatik/thema/nomen': {
+    title: 'Nomen, Artikel, Pronomen – Deutsche Grammatik | Infinite Grammar',
+    description: 'Nomen, Artikel, Pronomen: Artikel, Pronomen, Pluralbildung und Kasus. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/nomen',
+  },
+  '/grammatik/thema/kasus': {
+    title: 'Kasus & Präpositionen – Deutsche Grammatik | Infinite Grammar',
+    description: 'Kasus & Präpositionen: Präpositionen für Ort, Zeit und Richtung. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/kasus',
+  },
+  '/grammatik/thema/adjektive': {
+    title: 'Adjektive & Steigerung – Deutsche Grammatik | Infinite Grammar',
+    description: 'Adjektive & Steigerung: Adjektivdeklination, Komparativ und Superlativ. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/adjektive',
+  },
+  '/grammatik/thema/passiv': {
+    title: 'Passiv & Nominalstil – Deutsche Grammatik | Infinite Grammar',
+    description: 'Passiv & Nominalstil: Passivformen, Nominalisierung und Partizipialkonstruktionen. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/passiv',
+  },
+  '/grammatik/thema/genitiv': {
+    title: 'Genitiv – Deutsche Grammatik | Infinite Grammar',
+    description: 'Genitiv: Genitivgebrauch in gehobener Sprache. Alle Regeln mit Beispielen und Übungen (A1-C1).',
+    url: 'https://www.infinitegrammar.de/grammatik/thema/genitiv',
+  },
+  '/grammatik/b1/wechselpraepositionen-wo-wohin': {
+    title: 'Wechselpräpositionen: Wo? Wohin? (B1) | Infinite Grammar',
+    description: 'Wechselpräpositionen (B1): Wo vs. Wohin – Dativ oder Akkusativ? Mit Regeln, Beispielen und häufigen Fehlern.',
+    url: 'https://www.infinitegrammar.de/grammatik/b1/wechselpraepositionen-wo-wohin',
+  },
 };
 
 function generateHTML(baseHtml, meta) {
