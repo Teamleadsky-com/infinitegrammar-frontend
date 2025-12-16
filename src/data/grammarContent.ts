@@ -2455,7 +2455,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     ],
     exerciseSection: 'Verben',
   },
-  
+
   // B2 - Feste Präposition / Rektion
   'b2-feste-praeposition-rektion': {
     topicId: 'b2-feste-praeposition-rektion',
@@ -3152,6 +3152,443 @@ export const grammarContentData: Record<string, GrammarContent> = {
       },
     ],
     exerciseSection: 'Präpositionen',
+  },
+    // C1 - Komplexe präpositionale Ausdrücke
+  'c1-komplexe-praepositionsausdruecke': {
+    topicId: 'c1-komplexe-praepositionsausdruecke',
+    shortExplanation:
+      'Komplexe Präpositionen sind <strong>mehrteilige Ausdrücke</strong> wie „<strong>in Bezug auf</strong>“, „<strong>im Hinblick auf</strong>“, „<strong>im Rahmen von</strong>“. Sie sind typisch für formelle Texte und haben oft eine <strong>feste Rektion</strong> (Kasus).',
+    whenToUse: `
+      <p class="mb-3">Du nutzt komplexe Präpositionen, wenn du in formellen Texten präzise und „schriftsprachlich“ formulieren willst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Bezug:</strong> in Bezug auf / hinsichtlich</li>
+        <li><strong>Rahmen:</strong> im Rahmen von</li>
+        <li><strong>Vergleich/Gegensatz:</strong> im Vergleich zu / im Gegensatz zu</li>
+        <li><strong>Zusammenhang:</strong> im Zusammenhang mit</li>
+        <li><strong>Grund/Folge:</strong> aufgrund / infolge / angesichts</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Wichtig:</p>
+        <p class="text-sm mt-2">Komplexe Präpositionen funktionieren wie „normale“ Präpositionen – aber sie sind <strong class="text-primary">feste Einheiten</strong> und verlangen oft einen <strong class="text-primary">bestimmten Kasus</strong>.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Sehr typische Muster (mit Beispielen):</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>in Bezug auf</strong> + Akk: In Bezug auf <strong>die</strong> Kosten gibt es Fragen.</li>
+            <li><strong>im Hinblick auf</strong> + Akk: Im Hinblick auf <strong>die</strong> Prüfung ist das wichtig.</li>
+            <li><strong>im Zusammenhang mit</strong> + Dat: Im Zusammenhang mit <strong>dem</strong> Projekt gab es Probleme.</li>
+            <li><strong>im Vergleich zu</strong> + Dat: Im Vergleich zu <strong>dem</strong> Vorjahr sind die Zahlen besser.</li>
+            <li><strong>im Rahmen von</strong> + Dat: Im Rahmen <strong>von dem</strong> Kurs üben wir das.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Genitiv in formellen Texten (häufig):</p>
+          <p class="text-sm">„<strong>aufgrund</strong> des Wetters“, „<strong>infolge</strong> des Streiks“, „<strong>angesichts</strong> der Lage“ (in der Standardsprache).</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 1: Kasus „nach Gefühl“</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ in Bezug auf <strong>dem</strong> Thema</p>
+            <p>✓ in Bezug auf <strong>das</strong> Thema (Akk)</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 2: Ausdruck zerlegen</h4>
+          <p class="text-sm">Komplexe Präpositionen sind feste Einheiten – nicht frei umstellbar.</p>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Ist der Ausdruck eine <strong>feste Präpositionseinheit</strong> (z. B. „in Bezug auf“)?',
+      'Kasus prüfen: Akk (in Bezug auf), Dat (im Zusammenhang mit), ggf. Genitiv (aufgrund/angesichts)',
+      'In formellen Texten bewusst einsetzen – nicht in jedem Satz',
+    ],
+    faq: [
+      {
+        question: 'Sind „hinsichtlich“ und „bezüglich“ auch komplexe Präpositionen?',
+        answer:
+          '<p>Ja, funktional schon: Sie verhalten sich wie Präpositionen (meist schriftsprachlich) und brauchen eine feste Ergänzung.</p>',
+      },
+      {
+        question: 'Muss ich immer Genitiv nach „aufgrund/wegen“ verwenden?',
+        answer:
+          '<p>In formellen Texten ist Genitiv meist die sicherere Wahl. Umgangssprachlich kommt Dativ vor, aber in Prüfungen wird Genitiv oft bevorzugt.</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
+
+  // C1 - Adjektivdeklination: komplexe Nominalgruppen
+  'c1-adjektivdeklination-komplex': {
+    topicId: 'c1-adjektivdeklination-komplex',
+    shortExplanation:
+      'In <strong>komplexen Nominalgruppen</strong> stehen oft mehrere Adjektive und Attribute vor dem Nomen. Regel: <strong>Jedes</strong> Adjektiv bekommt eine Endung – und die Endungen folgen dem gleichen Deklinationsmuster (stark/schwach/gemischt).',
+    whenToUse: `
+      <p class="mb-3">Du brauchst das auf C1 besonders in schriftlichen Texten mit langen Nominalgruppen:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>die <strong>neuen internationalen</strong> Studienprogramme</li>
+        <li>mit dem <strong>sehr anspruchsvollen schriftlichen</strong> Teil</li>
+        <li>wegen der <strong>plötzlich auftretenden technischen</strong> Probleme</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Grundregel:</p>
+        <p class="text-sm mt-2">Wenn mehrere Adjektive vor dem Nomen stehen, bekommen sie <strong class="text-primary">die gleiche Endung</strong> (je nach Artikel + Kasus).</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (mit bestimmtem Artikel):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Nominativ: <strong>der</strong> gut<strong>e</strong> alt<strong>e</strong> Freund</li>
+            <li>Akkusativ: Ich sehe <strong>den</strong> gut<strong>en</strong> alt<strong>en</strong> Freund.</li>
+            <li>Dativ: Ich spreche mit <strong>dem</strong> gut<strong>en</strong> alt<strong>en</strong> Freund.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (gemischt, „ein-“):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>ein interessant<strong>er</strong> neu<strong>er</strong> Kurs</li>
+            <li>einen interessant<strong>en</strong> neu<strong>en</strong> Kurs</li>
+            <li>mit einem interessant<strong>en</strong> neu<strong>en</strong> Kurs</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">C1-Tipp für lange Gruppen:</p>
+          <p class="text-sm">Bestimme zuerst <strong>Artikeltyp</strong> + <strong>Kasus</strong>, dann hängen alle Adjektiv-Endungen daran. Nicht jedes Adjektiv „neu entscheiden“.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Endungen mischen</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ den neu<strong>e</strong> interessant<strong>en</strong> Kurs</p>
+            <p>✓ den neu<strong>en</strong> interessant<strong>en</strong> Kurs</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Artikeltyp: der-/ein-/kein Artikel?',
+      'Kasus bestimmen (Nom/Akk/Dat/Gen)',
+      'Mehrere Adjektive → Endungen konsequent gleich halten',
+      'Bei sehr langen Gruppen: ggf. Satz vereinfachen (Lesbarkeit)',
+    ],
+    faq: [
+      {
+        question: 'Muss jedes Adjektiv eine Endung bekommen?',
+        answer:
+          '<p>Ja, wenn es attributiv vor dem Nomen steht: „die neu<strong>en</strong> international<strong>en</strong> Programme“.</p>',
+      },
+      {
+        question: 'Was ist das größte Risiko auf C1?',
+        answer:
+          '<p>Fehler passieren oft im Dativ/Genitiv und bei maskulinem Akkusativ („den … -en“). Dort besonders sorgfältig sein.</p>',
+      },
+    ],
+    exerciseSection: 'Adjektive',
+  },
+
+  // C1 - Passivformen in komplexen Strukturen
+  'c1-passiv-komplex': {
+    topicId: 'c1-passiv-komplex',
+    shortExplanation:
+      'In komplexen Strukturen kombinierst du Passiv mit <strong>Nebensätzen</strong>, <strong>Modalverben</strong> und „unpersönlichem Passiv“. Wichtig ist die richtige <strong>Verbklammer</strong> am Satzende.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst komplexes Passiv, wenn du formell und präzise über Prozesse sprichst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Nebensatz: …, weil die Daten gespeichert <strong>werden müssen</strong>.</li>
+        <li>Unpersönlich: Es <strong>wird</strong> hier viel <strong>gearbeitet</strong>.</li>
+        <li>Dativ-Verb: Es <strong>wird</strong> den Teilnehmenden <strong>geholfen</strong>.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">C1-Fokus:</p>
+        <p class="text-sm mt-2">In Nebensätzen landen oft <strong class="text-primary">mehrere Verbteile am Ende</strong>. Reihenfolge sauber halten.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Unpersönliches Passiv:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Es <strong>wird</strong> viel <strong>diskutiert</strong>.</li>
+            <li>Hier <strong>wird</strong> nicht <strong>geraucht</strong>.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Passiv mit Modalverben (sehr wichtig):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Die Daten <strong>müssen</strong> gespeichert <strong>werden</strong>.</li>
+            <li>Die Unterlagen <strong>sollen</strong> heute verschickt <strong>werden</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Nebensatz (Verb-Endstellung):</p>
+          <p class="text-sm">…, weil die Unterlagen heute verschickt <strong>werden sollen</strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Verbteile in falscher Reihenfolge</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ … weil die Daten gespeichert <strong>sollen werden</strong>.</p>
+            <p>✓ … weil die Daten gespeichert <strong>werden sollen</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Passiv-Grundform: werden + Partizip II',
+      'Mit Modal: Partizip II + werden (Ende) + Modal (im Nebensatz am Ende)',
+      'Unpersönlich: „Es wird + Partizip II“ (wenn kein klares Subjekt existiert)',
+      'Lesbarkeit prüfen: lange Verbketten ggf. umstellen',
+    ],
+    faq: [
+      {
+        question: 'Kann ich Passiv mit Dativverben bilden (helfen)?',
+        answer:
+          '<p>Ja, oft als unpersönliches Passiv: „Es wird ihm geholfen.“ Das Akkusativobjekt fehlt, deshalb nutzt man „es“ oder keinen Platzhalter.</p>',
+      },
+      {
+        question: 'Warum steht „werden“ im Nebensatz so spät?',
+        answer:
+          '<p>Weil im Nebensatz die Verbteile gesammelt am Satzende stehen. Bei mehreren Verben wird die Reihenfolge entscheidend.</p>',
+      },
+    ],
+    exerciseSection: 'Passiv',
+  },
+
+  // C1 - Nominalstil / Informationsverdichtung
+  'c1-nominalstil': {
+    topicId: 'c1-nominalstil',
+    shortExplanation:
+      'Nominalstil bedeutet <strong>Informationsverdichtung</strong>: weniger Verben, mehr Nomen und Attribute. Das ist typisch für Berichte, wissenschaftliche Texte und formelle Kommunikation – aber es darf nicht unverständlich werden.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Nominalstil, wenn du sachlich, kompakt und formal schreiben willst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Bericht/Analyse: objektiver Ton</li>
+        <li>Argumentation: präzise Begriffe statt „umgangssprachlicher“ Verben</li>
+        <li>Zusammenfassungen: viel Inhalt in wenig Text</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Techniken der Verdichtung:</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li><strong class="text-primary">Nominalisierung</strong> (entscheiden → Entscheidung)</li>
+          <li><strong class="text-primary">Genitiv-/Präpositionalattribute</strong> (die Analyse <em>der</em> Daten / im Hinblick <em>auf</em> …)</li>
+          <li><strong class="text-primary">Partizipialattribute</strong> (die <em>vorliegende</em> Studie, die <em>bereits erhobenen</em> Daten)</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiel (Verb-Stil → Nominalstil):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Verb-Stil: Wir <strong>analysieren</strong> die Daten und <strong>bewerten</strong> die Ergebnisse.</li>
+            <li>Nominalstil: Die <strong>Analyse</strong> der Daten und die <strong>Bewertung</strong> der Ergebnisse <strong>erfolgen</strong> im nächsten Schritt.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">C1-Hinweis:</p>
+          <p class="text-sm">Nominalstil ist ein Werkzeug. Wenn Nominalketten zu lang werden, verliert der Text Punkte (Unklarheit). Dann lieber mischen.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Nominalketten ohne Struktur</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Die Durchführung der Optimierung der Implementierung der …</p>
+            <p>✓ Wir optimieren und implementieren … / oder: klare, kurze Nominalgruppen</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Verdichtet der Nominalstil wirklich oder macht er den Satz nur länger?',
+      'Nominalgruppen begrenzen (max. 2–3 Attribute, sonst umformulieren)',
+      'Genitiv/Präpositionen korrekt setzen (der/des, in Bezug auf, im Zusammenhang mit)',
+      'Mix aus Verb- und Nominalstil für Lesbarkeit',
+    ],
+    faq: [
+      {
+        question: 'Bringt Nominalstil in Prüfungen Vorteile?',
+        answer:
+          '<p>Ja, wenn er korrekt und dosiert eingesetzt wird: Er wirkt sachlich und professionell. Zu viel Nominalstil wirkt aber schnell schwerfällig.</p>',
+      },
+      {
+        question: 'Wie erkenne ich „zu viel“ Nominalstil?',
+        answer:
+          '<p>Wenn du beim Lesen den Faden verlierst oder zu viele Nomen hintereinander stehen, ist es Zeit, den Satz zu vereinfachen.</p>',
+      },
+    ],
+    exerciseSection: 'Nominalstil',
+  },
+
+  // C1 - Partizipialkonstruktionen
+  'c1-partizipialkonstruktionen': {
+    topicId: 'c1-partizipialkonstruktionen',
+    shortExplanation:
+      'Partizipialkonstruktionen verdichten Informationen mit <strong>Partizip I</strong> („lachend“) und <strong>Partizip II</strong> („gebaut“). Sie können als <strong>Attribut</strong> oder als verkürzter Nebensatz auftreten.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Partizipialkonstruktionen, um Sätze eleganter und kompakter zu machen:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Attribut: die <strong>laufenden</strong> Kosten / die <strong>geplante</strong> Reform</li>
+        <li>Verdichtung: <em>In Berlin <strong>angekommen</strong>, …</em> (= nachdem ich angekommen bin)</li>
+        <li>Formeller Stil: häufig in Berichten und schriftlichen Texten</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Unterschied:</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li><strong class="text-primary">Partizip I</strong> = gleichzeitig/aktiv: „die <em>arbeitenden</em> Menschen“</li>
+          <li><strong class="text-primary">Partizip II</strong> = abgeschlossen/passiv: „die <em>geschlossenen</em> Türen“</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Als Attribut (mit Endungen):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>die <strong>steigend<strong>en</strong></strong> Preise</li>
+            <li>mit den <strong>bereits erhoben<strong>en</strong></strong> Daten</li>
+            <li>der <strong>neu gebaut<strong>e</strong></strong> Bahnhof</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Als „verkürzter Nebensatz“ (Verdichtung):</p>
+          <p class="text-sm"><strong>In Berlin angekommen</strong>, suchte er sofort eine Wohnung. (= Nachdem er angekommen war …)</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: unklare „Bezugsperson“</h4>
+          <p class="text-sm mb-2">Partizipialkonstruktionen müssen klar zeigen, <strong>wer</strong> die Handlung ausführt.</p>
+          <div class="space-y-2 text-sm">
+            <p>✗ In Berlin angekommen, wurde das Hotel gebucht. (Wer ist angekommen?)</p>
+            <p>✓ In Berlin angekommen, <strong>buchte er</strong> das Hotel.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Partizip I = gleichzeitig/aktiv, Partizip II = abgeschlossen/passiv',
+      'Bei Attributen: Endungen korrekt deklinieren (wie Adjektive)',
+      'Bei Verdichtung: Bezugsperson eindeutig machen',
+      'Wenn es unklar wird: lieber Nebensatz nutzen',
+    ],
+    faq: [
+      {
+        question: 'Sind Partizipialkonstruktionen Pflicht auf C1?',
+        answer:
+          '<p>Nicht „Pflicht“, aber sie verbessern Stil und Verdichtung – wenn sie korrekt und verständlich eingesetzt werden.</p>',
+      },
+      {
+        question: 'Kann ich das im gesprochenen Deutsch nutzen?',
+        answer:
+          '<p>Als Attribute ja („die geplante Reise“). Verkürzte Konstruktionen sind eher schriftlich/formell.</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // C1 - Genitivgebrauch in gehobener Sprache
+  'c1-genitiv-gehobene-sprache': {
+    topicId: 'c1-genitiv-gehobene-sprache',
+    shortExplanation:
+      'In gehobener Sprache wird der <strong>Genitiv</strong> nicht nur nach Präpositionen genutzt, sondern auch als <strong>Genitivobjekt</strong> bei bestimmten Verben/Adjektiven („sich einer Sache bewusst sein“, „einer Sache bedürfen“) und in festen Wendungen.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt diesen Genitiv vor allem in formellen Texten und anspruchsvollen Argumentationen:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Genitivobjekt: Wir <strong>gedenken</strong> <strong>der</strong> Opfer.</li>
+        <li>Adjektiv + Genitiv: Er ist sich <strong>seiner</strong> Verantwortung bewusst.</li>
+        <li>formelle Präpositionen: angesichts <strong>der</strong> Lage, infolge <strong>des</strong> Streiks</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Genitiv-Verben/Adjektive (C1):</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li><strong class="text-primary">gedenken</strong> + Genitiv: Wir gedenken <em>der</em> Verstorbenen.</li>
+          <li><strong class="text-primary">bedürfen</strong> + Genitiv: Das Projekt bedarf <em>einer</em> klaren Struktur.</li>
+          <li><strong class="text-primary">sich bewusst sein</strong> + Genitiv: Sie ist sich <em>der</em> Risiken bewusst.</li>
+          <li><strong class="text-primary">sich sicher sein</strong> + Genitiv: Ich bin mir <em>des</em> Ergebnisses sicher.</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (gehobener Stil):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Angesichts <strong>der</strong> aktuellen Situation ist Vorsicht geboten.</li>
+            <li>Der Plan bedarf <strong>einer</strong> Überarbeitung.</li>
+            <li>Wir gedenken <strong>der</strong> Opfer.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Stilhinweis:</p>
+          <p class="text-sm">Genitivobjekte wirken formell. In Alltagssprache wird oft anders umformuliert (z. B. „Wir erinnern an …“ statt „gedenken“).</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Dativ statt Genitiv bei festen Mustern</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Wir gedenken <strong>den</strong> Opfern.</p>
+            <p>✓ Wir gedenken <strong>der</strong> Opfer.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Genitiv-Präpositionen (angesichts/aufgrund/infolge/…) korrekt',
+      'Genitivobjekte erkennen (gedenken, bedürfen, sich bewusst sein …)',
+      'Artikel/Pronomen im Genitiv sicher: des/der/eines/einer, seiner/ihrer',
+      'Nur einsetzen, wenn es zur Textsorte passt (formell)',
+    ],
+    faq: [
+      {
+        question: 'Welche Genitiv-Verben sind am wichtigsten für C1?',
+        answer:
+          '<p>Sehr typisch sind „gedenken“, „bedürfen“ sowie Wendungen wie „sich einer Sache bewusst sein“ und „sich einer Sache sicher sein“.</p>',
+      },
+      {
+        question: 'Warum lohnt sich das für SEO/Übungen?',
+        answer:
+          '<p>Genitiv ist ein häufiger Prüfungs- und Stilbereich auf C1: Viele Lernende suchen gezielt nach „Genitiv C1“, „Genitivobjekt“, „gehobene Sprache“.</p>',
+      },
+    ],
+    exerciseSection: 'Genitiv',
   },
 
 };
