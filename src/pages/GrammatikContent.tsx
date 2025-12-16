@@ -84,9 +84,9 @@ const GrammatikContent = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 animate-fade-in">
+        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4 md:mb-6 animate-fade-in">
           <button onClick={() => navigate('/grammatik')} className="hover:text-primary transition-colors">
             Grammatik
           </button>
@@ -99,8 +99,8 @@ const GrammatikContent = () => {
         </nav>
 
         {/* Hero */}
-        <div className="mb-8 animate-fade-in">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">{topic.title}</h2>
+        <div className="mb-4 md:mb-8 animate-fade-in">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">{topic.title}</h2>
           <div className="text-lg text-muted-foreground leading-relaxed">
             <strong>Kurz erklärt:</strong>{' '}
             <span dangerouslySetInnerHTML={{ __html: content?.shortExplanation || topic.shortDescription }} />
@@ -108,7 +108,7 @@ const GrammatikContent = () => {
         </div>
 
         {/* CTA Card */}
-        <Card className="p-4 bg-primary/5 border-primary/20 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <Card className="p-4 bg-primary/5 border-primary/20 mb-6 md:mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="font-semibold mb-1">
