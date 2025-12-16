@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -49,6 +50,7 @@ export const ExerciseSettingsDialog = ({
   currentGrammar,
   onApply,
 }: ExerciseSettingsDialogProps) => {
+  const { t } = useTranslation();
   const [level, setLevel] = useState(currentLevel);
   const [section, setSection] = useState(currentSection);
   const [grammar, setGrammar] = useState<string | null>(currentGrammar);
@@ -85,13 +87,13 @@ export const ExerciseSettingsDialog = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Exercise Settings</DialogTitle>
+          <DialogTitle>{t('exercise.settings')}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Level Selection */}
           <div className="space-y-2">
-            <Label htmlFor="level">Level</Label>
+            <Label htmlFor="level">{t('exercise.level')}</Label>
             <Select value={level} onValueChange={setLevel}>
               <SelectTrigger id="level">
                 <SelectValue placeholder="Select level" />
@@ -108,7 +110,7 @@ export const ExerciseSettingsDialog = ({
 
           {/* Section Selection */}
           <div className="space-y-2">
-            <Label htmlFor="section">Topic</Label>
+            <Label htmlFor="section">{t('exercise.topic')}</Label>
             <Select value={section} onValueChange={setSection}>
               <SelectTrigger id="section">
                 <SelectValue placeholder="Select topic" />
@@ -125,16 +127,16 @@ export const ExerciseSettingsDialog = ({
 
           {/* Grammar Focus Selection */}
           <div className="space-y-2">
-            <Label htmlFor="grammar">Grammar Focus</Label>
+            <Label htmlFor="grammar">{t('exercise.grammarFocus')}</Label>
             <Select
               value={grammar || "all"}
               onValueChange={(value) => setGrammar(value === "all" ? null : value)}
             >
               <SelectTrigger id="grammar">
-                <SelectValue placeholder="All grammar" />
+                <SelectValue placeholder={t('exercise.allGrammar')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All grammar</SelectItem>
+                <SelectItem value="all">{t('exercise.allGrammar')}</SelectItem>
                 {availableGrammar.map((gram) => (
                   <SelectItem key={gram.id} value={gram.id}>
                     {gram.name}
@@ -147,9 +149,9 @@ export const ExerciseSettingsDialog = ({
 
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
-            Cancel
+            {t('exercise.cancel')}
           </Button>
-          <Button onClick={handleApply}>Apply</Button>
+          <Button onClick={handleApply}>{t('exercise.apply')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

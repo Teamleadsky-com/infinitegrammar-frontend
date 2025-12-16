@@ -550,7 +550,7 @@ const Exercise = () => {
                 <div className="text-muted-foreground">
                   {correctCount === exerciseData.gaps.length
                     ? "Perfect! All answers correct! 🎉"
-                    : "Keep practicing! You're improving!"}
+                    : t('exercise.keepPracticing')}
                 </div>
               </Card>
 
@@ -563,10 +563,10 @@ const Exercise = () => {
                   variant="outline"
                   onClick={() => setShowExplanations(!showExplanations)}
                 >
-                  {showExplanations ? "Hide" : "Show"} Explanations
+                  {t('exercise.showExplanations')}
                 </Button>
                 <Button size="lg" variant="outline" onClick={() => navigate("/")}>
-                  Back to Menu
+                  {t('exercise.backToMenu')}
                 </Button>
               </div>
             </div>
@@ -621,6 +621,7 @@ interface GapSelectorProps {
 }
 
 const GapSelector = ({ gap, selected, onSelect, submitted }: GapSelectorProps) => {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -690,7 +691,7 @@ const GapSelector = ({ gap, selected, onSelect, submitted }: GapSelectorProps) =
       {/* Show correct answer if wrong */}
       {submitted && isWrong && (
         <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 z-50 bg-success-light border-2 border-success rounded-lg shadow-lg px-4 py-2 whitespace-nowrap">
-          <div className="text-xs text-muted-foreground mb-1">Correct:</div>
+          <div className="text-xs text-muted-foreground mb-1">{t('exercise.correct')}:</div>
           <div className="font-medium text-success">{gap.options[gap.correct]}</div>
         </div>
       )}

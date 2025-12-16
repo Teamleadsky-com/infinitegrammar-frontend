@@ -1053,6 +1053,1410 @@ export const grammarContentData: Record<string, GrammarContent> = {
     ],
     exerciseSection: 'Verben',
   },
+    // A2 - Trennbare Verben
+  'a2-trennbare-verben': {
+    topicId: 'a2-trennbare-verben',
+    shortExplanation:
+      'Bei <strong>trennbaren Verben</strong> wird das Präfix im <strong>Hauptsatz abgetrennt</strong> und steht meist <strong>am Satzende</strong>: „Ich rufe dich <strong>an</strong>.“',
+    whenToUse: `
+      <p class="mb-3">Trennbare Verben brauchst du sehr oft im Alltag, z. B. bei:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>anrufen</strong>, <strong>aufstehen</strong>, <strong>einkaufen</strong>, <strong>mitkommen</strong></li>
+        <li>Alltagsroutinen: <em>Ich stehe um 7 Uhr auf.</em></li>
+        <li>Telefon/Kommunikation: <em>Ich rufe dich später an.</em></li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Grundregel:</p>
+        <p class="text-lg mt-2">Verb (Position 2) … + <strong class="text-primary">Präfix am Ende</strong></p>
+      </div>
+
+      <div class="space-y-6">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Hauptsatz (trennbar):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich <strong>rufe</strong> dich heute <strong>an</strong>.</li>
+            <li>Wir <strong>stehen</strong> früh <strong>auf</strong>.</li>
+            <li>Er <strong>kauft</strong> im Supermarkt <strong>ein</strong>.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Nebensatz / Infinitiv (nicht trennen):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>…, weil ich dich später <strong>anrufe</strong>.</li>
+            <li>Ich will dich später <strong>anrufen</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Perfekt (kurz):</p>
+          <p class="text-sm">Präfix + <strong>ge</strong> + Stamm + (t/en): <em>anrufen → angerufen</em>, <em>aufstehen → aufgestanden</em></p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Präfix nicht ans Satzende</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich rufe <strong>an</strong> dich.</p>
+            <p>✓ Ich rufe dich <strong>an</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Hauptsatz: Präfix steht <strong>am Ende</strong>',
+      'Nebensatz/Infinitiv: Verb bleibt <strong>zusammen</strong>',
+      'Bei Perfekt: <strong>Präfix + ge</strong> richtig gesetzt (z. B. <em>angerufen</em>)',
+    ],
+    faq: [
+      {
+        question: 'Woran erkenne ich trennbare Verben?',
+        answer:
+          '<p>Oft am Präfix (an-, auf-, ein-, mit-, weg-, vor-, zurück- …). Im Hauptsatz hörst du die Trennung: <em>Ich stehe … auf</em>.</p>',
+      },
+      {
+        question: 'Trennt man auch bei Modalverben?',
+        answer:
+          '<p>Ja: <em>Ich <strong>muss</strong> früh <strong>aufstehen</strong></em> (Infinitiv bleibt zusammen, weil am Ende).</p>',
+      },
+    ],
+    exerciseSection: 'Verben',
+  },
+
+  // A2 - Pronomen Grundlagen
+  'a2-pronomen-grundlagen': {
+    topicId: 'a2-pronomen-grundlagen',
+    shortExplanation:
+      'Neben dem Nominativ brauchst du im A2 vor allem Personalpronomen im <strong>Akkusativ</strong> und <strong>Dativ</strong>: <strong>mich</strong>/<strong>mir</strong>, <strong>dich</strong>/<strong>dir</strong>, <strong>ihn</strong>/<strong>ihm</strong> …',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Akkusativ/Dativ-Pronomen, wenn das Pronomen …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>ein <strong>Objekt</strong> ist: Ich sehe <strong>ihn</strong>. (wen?)</li>
+        <li>ein <strong>Empfänger</strong> ist: Ich helfe <strong>ihm</strong>. (wem?)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Kurz-Tabelle:</p>
+        <div class="mt-3 text-sm space-y-2">
+          <p><strong>Akkusativ:</strong> mich, dich, ihn, sie, es, uns, euch, sie/Sie</p>
+          <p><strong>Dativ:</strong> mir, dir, ihm, ihr, ihm, uns, euch, ihnen/Ihnen</p>
+        </div>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele Akkusativ (wen/was?):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Kannst du <strong>mich</strong> hören?</li>
+            <li>Ich treffe <strong>dich</strong> morgen.</li>
+            <li>Ich sehe <strong>ihn</strong> jeden Tag.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele Dativ (wem?):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Kannst du <strong>mir</strong> helfen?</li>
+            <li>Ich gebe <strong>dir</strong> das Buch.</li>
+            <li>Wir danken <strong>ihnen</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „ihn“ und „ihm“ verwechseln</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich helfe <strong>ihn</strong>.</p>
+            <p>✓ Ich helfe <strong>ihm</strong>. (helfen = Dativ)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Frage: <strong>wen/was?</strong> → Akkusativ',
+      'Frage: <strong>wem?</strong> → Dativ',
+      'Höflichkeitsform: <strong>Ihnen</strong> (Dativ) / <strong>Sie</strong> (Akkusativ) groß',
+    ],
+    faq: [
+      {
+        question: 'Welche Verben sind typisch für Dativ?',
+        answer:
+          '<p>Sehr häufig: <strong>helfen</strong>, <strong>danken</strong>, <strong>gehören</strong>, <strong>schmecken</strong>, <strong>passen</strong>.</p>',
+      },
+      {
+        question: 'Gibt es zwei Objekte in einem Satz?',
+        answer:
+          '<p>Ja: „Ich gebe <strong>dir</strong> (Dativ) <strong>das Buch</strong> (Akkusativ).“ Pronomen stehen oft zuerst: „Ich gebe <strong>es</strong> <strong>dir</strong>.“</p>',
+      },
+    ],
+    exerciseSection: 'Pronomen',
+  },
+
+  // A2 - Artikel & Kasus
+  'a2-artikel-kasus': {
+    topicId: 'a2-artikel-kasus',
+    shortExplanation:
+      'Im A2 lernst du die wichtigsten Artikel-Formen in <strong>Nominativ</strong>, <strong>Akkusativ</strong> und <strong>Dativ</strong> (der/den/dem …).',
+    whenToUse: `
+      <p class="mb-3">Kasus zeigen die Funktion im Satz:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Nominativ</strong> = Subjekt (wer/was?)</li>
+        <li><strong>Akkusativ</strong> = direktes Objekt (wen/was?)</li>
+        <li><strong>Dativ</strong> = indirektes Objekt/Empfänger (wem?)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Die wichtigsten Formen (bestimmt):</p>
+        <div class="mt-3 text-sm space-y-1">
+          <p><strong>Nominativ:</strong> der / die / das / die</p>
+          <p><strong>Akkusativ:</strong> <strong>den</strong> / die / das / die</p>
+          <p><strong>Dativ:</strong> <strong>dem</strong> / <strong>der</strong> / <strong>dem</strong> / <strong>den</strong> (+ <em>-n</em> im Plural)</p>
+        </div>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>Der</strong> Mann kommt. (Nominativ)</li>
+            <li>Ich sehe <strong>den</strong> Mann. (Akkusativ)</li>
+            <li>Ich helfe <strong>dem</strong> Mann. (Dativ)</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Merktipp:</p>
+          <p class="text-sm">Maskulin ändert sich am stärksten: <strong>der → den → dem</strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Dativ und Akkusativ verwechseln</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich helfe <strong>den</strong> Mann.</p>
+            <p>✓ Ich helfe <strong>dem</strong> Mann. (helfen = Dativ)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Subjekt? (wer/was) → <strong>Nominativ</strong>',
+      'Direktes Objekt? (wen/was) → <strong>Akkusativ</strong>',
+      'Empfänger? (wem) → <strong>Dativ</strong>',
+    ],
+    faq: [
+      {
+        question: 'Warum heißt es „Ich sehe den Mann“, aber „Ich helfe dem Mann“?',
+        answer:
+          '<p>Weil „sehen“ meist Akkusativ verlangt, „helfen“ aber Dativ. Kasus hängt oft vom Verb ab.</p>',
+      },
+      {
+        question: 'Was bedeutet „Plural + -n“ im Dativ?',
+        answer:
+          '<p>Im Dativ Plural kommt oft ein <strong>-n</strong> ans Nomen: „mit den Kind<strong>ern</strong>“, „bei den Freund<strong>en</strong>“ (wenn nicht schon -n/-s vorhanden).</p>',
+      },
+    ],
+    exerciseSection: 'Kasus',
+  },
+
+  // A2 - Präpositionen Ort + Richtung
+  'a2-praepositionen-ort-richtung': {
+    topicId: 'a2-praepositionen-ort-richtung',
+    shortExplanation:
+      'Bei Ort vs. Richtung unterscheidest du <strong>wo?</strong> (Ort, oft Dativ) und <strong>wohin?</strong> (Richtung, oft Akkusativ) – plus wichtige Ziele mit <strong>nach</strong> und <strong>zu</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst diese Präpositionen, wenn du sagst …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>wo</strong> du bist: <em>Ich bin in der Schule.</em></li>
+        <li><strong>wohin</strong> du gehst: <em>Ich gehe in die Schule.</em></li>
+        <li>Ziel Stadt/Land: <em>Ich fahre nach Berlin.</em></li>
+        <li>Ziel Person/Ort als „Adressat“: <em>Ich gehe zu meiner Freundin.</em></li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Merksatz:</p>
+        <p class="text-lg mt-2"><strong class="text-primary">wo?</strong> → Ort (Dativ) · <strong class="text-primary">wohin?</strong> → Richtung (Akkusativ)</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">in / auf / an (Ort vs. Richtung):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich bin <strong>in der</strong> Schule. (wo?)</li>
+            <li>Ich gehe <strong>in die</strong> Schule. (wohin?)</li>
+            <li>Das Buch liegt <strong>auf dem</strong> Tisch. (wo?)</li>
+            <li>Ich lege das Buch <strong>auf den</strong> Tisch. (wohin?)</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">nach / zu (Ziel):</p>
+          <ul class="mt-2 space-y-1 text-sm ml-4">
+            <li><strong>nach</strong> + Stadt/Land ohne Artikel: <em>nach Berlin, nach Frankreich</em></li>
+            <li><strong>zu</strong> + Person/Institution: <em>zu Maria, zum Arzt, zur Arbeit</em></li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „nach“ bei Ländern mit Artikel</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ nach der Schweiz</p>
+            <p>✓ <strong>in die</strong> Schweiz</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Fragst du <strong>wo?</strong> (Ort) oder <strong>wohin?</strong> (Richtung)?',
+      'Stadt/Land ohne Artikel → meist <strong>nach</strong>',
+      'Person/Institution → meist <strong>zu</strong>',
+    ],
+    faq: [
+      {
+        question: 'Warum heißt es „zur Arbeit“, aber „in die Schule“?',
+        answer:
+          '<p>„zu“ steht oft bei Zielen als Institution/Adressat (Arbeit/Arzt). „in“ wird häufig bei „hinein“/Gebäuden genutzt (in die Schule, ins Kino).</p>',
+      },
+      {
+        question: 'Ist das schon „Wechselpräpositionen“?',
+        answer:
+          '<p>Ja, das ist die Grundlage. Auf B1 lernst du Wechselpräpositionen systematisch (wo/wohin → Dativ/Akkusativ).</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
+
+  // A2 - Adjektivdeklination Einstieg
+  'a2-adjektivdeklination-einstieg': {
+    topicId: 'a2-adjektivdeklination-einstieg',
+    shortExplanation:
+      'Wenn Adjektive <strong>vor einem Nomen</strong> stehen, bekommen sie Endungen: „ein <strong>kalter</strong> Kaffee“, „die <strong>große</strong> Tasche“.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst Adjektivendungen, wenn du ein Nomen genauer beschreibst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>ein <strong>neues</strong> Handy</li>
+        <li>die <strong>kleine</strong> Wohnung</li>
+        <li>der <strong>gute</strong> Film</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">A2-Startregel (Nominativ):</p>
+        <p class="text-sm mt-2">Nach <strong>der/die/das</strong> oft <strong>-e</strong>, nach <strong>ein/eine</strong> oft <strong>-er/-e/-es</strong>.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel (Nominativ):</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>der</strong> alt<strong>e</strong> Mann</li>
+            <li><strong>die</strong> alt<strong>e</strong> Frau</li>
+            <li><strong>das</strong> alt<strong>e</strong> Kind</li>
+            <li><strong>die</strong> alt<strong>en</strong> Leute (Plural)</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel (Nominativ):</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>ein</strong> gut<strong>er</strong> Film</li>
+            <li><strong>eine</strong> gut<strong>e</strong> Idee</li>
+            <li><strong>ein</strong> gut<strong>es</strong> Buch</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Merktipp:</p>
+          <p class="text-sm">Bei „ein-“ fehlt die Artikelendung → das Adjektiv zeigt sie: <strong>ein gut<strong>er</strong></strong>, <strong>ein gut<strong>es</strong></strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Adjektiv ohne Endung vor Nomen</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ ein gut Film</p>
+            <p>✓ ein gut<strong>er</strong> Film</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Steht das Adjektiv <strong>vor</strong> dem Nomen? → Endung nötig',
+      'Mit <strong>der/die/das</strong> oft -e/-en',
+      'Mit <strong>ein/eine</strong>: Adjektiv trägt häufig die „fehlende“ Endung (-er/-e/-es)',
+    ],
+    faq: [
+      {
+        question: 'Ist das schon das komplette System?',
+        answer:
+          '<p>Nein. Das ist der Einstieg (Nominativ). Ab B1/B2 kommt das vollständige System (auch Akkusativ/Dativ/Genitiv).</p>',
+      },
+      {
+        question: 'Warum heißt es „die alten Leute“ (-en)?',
+        answer:
+          '<p>Im Plural steht nach „die“ meistens <strong>-en</strong>: die alt<strong>en</strong> Leute.</p>',
+      },
+    ],
+    exerciseSection: 'Adjektive',
+  },
+
+  // A2 - Vergleich: Komparativ/Superlativ
+  'a2-komparativ-superlativ': {
+    topicId: 'a2-komparativ-superlativ',
+    shortExplanation:
+      'Mit <strong>Komparativ</strong> vergleichst du zwei Dinge („größer“), mit <strong>Superlativ</strong> nennst du das Maximum („am größten“).',
+    whenToUse: `
+      <p class="mb-3">Du nutzt die Steigerung, wenn du …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>vergleichst: Berlin ist <strong>größer</strong> als München.</li>
+        <li>das Maximum ausdrückst: Das ist <strong>am besten</strong>.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Bildung:</p>
+        <p class="text-sm mt-2"><strong>Komparativ:</strong> Adjektiv + <strong>-er</strong> · <strong>Superlativ:</strong> <strong>am</strong> + Adjektiv + <strong>-sten</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Regelmäßige Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>schnell → schnell<strong>er</strong> → am schnell<strong>sten</strong></li>
+            <li>klein → klein<strong>er</strong> → am klein<strong>sten</strong></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Häufig unregelmäßig:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>gut → <strong>besser</strong> → <strong>am besten</strong></li>
+            <li>viel → <strong>mehr</strong> → <strong>am meisten</strong></li>
+            <li>gern → <strong>lieber</strong> → <strong>am liebsten</strong></li>
+            <li>hoch → <strong>höher</strong> → <strong>am höchsten</strong></li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Vergleichssatz:</p>
+          <p class="text-sm"><strong>als</strong> nach Komparativ: „größer <strong>als</strong>“, „besser <strong>als</strong>“</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „mehr besser“</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ mehr besser</p>
+            <p>✓ <strong>besser</strong></p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Komparativ: Endung <strong>-er</strong> (z. B. schneller)',
+      'Superlativ: <strong>am</strong> + -sten (am schnellsten)',
+      'Nach Komparativ kommt <strong>als</strong>',
+    ],
+    faq: [
+      {
+        question: 'Heißt es „wie“ oder „als“?',
+        answer:
+          '<p><strong>wie</strong> = gleich: „so groß <strong>wie</strong>“. <strong>als</strong> = Unterschied: „größer <strong>als</strong>“.</p>',
+      },
+      {
+        question: 'Warum heißt es „am höchsten“ (nicht „am hochsten“)?',
+        answer:
+          '<p>„hoch“ bekommt im Komparativ/Superlativ oft Umlaut: höher, am höchsten.</p>',
+      },
+    ],
+    exerciseSection: 'Adjektive',
+  },
+
+  // B1 - Nebensätze/Konjunktionen
+  'b1-nebensaetze-konjunktionen': {
+    topicId: 'b1-nebensaetze-konjunktionen',
+    shortExplanation:
+      'Bei vielen Konjunktionen bildet man einen <strong>Nebensatz</strong>: Der Nebensatz wird mit Komma abgetrennt und das Verb steht <strong>am Ende</strong> (z. B. weil, dass, obwohl, wenn).',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Nebensätze, um Aussagen logisch zu verbinden, z. B. für …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Grund:</strong> weil</li>
+        <li><strong>Folge:</strong> sodass</li>
+        <li><strong>Gegensatz:</strong> obwohl</li>
+        <li><strong>Bedingung:</strong> wenn</li>
+        <li><strong>Inhaltssatz:</strong> dass</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Wichtig:</p>
+        <p class="text-sm mt-2">Nebensatz → <strong>Komma</strong> + Verb <strong>am Ende</strong>.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich gehe nicht mit, <strong>weil</strong> ich keine Zeit <strong>habe</strong>.</li>
+            <li>Er sagt, <strong>dass</strong> er morgen <strong>kommt</strong>.</li>
+            <li>Wir gehen spazieren, <strong>obwohl</strong> es <strong>regnet</strong>.</li>
+            <li><strong>Wenn</strong> ich Zeit <strong>habe</strong>, besuche ich dich.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Startet der Satz mit Nebensatz?</p>
+          <p class="text-sm">Dann folgt im Hauptsatz direkt das Verb: „Wenn ich Zeit habe, <strong>komme</strong> ich.“</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Verb nicht am Ende</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ … weil ich <strong>habe</strong> keine Zeit.</p>
+            <p>✓ … weil ich keine Zeit <strong>habe</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Konjunktion = Nebensatz? → Verb <strong>am Ende</strong>',
+      'Nebensatz immer mit <strong>Komma</strong> abtrennen',
+      'Nebensatz am Anfang → im Hauptsatz <strong>Verb direkt danach</strong>',
+    ],
+    faq: [
+      {
+        question: 'Was ist der Unterschied zwischen „denn“ und „weil“?',
+        answer:
+          '<p>„weil“ leitet einen Nebensatz ein (Verb am Ende). „denn“ verbindet zwei Hauptsätze (Verb Position 2).</p>',
+      },
+      {
+        question: 'Gilt das auch für „dass“?',
+        answer:
+          '<p>Ja: „Er glaubt, <strong>dass</strong> es morgen <strong>schneit</strong>.“</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // B1 - Relativsätze (Basis)
+  'b1-relativsaetze': {
+    topicId: 'b1-relativsaetze',
+    shortExplanation:
+      'Relativsätze geben Zusatzinfos zu einem Nomen. Sie beginnen meist mit <strong>der/die/das</strong> (oder Plural: die) und haben das Verb <strong>am Ende</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Relativsätze, wenn du etwas genauer beschreiben willst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Das ist der Mann, <strong>der</strong> hier wohnt.</li>
+        <li>Ich suche eine Wohnung, <strong>die</strong> günstig ist.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Merksatz:</p>
+        <p class="text-sm mt-2">Relativsatz → <strong>Komma</strong> + Relativpronomen + … + Verb <strong>am Ende</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Nominativ (wer/was?):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Das ist der Mann, <strong>der</strong> hier <strong>wohnt</strong>.</li>
+            <li>Das ist die Frau, <strong>die</strong> Deutsch <strong>lernt</strong>.</li>
+            <li>Das ist das Kind, <strong>das</strong> laut <strong>ist</strong>.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Akkusativ (wen/was?) – Basisidee:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Das ist der Mann, <strong>den</strong> ich gut <strong>kenne</strong>.</li>
+            <li>Das ist die Tasche, <strong>die</strong> ich <strong>kaufe</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Komma vergessen</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Das ist der Mann der hier wohnt.</p>
+            <p>✓ Das ist der Mann, der hier wohnt.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Relativsatz mit <strong>Kommas</strong> abtrennen',
+      'Verb steht <strong>am Ende</strong>',
+      'Relativpronomen passt zu <strong>Genus</strong> und <strong>Kasus</strong> (der/den/dem …)',
+    ],
+    faq: [
+      {
+        question: 'Wie finde ich den Kasus des Relativpronomens?',
+        answer:
+          '<p>Frag im Relativsatz: <strong>wer/was</strong> (Nominativ), <strong>wen/was</strong> (Akkusativ), <strong>wem</strong> (Dativ). Das Bezugswort bestimmt Genus/Number, der Relativsatz bestimmt den Kasus.</p>',
+      },
+      {
+        question: 'Kann ein Relativsatz in der Mitte stehen?',
+        answer:
+          '<p>Ja: „Der Mann, <strong>den</strong> ich kenne, wohnt hier.“</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // B1 - Indirekte Fragen
+  'b1-indirekte-fragen': {
+    topicId: 'b1-indirekte-fragen',
+    shortExplanation:
+      'Indirekte Fragen sind „eingebettete“ Fragen. Sie haben <strong>kein Fragezeichen</strong> und das Verb steht oft <strong>am Ende</strong>: „Ich weiß nicht, wann er kommt.“',
+    whenToUse: `
+      <p class="mb-3">Du nutzt indirekte Fragen, wenn du eine Frage in einen Satz einbaust, z. B. nach:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>ob</strong> (Ja/Nein): Ich frage mich, <strong>ob</strong> er Zeit hat.</li>
+        <li>Fragewort: Ich weiß nicht, <strong>wo</strong> sie wohnt.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Struktur:</p>
+        <p class="text-sm mt-2">Hauptsatz + Komma + <strong class="text-primary">ob / Fragewort</strong> + … + Verb <strong>am Ende</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele mit „ob“:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich weiß nicht, <strong>ob</strong> er morgen <strong>kommt</strong>.</li>
+            <li>Kannst du mir sagen, <strong>ob</strong> das Restaurant offen <strong>ist</strong>?</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele mit Fragewort:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich weiß nicht, <strong>wo</strong> sie <strong>wohnt</strong>.</li>
+            <li>Er fragt, <strong>wann</strong> der Kurs <strong>beginnt</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Wichtig:</p>
+          <p class="text-sm">Indirekte Fragen enden meistens mit Punkt, nicht mit Fragezeichen.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Wortstellung wie direkte Frage</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich weiß nicht, wann <strong>kommt</strong> er.</p>
+            <p>✓ Ich weiß nicht, wann er <strong>kommt</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Einleitung + Komma (z. B. „Ich weiß nicht,“)',
+      'ob/Fragewort am Anfang des Nebensatzes',
+      'Verb steht <strong>am Ende</strong> und meist <strong>kein</strong> Fragezeichen',
+    ],
+    faq: [
+      {
+        question: 'Wann benutze ich „ob“?',
+        answer:
+          '<p>„ob“ nutzt du für Ja/Nein-Fragen: „ob er kommt“, „ob das stimmt“. Für W-Fragen nutzt du das Fragewort: „wann/wo/warum …“</p>',
+      },
+      {
+        question: 'Kann ich indirekte Fragen höflich machen?',
+        answer:
+          '<p>Ja, z. B.: „Könnten Sie mir sagen, ob …“ / „Wissen Sie, wann …“</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // B1 - Futur I
+  'b1-futur': {
+    topicId: 'b1-futur',
+    shortExplanation:
+      'Das <strong>Futur I</strong> bildet man mit <strong>werden</strong> + Infinitiv. Es wird für <strong>Vermutungen</strong> und manchmal für <strong>Planungen</strong> verwendet.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Futur I besonders für …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Vermutungen:</strong> Er <strong>wird</strong> schon zu Hause <strong>sein</strong>.</li>
+        <li><strong>Ankündigungen/Pläne:</strong> Ich <strong>werde</strong> morgen länger <strong>lernen</strong>.</li>
+        <li><strong>Versprechen:</strong> Ich <strong>werde</strong> dir helfen.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Bildung:</p>
+        <p class="text-lg mt-2"><strong class="text-primary">werden</strong> (Position 2) + … + <strong class="text-primary">Infinitiv am Ende</strong></p>
+      </div>
+
+      <div class="space-y-4 text-sm">
+        <p>✓ Ich <strong>werde</strong> morgen viel <strong>lernen</strong>.</p>
+        <p>✓ Sie <strong>wird</strong> gleich <strong>kommen</strong>.</p>
+        <p>✓ Er <strong>wird</strong> krank <strong>sein</strong>. (Vermutung)</p>
+      </div>
+
+      <div class="mt-6 p-4 bg-muted/50 rounded-lg">
+        <p class="text-sm font-semibold mb-2">Hinweis (B1-realistisch):</p>
+        <p class="text-sm">Für feste Pläne nutzt man oft auch Präsens + Zeitangabe: „Morgen <strong>gehe</strong> ich zum Arzt.“</p>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich werde <strong>lernen</strong> morgen.</p>
+            <p>✓ Ich werde morgen <strong>lernen</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      '„werden“ konjugiert an <strong>Position 2</strong>',
+      'Vollverb als <strong>Infinitiv am Ende</strong>',
+      'Für Vermutung oft: „wird wohl …“ / Kontext beachten',
+    ],
+    faq: [
+      {
+        question: 'Wann ist Futur I besser als Präsens?',
+        answer:
+          '<p>Vor allem bei <strong>Vermutungen</strong> („Er wird schon unterwegs sein.“). Für Pläne reicht oft Präsens mit Zeitangabe.</p>',
+      },
+      {
+        question: 'Ist „werden“ ein Modalverb?',
+        answer:
+          '<p>Nein. „werden“ ist ein Hilfsverb (u. a. für Futur). Es verhält sich im Satzbau ähnlich: Infinitiv steht am Ende.</p>',
+      },
+    ],
+    exerciseSection: 'Zeiten',
+  },
+    // B1 - Modalverben im Präteritum
+  'b1-modalverben-praeteritum': {
+    topicId: 'b1-modalverben-praeteritum',
+    shortExplanation:
+      'Im <strong>Präteritum</strong> haben Modalverben sehr häufige Formen wie <strong>konnte, musste, wollte, durfte, sollte</strong>. Das Vollverb steht weiterhin als <strong>Infinitiv am Satzende</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Modalverben im Präteritum, wenn du über Vergangenes sprichst, z. B. …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Fähigkeit:</strong> Ich <strong>konnte</strong> nicht kommen.</li>
+        <li><strong>Pflicht:</strong> Wir <strong>mussten</strong> früh aufstehen.</li>
+        <li><strong>Wunsch/Absicht:</strong> Ich <strong>wollte</strong> Deutsch lernen.</li>
+        <li><strong>Erlaubnis:</strong> Ich <strong>durfte</strong> nicht rausgehen.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Satzbau:</p>
+        <p class="text-lg mt-2">Modalverb (Präteritum, Position 2) + … + <strong class="text-primary">Infinitiv am Ende</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Häufige Formen:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>können → ich <strong>konnte</strong>, du <strong>konntest</strong>, er <strong>konnte</strong></li>
+            <li>müssen → ich <strong>musste</strong>, du <strong>musstest</strong>, er <strong>musste</strong></li>
+            <li>wollen → ich <strong>wollte</strong>, du <strong>wolltest</strong>, er <strong>wollte</strong></li>
+            <li>dürfen → ich <strong>durfte</strong>, du <strong>durftest</strong>, er <strong>durfte</strong></li>
+            <li>sollen → ich <strong>sollte</strong>, du <strong>solltest</strong>, er <strong>sollte</strong></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich <strong>konnte</strong> gestern nicht <strong>kommen</strong>.</li>
+            <li>Wir <strong>mussten</strong> viel <strong>lernen</strong>.</li>
+            <li>Er <strong>wollte</strong> sofort <strong>gehen</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich konnte <strong>kommen</strong> gestern nicht.</p>
+            <p>✓ Ich konnte gestern nicht <strong>kommen</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Modalverb im Präteritum korrekt (konnte/musste/wollte/…)',
+      'Vollverb als <strong>Infinitiv am Ende</strong>',
+      'Zeitangaben bleiben flexibel, aber Verbklammer bleibt stabil',
+    ],
+    faq: [
+      {
+        question: 'Warum sagt man so oft „ich musste“ statt „ich habe gemusst“?',
+        answer:
+          '<p>Im Alltag ist das Präteritum bei Modalverben sehr verbreitet und klingt natürlicher. Perfekt-Formen existieren, wirken aber oft schwerfällig.</p>',
+      },
+      {
+        question: 'Gilt das auch für „mögen“?',
+        answer:
+          '<p>Ja: „Ich <strong>mochte</strong> den Film.“ (Präteritum). In der Höflichkeit nutzt man oft Konjunktiv II: „Ich <strong>möchte</strong> …“</p>',
+      },
+    ],
+    exerciseSection: 'Zeiten',
+  },
+
+  // B1 - Reflexive Verben
+  'b1-reflexive-verben': {
+    topicId: 'b1-reflexive-verben',
+    shortExplanation:
+      'Reflexive Verben beziehen sich auf das Subjekt zurück: „Ich wasche <strong>mich</strong>.“ Das Reflexivpronomen richtet sich nach Person und Kasus (<strong>mich/dich/sich/uns/euch/sich</strong>).',
+    whenToUse: `
+      <p class="mb-3">Reflexive Verben nutzt du u. a. für …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Alltag/Body: sich waschen, sich anziehen, sich setzen</li>
+        <li>Gefühle: sich freuen, sich ärgern, sich wundern</li>
+        <li>Interessen: sich interessieren (für)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Reflexivpronomen (Akkusativ):</p>
+        <p class="text-sm mt-2"><strong class="text-primary">mich</strong>, <strong class="text-primary">dich</strong>, <strong class="text-primary">sich</strong>, <strong class="text-primary">uns</strong>, <strong class="text-primary">euch</strong>, <strong class="text-primary">sich</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Typisch Akkusativ:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich <strong>wasche mich</strong>.</li>
+            <li>Du <strong>ziehst dich</strong> an.</li>
+            <li>Er <strong>setzt sich</strong> hin.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Manchmal Dativ (wenn es noch ein Akkusativ-Objekt gibt):</p>
+          <p class="text-sm">Ich wasche <strong>mir</strong> die Hände. (Hände = Akkusativ, mir = Dativ)</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: falsches Reflexivpronomen</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich wasche <strong>mich</strong> die Hände.</p>
+            <p>✓ Ich wasche <strong>mir</strong> die Hände.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Reflexivpronomen passt zur Person (ich→mich/…)',
+      'Gibt es noch ein Akkusativobjekt? → Reflexiv oft <strong>Dativ</strong> (mir/dir/…)',
+      'Reflexiv + Präpositionen ggf. mitlernen (sich interessieren <strong>für</strong>)',
+    ],
+    faq: [
+      {
+        question: 'Ist „sich treffen“ reflexiv?',
+        answer:
+          '<p>Ja: „Wir <strong>treffen uns</strong> um 18 Uhr.“ (reflexiv im Plural).</p>',
+      },
+      {
+        question: 'Warum heißt es „Ich freue mich“?',
+        answer:
+          '<p>„sich freuen“ ist ein reflexives Verb: Das Gefühl bezieht sich auf das Subjekt zurück.</p>',
+      },
+    ],
+    exerciseSection: 'Verben',
+  },
+
+  // B1 - Verben mit Präposition
+  'b1-verben-mit-praeposition': {
+    topicId: 'b1-verben-mit-praeposition',
+    shortExplanation:
+      'Viele Verben verlangen eine <strong>feste Präposition</strong> und oft auch einen bestimmten <strong>Kasus</strong>: „warten <strong>auf</strong> + Akkusativ“, „sich interessieren <strong>für</strong> + Akkusativ“.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst Verben mit Präposition, wenn du typische Alltagsverben korrekt ergänzen willst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>warten <strong>auf</strong></li>
+        <li>denken <strong>an</strong></li>
+        <li>sich freuen <strong>auf/über</strong></li>
+        <li>sprechen <strong>mit</strong></li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Merksatz:</p>
+        <p class="text-sm mt-2">Präposition ist Teil des Verbs → <strong>mitlernen</strong> (inkl. Kasus).</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Häufige Muster:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>warten <strong>auf</strong> + Akk: Ich warte <strong>auf den</strong> Bus.</li>
+            <li>denken <strong>an</strong> + Akk: Ich denke <strong>an meine</strong> Familie.</li>
+            <li>sprechen <strong>mit</strong> + Dat: Ich spreche <strong>mit dem</strong> Lehrer.</li>
+            <li>sich interessieren <strong>für</strong> + Akk: Ich interessiere mich <strong>für das</strong> Thema.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Da-/wo- (kurz):</p>
+          <p class="text-sm">Wenn kein Nomen folgt: „Woran denkst du?“ – „Ich denke <strong>daran</strong>.“</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 1: falsche Präposition</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ warten <strong>für</strong> den Bus</p>
+            <p>✓ warten <strong>auf</strong> den Bus</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 2: falscher Kasus</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich interessiere mich für <strong>dem</strong> Kurs.</p>
+            <p>✓ Ich interessiere mich für <strong>den</strong> Kurs. (für + Akk)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Verb + Präposition immer als Einheit lernen',
+      'Kasus prüfen (Akk/Dativ/Genitiv je nach Verb)',
+      'Bei Pronomen: da-/wo- korrekt (daran/woran)',
+    ],
+    faq: [
+      {
+        question: 'Warum ist das so schwer?',
+        answer:
+          '<p>Weil die Präposition oft nicht „logisch“ ableitbar ist. Es hilft nur: feste Kombinationen als Chunk lernen und üben.</p>',
+      },
+      {
+        question: 'Kann ein Verb mehrere Präpositionen haben?',
+        answer:
+          '<p>Ja: „sich freuen <strong>auf</strong>“ (Zukunft) vs. „sich freuen <strong>über</strong>“ (Grund/Anlass).</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
+
+  // B1 - Präpositionen Ort + Zeit (B1)
+  'b1-praepositionen-ort-zeit': {
+    topicId: 'b1-praepositionen-ort-zeit',
+    shortExplanation:
+      'Auf B1 werden Orts- und Zeitpräpositionen systematischer: <strong>seit</strong> (Startpunkt bis jetzt), <strong>vor</strong> (Zeitpunkt in der Vergangenheit), <strong>in</strong> (in 2 Tagen), <strong>für</strong> (Dauer) usw.',
+    whenToUse: `
+      <p class="mb-3">Diese Präpositionen nutzt du, wenn du Zeit und Ort präziser angibst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>seit</strong> 2022 (bis heute)</li>
+        <li><strong>vor</strong> zwei Tagen</li>
+        <li><strong>in</strong> zwei Wochen (in der Zukunft)</li>
+        <li><strong>für</strong> drei Monate (Dauer)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Kernpaare:</p>
+        <ul class="mt-2 space-y-1 text-sm ml-4">
+          <li><strong class="text-primary">seit</strong> + Zeitpunkt (bis jetzt)</li>
+          <li><strong class="text-primary">vor</strong> + Zeitraum (zurück)</li>
+          <li><strong class="text-primary">in</strong> + Zeitraum (nach vorn)</li>
+          <li><strong class="text-primary">für</strong> + Dauer</li>
+        </ul>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele (Zeit):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Ich wohne <strong>seit</strong> 2021 in Berlin.</li>
+            <li>Wir haben uns <strong>vor</strong> zwei Tagen gesehen.</li>
+            <li>Der Kurs beginnt <strong>in</strong> drei Wochen.</li>
+            <li>Ich bin <strong>für</strong> zwei Wochen im Urlaub.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Ortspräpositionen bleiben wichtig:</p>
+          <p class="text-sm">wo/wohin-System (Dativ/Akkusativ) + feste Ziele (nach/zu) – je nach Satz.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „seit“ für Zukunft</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Der Kurs beginnt <strong>seit</strong> zwei Wochen.</p>
+            <p>✓ Der Kurs beginnt <strong>in</strong> zwei Wochen.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      '„seit“ = Startpunkt bis <strong>jetzt</strong>',
+      '„vor“ = zurück in die Vergangenheit',
+      '„in“ = nach vorn (Zukunft)',
+      '„für“ = Dauer',
+    ],
+    faq: [
+      {
+        question: 'Was ist der Unterschied zwischen „in zwei Tagen“ und „für zwei Tage“?',
+        answer:
+          '<p>„in zwei Tagen“ = Zeitpunkt/Zukunft (nach zwei Tagen). „für zwei Tage“ = Dauer (zwei Tage lang).</p>',
+      },
+      {
+        question: 'Kann ich „seit“ mit Präteritum/Perfekt kombinieren?',
+        answer:
+          '<p>Ja, aber der Zustand muss bis heute gelten: „Ich habe seit 2021 hier gewohnt“ klingt meist schlechter als „Ich wohne seit 2021 hier“.</p>',
+      },
+    ],
+    exerciseSection: 'Präpositionen',
+  },
+
+  // B1 - Adjektivdeklination Nominativ/Akkusativ
+  'b1-adjektivdeklination-nom-akk': {
+    topicId: 'b1-adjektivdeklination-nom-akk',
+    shortExplanation:
+      'Im B1 stabilisierst du die Adjektivendungen im <strong>Nominativ</strong> und <strong>Akkusativ</strong> – besonders die wichtigen maskulinen Formen: <strong>der gut<strong>e</strong> Mann</strong> vs. <strong>den gut<strong>en</strong> Mann</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du brauchst das ständig, wenn du Nomen mit Adjektiven beschreibst:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Ich sehe <strong>den neuen</strong> Film.</li>
+        <li>Wir kaufen <strong>eine frische</strong> Pizza.</li>
+        <li>Er hat <strong>ein großes</strong> Auto.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Merksatz (B1):</p>
+        <p class="text-sm mt-2">Maskulin Akkusativ ist der Knackpunkt: <strong class="text-primary">den + -en</strong>, <strong class="text-primary">einen + -en</strong>.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Nominativ: <strong>der</strong> gut<strong>e</strong> Mann / <strong>die</strong> gut<strong>e</strong> Frau / <strong>das</strong> gut<strong>e</strong> Kind</li>
+            <li>Akkusativ: <strong>den</strong> gut<strong>en</strong> Mann / <strong>die</strong> gut<strong>e</strong> Frau / <strong>das</strong> gut<strong>e</strong> Kind</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Nominativ: <strong>ein</strong> gut<strong>er</strong> Mann / <strong>eine</strong> gut<strong>e</strong> Frau / <strong>ein</strong> gut<strong>es</strong> Kind</li>
+            <li>Akkusativ: <strong>einen</strong> gut<strong>en</strong> Mann / <strong>eine</strong> gut<strong>e</strong> Frau / <strong>ein</strong> gut<strong>es</strong> Kind</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „den gute Mann“</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ den gut<strong>e</strong> Mann</p>
+            <p>✓ den gut<strong>en</strong> Mann</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Akkusativ maskulin: <strong>den/einen + -en</strong>',
+      'Feminin/Neutrum oft stabiler (die/eine + -e, das/ein + -e/-es)',
+      'Plural mit „die“ meist <strong>-en</strong> (die guten Leute)',
+    ],
+    faq: [
+      {
+        question: 'Warum ist es „den guten Mann“, aber „die gute Frau“?',
+        answer:
+          '<p>Im Akkusativ ändert sich vor allem die maskuline Artikel-Form (der→den) und damit auch die typische Adjektivendung (-en).</p>',
+      },
+      {
+        question: 'Kommt Dativ hier auch schon vor?',
+        answer:
+          '<p>In B1 kann Dativ schon vorkommen, aber diese Seite fokussiert Nominativ/Akkusativ. Das vollständige System folgt auf B2.</p>',
+      },
+    ],
+    exerciseSection: 'Adjektive',
+  },
+
+  // B1 - Passiv (Einstieg)
+  'b1-passiv-einstieg': {
+    topicId: 'b1-passiv-einstieg',
+    shortExplanation:
+      'Im <strong>Passiv</strong> steht die Handlung im Fokus, nicht der Handelnde: „Der Brief <strong>wird</strong> geschrieben.“ Bildung: <strong>werden</strong> + Partizip II.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Passiv, wenn …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>der Handelnde unwichtig/unknown ist: <em>Hier wird viel gebaut.</em></li>
+        <li>du Prozesse/Regeln beschreibst: <em>Der Antrag wird online ausgefüllt.</em></li>
+        <li>du neutral/formell schreibst: <em>Die Daten werden gespeichert.</em></li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Bildung (Präsens):</p>
+        <p class="text-lg mt-2"><strong class="text-primary">werden</strong> (Position 2) + … + <strong class="text-primary">Partizip II am Ende</strong></p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Aktiv → Passiv:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Aktiv: Der Chef schreibt <strong>den Brief</strong>.</li>
+            <li>Passiv: <strong>Der Brief</strong> <strong>wird</strong> (vom Chef) <strong>geschrieben</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Handelnder im Passiv:</p>
+          <p class="text-sm"><strong>von</strong> + Dativ: „Der Brief wird <strong>von dem Chef</strong> geschrieben.“</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Vergangenheit (Mini-Vorschau):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Der Brief <strong>wurde</strong> geschrieben.</li>
+          </ul>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „sein“-Passiv statt „werden“-Passiv</h4>
+          <p class="text-sm mb-2">B1-Einstieg: Fokus auf <strong>Vorgangspassiv</strong> mit „werden“.</p>
+          <div class="space-y-2 text-sm">
+            <p>✗ Der Brief <strong>ist</strong> geschrieben. (Zustand)</p>
+            <p>✓ Der Brief <strong>wird</strong> geschrieben. (Vorgang)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Passiv = <strong>werden</strong> + Partizip II',
+      'Partizip II steht <strong>am Satzende</strong>',
+      'Handelnder optional mit <strong>von</strong> + Dativ',
+    ],
+    faq: [
+      {
+        question: 'Was ist der Unterschied zwischen „wird gemacht“ und „ist gemacht“?',
+        answer:
+          '<p>„wird gemacht“ = Vorgang/Prozess. „ist gemacht“ = Ergebnis/Zustand (es ist fertig).</p>',
+      },
+      {
+        question: 'Kann jedes Verb ins Passiv?',
+        answer:
+          '<p>Vor allem Verben mit Akkusativobjekt passen gut (den Brief schreiben). Bei reinen Dativverben ist es schwieriger/anders gelöst.</p>',
+      },
+    ],
+    exerciseSection: 'Passiv',
+  },
+
+  // B2 - Infinitivsätze
+  'b2-infinitivsaetze': {
+    topicId: 'b2-infinitivsaetze',
+    shortExplanation:
+      'Infinitivsätze bestehen aus <strong>zu + Infinitiv</strong>: „Ich versuche, pünktlich <strong>zu kommen</strong>.“ Häufige Varianten sind <strong>um … zu</strong>, <strong>ohne … zu</strong>, <strong>statt … zu</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Infinitivsätze, um Absicht, Grund oder Alternative kompakt auszudrücken:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li><strong>Absicht:</strong> Ich lerne, <strong>um</strong> die Prüfung <strong>zu bestehen</strong>.</li>
+        <li><strong>ohne:</strong> Er ging, <strong>ohne</strong> etwas <strong>zu sagen</strong>.</li>
+        <li><strong>statt:</strong> Sie ruft an, <strong>statt</strong> zu schreiben.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Grundform:</p>
+        <p class="text-lg mt-2">… , <strong class="text-primary">zu</strong> + Infinitiv</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Typische Auslöser:</h4>
+          <p class="text-sm">versuchen, planen, vergessen, hoffen, anfangen, aufhören, bitten, erlauben, empfehlen …</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Komma-Regel (praktisch):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Meist Komma bei <strong>um/ohne/statt</strong> und bei längeren Konstruktionen.</li>
+            <li>Bei sehr kurzen „zu“-Ergänzungen ist das Komma teils optional (stilabhängig).</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">„zu“ bei trennbaren Verben:</p>
+          <p class="text-sm">„anrufen“ → „anzurufen“: Ich versuche, dich <strong>anzurufen</strong>.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: „zu“ vergessen oder falsch platzieren</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich versuche, dich morgen anzurufen. (ohne „zu“ bei „zu“-Verb verlangt)</p>
+            <p>✓ Ich versuche, dich morgen <strong>anzurufen</strong>.</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Brauchst du <strong>zu + Infinitiv</strong> (versuchen/planen/…)?',
+      'Bei trennbaren Verben: <strong>zu</strong> zwischen Präfix und Stamm (anzurufen)',
+      'um/ohne/statt → Infinitivsatz meist mit <strong>Komma</strong>',
+    ],
+    faq: [
+      {
+        question: 'Wann benutze ich „um … zu“?',
+        answer:
+          '<p>Wenn du eine <strong>Absicht/Ziel</strong> ausdrückst: „Ich lerne, <strong>um</strong> die Prüfung <strong>zu bestehen</strong>.“</p>',
+      },
+      {
+        question: 'Kann man Infinitivsätze durch Nebensätze ersetzen?',
+        answer:
+          '<p>Oft ja: „um … zu“ ↔ „damit“. „Ich lerne, damit ich bestehe.“</p>',
+      },
+    ],
+    exerciseSection: 'Satzbau',
+  },
+
+  // B2 - Konjunktiv II: Konditionalsätze
+  'b2-konjunktiv-2-konditionalsaetze': {
+    topicId: 'b2-konjunktiv-2-konditionalsaetze',
+    shortExplanation:
+      'Irreale Bedingungen formulierst du mit <strong>wenn</strong> + Konjunktiv II und meist <strong>würde</strong> im Hauptsatz: „Wenn ich Zeit <strong>hätte</strong>, <strong>würde</strong> ich kommen.“',
+    whenToUse: `
+      <p class="mb-3">Du nutzt das, wenn die Bedingung unrealistisch oder nur hypothetisch ist:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Ich würde reisen, wenn ich mehr Zeit hätte.</li>
+        <li>Wenn ich du wäre, würde ich das anders machen.</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Grundmuster:</p>
+        <p class="text-sm mt-2"><strong class="text-primary">Wenn</strong> + Konjunktiv II, <strong class="text-primary">würde</strong> + Infinitiv.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li><strong>Wenn</strong> ich mehr Zeit <strong>hätte</strong>, <strong>würde</strong> ich öfter <strong>kochen</strong>.</li>
+            <li><strong>Wenn</strong> er schneller <strong>wäre</strong>, <strong>würde</strong> er den Bus <strong>kriegen</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Ohne „wenn“ (Inversion möglich):</p>
+          <p class="text-sm"><strong>Hätte</strong> ich mehr Zeit, <strong>würde</strong> ich reisen.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Indikativ statt Konjunktiv II</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Wenn ich Zeit <strong>habe</strong>, würde ich kommen. (oft nicht „irreal“)</p>
+            <p>✓ Wenn ich Zeit <strong>hätte</strong>, würde ich kommen. (irreal/hypothetisch)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Irreal/hypothetisch? → Konjunktiv II (hätte/wäre/könnte/…)',
+      'Hauptsatz oft: <strong>würde</strong> + Infinitiv',
+      'Alternative Form: „Hätte ich …, würde ich …“',
+    ],
+    faq: [
+      {
+        question: 'Wann benutze ich „würde“ und wann die direkte Konjunktivform?',
+        answer:
+          '<p>Bei <strong>sein/haben/Modalverben</strong> nutzt man meist die direkte Form (wäre/hätte/könnte). Bei vielen anderen Verben ist „würde + Infinitiv“ üblich.</p>',
+      },
+      {
+        question: 'Ist „wenn“ immer nötig?',
+        answer:
+          '<p>Nein. Inversion ist möglich: „Wäre ich reich, …“</p>',
+      },
+    ],
+    exerciseSection: 'Konjunktiv',
+  },
+
+  // B2 - Indirekte Rede (Konjunktiv I + II)
+  'b2-indirekte-rede': {
+    topicId: 'b2-indirekte-rede',
+    shortExplanation:
+      'In der <strong>indirekten Rede</strong> gibst du Aussagen wieder. Typisch ist <strong>Konjunktiv I</strong>: „Er sagt, er <strong>sei</strong> krank.“ Wenn Konjunktiv I nicht eindeutig ist, nutzt man oft <strong>Konjunktiv II</strong>.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt indirekte Rede, wenn du Aussagen/Informationen wiedergibst, z. B. in Nachrichten, Berichten oder formellen Texten:</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>Er sagt, er <strong>sei</strong> müde.</li>
+        <li>Sie meint, sie <strong>habe</strong> keine Zeit.</li>
+        <li>Er behauptet, er <strong>wäre</strong> unschuldig. (Konj. II)</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Grundprinzip:</p>
+        <p class="text-sm mt-2">Einleitung (sagen/behaupten/erklären) + Nebensatz → häufig <strong class="text-primary">Konjunktiv</strong>.</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Konjunktiv I (Beispiele):</h4>
+          <ul class="space-y-2 ml-4">
+            <li>Er sagt, er <strong>sei</strong> krank.</li>
+            <li>Sie sagt, sie <strong>komme</strong> später.</li>
+            <li>Er erklärt, er <strong>habe</strong> keine Zeit.</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Wenn Konjunktiv I „gleich aussieht“:</p>
+          <p class="text-sm">Dann nutzt man oft Konjunktiv II: „Sie sagt, sie <strong>hätte</strong> keine Zeit.“</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: Indikativ ohne Distanz</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Er sagt, er <strong>ist</strong> krank. (klingt wie direkte Übernahme)</p>
+            <p>✓ Er sagt, er <strong>sei</strong> krank. (indirekte Rede)</p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Aussage wird wiedergegeben? → indirekte Rede prüfen',
+      'Konjunktiv I bevorzugt (sei/habe/komme/…)',
+      'Wenn Form unklar: Konjunktiv II (wäre/hätte/käme/…)',
+    ],
+    faq: [
+      {
+        question: 'Muss ich immer „dass“ benutzen?',
+        answer:
+          '<p>Nein. „dass“ ist möglich, aber in klassischer indirekter Rede oft ohne „dass“: „Er sagt, er sei krank.“</p>',
+      },
+      {
+        question: 'Ist das nur für formelle Texte?',
+        answer:
+          '<p>Vor allem ja. Im Alltag nutzt man oft Indikativ, in Berichten/Prüfungen ist Konjunktiv wichtiger.</p>',
+      },
+    ],
+    exerciseSection: 'Konjunktiv',
+  },
+
+  // B2 - Nomen-Verb-Verbindungen
+  'b2-nomen-verb-verbindungen': {
+    topicId: 'b2-nomen-verb-verbindungen',
+    shortExplanation:
+      'Nomen-Verb-Verbindungen (z. B. „eine Entscheidung <strong>treffen</strong>“) sind feste Kombinationen, typisch für formelleres Deutsch. Sie wirken oft neutraler als ein einzelnes Verb.',
+    whenToUse: `
+      <p class="mb-3">Du nutzt Nomen-Verb-Verbindungen besonders …</p>
+      <ul class="list-disc list-inside space-y-2 ml-4">
+        <li>in formellen Texten, E-Mails, Bewerbungen</li>
+        <li>in Argumentationen und Berichten</li>
+        <li>als stilistische Alternative zu „starken“ Verben</li>
+      </ul>
+    `,
+    rules: `
+      <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
+        <p class="font-bold text-lg">Typische Muster:</p>
+        <p class="text-sm mt-2">Artikel/Attribut + <strong class="text-primary">Nomen</strong> + „leichtes“ Verb (machen/treffen/führen/stellen/nehmen …)</p>
+      </div>
+
+      <div class="space-y-6 text-sm">
+        <div>
+          <h4 class="font-semibold text-lg mb-3">Häufige Beispiele:</h4>
+          <ul class="space-y-2 ml-4">
+            <li>eine Entscheidung <strong>treffen</strong> (= entscheiden)</li>
+            <li>einen Antrag <strong>stellen</strong> (= beantragen)</li>
+            <li>Kontakt <strong>aufnehmen</strong> (= kontaktieren)</li>
+            <li>eine Frage <strong>stellen</strong> (= fragen)</li>
+            <li>Einfluss <strong>haben</strong> (= beeinflussen)</li>
+          </ul>
+        </div>
+
+        <div class="p-4 bg-muted/50 rounded-lg">
+          <p class="text-sm font-semibold mb-2">Stil-Tipp:</p>
+          <p class="text-sm">In Prüfungen/Textsorte kann das eleganter wirken: „Wir haben eine Entscheidung getroffen“ statt „Wir haben entschieden“.</p>
+        </div>
+      </div>
+    `,
+    commonMistakes: `
+      <div class="space-y-4">
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler: falscher Artikel/Kasus oder falsches „leichtes“ Verb</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ eine Entscheidung <strong>machen</strong></p>
+            <p>✓ eine Entscheidung <strong>treffen</strong></p>
+          </div>
+        </div>
+      </div>
+    `,
+    checklist: [
+      'Kombination als Einheit lernen (Nomen + Verb)',
+      'Artikel/Kasus korrekt setzen (eine/einen/einem …)',
+      'Nicht „frei“ kombinieren (z. B. Entscheidung ≠ machen)',
+    ],
+    faq: [
+      {
+        question: 'Sind das „Funktionsverbgefüge“?',
+        answer:
+          '<p>Teilweise ja. „Nomen-Verb-Verbindungen“ ist der breite Begriff; „Funktionsverbgefüge“ sind eine formellere Untergruppe (kommt stark auf Terminologie an).</p>',
+      },
+      {
+        question: 'Soll ich das im Alltag benutzen?',
+        answer:
+          '<p>Im Alltag geht beides. Für formelle Texte sind diese Verbindungen besonders nützlich.</p>',
+      },
+    ],
+    exerciseSection: 'Verben',
+  },
+
+
 
 };
 
