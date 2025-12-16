@@ -54,7 +54,6 @@ const ExerciseStats = () => {
 
   // State for coverage data
   const [heatmapData, setHeatmapData] = useState<any[]>([]);
-  const [underCoveredSections, setUnderCoveredSections] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -121,7 +120,6 @@ const ExerciseStats = () => {
         if (coverageResponse.ok) {
           const coverageData = await coverageResponse.json();
           setHeatmapData(coverageData.heatmap || []);
-          setUnderCoveredSections(coverageData.underCovered || []);
         }
 
       } catch (error) {
@@ -426,7 +424,7 @@ const ExerciseStats = () => {
                       {(() => {
                         // Transform heatmap data into flat list
                         const tableData = heatmapData
-                          .filter((item) => item.level !== 'NULL' && item.count > 0)
+                          .filter((item) => item.level !== 'NULL')
                           .sort((a, b) => {
                             // Sort by level first
                             const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
@@ -480,45 +478,6 @@ const ExerciseStats = () => {
                     </div>
                   </div>
                 </Card>
-
-                {/* Under-covered Sections */}
-                {underCoveredSections.length > 0 && (
-                  <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-                    <h3 className="text-base md:text-lg font-semibold mb-4">Under-Covered Sections ({"<"}5 exercises)</h3>
-                    <div className="overflow-x-auto -mx-4 md:mx-0">
-                      <div className="px-4 md:px-0">
-                        <table className="w-full min-w-max">
-                          <thead>
-                            <tr className="border-b border-border">
-                              <th className="text-left p-1.5 md:p-2 font-semibold text-xs md:text-sm">Section Name</th>
-                              <th className="text-left p-1.5 md:p-2 font-semibold text-xs md:text-sm">Level</th>
-                              <th className="text-left p-1.5 md:p-2 font-semibold text-xs md:text-sm hidden sm:table-cell">Category</th>
-                              <th className="text-center p-1.5 md:p-2 font-semibold text-xs md:text-sm">Count</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {underCoveredSections.map((section, idx) => (
-                              <tr key={idx} className="border-b border-border hover:bg-muted/50">
-                                <td className="p-1.5 md:p-2 text-xs md:text-sm">{section.sectionName}</td>
-                                <td className="p-1.5 md:p-2 text-xs md:text-sm">{section.level || 'N/A'}</td>
-                                <td className="p-1.5 md:p-2 text-xs md:text-sm hidden sm:table-cell">{section.category}</td>
-                                <td className="p-1.5 md:p-2 text-center">
-                                  <span className={`inline-flex items-center justify-center w-7 h-7 md:w-8 md:h-8 rounded-full font-semibold text-xs md:text-sm ${
-                                    section.count === 0
-                                      ? 'bg-destructive/20 text-destructive'
-                                      : 'bg-warning/20 text-warning'
-                                  }`}>
-                                    {section.count}
-                                  </span>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </Card>
-                )}
               </div>
 
               {/* Action Button */}
