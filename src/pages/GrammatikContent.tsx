@@ -101,9 +101,10 @@ const GrammatikContent = () => {
         {/* Hero */}
         <div className="mb-8 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">{topic.title}</h2>
-          <p className="text-lg text-muted-foreground leading-relaxed">
-            <strong>Kurz erklärt:</strong> {content?.shortExplanation || topic.shortDescription}
-          </p>
+          <div className="text-lg text-muted-foreground leading-relaxed">
+            <strong>Kurz erklärt:</strong>{' '}
+            <span dangerouslySetInnerHTML={{ __html: content?.shortExplanation || topic.shortDescription }} />
+          </div>
         </div>
 
         {/* CTA Card */}
