@@ -90,6 +90,7 @@
     "totalBySection": "Gesamtübungen nach Grammatikbereich",
     "totalByTopic": "Gesamtübungen nach Inhaltsthema",
     "coverage": "Abdeckung",
-    "heatmap": "Übungsanzahl-Heatmap: Niveau × Grammatikbereich"
+    "heatmap": "Übungsanzahl-Heatmap: Niveau × Grammatikbereich",
+    "continueLearning": "Weiter lernen"
   }
 }

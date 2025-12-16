@@ -13,7 +13,7 @@ import {
 const WechselpraepositionenWoWohin = () => {
   const navigate = useNavigate();
 
-  const pageTitle = 'Wechselpräpositionen: Wo? Wohin? (B1) | Infinite Grammar';
+  const pageTitle = 'Wechselpräpositionen: Wo? Wohin? (B1)';
   const pageDescription =
     'Wechselpräpositionen (B1): Wo vs. Wohin – Dativ oder Akkusativ? Mit Regeln, Beispielen und häufigen Fehlern.';
   const pageUrl = 'https://www.infinitegrammar.de/grammatik/b1/wechselpraepositionen-wo-wohin';

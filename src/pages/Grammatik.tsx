@@ -40,12 +40,12 @@ const Grammatik = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
-        <title>Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1) | Infinite Grammar</title>
+        <title>Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)</title>
         <meta
           name="description"
           content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
         />
-        <meta property="og:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1) | Infinite Grammar" />
+        <meta property="og:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)" />
         <meta
           property="og:description"
           content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
@@ -53,7 +53,7 @@ const Grammatik = () => {
         <meta property="og:url" content="https://www.infinitegrammar.de/grammatik" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1) | Infinite Grammar" />
+        <meta name="twitter:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)" />
         <meta
           name="twitter:description"
           content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."

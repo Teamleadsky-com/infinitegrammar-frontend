@@ -53,7 +53,7 @@ const GrammatikLevel = () => {
     C1: 'Gehobene Sprache: Nominalstil, Partizipialkonstruktionen und komplexe Genitivkonstruktionen.',
   };
 
-  const pageTitle = `${levelNames[normalizedLevel]} – Deutsche Grammatik | Infinite Grammar`;
+  const pageTitle = `${levelNames[normalizedLevel]} – Deutsche Grammatik`;
   const pageDescription = `Deutsche Grammatik ${normalizedLevel}: ${levelDescriptions[normalizedLevel]} Mit Regeln, Beispielen und Übungen.`;
   const pageUrl = `https://www.infinitegrammar.de/grammatik/${level}`;
 

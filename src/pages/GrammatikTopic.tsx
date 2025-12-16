@@ -39,7 +39,7 @@ const GrammatikTopic = () => {
 
   const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
 
-  const pageTitle = `${category.name} – Deutsche Grammatik | Infinite Grammar`;
+  const pageTitle = `${category.name} – Deutsche Grammatik`;
   const pageDescription = `${category.name}: ${category.description} Alle Regeln mit Beispielen und Übungen (A1-C1).`;
   const pageUrl = `https://www.infinitegrammar.de/grammatik/thema/${topic}`;
 

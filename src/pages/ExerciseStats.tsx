@@ -489,7 +489,7 @@ const ExerciseStats = () => {
               {/* Action Button */}
               <div className="flex justify-center animate-fade-in mt-12" style={{ animationDelay: "0.9s" }}>
                 <Button size="lg" onClick={() => navigate("/exercise")}>
-                  Continue Learning
+                  {t('exerciseStats.continueLearning')}
                 </Button>
               </div>
             </>

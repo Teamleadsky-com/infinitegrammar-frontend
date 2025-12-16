@@ -16,7 +16,7 @@ const PruefungsZentren = () => {
   const [filterExam, setFilterExam] = useState("all");
   const [searchOrg, setSearchOrg] = useState("");
 
-  const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute) | Infinite Grammar";
+  const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute)";
   const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
   const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
 

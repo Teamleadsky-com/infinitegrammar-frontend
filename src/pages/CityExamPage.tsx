@@ -39,7 +39,7 @@ const CityExamPage = () => {
   }, [content, exam]);
 
   // SEO meta data
-  const pageTitle = content ? `${content.title} | Infinite Grammar` : 'Prüfungszentren | Infinite Grammar';
+  const pageTitle = content ? `${content.title}` : 'Prüfungszentren';
   const pageDescription = content ? content.metaDescription : 'Finde Prüfungszentren in Deutschland';
   const pageUrl = `https://www.infinitegrammar.de/pruefungszentren/${exam}-${city}`;
 
