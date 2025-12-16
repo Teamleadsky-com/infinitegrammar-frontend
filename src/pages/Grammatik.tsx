@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { ArrowLeft, Search, BookOpen, Target, Sparkles } from 'lucide-react';
 import {
   grammarCategories,
+  grammarTopics,
   getTopicsByLevel,
   getPopularTopics,
   type GrammarLevel,
@@ -27,6 +28,14 @@ const Grammatik = () => {
   ];
 
   const popularTopics = getPopularTopics(6);
+
+  // Filter topics based on search query
+  const filteredTopics = searchQuery
+    ? grammarTopics.filter((topic) =>
+        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        topic.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -93,6 +102,38 @@ const Grammatik = () => {
               className="pl-10 text-base"
             />
           </div>
+
+          {/* Search Results */}
+          {searchQuery && (
+            <div className="mt-4">
+              {filteredTopics.length > 0 ? (
+                <>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    {filteredTopics.length} {filteredTopics.length === 1 ? 'Ergebnis' : 'Ergebnisse'} gefunden
+                  </p>
+                  <div className="grid gap-3 md:grid-cols-2">
+                    {filteredTopics.map((topic) => (
+                      <Card
+                        key={topic.id}
+                        className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
+                        onClick={() => navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`)}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
+                            {topic.level}
+                          </span>
+                          <h4 className="font-semibold text-sm">{topic.title}</h4>
+                        </div>
+                        <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <p className="text-sm text-muted-foreground">Keine Ergebnisse gefunden. Versuche andere Suchbegriffe.</p>
+              )}
+            </div>
+          )}
         </Card>
 
         {/* Why This Page */}
