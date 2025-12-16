@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { BookOpen, BarChart3, User, LogOut } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { BookOpen, BarChart3, User } from "lucide-react";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +19,7 @@ const sections = getAllGrammarUiTopics();
 const LevelSelection = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
 
@@ -31,14 +30,6 @@ const LevelSelection = () => {
     { id: "b2", name: "B2", description: t('levelSelection.upperIntermediate') },
     { id: "c1", name: "C1", description: t('levelSelection.advanced') },
   ];
-
-  const handleLogout = () => {
-    logout();
-    toast({
-      title: "Logged out",
-      description: "You've been successfully logged out.",
-    });
-  };
 
   const handleSignInClick = () => {
     if (SIGN_IN_SHOWS_WAITLIST === 1) {
@@ -83,26 +74,15 @@ const LevelSelection = () => {
               {t('nav.statistics')}
             </Button>
             {isAuthenticated ? (
-              <>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/profile")}
-                  className="gap-2"
-                >
-                  <User className="h-4 w-4" />
-                  {t('nav.profile')}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="gap-2"
-                >
-                  <LogOut className="h-4 w-4" />
-                  {t('nav.logout')}
-                </Button>
-              </>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/profile")}
+                className="gap-2"
+              >
+                <User className="h-4 w-4" />
+                {t('nav.profile')}
+              </Button>
             ) : (
               <Button
                 variant="default"
