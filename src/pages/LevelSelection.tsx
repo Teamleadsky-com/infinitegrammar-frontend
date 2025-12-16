@@ -195,6 +195,12 @@ const LevelSelection = () => {
               >
                 Exam Centers
               </button>
+              <button
+                onClick={() => navigate("/grammatik")}
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+              >
+                Grammar Reference
+              </button>
             </div>
           </div>
         </div>
