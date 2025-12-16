@@ -118,9 +118,10 @@ const GrammatikContent = () => {
             </div>
             <Button
               onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
-              className="w-full sm:w-auto shrink-0"
+              className="w-full sm:w-auto shrink-0 whitespace-normal h-auto py-3"
             >
-              {topic.title} üben <ArrowRight className="ml-2 h-4 w-4" />
+              <span className="text-center">{topic.title} üben</span>
+              <ArrowRight className="ml-2 h-4 w-4 shrink-0" />
             </Button>
           </div>
         </Card>
@@ -185,7 +186,7 @@ const GrammatikContent = () => {
             <Button
               size="lg"
               onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto whitespace-normal h-auto py-3"
             >
               {topic.title} jetzt üben
             </Button>
@@ -193,7 +194,7 @@ const GrammatikContent = () => {
               variant="outline"
               size="lg"
               onClick={() => navigate(`/grammatik/thema/${topic.category}`)}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto whitespace-normal h-auto py-3"
             >
               Zur Übersicht: {topic.category}
             </Button>
