@@ -75,12 +75,21 @@
   },
   "exerciseStats": {
     "title": "Übungsstatistiken",
-    "totalGenerated": "Generierte Übungen insgesamt",
-    "byLevel": "Übungsanzahl nach Niveau",
-    "bySection": "Übungsanzahl nach Grammatikbereich",
-    "heatmap": "Übungsanzahl-Heatmap",
-    "levelLabel": "Niveau",
-    "sectionLabel": "Grammatikbereich",
-    "countLabel": "Anzahl"
+    "loading": "Statistiken werden geladen...",
+    "growthOverTime": "Entwicklung im Zeitverlauf",
+    "period": "Zeitraum",
+    "daily": "Täglich",
+    "weekly": "Wöchentlich",
+    "monthly": "Monatlich",
+    "totalExerciseCount": "Gesamtanzahl der Übungen im Zeitverlauf",
+    "cumulativeByLevel": "Kumulative Übungsanzahl nach Niveau",
+    "cumulativeBySection": "Kumulative Übungsanzahl nach Grammatikbereich (Top 10)",
+    "cumulativeByTopic": "Kumulative Übungsanzahl nach Inhaltsthema (Top 10)",
+    "currentSnapshot": "Aktuelle Übersicht",
+    "totalByLevel": "Gesamtübungen nach Niveau",
+    "totalBySection": "Gesamtübungen nach Grammatikbereich",
+    "totalByTopic": "Gesamtübungen nach Inhaltsthema",
+    "coverage": "Abdeckung",
+    "heatmap": "Übungsanzahl-Heatmap: Niveau × Grammatikbereich"
   }
 }

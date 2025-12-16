@@ -74,13 +74,22 @@
     "section": "Section"
   },
   "exerciseStats": {
-    "title": "Exercise Statistics",
-    "totalGenerated": "Total Exercises Generated",
-    "byLevel": "Exercise Count by Level",
-    "bySection": "Exercise Count by Grammar Section",
-    "heatmap": "Exercise Count Heatmap",
-    "levelLabel": "Level",
-    "sectionLabel": "Grammar Section",
-    "countLabel": "Count"
+    "title": "Exercises Statistics",
+    "loading": "Loading statistics...",
+    "growthOverTime": "Growth Over Time",
+    "period": "Period",
+    "daily": "Daily",
+    "weekly": "Weekly",
+    "monthly": "Monthly",
+    "totalExerciseCount": "Total Exercise Count Over Time",
+    "cumulativeByLevel": "Cumulative Exercise Count by Level",
+    "cumulativeBySection": "Cumulative Exercise Count by Grammar Section (Top 10)",
+    "cumulativeByTopic": "Cumulative Exercise Count by Content Topic (Top 10)",
+    "currentSnapshot": "Current Snapshot",
+    "totalByLevel": "Total Exercises by Level",
+    "totalBySection": "Total Exercises by Grammar Section",
+    "totalByTopic": "Total Exercises by Content Topic",
+    "coverage": "Coverage",
+    "heatmap": "Exercise Count Heatmap: Level × Grammar Section"
   }
 }

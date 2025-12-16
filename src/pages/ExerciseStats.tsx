@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, BarChart3, Grid3x3 } from "lucide-react";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   BarChart,
   Bar,
@@ -38,6 +40,7 @@ type PeriodType = 'daily' | 'weekly' | 'monthly';
 
 const ExerciseStats = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [period, setPeriod] = useState<PeriodType>('daily');
   const [loading, setLoading] = useState(true);
 
@@ -224,11 +227,14 @@ const ExerciseStats = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            <h1 className="text-2xl font-bold">Exercises Statistics</h1>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <h1 className="text-2xl font-bold">{t('exerciseStats.title')}</h1>
+            </div>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -238,7 +244,7 @@ const ExerciseStats = () => {
         <div className="max-w-7xl mx-auto space-y-8">
           {loading ? (
             <div className="flex items-center justify-center py-12">
-              <div className="text-lg text-muted-foreground">Loading statistics...</div>
+              <div className="text-lg text-muted-foreground">{t('exerciseStats.loading')}</div>
             </div>
           ) : (
             <>
@@ -247,18 +253,18 @@ const ExerciseStats = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-6 w-6 text-primary" />
-                    <h2 className="text-2xl font-bold">Growth Over Time</h2>
+                    <h2 className="text-2xl font-bold">{t('exerciseStats.growthOverTime')}</h2>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Period:</span>
+                    <span className="text-sm text-muted-foreground">{t('exerciseStats.period')}:</span>
                     <Select value={period} onValueChange={(value) => setPeriod(value as PeriodType)}>
                       <SelectTrigger className="w-[140px]">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="daily">Daily</SelectItem>
-                        <SelectItem value="weekly">Weekly</SelectItem>
-                        <SelectItem value="monthly">Monthly</SelectItem>
+                        <SelectItem value="daily">{t('exerciseStats.daily')}</SelectItem>
+                        <SelectItem value="weekly">{t('exerciseStats.weekly')}</SelectItem>
+                        <SelectItem value="monthly">{t('exerciseStats.monthly')}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -266,7 +272,7 @@ const ExerciseStats = () => {
 
                 {/* Overall Growth */}
                 <Card className="p-6 animate-fade-in">
-                  <h3 className="text-lg font-semibold mb-4">Total Exercise Count Over Time</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalExerciseCount')}</h3>
                   <ResponsiveContainer width="100%" height={300}>
                     <LineChart data={overallGrowth}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -299,7 +305,7 @@ const ExerciseStats = () => {
 
                 {/* Growth by Level */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Cumulative Exercise Count by Level</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.cumulativeByLevel')}</h3>
                   <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={growthByLevel}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -340,12 +346,12 @@ const ExerciseStats = () => {
               <div className="space-y-6 pt-12 pb-12 border-b border-border">
                 <div className="flex items-center gap-2">
                   <BarChart3 className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">Current Snapshot</h2>
+                  <h2 className="text-2xl font-bold">{t('exerciseStats.currentSnapshot')}</h2>
                 </div>
 
                 {/* Snapshot by Level */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Total Exercises by Level</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalByLevel')}</h3>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={countsByLevel}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -376,7 +382,7 @@ const ExerciseStats = () => {
 
                 {/* Snapshot by Grammar Section */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.5s" }}>
-                  <h3 className="text-lg font-semibold mb-4">Total Exercises by Grammar Section</h3>
+                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalBySection')}</h3>
                   <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={countsBySection}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -413,12 +419,12 @@ const ExerciseStats = () => {
               <div className="space-y-6 pt-12">
                 <div className="flex items-center gap-2">
                   <Grid3x3 className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">Coverage</h2>
+                  <h2 className="text-2xl font-bold">{t('exerciseStats.coverage')}</h2>
                 </div>
 
                 {/* Exercise Count Table */}
                 <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.7s" }}>
-                  <h3 className="text-base md:text-lg font-semibold mb-4">Exercise Count by Level and Grammar Section</h3>
+                  <h3 className="text-base md:text-lg font-semibold mb-4">{t('exerciseStats.heatmap')}</h3>
                   <div className="overflow-x-auto -mx-4 md:mx-0">
                     <div className="px-4 md:px-0">
                       {(() => {
