@@ -58,16 +58,16 @@ const GrammatikContent = () => {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate(`/grammatik/${level}`)}>
+            <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
+              <Button variant="ghost" size="icon" onClick={() => navigate(`/grammatik/${level}`)} className="shrink-0">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
+                  <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded shrink-0">
                     {topic.level}
                   </span>
-                  <h1 className="text-base md:text-lg font-bold">{topic.title}</h1>
+                  <h1 className="text-base md:text-lg font-bold truncate">{topic.title}</h1>
                 </div>
               </div>
             </div>
@@ -109,14 +109,17 @@ const GrammatikContent = () => {
 
         {/* CTA Card */}
         <Card className="p-4 bg-primary/5 border-primary/20 mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="font-semibold mb-1">
                 Jetzt üben: {topic.title} ({topic.level})
               </p>
               <p className="text-sm text-muted-foreground">10–20 Lücken, sofort Feedback</p>
             </div>
-            <Button onClick={() => navigate(`/exercise?section=${exerciseSection}`)}>
+            <Button
+              onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
+              className="w-full sm:w-auto shrink-0"
+            >
               {topic.title} üben <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
@@ -178,14 +181,19 @@ const GrammatikContent = () => {
             Übe {topic.title} als Lückentext ({topic.level})
           </h3>
           <p className="text-muted-foreground mb-4">Kurze Sätze, typische Prüfungsfehler, sofort Feedback.</p>
-          <div className="flex gap-3 flex-wrap">
-            <Button size="lg" onClick={() => navigate(`/exercise?section=${exerciseSection}`)}>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              size="lg"
+              onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
+              className="w-full sm:w-auto"
+            >
               {topic.title} jetzt üben
             </Button>
             <Button
               variant="outline"
               size="lg"
               onClick={() => navigate(`/grammatik/thema/${topic.category}`)}
+              className="w-full sm:w-auto"
             >
               Zur Übersicht: {topic.category}
             </Button>
