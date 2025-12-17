@@ -37,10 +37,10 @@ const Grammatik = () => {
   // Popular level/section combinations for quick testing
   const quickTestOptions = [
     { level: 'A1', sectionId: 'praesens_grundform', sectionName: 'Präsens (Grundformen)', emoji: '🌱' },
-    { level: 'A2', sectionId: 'praepositionen_wechsel', sectionName: 'Wechselpräpositionen', emoji: '🔄' },
-    { level: 'B1', sectionId: 'relativsaetze_einfuehrung', sectionName: 'Relativsätze', emoji: '🔗' },
-    { level: 'B1', sectionId: 'konjunktiv2_basis', sectionName: 'Konjunktiv II', emoji: '💭' },
-    { level: 'B2', sectionId: 'passiv_vorgangspassiv', sectionName: 'Passiv (Vorgangspassiv)', emoji: '🔀' },
+    { level: 'A2', sectionId: 'praepositionen_wechselpraepositionen', sectionName: 'Wechselpräpositionen', emoji: '🔄' },
+    { level: 'B1', sectionId: 'relativsaetze_basis', sectionName: 'Relativsätze', emoji: '🔗' },
+    { level: 'B1', sectionId: 'konjunktiv2_hoeflichkeit', sectionName: 'Konjunktiv II', emoji: '💭' },
+    { level: 'B2', sectionId: 'passiv', sectionName: 'Passiv', emoji: '🔀' },
     { level: 'B2', sectionId: 'indirekte_rede', sectionName: 'Indirekte Rede', emoji: '💬' },
   ];
 
