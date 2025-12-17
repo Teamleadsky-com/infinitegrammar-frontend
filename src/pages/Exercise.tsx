@@ -513,7 +513,7 @@ const Exercise = () => {
 
       // Add the gap selector
       parts.push(
-        <span key={gap.id} className="inline-block mx-1 my-1">
+        <span key={gap.id} className="inline-block align-middle mx-1">
           <GapSelector
             gap={gap}
             selected={selectedAnswers[gap.id]}
@@ -664,8 +664,8 @@ const Exercise = () => {
                 {renderTextWithExplanations()}
               </div>
             ) : (
-              <div className="text-lg leading-relaxed">
-                <p className="text-foreground flex flex-wrap items-center gap-y-3">{renderTextWithGaps()}</p>
+              <div className="text-lg leading-relaxed text-foreground">
+                {renderTextWithGaps()}
               </div>
             )}
           </Card>
@@ -803,7 +803,7 @@ const GapSelector = ({ gap, selected, onSelect, submitted }: GapSelectorProps) =
       <button
         onClick={() => !submitted && setIsOpen(!isOpen)}
         className={cn(
-          "px-4 py-2 rounded-lg border-2 font-medium transition-all duration-300 min-w-32 text-center",
+          "px-3 py-1.5 rounded-lg border-2 font-medium transition-all duration-300 text-center whitespace-nowrap",
           !submitted && "hover:border-primary hover:shadow-md cursor-pointer",
           submitted && "cursor-default",
           selected !== undefined && !submitted && "border-primary bg-primary/10",
