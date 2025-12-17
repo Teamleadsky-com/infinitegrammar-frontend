@@ -2,6 +2,8 @@
  * Authentication API utilities
  */
 
+import { trackSignUp, trackLogin } from './analytics';
+
 const API_BASE = import.meta.env.DEV
   ? 'http://localhost:8888/api'
   : '/api';
@@ -60,6 +62,9 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
   // Store user in localStorage
   localStorage.setItem('user', JSON.stringify(result.user));
   localStorage.setItem('isLoggedIn', 'true');
+
+  // Track sign_up event in Google Analytics
+  trackSignUp(result.user.id, 'email');
 
   return result;
 }

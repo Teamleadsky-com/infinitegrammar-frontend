@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle, XCircle } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { updateUserData } from "@/utils/auth";
+import { trackLogin } from "@/utils/analytics";
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -48,6 +49,9 @@ const VerifyMagicLink = () => {
         // Save user data and refresh auth context
         updateUserData(result.user);
         refreshUser();
+
+        // Track login event (magic links are only for existing users)
+        trackLogin(result.user.id, 'magic_link');
 
         setStatus('success');
 
