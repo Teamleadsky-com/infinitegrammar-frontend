@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
@@ -23,10 +23,6 @@ const Grammatik = () => {
   const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
     null
   );
-  const [quickTestOptions, setQuickTestOptions] = useState<
-    Array<{ level: string; sectionId: string; sectionName: string; emoji: string }>
-  >([]);
-  const [loadingQuizOptions, setLoadingQuizOptions] = useState(true);
 
   const levels: { level: GrammarLevel; name: string; description: string }[] = [
     { level: 'A1', name: 'A1 – Basis sicher machen', description: 'Wortstellung, Präsens, Artikel …' },
@@ -38,82 +34,15 @@ const Grammatik = () => {
 
   const popularTopics = getPopularTopics(6);
 
-  // Emoji mapping for grammar topics
-  const emojiMap: { [key: string]: string } = {
-    praesens: '🌱',
-    perfekt: '✅',
-    präteritum: '📚',
-    futur: '🔮',
-    modalverben: '💪',
-    imperativ: '❗',
-    passiv: '🔀',
-    konjunktiv: '💭',
-    relativsaetze: '🔗',
-    präpositionen: '🔄',
-    wechselpräpositionen: '🔄',
-    artikel: '📝',
-    adjektiv: '🎨',
-    nomen: '📦',
-    pronomen: '👤',
-    satzbau: '🏗️',
-    konnektoren: '🔗',
-    indirekte: '💬',
-    verben: '⚡',
-  };
-
-  // Fetch available grammar sections with exercises from database
-  useEffect(() => {
-    const fetchQuizOptions = async () => {
-      try {
-        const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
-        const response = await fetch(`${API_BASE}/grammar-sections-with-exercises?minExercises=5`);
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch grammar sections');
-        }
-
-        const data = await response.json();
-
-        // Select popular sections from each level
-        const options: Array<{ level: string; sectionId: string; sectionName: string; emoji: string }> = [];
-
-        // Select 1-2 sections from each level
-        ['A1', 'A2', 'B1', 'B2', 'C1'].forEach((level) => {
-          const sectionsForLevel = data.byLevel[level] || [];
-          const selected = sectionsForLevel.slice(0, level === 'B1' || level === 'B2' ? 2 : 1);
-
-          selected.forEach((section: any) => {
-            // Find matching emoji based on section name keywords
-            let emoji = '📖'; // default
-            const nameLower = section.name.toLowerCase();
-            for (const [keyword, emojiChar] of Object.entries(emojiMap)) {
-              if (nameLower.includes(keyword)) {
-                emoji = emojiChar;
-                break;
-              }
-            }
-
-            options.push({
-              level: level,
-              sectionId: section.id,
-              sectionName: section.name,
-              emoji: emoji,
-            });
-          });
-        });
-
-        setQuickTestOptions(options);
-      } catch (error) {
-        console.error('Error fetching quiz options:', error);
-        // Set empty array on error - the UI will handle this gracefully
-        setQuickTestOptions([]);
-      } finally {
-        setLoadingQuizOptions(false);
-      }
-    };
-
-    fetchQuizOptions();
-  }, []);
+  // Popular level/section combinations for quick testing
+  const quickTestOptions = [
+    { level: 'A1', sectionId: 'praesens_grundform', sectionName: 'Präsens (Grundformen)', emoji: '🌱' },
+    { level: 'B1', sectionId: 'praepositionen_wechselpraepositionen', sectionName: 'Wechselpräpositionen', emoji: '🔄' },
+    { level: 'B1', sectionId: 'relativsaetze_basis', sectionName: 'Relativsätze', emoji: '🔗' },
+    { level: 'B1', sectionId: 'konjunktiv2_hoeflichkeit', sectionName: 'Konjunktiv II', emoji: '💭' },
+    { level: 'B2', sectionId: 'passiv', sectionName: 'Passiv', emoji: '🔀' },
+    { level: 'B2', sectionId: 'indirekte_rede', sectionName: 'Indirekte Rede', emoji: '💬' },
+  ];
 
   // Filter topics based on search query
   const filteredTopics = searchQuery
@@ -205,14 +134,6 @@ const Grammatik = () => {
                 grammarSectionName={activeQuiz.sectionName}
                 onClose={() => setActiveQuiz(null)}
               />
-            ) : loadingQuizOptions ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Lade verfügbare Tests...</p>
-              </div>
-            ) : quickTestOptions.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground">Keine Tests verfügbar. Bitte versuche es später erneut.</p>
-              </div>
             ) : (
               <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {quickTestOptions.map((option) => (
