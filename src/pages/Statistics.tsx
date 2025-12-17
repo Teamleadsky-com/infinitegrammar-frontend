@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Target, Award } from "lucide-react";
@@ -51,6 +52,7 @@ const defaultProgressData = [
 
 const Statistics = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const { stats } = useExerciseStats();
   const { user, isAuthenticated } = useAuth();
@@ -141,7 +143,7 @@ const Statistics = () => {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <h1 className="text-2xl font-bold">Your Statistics</h1>
+            <h1 className="text-2xl font-bold">{t('statistics.yourTitle')}</h1>
           </div>
         </div>
       </header>

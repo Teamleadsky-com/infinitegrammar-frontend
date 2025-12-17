@@ -4,7 +4,7 @@
     "language": "Sprache"
   },
   "nav": {
-    "statistics": "Statistiken",
+    "statistics": "Ergebnisse",
     "profile": "Profil",
     "logout": "Abmelden",
     "account": "Konto"
@@ -59,6 +59,7 @@
   },
   "statistics": {
     "title": "Statistiken",
+    "yourTitle": "Ihre Ergebnisse",
     "overview": "Übersicht",
     "totalExercises": "Gesamte Übungen",
     "averageScore": "Durchschnittliche Punktzahl",
