@@ -28,7 +28,7 @@ export const handler: Handler = async (event) => {
     const level = params.level?.toUpperCase();
     const topic = params.topic?.toLowerCase();
     const grammarSection = params.grammarSection;
-    const random = params.random === 'true';
+    const limit = params.limit ? parseInt(params.limit, 10) : null;
 
     if (!level) {
       return createResponse(400, { error: 'Level parameter is required' });
@@ -49,11 +49,16 @@ export const handler: Handler = async (event) => {
           e.content_topic,
           e.model,
           gs.name as grammar_section_name,
+          COALESCE(
+            (SELECT json_agg(gut.topic)
+             FROM grammar_ui_topics gut
+             WHERE gut.grammar_section_id = e.grammar_section_id),
+            '[]'::json
+          ) as grammar_ui_topics,
           json_agg(
             json_build_object(
-              'id', eg.id,
-              'gap_number', eg.gap_number,
-              'correct_answer', eg.correct_answer,
+              'no', eg.gap_number,
+              'correct', eg.correct_answer,
               'distractors', eg.distractors,
               'explanation', eg.explanation
             ) ORDER BY eg.gap_number
@@ -66,8 +71,8 @@ export const handler: Handler = async (event) => {
           AND e.grammar_section_id = ${grammarSection}
         GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
                  e.text, e.content_topic, e.model, gs.name
-        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
-        ${random ? sql`LIMIT 1` : sql``}
+        ORDER BY RANDOM()
+        ${limit ? sql`LIMIT ${limit}` : sql``}
       `;
     } else if (topic) {
       // Filter by topic
@@ -81,11 +86,16 @@ export const handler: Handler = async (event) => {
           e.content_topic,
           e.model,
           gs.name as grammar_section_name,
+          COALESCE(
+            (SELECT json_agg(gut.topic)
+             FROM grammar_ui_topics gut
+             WHERE gut.grammar_section_id = e.grammar_section_id),
+            '[]'::json
+          ) as grammar_ui_topics,
           json_agg(
             json_build_object(
-              'id', eg.id,
-              'gap_number', eg.gap_number,
-              'correct_answer', eg.correct_answer,
+              'no', eg.gap_number,
+              'correct', eg.correct_answer,
               'distractors', eg.distractors,
               'explanation', eg.explanation
             ) ORDER BY eg.gap_number
@@ -102,8 +112,8 @@ export const handler: Handler = async (event) => {
           )
         GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
                  e.text, e.content_topic, e.model, gs.name
-        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
-        ${random ? sql`LIMIT 1` : sql``}
+        ORDER BY RANDOM()
+        ${limit ? sql`LIMIT ${limit}` : sql``}
       `;
     } else {
       // No additional filters
@@ -117,11 +127,16 @@ export const handler: Handler = async (event) => {
           e.content_topic,
           e.model,
           gs.name as grammar_section_name,
+          COALESCE(
+            (SELECT json_agg(gut.topic)
+             FROM grammar_ui_topics gut
+             WHERE gut.grammar_section_id = e.grammar_section_id),
+            '[]'::json
+          ) as grammar_ui_topics,
           json_agg(
             json_build_object(
-              'id', eg.id,
-              'gap_number', eg.gap_number,
-              'correct_answer', eg.correct_answer,
+              'no', eg.gap_number,
+              'correct', eg.correct_answer,
               'distractors', eg.distractors,
               'explanation', eg.explanation
             ) ORDER BY eg.gap_number
@@ -133,8 +148,8 @@ export const handler: Handler = async (event) => {
           AND e.is_active = true
         GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
                  e.text, e.content_topic, e.model, gs.name
-        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
-        ${random ? sql`LIMIT 1` : sql``}
+        ORDER BY RANDOM()
+        ${limit ? sql`LIMIT ${limit}` : sql``}
       `;
     }
 
@@ -144,16 +159,17 @@ export const handler: Handler = async (event) => {
       level: row.level,
       grammar_section_id: row.grammar_section_id,
       grammar_section_name: row.grammar_section_name,
+      grammar_ui_topics: row.grammar_ui_topics,
       content_topic: row.content_topic,
       model: row.model,
       text: row.text,
-      gaps: row.gaps.filter((g: any) => g.id !== null), // Remove null gaps
+      gaps: row.gaps.filter((g: any) => g.no !== null), // Remove null gaps
     }));
 
     return createResponse(200, {
-      exercises: random ? exercises[0] || null : exercises,
+      exercises: exercises,
       count: exercises.length,
-      filters: { level, topic, grammarSection, random },
+      filters: { level, topic, grammarSection, limit },
     });
 
   } catch (error) {

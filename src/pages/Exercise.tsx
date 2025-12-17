@@ -12,7 +12,6 @@ import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
-import { getExercise } from "@/data/exerciseSelector";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
 
@@ -148,9 +147,13 @@ const Exercise = () => {
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showExplanations, setShowExplanations] = useState(false);
-  const [exerciseKey, setExerciseKey] = useState(0);
   const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
+  const [availableExercises, setAvailableExercises] = useState<BackendExercise[]>([]);
+  const [loadingExercises, setLoadingExercises] = useState(true);
+  const [exercisesCompletedInBatch, setExercisesCompletedInBatch] = useState(0);
+  const [isFetchingNext, setIsFetchingNext] = useState(false);
   const lastShownIdRef = useRef<string | null>(null);
+  const shownExerciseIdsRef = useRef<Set<string>>(new Set());
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
   const { user, isAuthenticated, refreshUser } = useAuth();
 
@@ -159,15 +162,134 @@ const Exercise = () => {
   const section = searchParams.get("section") || "verben";
   const grammarSection = searchParams.get("grammar");
 
-  // Reset last shown exercise ID when level or section changes
+  // Fetch exercises from API when level or section changes
   useEffect(() => {
     lastShownIdRef.current = null;
+    shownExerciseIdsRef.current.clear();
+    setExercisesCompletedInBatch(0);
+    fetchExercises(true);
   }, [level, section, grammarSection]);
+
+  const fetchExercises = async (isInitial: boolean = false) => {
+    if (isInitial) {
+      setLoadingExercises(true);
+    } else {
+      setIsFetchingNext(true);
+    }
+
+    try {
+      const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+
+      let url = `${API_BASE}/exercises?level=${level.toUpperCase()}&limit=5`;
+
+      // Add grammar section or topic filter
+      if (grammarSection) {
+        url += `&grammarSection=${grammarSection}`;
+      } else {
+        url += `&topic=${section}`;
+      }
+
+      console.log('Fetching 5 exercises from:', url);
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Fetched exercises:', data.exercises?.length || 0);
+
+      if (data.exercises && data.exercises.length > 0) {
+        console.log('Received exercises from API:', data.exercises.length);
+        console.log('Already shown IDs:', Array.from(shownExerciseIdsRef.current));
+
+        // Filter out exercises we've already shown
+        const newExercises = data.exercises.filter(
+          (ex: BackendExercise) => !shownExerciseIdsRef.current.has(ex.id)
+        );
+
+        console.log('New exercises after filtering:', newExercises.length);
+
+        if (newExercises.length === 0) {
+          console.warn('All fetched exercises were already shown, fetching again...');
+          // Clear the shown IDs and try fetching again
+          if (isInitial) {
+            shownExerciseIdsRef.current.clear();
+            fetchExercises(true);
+          }
+          return;
+        }
+
+        if (isInitial) {
+          setAvailableExercises(newExercises);
+          selectNextExercise(newExercises, null);
+        } else {
+          // Append to existing exercises
+          setAvailableExercises(prev => [...prev, ...newExercises]);
+        }
+      } else {
+        console.warn('No exercises found for', { level, section, grammarSection });
+        if (isInitial) {
+          setCurrentExercise(mockBackendExercise);
+          setLoadingExercises(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching exercises:', error);
+      if (isInitial) {
+        setCurrentExercise(mockBackendExercise);
+        setLoadingExercises(false);
+      }
+    } finally {
+      if (isInitial) {
+        setLoadingExercises(false);
+      } else {
+        setIsFetchingNext(false);
+      }
+    }
+  };
+
+  const selectNextExercise = (exercises: BackendExercise[], lastShownId: string | null) => {
+    console.log('selectNextExercise called with', exercises.length, 'exercises');
+
+    if (exercises.length === 0) {
+      console.error('No exercises to select from!');
+      setLoadingExercises(false);
+      return;
+    }
+
+    // Pick the first unshown exercise
+    const selected = exercises[0];
+
+    if (selected) {
+      console.log('Selected exercise:', selected.id, selected);
+
+      try {
+        setCurrentExercise(selected);
+        lastShownIdRef.current = selected.id;
+        shownExerciseIdsRef.current.add(selected.id);
+
+        // Remove the selected exercise from available pool
+        setAvailableExercises(prev => prev.filter(ex => ex.id !== selected.id));
+
+        setLoadingExercises(false);
+      } catch (error) {
+        console.error('Error setting exercise:', error);
+        setLoadingExercises(false);
+      }
+    } else {
+      console.warn('No exercises available to select');
+      setLoadingExercises(false);
+    }
+  };
 
   // Scroll to top when exercise changes
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [exerciseKey, level, section, grammarSection]);
+    if (currentExercise) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [currentExercise?.id]);
 
   // Detect progression and update URL when exercise changes
   useEffect(() => {
@@ -177,6 +299,11 @@ const Exercise = () => {
     const exerciseTopics = currentExercise.grammar_ui_topics;
     const currentLevelLower = level.toLowerCase();
     const currentSectionLower = section.toLowerCase();
+
+    // Skip progression checks if grammar_ui_topics is missing
+    if (!exerciseTopics || exerciseTopics.length === 0) {
+      return;
+    }
 
     // Check if level has progressed
     if (exerciseLevel !== currentLevelLower) {
@@ -212,22 +339,13 @@ const Exercise = () => {
     }
   }, [currentExercise, level, section, grammarSection]);
 
-  // Load exercise based on URL parameters and exerciseKey
+  // Process current exercise for display
   const exerciseData = useMemo(() => {
-    // Get exercise with progression enabled, avoiding last shown
-    const exercise = getExercise(level, section, grammarSection, true, lastShownIdRef.current);
-
-    if (exercise) {
-      setCurrentExercise(exercise);
-      lastShownIdRef.current = exercise.id;
-      return processBackendExercise(exercise);
+    if (!currentExercise) {
+      return processBackendExercise(mockBackendExercise);
     }
-
-    // Fall back to mock if no exercise found
-    setCurrentExercise(mockBackendExercise);
-    lastShownIdRef.current = mockBackendExercise.id;
-    return processBackendExercise(mockBackendExercise);
-  }, [level, section, grammarSection, exerciseKey]);
+    return processBackendExercise(currentExercise);
+  }, [currentExercise]);
 
   const handleOptionSelect = (gapId: string, optionIndex: number) => {
     if (submitted) return;
@@ -306,7 +424,7 @@ const Exercise = () => {
       markExerciseCompleted(
         currentExercise.id,
         currentExercise.level,
-        currentExercise.grammar_ui_topics
+        currentExercise.grammar_ui_topics || []
       );
 
       // Submit to backend if user is authenticated
@@ -334,8 +452,29 @@ const Exercise = () => {
     setSubmitted(false);
     setShowExplanations(false);
 
-    // Just increment the key - progression detection happens in useMemo
-    setExerciseKey(prev => prev + 1);
+    // Increment completed exercises counter
+    const newCount = exercisesCompletedInBatch + 1;
+    setExercisesCompletedInBatch(newCount);
+
+    // Prefetch next batch when user completes 3 exercises
+    if (newCount === 3 && !isFetchingNext) {
+      console.log('Prefetching next batch of 5 exercises...');
+      fetchExercises(false);
+    }
+
+    // Reset counter when reaching 5
+    if (newCount >= 5) {
+      setExercisesCompletedInBatch(0);
+    }
+
+    // Select next exercise from available pool
+    if (availableExercises.length > 0) {
+      selectNextExercise(availableExercises, lastShownIdRef.current);
+    } else {
+      // If no exercises available, fetch new ones
+      console.log('No exercises in pool, fetching...');
+      fetchExercises(true);
+    }
   };
 
   const handleWaitlistModalClose = (open: boolean) => {
@@ -448,6 +587,18 @@ const Exercise = () => {
   const correctCount = submitted
     ? exerciseData.gaps.filter((gap) => selectedAnswers[gap.id] === gap.correct).length
     : 0;
+
+  // Show loading state while fetching exercises
+  if (loadingExercises && !currentExercise) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Übungen werden geladen...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
