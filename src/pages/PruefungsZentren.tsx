@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Search, ExternalLink, Info } from "lucide-react";
+import { ArrowLeft, Search, ExternalLink, Info, Zap } from "lucide-react";
 import { examCenters, uniqueStates, uniqueTypes } from "@/data/examCenters";
 import { ShareButton } from "@/components/ShareButton";
+import { QuickQuiz } from "@/components/QuickQuiz";
 
 const PruefungsZentren = () => {
   const navigate = useNavigate();
@@ -16,10 +17,23 @@ const PruefungsZentren = () => {
   const [filterType, setFilterType] = useState("all");
   const [filterExam, setFilterExam] = useState("all");
   const [searchOrg, setSearchOrg] = useState("");
+  const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
+    null
+  );
 
   const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute)";
   const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
   const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
+
+  // Popular level/section combinations for quick testing
+  const quickTestOptions = [
+    { level: 'A1', sectionId: 'praesens_grundform', sectionName: 'Präsens (Grundformen)', emoji: '🌱' },
+    { level: 'B1', sectionId: 'reflexive_verben', sectionName: 'Reflexive Verben', emoji: '🔄' },
+    { level: 'B1', sectionId: 'relativsaetze_basis', sectionName: 'Relativsätze', emoji: '🔗' },
+    { level: 'B1', sectionId: 'tempus_perfekt_praeteritum', sectionName: 'Perfekt & Präteritum', emoji: '⏰' },
+    { level: 'B2', sectionId: 'passiv', sectionName: 'Passiv', emoji: '🔀' },
+    { level: 'B2', sectionId: 'indirekte_rede', sectionName: 'Indirekte Rede', emoji: '💬' },
+  ];
 
   // Filter centers based on search and filters
   const filteredCenters = useMemo(() => {
@@ -174,6 +188,61 @@ const PruefungsZentren = () => {
             Suche nach Stadt und finde passende Prüfungsanbieter wie Volkshochschulen (VHS),
             Universitäts-Sprachzentren und große Institute.
           </p>
+
+          {/* Quick Knowledge Test Section */}
+          <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <Card className="p-6 bg-gradient-to-br from-primary/5 to-purple-500/5">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Zap className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold">Teste dein Wissen vor der Prüfung</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Mach einen Schnelltest (5 Übungen) zu beliebten Grammatikthemen
+                  </p>
+                </div>
+              </div>
+
+              {activeQuiz ? (
+                <QuickQuiz
+                  level={activeQuiz.level}
+                  grammarSectionId={activeQuiz.sectionId}
+                  grammarSectionName={activeQuiz.sectionName}
+                  onClose={() => setActiveQuiz(null)}
+                />
+              ) : (
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                  {quickTestOptions.map((option) => (
+                    <Card
+                      key={`${option.level}-${option.sectionId}`}
+                      className="p-4 hover:shadow-md transition-all cursor-pointer hover:scale-105 bg-white"
+                      onClick={() =>
+                        setActiveQuiz({
+                          level: option.level,
+                          sectionId: option.sectionId,
+                          sectionName: option.sectionName,
+                        })
+                      }
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-3xl">{option.emoji}</span>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
+                              {option.level}
+                            </span>
+                          </div>
+                          <h4 className="font-semibold text-sm">{option.sectionName}</h4>
+                          <p className="text-xs text-muted-foreground">5 Übungen • ca. 3 Min.</p>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
 
           {/* Quick Links */}
           <Card className="p-6 mb-8 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-900">
