@@ -16,7 +16,7 @@ const WAITLIST_ENABLED = true;
 // ⚙️ CONFIGURATION: Change this value to set after how many completed exercises the waitlist popup appears
 // Example: 2 = show after every 2 exercises, 5 = show after every 5 exercises, 10 = show after every 10 exercises
 // The popup will appear repeatedly at this interval (e.g., at 4, 8, 12, 16... exercises)
-const WAITLIST_TRIGGER_EXERCISE_COUNT = 4;
+const WAITLIST_TRIGGER_EXERCISE_COUNT = 100;
 
 const defaultStats: ExerciseStats = {
   totalExercisesCompleted: 0,

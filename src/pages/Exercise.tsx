@@ -29,6 +29,7 @@ interface BackendExercise {
   grammar_ui_topics: GrammarUiTopicId[];
   content_topic: string;
   model: string;
+  order_number: number;
   text: string;
   gaps: Array<{
     no: number;
@@ -56,6 +57,7 @@ const mockBackendExercise: BackendExercise = {
   grammar_ui_topics: ["verben"],
   content_topic: "Arbeit im Homeoffice",
   model: "llama3.1:8b",
+  order_number: 0,
   text: "Wenn ich nicht von zu Hause aus arbeiten [1], [2] ich wahrscheinlich viel mehr Zeit im Verkehr verlieren. Viele meiner Kolleginnen sagen, sie [3] gern die gleiche Flexibilität. Wenn wir ein größeres Büro [4], könnten wir häufiger gemeinsam Workshops machen. Ich [1] dann aber wieder jeden Tag ins Zentrum fahren, und das [2] ich eigentlich vermeiden wollen.",
   gaps: [
     {
@@ -181,6 +183,11 @@ const Exercise = () => {
       const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
 
       let url = `${API_BASE}/exercises?level=${level.toUpperCase()}&limit=5`;
+
+      // Add user ID for progressive delivery if authenticated
+      if (isAuthenticated && user?.id) {
+        url += `&userId=${user.id}`;
+      }
 
       // Add grammar section or topic filter
       if (grammarSection) {
