@@ -35,11 +35,12 @@ const Grammatik = () => {
   const popularTopics = getPopularTopics(6);
 
   // Popular level/section combinations for quick testing
+  // Only using grammar sections that actually have exercises in the mock data
   const quickTestOptions = [
     { level: 'A1', sectionId: 'praesens_grundform', sectionName: 'Präsens (Grundformen)', emoji: '🌱' },
-    { level: 'B1', sectionId: 'praepositionen_wechselpraepositionen', sectionName: 'Wechselpräpositionen', emoji: '🔄' },
+    { level: 'B1', sectionId: 'reflexive_verben', sectionName: 'Reflexive Verben', emoji: '🔄' },
     { level: 'B1', sectionId: 'relativsaetze_basis', sectionName: 'Relativsätze', emoji: '🔗' },
-    { level: 'B1', sectionId: 'konjunktiv2_hoeflichkeit', sectionName: 'Konjunktiv II', emoji: '💭' },
+    { level: 'B1', sectionId: 'tempus_perfekt_praeteritum', sectionName: 'Perfekt & Präteritum', emoji: '⏰' },
     { level: 'B2', sectionId: 'passiv', sectionName: 'Passiv', emoji: '🔀' },
     { level: 'B2', sectionId: 'indirekte_rede', sectionName: 'Indirekte Rede', emoji: '💬' },
   ];

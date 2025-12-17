@@ -59,18 +59,32 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
 
     try {
       const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
-      const response = await fetch(
-        `${API_BASE}/exercises?level=${level.toUpperCase()}&grammarSection=${grammarSectionId}`
-      );
+      const url = `${API_BASE}/exercises?level=${level.toUpperCase()}&grammarSection=${grammarSectionId}`;
+
+      console.log('Fetching exercises from:', url);
+
+      const response = await fetch(url);
 
       if (!response.ok) {
-        throw new Error('Failed to fetch exercises');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('API error:', response.status, errorData);
+        throw new Error(errorData.error || `HTTP ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('API response:', data);
 
-      // Process and take first 5 exercises
-      const processedExercises = data.exercises.slice(0, 5).map((ex: BackendExercise) => {
+      if (!data.exercises || data.exercises.length === 0) {
+        setError('Keine Übungen für diese Kombination verfügbar.');
+        setLoading(false);
+        return;
+      }
+
+      // Take first 5 exercises
+      const selectedExercises = data.exercises.slice(0, 5);
+
+      // Process exercises from API format
+      const processedExercises = selectedExercises.map((ex: any) => {
         const gaps: ProcessedGap[] = [];
 
         // Find all gap placeholders [n] in the text
@@ -85,9 +99,9 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
           });
         }
 
-        // Create processed gaps
+        // Create processed gaps from API format
         matches.forEach((matchInfo, idx) => {
-          const gapData = ex.gaps.find((g) => g.gap_number === matchInfo.gapNumber);
+          const gapData = ex.gaps.find((g: any) => g.gap_number === matchInfo.gapNumber);
           if (!gapData) return;
 
           const allOptions = [gapData.correct_answer, ...gapData.distractors];
@@ -110,10 +124,11 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
         };
       });
 
+      console.log('Processed exercises:', processedExercises);
       setExercises(processedExercises);
     } catch (err) {
-      console.error('Error fetching exercises:', err);
-      setError('Fehler beim Laden der Übungen. Bitte versuche es später erneut.');
+      console.error('Error loading exercises:', err);
+      setError(`Fehler beim Laden der Übungen: ${err instanceof Error ? err.message : 'Unbekannter Fehler'}`);
     } finally {
       setLoading(false);
     }

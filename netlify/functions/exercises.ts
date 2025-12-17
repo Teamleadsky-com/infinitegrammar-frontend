@@ -34,67 +34,109 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Level parameter is required' });
     }
 
-    // Build query based on filters
-    let query = `
-      SELECT
-        e.id,
-        e.grammar_section_id,
-        e.level,
-        e.order_number,
-        e.text,
-        e.content_topic,
-        e.model,
-        gs.name as grammar_section_name,
-        json_agg(
-          json_build_object(
-            'id', eg.id,
-            'gap_number', eg.gap_number,
-            'correct_answer', eg.correct_answer,
-            'distractors', eg.distractors,
-            'explanation', eg.explanation
-          ) ORDER BY eg.gap_number
-        ) as gaps
-      FROM exercises e
-      LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-      LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-      WHERE e.level = $1
-        AND e.is_active = true
-    `;
+    // Build query with filters
+    let result;
 
-    const queryParams: any[] = [level];
-    let paramCount = 1;
-
-    // Filter by grammar section if provided (takes priority)
     if (grammarSection) {
-      paramCount++;
-      query += ` AND e.grammar_section_id = $${paramCount}`;
-      queryParams.push(grammarSection);
-    }
-    // Otherwise filter by topic
-    else if (topic) {
-      paramCount++;
-      query += `
-        AND EXISTS (
-          SELECT 1 FROM grammar_ui_topics gut
-          WHERE gut.grammar_section_id = e.grammar_section_id
-          AND gut.topic = $${paramCount}
-        )
+      // Filter by grammar section (takes priority)
+      result = await sql`
+        SELECT
+          e.id,
+          e.grammar_section_id,
+          e.level,
+          e.order_number,
+          e.text,
+          e.content_topic,
+          e.model,
+          gs.name as grammar_section_name,
+          json_agg(
+            json_build_object(
+              'id', eg.id,
+              'gap_number', eg.gap_number,
+              'correct_answer', eg.correct_answer,
+              'distractors', eg.distractors,
+              'explanation', eg.explanation
+            ) ORDER BY eg.gap_number
+          ) as gaps
+        FROM exercises e
+        LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
+        LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.level = ${level}
+          AND e.is_active = true
+          AND e.grammar_section_id = ${grammarSection}
+        GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
+                 e.text, e.content_topic, e.model, gs.name
+        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
+        ${random ? sql`LIMIT 1` : sql``}
       `;
-      queryParams.push(topic);
+    } else if (topic) {
+      // Filter by topic
+      result = await sql`
+        SELECT
+          e.id,
+          e.grammar_section_id,
+          e.level,
+          e.order_number,
+          e.text,
+          e.content_topic,
+          e.model,
+          gs.name as grammar_section_name,
+          json_agg(
+            json_build_object(
+              'id', eg.id,
+              'gap_number', eg.gap_number,
+              'correct_answer', eg.correct_answer,
+              'distractors', eg.distractors,
+              'explanation', eg.explanation
+            ) ORDER BY eg.gap_number
+          ) as gaps
+        FROM exercises e
+        LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
+        LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.level = ${level}
+          AND e.is_active = true
+          AND EXISTS (
+            SELECT 1 FROM grammar_ui_topics gut
+            WHERE gut.grammar_section_id = e.grammar_section_id
+            AND gut.topic = ${topic}
+          )
+        GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
+                 e.text, e.content_topic, e.model, gs.name
+        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
+        ${random ? sql`LIMIT 1` : sql``}
+      `;
+    } else {
+      // No additional filters
+      result = await sql`
+        SELECT
+          e.id,
+          e.grammar_section_id,
+          e.level,
+          e.order_number,
+          e.text,
+          e.content_topic,
+          e.model,
+          gs.name as grammar_section_name,
+          json_agg(
+            json_build_object(
+              'id', eg.id,
+              'gap_number', eg.gap_number,
+              'correct_answer', eg.correct_answer,
+              'distractors', eg.distractors,
+              'explanation', eg.explanation
+            ) ORDER BY eg.gap_number
+          ) as gaps
+        FROM exercises e
+        LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
+        LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.level = ${level}
+          AND e.is_active = true
+        GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
+                 e.text, e.content_topic, e.model, gs.name
+        ORDER BY ${random ? sql`RANDOM()` : sql`e.order_number`}
+        ${random ? sql`LIMIT 1` : sql``}
+      `;
     }
-
-    query += `
-      GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-               e.text, e.content_topic, e.model, gs.name
-      ORDER BY ${random ? 'RANDOM()' : 'e.order_number'}
-    `;
-
-    // If random, limit to 1
-    if (random) {
-      query += ' LIMIT 1';
-    }
-
-    const result = await sql(query, queryParams);
 
     // Format the response
     const exercises = result.map((row: any) => ({
