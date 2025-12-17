@@ -46,6 +46,7 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [userAnswers, setUserAnswers] = useState<{ [key: string]: string }>({});
   const [showResults, setShowResults] = useState(false);
+  const [showExplanations, setShowExplanations] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -187,19 +188,16 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
         // Add gap selector
         const selectedAnswer = userAnswers[gap.id];
         const isAnswered = selectedAnswer !== undefined;
-        const isCorrect = selectedAnswer === gap.correctAnswer;
 
         parts.push(
           <span key={`gap-${gap.id}`} className="inline-block mx-1">
             <select
               value={selectedAnswer || ''}
               onChange={(e) => handleAnswerSelect(gap.id, e.target.value)}
-              className={`px-3 py-1 border-2 rounded-md text-sm font-medium transition-colors ${
+              className={`px-4 py-2 border-2 rounded-lg text-base font-medium transition-colors ${
                 isAnswered
-                  ? isCorrect
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-red-500 bg-red-50 text-red-700'
-                  : 'border-gray-300 hover:border-primary focus:border-primary'
+                  ? 'border-primary bg-primary/5 text-primary'
+                  : 'border-gray-300 hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20'
               }`}
               disabled={showResults}
             >
@@ -222,7 +220,7 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
       parts.push(<span key="text-end">{text.substring(lastIndex)}</span>);
     }
 
-    return <div className="text-base leading-relaxed">{parts}</div>;
+    return <div className="text-lg leading-relaxed">{parts}</div>;
   };
 
   if (loading) {
@@ -262,34 +260,124 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
     const isGoodScore = score.percentage >= 70;
 
     return (
-      <Card className="p-8 animate-fade-in">
-        <div className="text-center mb-6">
-          <Trophy className={`h-16 w-16 mx-auto mb-4 ${isGoodScore ? 'text-yellow-500' : 'text-gray-400'}`} />
-          <h3 className="text-2xl font-bold mb-2">Quiz abgeschlossen!</h3>
-          <div className="text-4xl font-bold mb-4">
+      <Card className="p-10 animate-fade-in">
+        <div className="text-center mb-8">
+          <Trophy className={`h-20 w-20 mx-auto mb-6 ${isGoodScore ? 'text-yellow-500' : 'text-gray-400'}`} />
+          <h3 className="text-3xl font-bold mb-4">Quiz abgeschlossen!</h3>
+          <div className="text-5xl font-bold mb-6">
             <span className={isGoodScore ? 'text-green-600' : 'text-orange-600'}>{score.percentage}%</span>
           </div>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-xl text-muted-foreground">
             {score.correct} von {score.total} Antworten richtig
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-6">
           {isGoodScore ? (
-            <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-              <p className="text-green-800 font-medium">
+            <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+              <p className="text-green-800 font-medium text-lg">
                 Sehr gut! Du beherrschst {grammarSectionName} schon ziemlich gut.
               </p>
             </div>
           ) : (
-            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
-              <p className="text-orange-800 font-medium">
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
+              <p className="text-orange-800 font-medium text-lg">
                 Noch Verbesserungspotenzial! Übe {grammarSectionName} weiter, um sicherer zu werden.
               </p>
             </div>
           )}
 
-          <div className="flex gap-3 justify-center flex-wrap">
+          {/* Show explanations button */}
+          <div className="text-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowExplanations(!showExplanations)}
+              className="gap-2"
+            >
+              {showExplanations ? 'Erklärungen ausblenden' : 'Erklärungen anzeigen'}
+            </Button>
+          </div>
+
+          {/* Explanations section */}
+          {showExplanations && (
+            <div className="space-y-6 mt-6">
+              {exercises.map((exercise, exIdx) => (
+                <div key={exercise.id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <h4 className="font-semibold mb-4 text-lg">Übung {exIdx + 1}</h4>
+
+                  {/* Show full exercise text with answers filled in */}
+                  <div className="mb-6 p-4 bg-white rounded-lg border border-gray-200">
+                    <p className="text-base leading-relaxed">
+                      {exercise.text.split(/\[(\d+)\]/).map((part, idx) => {
+                        // If this is a gap number
+                        if (idx % 2 === 1) {
+                          const gapNumber = parseInt(part);
+                          const gap = exercise.gaps.find(g => g.gapNumber === gapNumber);
+                          if (gap) {
+                            const userAnswer = userAnswers[gap.id];
+                            const isCorrect = userAnswer === gap.correctAnswer;
+                            return (
+                              <span
+                                key={idx}
+                                className={`inline-block px-2 py-0.5 mx-1 rounded font-medium ${
+                                  isCorrect
+                                    ? 'bg-green-100 text-green-700 border border-green-300'
+                                    : 'bg-red-100 text-red-700 border border-red-300'
+                                }`}
+                              >
+                                {userAnswer || '___'}
+                              </span>
+                            );
+                          }
+                        }
+                        // Regular text
+                        return <span key={idx}>{part}</span>;
+                      })}
+                    </p>
+                  </div>
+
+                  {/* Gap-by-gap explanations */}
+                  <div className="space-y-3">
+                    {exercise.gaps.map((gap) => {
+                      const userAnswer = userAnswers[gap.id];
+                      const isCorrect = userAnswer === gap.correctAnswer;
+                      return (
+                        <div key={gap.id} className="pb-3 border-b border-gray-200 last:border-0 last:pb-0">
+                          <div className="flex items-start gap-3">
+                            {isCorrect ? (
+                              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                            ) : (
+                              <XCircle className="h-5 w-5 text-red-600 mt-0.5 flex-shrink-0" />
+                            )}
+                            <div className="flex-1">
+                              <div className="mb-1">
+                                <span className="font-medium">Lücke {gap.gapNumber}:</span>
+                                {!isCorrect && (
+                                  <div className="text-sm mt-1">
+                                    <span className="text-red-600">Deine Antwort: {userAnswer || '(keine)'}</span>
+                                    {' → '}
+                                    <span className="text-green-600 font-medium">Richtig: {gap.correctAnswer}</span>
+                                  </div>
+                                )}
+                                {isCorrect && (
+                                  <span className="text-green-600 text-sm font-medium ml-2">{gap.correctAnswer}</span>
+                                )}
+                              </div>
+                              {gap.explanation && (
+                                <p className="text-sm text-muted-foreground mt-2">{gap.explanation}</p>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex gap-4 justify-center flex-wrap pt-4">
             <Button
               size="lg"
               onClick={() => navigate(`/exercise?level=${level}&section=${grammarSectionId}`)}
@@ -308,24 +396,24 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
   }
 
   return (
-    <Card className="p-6 animate-fade-in">
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-4">
+    <Card className="p-8 animate-fade-in">
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <span className="text-sm font-medium text-primary">
+            <span className="text-sm font-medium text-primary mb-1 block">
               {level.toUpperCase()} • {grammarSectionName}
             </span>
-            <h3 className="text-lg font-bold">Schnelltest</h3>
+            <h3 className="text-2xl font-bold">Schnelltest</h3>
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-base text-muted-foreground">
             Übung {currentExerciseIndex + 1} von {exercises.length}
           </div>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 rounded-full h-3">
           <div
-            className="bg-primary h-2 rounded-full transition-all duration-300"
+            className="bg-primary h-3 rounded-full transition-all duration-300"
             style={{ width: `${((currentExerciseIndex + 1) / exercises.length) * 100}%` }}
           />
         </div>
@@ -333,16 +421,16 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
 
       {currentExercise && (
         <>
-          <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+          <div className="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
             {renderTextWithGaps(currentExercise.text, currentExercise.gaps)}
           </div>
 
-          <div className="flex gap-3 justify-end">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex gap-4 justify-end">
+            <Button variant="outline" onClick={onClose} size="lg">
               Abbrechen
             </Button>
-            <Button onClick={handleNext} disabled={!isExerciseComplete()}>
-              {currentExerciseIndex < exercises.length - 1 ? 'Weiter' : 'Ergebnisse'}
+            <Button onClick={handleNext} disabled={!isExerciseComplete()} size="lg">
+              {currentExerciseIndex < exercises.length - 1 ? 'Weiter' : 'Ergebnisse anzeigen'}
             </Button>
           </div>
         </>
