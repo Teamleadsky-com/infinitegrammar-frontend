@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { ArrowLeft, Search, BookOpen, Target, Sparkles } from 'lucide-react';
+import { ArrowLeft, Search, BookOpen, Target, Sparkles, Zap } from 'lucide-react';
 import {
   grammarCategories,
   grammarTopics,
@@ -14,11 +14,15 @@ import {
   type GrammarCategory,
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
+import { QuickQuiz } from '@/components/QuickQuiz';
 
 const Grammatik = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState<'level' | 'topic'>('level');
+  const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
+    null
+  );
 
   const levels: { level: GrammarLevel; name: string; description: string }[] = [
     { level: 'A1', name: 'A1 – Basis sicher machen', description: 'Wortstellung, Präsens, Artikel …' },
@@ -29,6 +33,16 @@ const Grammatik = () => {
   ];
 
   const popularTopics = getPopularTopics(6);
+
+  // Popular level/section combinations for quick testing
+  const quickTestOptions = [
+    { level: 'A1', sectionId: 'praesens_grundform', sectionName: 'Präsens (Grundformen)', emoji: '🌱' },
+    { level: 'A2', sectionId: 'praepositionen_wechsel', sectionName: 'Wechselpräpositionen', emoji: '🔄' },
+    { level: 'B1', sectionId: 'relativsaetze_einfuehrung', sectionName: 'Relativsätze', emoji: '🔗' },
+    { level: 'B1', sectionId: 'konjunktiv2_basis', sectionName: 'Konjunktiv II', emoji: '💭' },
+    { level: 'B2', sectionId: 'passiv_vorgangspassiv', sectionName: 'Passiv (Vorgangspassiv)', emoji: '🔀' },
+    { level: 'B2', sectionId: 'indirekte_rede', sectionName: 'Indirekte Rede', emoji: '💬' },
+  ];
 
   // Filter topics based on search query
   const filteredTopics = searchQuery
@@ -98,8 +112,63 @@ const Grammatik = () => {
           </p>
         </div>
 
+        {/* Quick Knowledge Test Section */}
+        <div className="mb-12 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <Card className="p-6 bg-gradient-to-br from-primary/5 to-purple-500/5">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <Zap className="h-6 w-6 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold">Teste dein Wissen</h3>
+                <p className="text-sm text-muted-foreground">
+                  Mach einen Schnelltest (5 Übungen) zu beliebten Grammatikthemen
+                </p>
+              </div>
+            </div>
+
+            {activeQuiz ? (
+              <QuickQuiz
+                level={activeQuiz.level}
+                grammarSectionId={activeQuiz.sectionId}
+                grammarSectionName={activeQuiz.sectionName}
+                onClose={() => setActiveQuiz(null)}
+              />
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                {quickTestOptions.map((option) => (
+                  <Card
+                    key={`${option.level}-${option.sectionId}`}
+                    className="p-4 hover:shadow-md transition-all cursor-pointer hover:scale-105 bg-white"
+                    onClick={() =>
+                      setActiveQuiz({
+                        level: option.level,
+                        sectionId: option.sectionId,
+                        sectionName: option.sectionName,
+                      })
+                    }
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-3xl">{option.emoji}</span>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
+                            {option.level}
+                          </span>
+                        </div>
+                        <h4 className="font-semibold text-sm">{option.sectionName}</h4>
+                        <p className="text-xs text-muted-foreground">5 Übungen • ca. 3 Min.</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </Card>
+        </div>
+
         {/* Search Field */}
-        <Card className="p-4 mb-12 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <Card className="p-4 mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
@@ -145,7 +214,7 @@ const Grammatik = () => {
         </Card>
 
         {/* Why This Page */}
-        <Card className="p-6 mb-12 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <Card className="p-6 mb-12 animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <div className="flex items-start gap-4">
             <div className="p-3 bg-primary/10 rounded-lg shrink-0">
               <BookOpen className="h-6 w-6 text-primary" />
@@ -161,7 +230,7 @@ const Grammatik = () => {
         </Card>
 
         {/* View Mode Toggle */}
-        <div className="flex justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+        <div className="flex justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
           <Button
             variant={viewMode === 'level' ? 'default' : 'outline'}
             onClick={() => setViewMode('level')}
@@ -191,7 +260,7 @@ const Grammatik = () => {
                   <Card
                     key={level.level}
                     className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
-                    style={{ animationDelay: `${0.4 + idx * 0.1}s` }}
+                    style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
                     onClick={() => navigate(`/grammatik/${level.level.toLowerCase()}`)}
                   >
                     <div className="flex items-center gap-3 mb-3">
@@ -218,7 +287,7 @@ const Grammatik = () => {
                 <Card
                   key={key}
                   className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
-                  style={{ animationDelay: `${0.4 + idx * 0.1}s` }}
+                  style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
                   onClick={() => navigate(`/grammatik/thema/${key}`)}
                 >
                   <h3 className="font-bold text-lg mb-2">{category.name}</h3>
