@@ -12,9 +12,8 @@ interface QuickQuizProps {
 }
 
 interface BackendGap {
-  id: string;
-  gap_number: number;
-  correct_answer: string;
+  no: number;
+  correct: string;
   distractors: string[];
   explanation?: string;
 }
@@ -102,18 +101,18 @@ export function QuickQuiz({ level, grammarSectionId, grammarSectionName, onClose
 
         // Create processed gaps from API format
         matches.forEach((matchInfo, idx) => {
-          const gapData = ex.gaps.find((g: any) => g.gap_number === matchInfo.gapNumber);
+          const gapData = ex.gaps.find((g: any) => g.no === matchInfo.gapNumber);
           if (!gapData) return;
 
-          const allOptions = [gapData.correct_answer, ...gapData.distractors];
+          const allOptions = [gapData.correct, ...gapData.distractors];
           const shuffledOptions = [...allOptions].sort(() => Math.random() - 0.5);
 
           gaps.push({
-            id: gapData.id,
+            id: `gap-${ex.id}-${matchInfo.gapNumber}`,
             position: matchInfo.index,
             gapNumber: matchInfo.gapNumber,
             options: shuffledOptions,
-            correctAnswer: gapData.correct_answer,
+            correctAnswer: gapData.correct,
             explanation: gapData.explanation,
           });
         });

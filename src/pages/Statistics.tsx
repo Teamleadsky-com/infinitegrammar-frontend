@@ -156,7 +156,7 @@ const Statistics = () => {
             <Card className="p-6 bg-gradient-card shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Exercises</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('statistics.totalExercises')}</p>
                   <p className="text-3xl font-bold">{displayStats.totalExercises}</p>
                 </div>
                 <div className="p-3 bg-primary/10 rounded-lg">
@@ -168,7 +168,7 @@ const Statistics = () => {
             <Card className="p-6 bg-gradient-card shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Accuracy</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('statistics.accuracy')}</p>
                   <p className="text-3xl font-bold">{displayStats.accuracy}%</p>
                 </div>
                 <div className="p-3 bg-success/10 rounded-lg">
@@ -180,7 +180,7 @@ const Statistics = () => {
             <Card className="p-6 bg-gradient-card shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Correct Answers</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('statistics.correctAnswers')}</p>
                   <p className="text-3xl font-bold">
                     {displayStats.correctAnswers}/{displayStats.totalAnswers}
                   </p>
@@ -194,8 +194,8 @@ const Statistics = () => {
             <Card className="p-6 bg-gradient-card shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Current Streak</p>
-                  <p className="text-3xl font-bold">{displayStats.streak} days</p>
+                  <p className="text-sm text-muted-foreground mb-1">{t('statistics.currentStreak')}</p>
+                  <p className="text-3xl font-bold">{displayStats.streak} {t('statistics.days')}</p>
                 </div>
                 <div className="p-3 bg-accent/50 rounded-lg text-2xl">🔥</div>
               </div>
@@ -204,7 +204,7 @@ const Statistics = () => {
 
           {/* Progress Over Time */}
           <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h2 className="text-xl font-bold mb-6">Progress Over Time</h2>
+            <h2 className="text-xl font-bold mb-6">{t('statistics.progressOverTime')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={progressData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -238,7 +238,7 @@ const Statistics = () => {
 
           {/* Performance by Level */}
           <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-xl font-bold mb-6">Accuracy by Level</h2>
+            <h2 className="text-xl font-bold mb-6">{t('statistics.accuracyByLevel')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={levelData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -266,7 +266,7 @@ const Statistics = () => {
 
           {/* Performance by Section */}
           <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <h2 className="text-xl font-bold mb-6">Accuracy by Topic</h2>
+            <h2 className="text-xl font-bold mb-6">{t('statistics.accuracyByTopic')}</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={topicData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -295,7 +295,7 @@ const Statistics = () => {
           {/* Action Button */}
           <div className="flex justify-center animate-fade-in" style={{ animationDelay: "0.4s" }}>
             <Button size="lg" onClick={() => navigate("/exercise")}>
-              Continue Learning
+              {t('statistics.continueLearning')}
             </Button>
           </div>
         </div>
@@ -310,7 +310,7 @@ const Statistics = () => {
               onClick={() => navigate('/auth?tab=register')}
               className="text-lg px-8 py-6 shadow-2xl"
             >
-              Sign In or Register
+              {t('statistics.signInOrRegister')}
             </Button>
           </div>
         </div>
