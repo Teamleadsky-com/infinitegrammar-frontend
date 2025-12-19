@@ -6,8 +6,10 @@ import { Card } from "@/components/ui/card";
 import { BookOpen, BarChart3, User } from "lucide-react";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 // ⚙️ FEATURE SWITCH: Sign In button behavior
 // 0 = Normal sign in (navigate to /auth page)
@@ -22,6 +24,7 @@ const LevelSelection = () => {
   const { isAuthenticated } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   const levels = [
     { id: "a1", name: "A1", description: t('levelSelection.beginner') },
@@ -42,6 +45,12 @@ const LevelSelection = () => {
   };
 
   const handleTopicClick = (sectionId: string) => {
+    // Show coming soon modal if maintenance mode is enabled
+    if (EXERCISES_MAINTENANCE_MODE) {
+      setShowComingSoonModal(true);
+      return;
+    }
+
     if (selectedLevel) {
       // Navigate with selected level and topic
       navigate(`/exercise?level=${selectedLevel}&section=${sectionId}`);
@@ -49,6 +58,16 @@ const LevelSelection = () => {
       // Navigate with just topic (random level)
       navigate(`/exercise?section=${sectionId}`);
     }
+  };
+
+  const handleStartRandomExercise = () => {
+    // Show coming soon modal if maintenance mode is enabled
+    if (EXERCISES_MAINTENANCE_MODE) {
+      setShowComingSoonModal(true);
+      return;
+    }
+
+    navigate("/exercise");
   };
 
   return (
@@ -161,7 +180,7 @@ const LevelSelection = () => {
             <p className="text-muted-foreground mb-4">{t('levelSelection.quickStart')}</p>
             <Button
               size="lg"
-              onClick={() => navigate("/exercise")}
+              onClick={handleStartRandomExercise}
               className="text-lg"
             >
               {t('levelSelection.startRandom')}
@@ -196,6 +215,12 @@ const LevelSelection = () => {
         onOpenChange={setShowWaitlistModal}
         exercisesCompleted={0}
         openSource="sign-in-button"
+      />
+
+      {/* Coming Soon Modal (Maintenance Mode) */}
+      <ComingSoonModal
+        open={showComingSoonModal}
+        onOpenChange={setShowComingSoonModal}
       />
     </div>
   );

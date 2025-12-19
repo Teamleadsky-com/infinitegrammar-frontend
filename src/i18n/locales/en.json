@@ -102,5 +102,20 @@
     "coverage": "Coverage",
     "heatmap": "Exercise Count Heatmap: Level × Grammar Section",
     "continueLearning": "Continue Learning"
+  },
+  "comingSoon": {
+    "title": "Exercises Coming Soon",
+    "description": "We're currently improving our exercise quality to provide you with the best learning experience.",
+    "message": "We're working hard to create high-quality exercises that will help you master German grammar. Leave your email and we'll notify you as soon as they're ready!",
+    "emailLabel": "Get notified when exercises are ready",
+    "emailPlaceholder": "your.email@example.com",
+    "notifyButton": "Notify Me",
+    "submitting": "Submitting...",
+    "successTitle": "You're on the list!",
+    "successMessage": "We'll send you an email as soon as the exercises are ready. Thank you for your patience!",
+    "closeButton": "Close",
+    "errorEmail": "Please enter your email",
+    "errorEmailInvalid": "Please enter a valid email address",
+    "errorGeneric": "Something went wrong. Please try again."
   }
 }

@@ -9,6 +9,8 @@ import { ArrowLeft, Search, ExternalLink, Info, Zap } from "lucide-react";
 import { examCenters, uniqueStates, uniqueTypes } from "@/data/examCenters";
 import { ShareButton } from "@/components/ShareButton";
 import { QuickQuiz } from "@/components/QuickQuiz";
+import { ComingSoonModal } from "@/components/ComingSoonModal";
+import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 const PruefungsZentren = () => {
   const navigate = useNavigate();
@@ -20,6 +22,7 @@ const PruefungsZentren = () => {
   const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
     null
   );
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute)";
   const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
@@ -217,13 +220,17 @@ const PruefungsZentren = () => {
                     <Card
                       key={`${option.level}-${option.sectionId}`}
                       className="p-4 hover:shadow-md transition-all cursor-pointer hover:scale-105 bg-white"
-                      onClick={() =>
+                      onClick={() => {
+                        if (EXERCISES_MAINTENANCE_MODE) {
+                          setShowComingSoonModal(true);
+                          return;
+                        }
                         setActiveQuiz({
                           level: option.level,
                           sectionId: option.sectionId,
                           sectionName: option.sectionName,
-                        })
-                      }
+                        });
+                      }}
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{option.emoji}</span>
@@ -522,19 +529,49 @@ const PruefungsZentren = () => {
             Ideal für die Zeit bis zur Prüfung.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Button onClick={() => navigate('/exercise?level=a2')}>
+            <Button onClick={() => {
+              if (EXERCISES_MAINTENANCE_MODE) {
+                setShowComingSoonModal(true);
+                return;
+              }
+              navigate('/exercise?level=a2');
+            }}>
               telc A2 Grammatik üben
             </Button>
-            <Button onClick={() => navigate('/exercise?level=b1')} variant="outline">
+            <Button onClick={() => {
+              if (EXERCISES_MAINTENANCE_MODE) {
+                setShowComingSoonModal(true);
+                return;
+              }
+              navigate('/exercise?level=b1');
+            }} variant="outline">
               telc B1 Grammatik üben
             </Button>
-            <Button onClick={() => navigate('/exercise?level=b2')} variant="outline">
+            <Button onClick={() => {
+              if (EXERCISES_MAINTENANCE_MODE) {
+                setShowComingSoonModal(true);
+                return;
+              }
+              navigate('/exercise?level=b2');
+            }} variant="outline">
               telc B2 Grammatik üben
             </Button>
-            <Button onClick={() => navigate('/exercise?level=c1')} variant="outline">
+            <Button onClick={() => {
+              if (EXERCISES_MAINTENANCE_MODE) {
+                setShowComingSoonModal(true);
+                return;
+              }
+              navigate('/exercise?level=c1');
+            }} variant="outline">
               telc C1 Grammatik üben
             </Button>
-            <Button onClick={() => navigate('/exercise?level=b2')} variant="outline">
+            <Button onClick={() => {
+              if (EXERCISES_MAINTENANCE_MODE) {
+                setShowComingSoonModal(true);
+                return;
+              }
+              navigate('/exercise?level=b2');
+            }} variant="outline">
               TestDaF Grammatik üben (B2–C1)
             </Button>
           </div>
@@ -754,6 +791,13 @@ const PruefungsZentren = () => {
           </Card>
         </div>
       </main>
+
+      {/* Coming Soon Modal (Maintenance Mode) */}
+      <ComingSoonModal
+        open={showComingSoonModal}
+        onOpenChange={setShowComingSoonModal}
+        language="de"
+      />
     </div>
   );
 };

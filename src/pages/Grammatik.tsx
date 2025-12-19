@@ -15,6 +15,8 @@ import {
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
 import { QuickQuiz } from '@/components/QuickQuiz';
+import { ComingSoonModal } from '@/components/ComingSoonModal';
+import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 
 const Grammatik = () => {
   const navigate = useNavigate();
@@ -23,6 +25,7 @@ const Grammatik = () => {
   const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
     null
   );
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   const levels: { level: GrammarLevel; name: string; description: string }[] = [
     { level: 'A1', name: 'A1 – Basis sicher machen', description: 'Wortstellung, Präsens, Artikel …' },
@@ -141,13 +144,17 @@ const Grammatik = () => {
                   <Card
                     key={`${option.level}-${option.sectionId}`}
                     className="p-4 hover:shadow-md transition-all cursor-pointer hover:scale-105 bg-white"
-                    onClick={() =>
+                    onClick={() => {
+                      if (EXERCISES_MAINTENANCE_MODE) {
+                        setShowComingSoonModal(true);
+                        return;
+                      }
                       setActiveQuiz({
                         level: option.level,
                         sectionId: option.sectionId,
                         sectionName: option.sectionName,
-                      })
-                    }
+                      });
+                    }}
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-3xl">{option.emoji}</span>
@@ -332,13 +339,26 @@ const Grammatik = () => {
               <Button size="lg" onClick={() => navigate('/')}>
                 Nach Niveau starten
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/exercise')}>
+              <Button size="lg" variant="outline" onClick={() => {
+                if (EXERCISES_MAINTENANCE_MODE) {
+                  setShowComingSoonModal(true);
+                  return;
+                }
+                navigate('/exercise');
+              }}>
                 Übungen öffnen
               </Button>
             </div>
           </Card>
         </div>
       </main>
+
+      {/* Coming Soon Modal (Maintenance Mode) */}
+      <ComingSoonModal
+        open={showComingSoonModal}
+        onOpenChange={setShowComingSoonModal}
+        language="de"
+      />
     </div>
   );
 };

@@ -12,10 +12,14 @@ import {
 import { getTopicBySlugAndLevel, type GrammarLevel, grammarTopics } from '@/data/grammarTopics';
 import { getTopicContent, getRelatedTopics } from '@/data/grammarContent';
 import { ShareButton } from '@/components/ShareButton';
+import { ComingSoonModal } from '@/components/ComingSoonModal';
+import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
+import { useState } from 'react';
 
 const GrammatikContent = () => {
   const { level, slug } = useParams<{ level: string; slug: string }>();
   const navigate = useNavigate();
+  const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   const normalizedLevel = level?.toUpperCase() as GrammarLevel;
   const topic = getTopicBySlugAndLevel(slug || '', normalizedLevel);
@@ -75,7 +79,13 @@ const GrammatikContent = () => {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
+              onClick={() => {
+                if (EXERCISES_MAINTENANCE_MODE) {
+                  setShowComingSoonModal(true);
+                  return;
+                }
+                navigate(`/exercise?section=${exerciseSection}`);
+              }}
               className="shrink-0"
             >
               Jetzt üben
@@ -125,7 +135,13 @@ const GrammatikContent = () => {
               <p className="text-sm text-muted-foreground">10–20 Lücken, sofort Feedback</p>
             </div>
             <Button
-              onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
+              onClick={() => {
+                if (EXERCISES_MAINTENANCE_MODE) {
+                  setShowComingSoonModal(true);
+                  return;
+                }
+                navigate(`/exercise?section=${exerciseSection}`);
+              }}
               className="w-full sm:w-auto shrink-0 whitespace-normal h-auto py-3"
             >
               <span className="text-center">{topic.title} üben</span>
@@ -193,7 +209,13 @@ const GrammatikContent = () => {
           <div className="flex flex-col sm:flex-row gap-3">
             <Button
               size="lg"
-              onClick={() => navigate(`/exercise?section=${exerciseSection}`)}
+              onClick={() => {
+                if (EXERCISES_MAINTENANCE_MODE) {
+                  setShowComingSoonModal(true);
+                  return;
+                }
+                navigate(`/exercise?section=${exerciseSection}`);
+              }}
               className="w-full sm:w-auto whitespace-normal h-auto py-3"
             >
               {topic.title} jetzt üben
@@ -269,6 +291,13 @@ const GrammatikContent = () => {
           </Button>
         </div>
       </main>
+
+      {/* Coming Soon Modal (Maintenance Mode) */}
+      <ComingSoonModal
+        open={showComingSoonModal}
+        onOpenChange={setShowComingSoonModal}
+        language="de"
+      />
     </div>
   );
 };

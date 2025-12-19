@@ -102,5 +102,20 @@
     "coverage": "Abdeckung",
     "heatmap": "Übungsanzahl-Heatmap: Niveau × Grammatikbereich",
     "continueLearning": "Weiter lernen"
+  },
+  "comingSoon": {
+    "title": "Übungen kommen bald",
+    "description": "Wir verbessern gerade die Qualität unserer Übungen, um Ihnen das beste Lernerlebnis zu bieten.",
+    "message": "Wir arbeiten hart daran, hochwertige Übungen zu erstellen, die Ihnen helfen, die deutsche Grammatik zu meistern. Hinterlassen Sie Ihre E-Mail und wir benachrichtigen Sie, sobald sie fertig sind!",
+    "emailLabel": "Benachrichtigung erhalten, wenn Übungen bereit sind",
+    "emailPlaceholder": "ihre.email@beispiel.de",
+    "notifyButton": "Benachrichtigen",
+    "submitting": "Wird gesendet...",
+    "successTitle": "Sie sind auf der Liste!",
+    "successMessage": "Wir senden Ihnen eine E-Mail, sobald die Übungen fertig sind. Vielen Dank für Ihre Geduld!",
+    "closeButton": "Schließen",
+    "errorEmail": "Bitte geben Sie Ihre E-Mail-Adresse ein",
+    "errorEmailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "errorGeneric": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
   }
 }

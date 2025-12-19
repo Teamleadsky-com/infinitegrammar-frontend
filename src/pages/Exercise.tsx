@@ -8,12 +8,14 @@ import { cn } from "@/lib/utils";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { useAuth } from "@/contexts/AuthContext";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
+import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 // ⚙️ FEATURE SWITCH: Enable/disable report exercise button
 // Set to false to hide the report button, set to true to show it
@@ -146,6 +148,7 @@ const Exercise = () => {
   const [submitted, setSubmitted] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
+  const [showComingSoonModal, setShowComingSoonModal] = useState(EXERCISES_MAINTENANCE_MODE);
   const [showSettingsDialog, setShowSettingsDialog] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showExplanations, setShowExplanations] = useState(false);
@@ -594,6 +597,39 @@ const Exercise = () => {
   const correctCount = submitted
     ? exerciseData.gaps.filter((gap) => selectedAnswers[gap.id] === gap.correct).length
     : 0;
+
+  // Show coming soon modal if maintenance mode is enabled
+  if (EXERCISES_MAINTENANCE_MODE) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <ComingSoonModal
+          open={showComingSoonModal}
+          onOpenChange={(open) => {
+            setShowComingSoonModal(open);
+            if (!open) {
+              navigate("/");
+            }
+          }}
+        />
+        <div className="text-center max-w-md">
+          <h1 className="text-4xl font-bold mb-4">🚧</h1>
+          <h2 className="text-2xl font-bold mb-2">Exercises Coming Soon</h2>
+          <p className="text-muted-foreground mb-6">
+            We're currently improving our exercise quality. Leave your email to be notified when they're ready!
+          </p>
+          <Button onClick={() => setShowComingSoonModal(true)} size="lg">
+            Get Notified
+          </Button>
+          <div className="mt-6">
+            <Button variant="ghost" onClick={() => navigate("/")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading state while fetching exercises
   if (loadingExercises && !currentExercise) {
