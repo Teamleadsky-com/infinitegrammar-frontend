@@ -62,6 +62,7 @@ const PruefungsZentren = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>{pageTitle}</title>
+        <link rel="canonical" href={pageUrl} />
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />

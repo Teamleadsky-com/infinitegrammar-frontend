@@ -49,6 +49,7 @@ const GrammatikContent = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>{pageTitle}</title>
+        <link rel="canonical" href={pageUrl} />
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
@@ -64,9 +65,16 @@ const GrammatikContent = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
-              <Button variant="ghost" size="icon" onClick={() => navigate(`/grammatik/${level}`)} className="shrink-0">
+              <a
+                href={`/grammatik/${level}`}
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 shrink-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/grammatik/${level}`);
+                }}
+              >
                 <ArrowLeft className="h-5 w-5" />
-              </Button>
+              </a>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded shrink-0">
@@ -98,13 +106,27 @@ const GrammatikContent = () => {
       <main className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4 md:mb-6 animate-fade-in">
-          <button onClick={() => navigate('/grammatik')} className="hover:text-primary transition-colors">
+          <a
+            href="/grammatik"
+            className="hover:text-primary transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/grammatik');
+            }}
+          >
             Grammatik
-          </button>
+          </a>
           <span>→</span>
-          <button onClick={() => navigate(`/grammatik/${level}`)} className="hover:text-primary transition-colors">
+          <a
+            href={`/grammatik/${level}`}
+            className="hover:text-primary transition-colors"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/grammatik/${level}`);
+            }}
+          >
             {topic.level}
-          </button>
+          </a>
           <span>→</span>
           <span className="text-foreground">{topic.title}</span>
         </nav>
@@ -220,14 +242,16 @@ const GrammatikContent = () => {
             >
               {topic.title} jetzt üben
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => navigate(`/grammatik/thema/${topic.category}`)}
-              className="w-full sm:w-auto whitespace-normal h-auto py-3"
+            <a
+              href={`/grammatik/thema/${topic.category}`}
+              className="inline-flex items-center justify-center whitespace-normal rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 w-full sm:w-auto py-3"
+              onClick={(e) => {
+                e.preventDefault();
+                navigate(`/grammatik/thema/${topic.category}`);
+              }}
             >
               Zur Übersicht: {topic.category}
-            </Button>
+            </a>
           </div>
         </Card>
 
@@ -261,21 +285,25 @@ const GrammatikContent = () => {
             <h3 className="text-xl font-bold mb-4">Verwandte Themen</h3>
             <div className="grid gap-3 md:grid-cols-2">
               {relatedTopics.map((relatedTopic) => (
-                <Card
+                <a
                   key={relatedTopic.id}
-                  className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-                  onClick={() =>
-                    navigate(`/grammatik/${relatedTopic.level.toLowerCase()}/${relatedTopic.slug}`)
-                  }
+                  href={`/grammatik/${relatedTopic.level.toLowerCase()}/${relatedTopic.slug}`}
+                  className="block no-underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/grammatik/${relatedTopic.level.toLowerCase()}/${relatedTopic.slug}`);
+                  }}
                 >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded uppercase">
-                      {relatedTopic.level}
-                    </span>
-                    <h4 className="font-semibold text-sm">{relatedTopic.title}</h4>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{relatedTopic.shortDescription}</p>
-                </Card>
+                  <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded uppercase">
+                        {relatedTopic.level}
+                      </span>
+                      <h4 className="font-semibold text-sm">{relatedTopic.title}</h4>
+                    </div>
+                    <p className="text-xs text-muted-foreground">{relatedTopic.shortDescription}</p>
+                  </Card>
+                </a>
               ))}
             </div>
           </Card>
@@ -283,12 +311,26 @@ const GrammatikContent = () => {
 
         {/* Back to Overview */}
         <div className="flex justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.9s' }}>
-          <Button variant="outline" onClick={() => navigate(`/grammatik/${level}`)}>
+          <a
+            href={`/grammatik/${level}`}
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(`/grammatik/${level}`);
+            }}
+          >
             <ArrowLeft className="mr-2 h-4 w-4" /> Zurück zu {topic.level}
-          </Button>
-          <Button variant="outline" onClick={() => navigate('/grammatik')}>
+          </a>
+          <a
+            href="/grammatik"
+            className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/grammatik');
+            }}
+          >
             Zur Grammatik-Übersicht
-          </Button>
+          </a>
         </div>
       </main>
 

@@ -192,18 +192,26 @@ const LevelSelection = () => {
               >
                 {t('levelSelection.exerciseStats')}
               </button>
-              <button
-                onClick={() => navigate("/pruefungszentren")}
+              <a
+                href="/pruefungszentren"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/pruefungszentren");
+                }}
               >
                 {t('levelSelection.examCenters')}
-              </button>
-              <button
-                onClick={() => navigate("/grammatik")}
+              </a>
+              <a
+                href="/grammatik"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/grammatik");
+                }}
               >
                 {t('levelSelection.grammarReference')}
-              </button>
+              </a>
             </div>
           </div>
         </div>

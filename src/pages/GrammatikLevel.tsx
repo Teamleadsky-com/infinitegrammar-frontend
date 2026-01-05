@@ -62,6 +62,7 @@ const GrammatikLevel = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>{pageTitle}</title>
+        <link rel="canonical" href={pageUrl} />
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
@@ -77,9 +78,16 @@ const GrammatikLevel = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/grammatik')}>
+              <a
+                href="/grammatik"
+                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate('/grammatik');
+                }}
+              >
                 <ArrowLeft className="h-5 w-5" />
-              </Button>
+              </a>
               <div>
                 <h1 className="text-base md:text-xl font-bold">{levelNames[normalizedLevel]}</h1>
                 <p className="text-xs text-muted-foreground hidden md:block">
@@ -139,14 +147,20 @@ const GrammatikLevel = () => {
                     {categoryTopics
                       .sort((a, b) => a.orderInLevel - b.orderInLevel)
                       .map((topic) => (
-                        <Card
+                        <a
                           key={topic.id}
-                          className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-                          onClick={() => navigate(`/grammatik/${level}/${topic.slug}`)}
+                          href={`/grammatik/${level}/${topic.slug}`}
+                          className="block no-underline"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigate(`/grammatik/${level}/${topic.slug}`);
+                          }}
                         >
-                          <h4 className="font-semibold mb-1 text-sm">{topic.title}</h4>
-                          <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
-                        </Card>
+                          <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
+                            <h4 className="font-semibold mb-1 text-sm">{topic.title}</h4>
+                            <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
+                          </Card>
+                        </a>
                       ))}
                   </div>
                 </Card>

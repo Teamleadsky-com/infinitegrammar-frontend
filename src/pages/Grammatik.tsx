@@ -60,6 +60,7 @@ const Grammatik = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)</title>
+        <link rel="canonical" href="https://www.infinitegrammar.de/grammatik" />
         <meta
           name="description"
           content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
@@ -198,19 +199,25 @@ const Grammatik = () => {
                   </p>
                   <div className="grid gap-3 md:grid-cols-2">
                     {filteredTopics.map((topic) => (
-                      <Card
+                      <a
                         key={topic.id}
-                        className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-                        onClick={() => navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`)}
+                        href={`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`}
+                        className="block no-underline"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`);
+                        }}
                       >
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
-                            {topic.level}
-                          </span>
-                          <h4 className="font-semibold text-sm">{topic.title}</h4>
-                        </div>
-                        <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
-                      </Card>
+                        <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded">
+                              {topic.level}
+                            </span>
+                            <h4 className="font-semibold text-sm">{topic.title}</h4>
+                          </div>
+                          <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
+                        </Card>
+                      </a>
                     ))}
                   </div>
                 </>
@@ -265,21 +272,29 @@ const Grammatik = () => {
               {levels.map((level, idx) => {
                 const topics = getTopicsByLevel(level.level);
                 return (
-                  <Card
+                  <a
                     key={level.level}
-                    className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
-                    style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
-                    onClick={() => navigate(`/grammatik/${level.level.toLowerCase()}`)}
+                    href={`/grammatik/${level.level.toLowerCase()}`}
+                    className="block no-underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/grammatik/${level.level.toLowerCase()}`);
+                    }}
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <span className="text-xl font-bold text-primary">{level.level}</span>
+                    <Card
+                      className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
+                      style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-xl font-bold text-primary">{level.level}</span>
+                        </div>
+                        <h3 className="font-bold text-lg">{level.name}</h3>
                       </div>
-                      <h3 className="font-bold text-lg">{level.name}</h3>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4">{level.description}</p>
-                    <p className="text-xs text-muted-foreground">{topics.length} Themen</p>
-                  </Card>
+                      <p className="text-sm text-muted-foreground mb-4">{level.description}</p>
+                      <p className="text-xs text-muted-foreground">{topics.length} Themen</p>
+                    </Card>
+                  </a>
                 );
               })}
             </div>
@@ -292,15 +307,23 @@ const Grammatik = () => {
             <h2 className="text-2xl font-bold text-center mb-6">Nach Thema</h2>
             <div className="grid gap-6 md:grid-cols-2">
               {Object.entries(grammarCategories).map(([key, category], idx) => (
-                <Card
+                <a
                   key={key}
-                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
-                  style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
-                  onClick={() => navigate(`/grammatik/thema/${key}`)}
+                  href={`/grammatik/thema/${key}`}
+                  className="block no-underline"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(`/grammatik/thema/${key}`);
+                  }}
                 >
-                  <h3 className="font-bold text-lg mb-2">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground">{category.description}</p>
-                </Card>
+                  <Card
+                    className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
+                    style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
+                  >
+                    <h3 className="font-bold text-lg mb-2">{category.name}</h3>
+                    <p className="text-sm text-muted-foreground">{category.description}</p>
+                  </Card>
+                </a>
               ))}
             </div>
           </div>
@@ -311,19 +334,25 @@ const Grammatik = () => {
           <h2 className="text-2xl font-bold text-center mb-8">Beliebte Regeln</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {popularTopics.map((topic) => (
-              <Card
+              <a
                 key={topic.id}
-                className="p-4 hover:shadow-lg transition-shadow cursor-pointer"
-                onClick={() => navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`)}
+                href={`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`}
+                className="block no-underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`);
+                }}
               >
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded">
-                    {topic.level}
-                  </span>
-                  <h3 className="font-semibold text-sm">{topic.title}</h3>
-                </div>
-                <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
-              </Card>
+                <Card className="p-4 hover:shadow-lg transition-shadow cursor-pointer">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-semibold rounded">
+                      {topic.level}
+                    </span>
+                    <h3 className="font-semibold text-sm">{topic.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
+                </Card>
+              </a>
             ))}
           </div>
         </div>
