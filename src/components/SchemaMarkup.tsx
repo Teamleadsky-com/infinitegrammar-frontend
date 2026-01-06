@@ -55,8 +55,8 @@ export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
               url: 'https://www.infinitegrammar.de/logo.png'
             }
           },
-          datePublished: data.datePublished || new Date().toISOString(),
-          dateModified: data.dateModified || new Date().toISOString(),
+          datePublished: data.datePublished,
+          dateModified: data.dateModified,
           mainEntityOfPage: {
             '@type': 'WebPage',
             '@id': data.url

@@ -68,8 +68,8 @@ const GrammatikContent = () => {
           headline: `${topic.title}: Regeln einfach erklärt`,
           description: pageDescription,
           url: pageUrl,
-          datePublished: '2025-01-06',
-          dateModified: '2025-01-06',
+          datePublished: '2025-12-15T10:00:00+01:00',
+          dateModified: '2026-01-06T14:00:00+01:00',
           keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Deutsch lernen', 'Grammatik Regeln']
         }}
       />
