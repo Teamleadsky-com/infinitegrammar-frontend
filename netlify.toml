@@ -281,6 +281,19 @@
   to = "/grammatik/c1/genitiv-gehobene-sprache-genitivketten"
   status = 301
 
+# Ensure sitemap.xml and robots.txt are served as static files (not redirected to React app)
+[[redirects]]
+  from = "/sitemap.xml"
+  to = "/sitemap.xml"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/robots.txt"
+  to = "/robots.txt"
+  status = 200
+  force = true
+
 # SPA fallback: redirect all other routes to index.html
 # This allows React Router to handle client-side routing
 # Prerendered pages in directories will be served automatically before this fallback
