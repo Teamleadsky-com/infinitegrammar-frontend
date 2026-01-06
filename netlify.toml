@@ -25,6 +25,12 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Redirect old grammar URLs to new SEO-optimized URLs
+[[redirects]]
+  from = "/grammatik/a1/wortstellung"
+  to = "/grammatik/a1/wortstellung-regeln-lernen"
+  status = 301
+
 # SPA fallback: redirect all other routes to index.html
 # This allows React Router to handle client-side routing
 # Prerendered pages in directories will be served automatically before this fallback

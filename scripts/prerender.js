@@ -31,7 +31,7 @@ const PAGES = [
   '/grammatik/thema/genitiv',
 
   // Grammar topic pages - A1
-  '/grammatik/a1/wortstellung',
+  '/grammatik/a1/wortstellung-regeln-lernen',
   '/grammatik/a1/praesens',
   '/grammatik/a1/imperativ',
   '/grammatik/a1/artikel-nominativ',

@@ -113,36 +113,12 @@
     <priority>0.75</priority>
   </url>
 
-  <!-- Statistics -->
-  <url>
-    <loc>https://www.infinitegrammar.de/statistics</loc>
-    <lastmod>2025-12-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.6</priority>
-  </url>
-
   <!-- Exercise Statistics -->
   <url>
     <loc>https://www.infinitegrammar.de/exercise-stats</loc>
     <lastmod>2025-12-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.6</priority>
-  </url>
-
-  <!-- Authentication -->
-  <url>
-    <loc>https://www.infinitegrammar.de/auth</loc>
-    <lastmod>2025-12-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
-
-  <!-- User Profile -->
-  <url>
-    <loc>https://www.infinitegrammar.de/profile</loc>
-    <lastmod>2025-12-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
   </url>
 
   <!-- Grammatik Main Page -->
@@ -248,8 +224,8 @@
 
   <!-- Grammatik Topic Pages - A1 Level -->
   <url>
-    <loc>https://www.infinitegrammar.de/grammatik/a1/wortstellung</loc>
-    <lastmod>2025-12-15</lastmod>
+    <loc>https://www.infinitegrammar.de/grammatik/a1/wortstellung-regeln-lernen</loc>
+    <lastmod>2026-01-06</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

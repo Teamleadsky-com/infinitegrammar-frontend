@@ -13,6 +13,7 @@ import { getTopicBySlugAndLevel, type GrammarLevel, grammarTopics } from '@/data
 import { getTopicContent, getRelatedTopics } from '@/data/grammarContent';
 import { ShareButton } from '@/components/ShareButton';
 import { ComingSoonModal } from '@/components/ComingSoonModal';
+import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { useState } from 'react';
 
@@ -38,7 +39,7 @@ const GrammatikContent = () => {
   const content = getTopicContent(topic.id);
   const relatedTopics = getRelatedTopics(topic.id);
 
-  const pageTitle = `${topic.title} (${topic.level})`;
+  const pageTitle = `${topic.title}: Regeln & Beispiele einfach erklärt | InfiniteGrammar`;
   const pageDescription = topic.metaDescription;
   const pageUrl = `https://www.infinitegrammar.de/grammatik/${level}/${slug}`;
 
@@ -59,6 +60,52 @@ const GrammatikContent = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
       </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="article"
+        data={{
+          headline: `${topic.title}: Regeln einfach erklärt`,
+          description: pageDescription,
+          url: pageUrl,
+          datePublished: '2025-01-06',
+          dateModified: '2025-01-06',
+          keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Deutsch lernen', 'Grammatik Regeln']
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: topic.title,
+          description: pageDescription,
+          url: pageUrl,
+          educationalLevel: topic.level,
+          learningResourceType: 'Grammar Guide',
+          keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Grammatikregeln']
+        }}
+      />
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/grammatik' },
+            { name: topic.level, url: `https://www.infinitegrammar.de/grammatik/${level}` },
+            { name: topic.title, url: pageUrl }
+          ]
+        }}
+      />
+      {content?.faq && content.faq.length > 0 && (
+        <SchemaMarkup
+          type="faq"
+          data={{
+            faqs: content.faq.map(item => ({
+              question: item.question,
+              answer: item.answer.replace(/<[^>]*>/g, '') // Strip HTML tags for schema
+            }))
+          }}
+        />
+      )}
 
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
@@ -134,7 +181,7 @@ const GrammatikContent = () => {
         {/* Hero */}
         <div className="mb-4 md:mb-8 animate-fade-in">
           <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
-            <h2 className="text-2xl md:text-4xl font-bold">{topic.title}</h2>
+            <h1 className="text-2xl md:text-4xl font-bold">{topic.title}: Regeln einfach erklärt</h1>
             <ShareButton
               url={pageUrl}
               title={pageTitle}

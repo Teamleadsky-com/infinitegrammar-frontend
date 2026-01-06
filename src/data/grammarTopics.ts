@@ -62,12 +62,12 @@ export const grammarTopics: GrammarTopic[] = [
   // A1 Level
   {
     id: 'a1-wortstellung',
-    slug: 'wortstellung',
-    title: 'Wortstellung',
+    slug: 'wortstellung-regeln-lernen',
+    title: 'Deutsche Wortstellung A1',
     level: 'A1',
     category: 'satzbau',
     shortDescription: 'Grundlegende Satzstellung im Deutschen',
-    metaDescription: 'Deutsche Wortstellung (A1): Regeln für die Grundsatzstellung im Hauptsatz. Mit Beispielen und Übungen.',
+    metaDescription: 'Lernen Sie die deutsche Wortstellung mit einfachen A1-Regeln, praktischen Beispielen und interaktiven Übungen. Perfekt für Anfänger! ✓ Kostenlos ✓ Mit Lösungen',
     orderInLevel: 1
   },
   {
