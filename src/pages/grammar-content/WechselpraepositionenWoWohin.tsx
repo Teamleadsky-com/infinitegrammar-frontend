@@ -101,7 +101,7 @@ const WechselpraepositionenWoWohin = () => {
         {/* Section 1: Wann brauchst du das? */}
         <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-2xl">1)</span> Wann brauchst du das?
+             Wann brauchst du das?
           </h3>
           <p className="mb-3">Du brauchst Wechselpräpositionen, wenn du sagen willst,</p>
           <ul className="list-disc list-inside space-y-2 ml-4">
@@ -121,7 +121,7 @@ const WechselpraepositionenWoWohin = () => {
         {/* Section 2: Die Regel */}
         <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-2xl">2)</span> Die Regel
+             Die Regel
           </h3>
 
           <div className="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
@@ -194,7 +194,7 @@ const WechselpraepositionenWoWohin = () => {
         {/* Section 3: Häufige Fehler */}
         <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-2xl">3)</span> Häufige Fehler (und wie du sie vermeidest)
+            Häufige Fehler (und wie du sie vermeidest)
           </h3>
 
           <div className="space-y-4">
@@ -239,7 +239,7 @@ const WechselpraepositionenWoWohin = () => {
         {/* Section 4: Mini-Checkliste */}
         <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.5s' }}>
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-2xl">4)</span> Mini-Checkliste
+            Mini-Checkliste
           </h3>
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
@@ -282,7 +282,7 @@ const WechselpraepositionenWoWohin = () => {
         {/* Section 6: FAQ */}
         <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.7s' }}>
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-            <span className="text-2xl">6)</span> FAQ
+             FAQ
           </h3>
           <Accordion type="single" collapsible className="w-full">
             <AccordionItem value="item-1">

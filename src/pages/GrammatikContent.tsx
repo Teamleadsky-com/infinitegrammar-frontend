@@ -223,7 +223,7 @@ const GrammatikContent = () => {
         {content?.whenToUse && (
           <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">1)</span> Wann brauchst du das?
+              Wann brauchst du das?
             </h3>
             <div dangerouslySetInnerHTML={{ __html: content.whenToUse }} />
           </Card>
@@ -233,7 +233,7 @@ const GrammatikContent = () => {
         {content?.rules && (
           <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">2)</span> Die Regel
+              Die Regel
             </h3>
             <div dangerouslySetInnerHTML={{ __html: content.rules }} />
           </Card>
@@ -243,7 +243,7 @@ const GrammatikContent = () => {
         {content?.commonMistakes && (
           <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.4s' }}>
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">3)</span> Häufige Fehler (und wie du sie vermeidest)
+             Häufige Fehler (und wie du sie vermeidest)
             </h3>
             <div dangerouslySetInnerHTML={{ __html: content.commonMistakes }} />
           </Card>
@@ -253,7 +253,7 @@ const GrammatikContent = () => {
         {content?.checklist && (
           <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.5s' }}>
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">4)</span> Mini-Checkliste
+              Mini-Checkliste
             </h3>
             <ul className="space-y-3">
               {content.checklist.map((item, idx) => (
@@ -306,7 +306,7 @@ const GrammatikContent = () => {
         {content?.faq && content.faq.length > 0 && (
           <Card className="p-6 mb-6 animate-fade-in" style={{ animationDelay: '0.7s' }}>
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span className="text-2xl">6)</span> FAQ
+              FAQ
             </h3>
             <Accordion type="single" collapsible className="w-full">
               {content.faq.map((item, idx) => (
