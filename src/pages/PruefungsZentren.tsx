@@ -11,6 +11,7 @@ import { ShareButton } from "@/components/ShareButton";
 import { QuickQuiz } from "@/components/QuickQuiz";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
+import { SchemaMarkup } from "@/components/SchemaMarkup";
 
 const PruefungsZentren = () => {
   const navigate = useNavigate();
@@ -24,8 +25,8 @@ const PruefungsZentren = () => {
   );
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
-  const pageTitle = "telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute)";
-  const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.';
+  const pageTitle = "telc & TestDaF Prüfungszentren Deutschland: Finden & Anmelden | InfiniteGrammar";
+  const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren & Institute. ✓ Alle Bundesländer ✓ Termine checken ✓ Anmeldungstipps ✓ Kostenlos';
   const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
 
   // Popular level/section combinations for quick testing
@@ -72,6 +73,39 @@ const PruefungsZentren = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
       </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="article"
+        data={{
+          headline: 'telc & TestDaF Prüfungszentren Deutschland: Finden & Anmelden',
+          description: pageDescription,
+          url: pageUrl,
+          datePublished: '2025-12-15T10:00:00+01:00',
+          dateModified: '2026-01-06T14:00:00+01:00',
+          keywords: ['telc Prüfungszentren', 'TestDaF Prüfungszentren', 'Deutschprüfung', 'VHS', 'Sprachtest Deutschland']
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: 'telc & TestDaF Prüfungszentren in Deutschland',
+          description: 'Vollständiges Verzeichnis von Prüfungszentren für telc und TestDaF in Deutschland',
+          url: pageUrl,
+          educationalLevel: 'A1-C1',
+          learningResourceType: 'Exam Center Directory',
+          keywords: ['telc', 'TestDaF', 'Deutschprüfung', 'Prüfungszentren Deutschland']
+        }}
+      />
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Prüfungszentren', url: pageUrl }
+          ]
+        }}
+      />
 
       {/* Structured Data - FAQ Schema */}
       <script type="application/ld+json">
@@ -165,7 +199,7 @@ const PruefungsZentren = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-base md:text-xl font-bold">Prüfungszentren</h1>
+              <div className="text-base md:text-xl font-bold">Prüfungszentren</div>
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate("/")} className="shrink-0">
               Grammatik üben

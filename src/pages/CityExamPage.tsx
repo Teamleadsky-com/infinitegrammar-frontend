@@ -7,6 +7,7 @@ import { ArrowLeft, ExternalLink, BookOpen } from "lucide-react";
 import { examCenters } from "@/data/examCenters";
 import { getCityExamContent } from "@/data/cityExamContent";
 import { ShareButton } from "@/components/ShareButton";
+import { SchemaMarkup } from "@/components/SchemaMarkup";
 
 const CityExamPage = () => {
   const { examCity } = useParams<{ examCity: string }>();
@@ -40,7 +41,7 @@ const CityExamPage = () => {
   }, [content, exam]);
 
   // SEO meta data
-  const pageTitle = content ? `${content.title}` : 'Prüfungszentren';
+  const pageTitle = content ? `${content.title} | InfiniteGrammar` : 'Prüfungszentren';
   const pageDescription = content ? content.metaDescription : 'Finde Prüfungszentren in Deutschland';
   const pageUrl = `https://www.infinitegrammar.de/pruefungszentren/${exam}-${city}`;
 
@@ -58,6 +59,7 @@ const CityExamPage = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>{pageTitle}</title>
+        <link rel="canonical" href={pageUrl} />
         <meta name="description" content={pageDescription} />
         <meta property="og:title" content={pageTitle} />
         <meta property="og:description" content={pageDescription} />
@@ -67,6 +69,40 @@ const CityExamPage = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
       </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="article"
+        data={{
+          headline: content.title,
+          description: pageDescription,
+          url: pageUrl,
+          datePublished: '2025-12-15T10:00:00+01:00',
+          dateModified: '2026-01-06T14:00:00+01:00',
+          keywords: [examDisplay, content.city, 'Prüfungszentren', 'Deutschprüfung', exam === 'telc' ? 'telc' : 'TestDaF']
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: `${examDisplay} Prüfungszentren ${content.city}`,
+          description: content.metaDescription,
+          url: pageUrl,
+          educationalLevel: 'A1-C1',
+          learningResourceType: 'Exam Center Directory',
+          keywords: [examDisplay, content.city, 'Deutschprüfung', 'Prüfungszentren']
+        }}
+      />
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Prüfungszentren', url: 'https://www.infinitegrammar.de/pruefungszentren' },
+            { name: `${examDisplay} ${content.city}`, url: pageUrl }
+          ]
+        }}
+      />
 
       {/* Structured Data - LocalBusiness Schema */}
       <script type="application/ld+json">
@@ -102,7 +138,7 @@ const CityExamPage = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate("/pruefungszentren")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-base md:text-xl font-bold">{examDisplay} {content.city}</h1>
+              <div className="text-base md:text-xl font-bold">{examDisplay} {content.city}</div>
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate("/")} className="shrink-0">
               Grammatik üben
