@@ -1,16 +1,44 @@
+# Major Search Engines
 User-agent: Googlebot
-Allow: /
+Disallow: /auth
+Disallow: /profile
+Disallow: /statistics
+Disallow: /verify-magic-link
 
 User-agent: Bingbot
-Allow: /
+Disallow: /auth
+Disallow: /profile
+Disallow: /statistics
+Disallow: /verify-magic-link
 
+# Social Media Crawlers
 User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
 Allow: /
 
-User-agent: *
+User-agent: LinkedInBot
 Allow: /
 
+User-agent: Slackbot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: PinterestBot
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+# All Other Bots
+User-agent: *
+Disallow: /auth
+Disallow: /profile
+Disallow: /statistics
+Disallow: /verify-magic-link
+
+# Sitemap Location
 Sitemap: https://www.infinitegrammar.de/sitemap.xml
