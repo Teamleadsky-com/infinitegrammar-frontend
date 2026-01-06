@@ -9,6 +9,7 @@ import {
   type GrammarLevel,
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
+import { SchemaMarkup } from '@/components/SchemaMarkup';
 
 const GrammatikLevel = () => {
   const { level } = useParams<{ level: string }>();
@@ -54,8 +55,16 @@ const GrammatikLevel = () => {
     C1: 'Gehobene Sprache: Nominalstil, Partizipialkonstruktionen und komplexe Genitivkonstruktionen.',
   };
 
-  const pageTitle = `${levelNames[normalizedLevel]} – Deutsche Grammatik`;
-  const pageDescription = `Deutsche Grammatik ${normalizedLevel}: ${levelDescriptions[normalizedLevel]} Mit Regeln, Beispielen und Übungen.`;
+  const levelMetaDescriptions: Record<GrammarLevel, string> = {
+    A1: 'Deutsche Grammatik A1: Grundlagen mit Wortstellung, Präsens, Artikeln und Pronomen. ✓ Einsteigerfreundlich ✓ Mit Beispielen ✓ Interaktive Übungen ✓ Kostenlos',
+    A2: 'Deutsche Grammatik A2: Kasus, Perfekt, Modalverben und komplexe Sätze meistern. ✓ Aufbauend ✓ Praktische Beispiele ✓ Mit Übungen ✓ Kostenlos lernen',
+    B1: 'Deutsche Grammatik B1: Relativsätze, Konjunktiv II, Wechselpräpositionen und mehr. ✓ Mittelstufe ✓ Strukturiert erklärt ✓ Mit Übungen ✓ Kostenlos',
+    B2: 'Deutsche Grammatik B2: Indirekte Rede, Nominalisierung, Passiv und komplexe Strukturen. ✓ Fortgeschritten ✓ Präzise Regeln ✓ Mit Übungen ✓ Kostenlos',
+    C1: 'Deutsche Grammatik C1: Nominalstil, Partizipialkonstruktionen und Genitivketten. ✓ Gehobene Sprache ✓ Anspruchsvoll ✓ Mit Beispielen ✓ Kostenlos',
+  };
+
+  const pageTitle = `Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt | InfiniteGrammar`;
+  const pageDescription = levelMetaDescriptions[normalizedLevel];
   const pageUrl = `https://www.infinitegrammar.de/grammatik/${level}`;
 
   return (
@@ -73,6 +82,40 @@ const GrammatikLevel = () => {
         <meta name="twitter:description" content={pageDescription} />
       </Helmet>
 
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="article"
+        data={{
+          headline: `Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt`,
+          description: pageDescription,
+          url: pageUrl,
+          datePublished: '2025-12-15T10:00:00+01:00',
+          dateModified: '2026-01-06T14:00:00+01:00',
+          keywords: ['Deutsche Grammatik', `${normalizedLevel} Grammatik`, `Grammatik ${normalizedLevel}`, 'Deutsch lernen', 'Grammatikregeln']
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: `Deutsche Grammatik ${normalizedLevel}`,
+          description: levelDescriptions[normalizedLevel],
+          url: pageUrl,
+          educationalLevel: normalizedLevel,
+          learningResourceType: 'Grammar Guide',
+          keywords: ['Deutsche Grammatik', `${normalizedLevel} Deutsch`, 'Grammatikregeln', 'Deutsch lernen']
+        }}
+      />
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/grammatik' },
+            { name: normalizedLevel, url: pageUrl }
+          ]
+        }}
+      />
+
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -89,7 +132,7 @@ const GrammatikLevel = () => {
                 <ArrowLeft className="h-5 w-5" />
               </a>
               <div>
-                <h1 className="text-base md:text-xl font-bold">{levelNames[normalizedLevel]}</h1>
+                <div className="text-base md:text-xl font-bold">{levelNames[normalizedLevel]}</div>
                 <p className="text-xs text-muted-foreground hidden md:block">
                   {topics.length} Grammatikthemen
                 </p>
@@ -112,7 +155,7 @@ const GrammatikLevel = () => {
                 <span className="text-2xl font-bold text-primary">{normalizedLevel}</span>
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold">{levelNames[normalizedLevel]}</h2>
+                <h1 className="text-2xl md:text-3xl font-bold">Deutsche Grammatik {normalizedLevel}: Regeln einfach erklärt</h1>
                 <p className="text-muted-foreground">{levelDescriptions[normalizedLevel]}</p>
               </div>
             </div>

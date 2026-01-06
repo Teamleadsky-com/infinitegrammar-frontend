@@ -17,6 +17,7 @@ import { ShareButton } from '@/components/ShareButton';
 import { QuickQuiz } from '@/components/QuickQuiz';
 import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
+import { SchemaMarkup } from '@/components/SchemaMarkup';
 
 const Grammatik = () => {
   const navigate = useNavigate();
@@ -59,26 +60,59 @@ const Grammatik = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
-        <title>Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)</title>
+        <title>Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar</title>
         <link rel="canonical" href="https://www.infinitegrammar.de/grammatik" />
         <meta
           name="description"
-          content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
+          content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
-        <meta property="og:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)" />
+        <meta property="og:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
         <meta
           property="og:description"
-          content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
+          content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
         <meta property="og:url" content="https://www.infinitegrammar.de/grammatik" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)" />
+        <meta name="twitter:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
         <meta
           name="twitter:description"
-          content="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
+          content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
       </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="article"
+        data={{
+          headline: 'Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt',
+          description: 'Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen',
+          url: 'https://www.infinitegrammar.de/grammatik',
+          datePublished: '2025-12-15T10:00:00+01:00',
+          dateModified: '2026-01-06T14:00:00+01:00',
+          keywords: ['Deutsche Grammatik', 'Grammatik lernen', 'A1 Grammatik', 'B1 Grammatik', 'C1 Grammatik', 'Deutsch lernen']
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: 'Deutsche Grammatik A1-C1',
+          description: 'Komplette deutsche Grammatik von A1 bis C1 mit Regeln, Beispielen und interaktiven Übungen',
+          url: 'https://www.infinitegrammar.de/grammatik',
+          educationalLevel: 'A1-C1',
+          learningResourceType: 'Grammar Reference',
+          keywords: ['Deutsche Grammatik', 'Grammatikregeln', 'Deutsch lernen', 'Grammatik Übungen']
+        }}
+      />
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/grammatik' }
+          ]
+        }}
+      />
 
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
@@ -88,7 +122,7 @@ const Grammatik = () => {
               <Button variant="ghost" size="icon" onClick={() => navigate('/')}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <h1 className="text-base md:text-xl font-bold">Grammatik</h1>
+              <div className="text-base md:text-xl font-bold">Grammatik</div>
             </div>
             <Button variant="outline" size="sm" onClick={() => navigate('/')} className="shrink-0">
               Grammatik üben
@@ -102,13 +136,13 @@ const Grammatik = () => {
         {/* Hero Section */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="flex items-start justify-center gap-2 mb-4">
-            <h2 className="text-3xl md:text-4xl font-bold gradient-primary bg-clip-text text-transparent">
-              Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)
-            </h2>
+            <h1 className="text-3xl md:text-4xl font-bold gradient-primary bg-clip-text text-transparent">
+              Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt
+            </h1>
             <ShareButton
               url="https://www.infinitegrammar.de/grammatik"
-              title="Deutsche Grammatik: Regeln, Beispiele & Übungen (A1–C1)"
-              description="Nachschlagen, verstehen, sofort festigen: Zu jeder Regel findest du eine kurze Erklärung mit Beispielen – und passende Lückentext-Übungen zum direkten Anwenden."
+              title="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt"
+              description="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
             />
           </div>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
