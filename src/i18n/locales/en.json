@@ -12,6 +12,12 @@
   "levelSelection": {
     "title": "Choose Your Level",
     "subtitle": "Practice German grammar with endless interactive gap-fill exercises",
+    "h1": "Practice German Grammar: Gap-Fill Exercises A1-C1",
+    "introText": "Train German grammar with unlimited gap-fill exercises. Perfect for telc and TestDaF preparation. Practice verbs, articles, prepositions, subjunctive and more – free and without registration.",
+    "benefit1": "All levels (A1-C1)",
+    "benefit2": "Instant feedback",
+    "benefit3": "Unlimited practice",
+    "benefit4": "Free",
     "selectLevel": "Select Level",
     "selectTopic": "Select Topic",
     "beginner": "Beginner",
@@ -23,7 +29,16 @@
     "startRandom": "Start Random Exercise",
     "exerciseStats": "Exercises Stats",
     "examCenters": "Exam Centers",
-    "grammarReference": "Grammar Reference"
+    "grammarReference": "Grammar Reference",
+    "faqTitle": "Frequently Asked Questions",
+    "faqQ1": "How do the gap-fill exercises work?",
+    "faqA1": "Select your level (A1-C1) and a grammar topic. Fill in the gaps in the text and receive instant feedback with explanations.",
+    "faqQ2": "Is InfiniteGrammar free?",
+    "faqA2": "Yes, all exercises are completely free. You can practice unlimited without registration.",
+    "faqQ3": "Are the exercises suitable for telc and TestDaF?",
+    "faqA3": "Yes, our exercises cover all grammar topics that appear in telc and TestDaF exams (A1-C1).",
+    "metaTitle": "Practice German Grammar A1-C1: Gap-Fill Exercises for telc & TestDaF | InfiniteGrammar",
+    "metaDescription": "Practice German grammar with interactive gap-fill exercises: Verbs, articles, prepositions & more. ✓ A1 to C1 ✓ For telc & TestDaF ✓ Free ✓ Unlimited"
   },
   "exercise": {
     "title": "Exercise",

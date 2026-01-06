@@ -12,6 +12,12 @@
   "levelSelection": {
     "title": "Wähle dein Niveau",
     "subtitle": "Übe deutsche Grammatik mit endlosen interaktiven Lückentextübungen",
+    "h1": "Deutsche Grammatik üben: Lückentext-Übungen A1-C1",
+    "introText": "Trainiere deutsche Grammatik mit unbegrenzten Lückentext-Übungen. Perfekt für telc- und TestDaF-Vorbereitung. Übe Verben, Artikel, Präpositionen, Konjunktiv und mehr – kostenlos und ohne Anmeldung.",
+    "benefit1": "Alle Niveaus (A1-C1)",
+    "benefit2": "Sofortiges Feedback",
+    "benefit3": "Unbegrenzt üben",
+    "benefit4": "Kostenlos",
     "selectLevel": "Niveau wählen",
     "selectTopic": "Thema wählen",
     "beginner": "Anfänger",
@@ -23,7 +29,16 @@
     "startRandom": "Zufällige Übung starten",
     "exerciseStats": "Übungsstatistiken",
     "examCenters": "Prüfungszentren",
-    "grammarReference": "Grammatikreferenz"
+    "grammarReference": "Grammatikreferenz",
+    "faqTitle": "Häufig gestellte Fragen",
+    "faqQ1": "Wie funktionieren die Lückentext-Übungen?",
+    "faqA1": "Wähle dein Niveau (A1-C1) und ein Grammatikthema. Fülle die Lücken im Text aus und erhalte sofortiges Feedback mit Erklärungen.",
+    "faqQ2": "Ist InfiniteGrammar kostenlos?",
+    "faqA2": "Ja, alle Übungen sind komplett kostenlos. Du kannst unbegrenzt üben, ohne Anmeldung.",
+    "faqQ3": "Eignen sich die Übungen für telc und TestDaF?",
+    "faqA3": "Ja, unsere Übungen decken alle Grammatikthemen ab, die in telc- und TestDaF-Prüfungen vorkommen (A1-C1).",
+    "metaTitle": "Deutsche Grammatik üben A1-C1: Lückentext-Übungen für telc & TestDaF | InfiniteGrammar",
+    "metaDescription": "Übe deutsche Grammatik mit interaktiven Lückentext-Übungen: Verben, Artikel, Präpositionen & mehr. ✓ A1 bis C1 ✓ Für telc & TestDaF ✓ Kostenlos ✓ Unbegrenzt"
   },
   "exercise": {
     "title": "Übung",

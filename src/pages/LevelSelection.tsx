@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { BookOpen, BarChart3, User } from "lucide-react";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { SchemaMarkup } from "@/components/SchemaMarkup";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 // ⚙️ FEATURE SWITCH: Sign In button behavior
@@ -20,11 +28,17 @@ const sections = getAllGrammarUiTopics();
 
 const LevelSelection = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
+
+  // SEO meta data
+  const pageTitle = t('levelSelection.metaTitle');
+  const pageDescription = t('levelSelection.metaDescription');
+  const pageUrl = 'https://www.infinitegrammar.de/';
+  const currentLanguage = i18n.language || 'de';
 
   const levels = [
     { id: "a1", name: "A1", description: t('levelSelection.beginner') },
@@ -72,14 +86,58 @@ const LevelSelection = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <html lang={currentLanguage} />
+        <title>{pageTitle}</title>
+        <link rel="canonical" href={pageUrl} />
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={pageUrl} />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+      </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: t('levelSelection.h1'),
+          description: pageDescription,
+          url: pageUrl,
+          educationalLevel: 'A1-C1',
+          learningResourceType: 'Interactive Exercise Platform',
+          keywords: ['German Grammar', 'Gap-Fill Exercises', 'telc', 'TestDaF', 'German Learning']
+        }}
+      />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "InfiniteGrammar",
+          "description": pageDescription,
+          "url": pageUrl,
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Web Browser",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+          },
+          "inLanguage": currentLanguage
+        })}
+      </script>
+
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
             <BookOpen className="h-6 w-6 text-primary" />
-            <h1 className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+            <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               {t('common.appName')}
-            </h1>
+            </div>
           </div>
           <div className="flex gap-2">
             <LanguageSwitcher />
@@ -118,16 +176,30 @@ const LevelSelection = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-12">
+      <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="max-w-4xl mx-auto">
-          {/* Hero Section */}
-          <div className="text-center mb-12 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              {t('levelSelection.title')}
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              {t('levelSelection.subtitle')}
+          {/* SEO Hero Section */}
+          <div className="text-center mb-8 md:mb-12 animate-fade-in">
+            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
+              {t('levelSelection.h1')}
+            </h1>
+            <p className="text-base md:text-lg text-muted-foreground mb-4 leading-relaxed max-w-3xl mx-auto">
+              {t('levelSelection.introText')}
             </p>
+            <div className="flex flex-wrap justify-center gap-3 md:gap-4 text-sm text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                <span className="text-primary">✓</span> {t('levelSelection.benefit1')}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-primary">✓</span> {t('levelSelection.benefit2')}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-primary">✓</span> {t('levelSelection.benefit3')}
+              </span>
+              <span className="inline-flex items-center gap-1">
+                <span className="text-primary">✓</span> {t('levelSelection.benefit4')}
+              </span>
+            </div>
           </div>
 
           {/* Level Selection */}
@@ -213,6 +285,74 @@ const LevelSelection = () => {
                 {t('levelSelection.grammarReference')}
               </a>
             </div>
+          </div>
+
+          {/* FAQ Section for SEO */}
+          <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">{t('levelSelection.faqTitle')}</h2>
+
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger className="text-left">
+                  {t('levelSelection.faqQ1')}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {t('levelSelection.faqA1')}
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2">
+                <AccordionTrigger className="text-left">
+                  {t('levelSelection.faqQ2')}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {t('levelSelection.faqA2')}
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3">
+                <AccordionTrigger className="text-left">
+                  {t('levelSelection.faqQ3')}
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground">
+                  {t('levelSelection.faqA3')}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            {/* FAQ Schema */}
+            <script type="application/ld+json">
+              {JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": t('levelSelection.faqQ1'),
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": t('levelSelection.faqA1')
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": t('levelSelection.faqQ2'),
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": t('levelSelection.faqA2')
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": t('levelSelection.faqQ3'),
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": t('levelSelection.faqA3')
+                    }
+                  }
+                ]
+              })}
+            </script>
           </div>
         </div>
       </main>
