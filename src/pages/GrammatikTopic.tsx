@@ -21,7 +21,7 @@ const GrammatikTopic = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Thema nicht gefunden</h1>
-          <Button onClick={() => navigate('/grammatik')}>Zurück zur Übersicht</Button>
+          <Button onClick={() => navigate('/deutsche-grammatik')}>Zurück zur Übersicht</Button>
         </div>
       </div>
     );
@@ -42,7 +42,7 @@ const GrammatikTopic = () => {
 
   const pageTitle = `${category.name} – Deutsche Grammatik`;
   const pageDescription = `${category.name}: ${category.description} Alle Regeln mit Beispielen und Übungen (A1-C1).`;
-  const pageUrl = `https://www.infinitegrammar.de/grammatik/thema/${topic}`;
+  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/thema/${topic}`;
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -65,11 +65,11 @@ const GrammatikTopic = () => {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
               <a
-                href="/grammatik"
+                href="/deutsche-grammatik"
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/grammatik');
+                  navigate('/deutsche-grammatik');
                 }}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -123,11 +123,11 @@ const GrammatikTopic = () => {
                       .map((t) => (
                         <a
                           key={t.id}
-                          href={`/grammatik/${level.toLowerCase()}/${t.slug}`}
+                          href={`/deutsche-grammatik/${level.toLowerCase()}-niveau-lernen/${t.slug}`}
                           className="block no-underline"
                           onClick={(e) => {
                             e.preventDefault();
-                            navigate(`/grammatik/${level.toLowerCase()}/${t.slug}`);
+                            navigate(`/deutsche-grammatik/${level.toLowerCase()}-niveau-lernen/${t.slug}`);
                           }}
                         >
                           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">

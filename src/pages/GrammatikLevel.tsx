@@ -15,7 +15,9 @@ const GrammatikLevel = () => {
   const { level } = useParams<{ level: string }>();
   const navigate = useNavigate();
 
-  const normalizedLevel = level?.toUpperCase() as GrammarLevel;
+  // Extract level code from URL parameter (e.g., "a1-niveau-lernen" -> "a1")
+  const levelCode = level?.replace('-niveau-lernen', '') || '';
+  const normalizedLevel = levelCode.toUpperCase() as GrammarLevel;
 
   if (!['A1', 'A2', 'B1', 'B2', 'C1'].includes(normalizedLevel)) {
     return (
@@ -65,7 +67,7 @@ const GrammatikLevel = () => {
 
   const pageTitle = `Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt | InfiniteGrammar`;
   const pageDescription = levelMetaDescriptions[normalizedLevel];
-  const pageUrl = `https://www.infinitegrammar.de/grammatik/${level}`;
+  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen`;
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -110,7 +112,7 @@ const GrammatikLevel = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/grammatik' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik' },
             { name: normalizedLevel, url: pageUrl }
           ]
         }}
@@ -122,11 +124,11 @@ const GrammatikLevel = () => {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
               <a
-                href="/grammatik"
+                href="/deutsche-grammatik"
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate('/grammatik');
+                  navigate('/deutsche-grammatik');
                 }}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -192,11 +194,11 @@ const GrammatikLevel = () => {
                       .map((topic) => (
                         <a
                           key={topic.id}
-                          href={`/grammatik/${level}/${topic.slug}`}
+                          href={`/deutsche-grammatik/${levelCode}-niveau-lernen/${topic.slug}`}
                           className="block no-underline"
                           onClick={(e) => {
                             e.preventDefault();
-                            navigate(`/grammatik/${level}/${topic.slug}`);
+                            navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen/${topic.slug}`);
                           }}
                         >
                           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">

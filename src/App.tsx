@@ -42,10 +42,10 @@ const App = () => (
               <Route path="/verify-magic-link" element={<VerifyMagicLink />} />
               <Route path="/pruefungszentren" element={<PruefungsZentren />} />
               <Route path="/pruefungszentren/:examCity" element={<CityExamPage />} />
-              <Route path="/grammatik" element={<Grammatik />} />
-              <Route path="/grammatik/thema/:topic" element={<GrammatikTopic />} />
-              <Route path="/grammatik/:level/:slug" element={<GrammatikContent />} />
-              <Route path="/grammatik/:level" element={<GrammatikLevel />} />
+              <Route path="/deutsche-grammatik" element={<Grammatik />} />
+              <Route path="/deutsche-grammatik/thema/:topic" element={<GrammatikTopic />} />
+              <Route path="/deutsche-grammatik/:level/:slug" element={<GrammatikContent />} />
+              <Route path="/deutsche-grammatik/:level" element={<GrammatikLevel />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

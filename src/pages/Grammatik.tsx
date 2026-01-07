@@ -61,7 +61,7 @@ const Grammatik = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar</title>
-        <link rel="canonical" href="https://www.infinitegrammar.de/grammatik" />
+        <link rel="canonical" href="https://www.infinitegrammar.de/deutsche-grammatik" />
         <meta
           name="description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
@@ -71,7 +71,7 @@ const Grammatik = () => {
           property="og:description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
-        <meta property="og:url" content="https://www.infinitegrammar.de/grammatik" />
+        <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
@@ -87,7 +87,7 @@ const Grammatik = () => {
         data={{
           headline: 'Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt',
           description: 'Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen',
-          url: 'https://www.infinitegrammar.de/grammatik',
+          url: 'https://www.infinitegrammar.de/deutsche-grammatik',
           datePublished: '2025-12-15T10:00:00+01:00',
           dateModified: '2026-01-06T14:00:00+01:00',
           keywords: ['Deutsche Grammatik', 'Grammatik lernen', 'A1 Grammatik', 'B1 Grammatik', 'C1 Grammatik', 'Deutsch lernen']
@@ -98,7 +98,7 @@ const Grammatik = () => {
         data={{
           headline: 'Deutsche Grammatik A1-C1',
           description: 'Komplette deutsche Grammatik von A1 bis C1 mit Regeln, Beispielen und interaktiven Übungen',
-          url: 'https://www.infinitegrammar.de/grammatik',
+          url: 'https://www.infinitegrammar.de/deutsche-grammatik',
           educationalLevel: 'A1-C1',
           learningResourceType: 'Grammar Reference',
           keywords: ['Deutsche Grammatik', 'Grammatikregeln', 'Deutsch lernen', 'Grammatik Übungen']
@@ -109,7 +109,7 @@ const Grammatik = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/grammatik' }
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik' }
           ]
         }}
       />
@@ -140,7 +140,7 @@ const Grammatik = () => {
               Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt
             </h1>
             <ShareButton
-              url="https://www.infinitegrammar.de/grammatik"
+              url="https://www.infinitegrammar.de/deutsche-grammatik"
               title="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt"
               description="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
             />
@@ -235,11 +235,11 @@ const Grammatik = () => {
                     {filteredTopics.map((topic) => (
                       <a
                         key={topic.id}
-                        href={`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`}
+                        href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`}
                         className="block no-underline"
                         onClick={(e) => {
                           e.preventDefault();
-                          navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`);
+                          navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`);
                         }}
                       >
                         <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
@@ -308,11 +308,11 @@ const Grammatik = () => {
                 return (
                   <a
                     key={level.level}
-                    href={`/grammatik/${level.level.toLowerCase()}`}
+                    href={`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen`}
                     className="block no-underline"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(`/grammatik/${level.level.toLowerCase()}`);
+                      navigate(`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen`);
                     }}
                   >
                     <Card
@@ -343,11 +343,11 @@ const Grammatik = () => {
               {Object.entries(grammarCategories).map(([key, category], idx) => (
                 <a
                   key={key}
-                  href={`/grammatik/thema/${key}`}
+                  href={`/deutsche-grammatik/thema/${key}`}
                   className="block no-underline"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/grammatik/thema/${key}`);
+                    navigate(`/deutsche-grammatik/thema/${key}`);
                   }}
                 >
                   <Card
@@ -370,11 +370,11 @@ const Grammatik = () => {
             {popularTopics.map((topic) => (
               <a
                 key={topic.id}
-                href={`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`}
+                href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`}
                 className="block no-underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(`/grammatik/${topic.level.toLowerCase()}/${topic.slug}`);
+                  navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`);
                 }}
               >
                 <Card className="p-4 hover:shadow-lg transition-shadow cursor-pointer">

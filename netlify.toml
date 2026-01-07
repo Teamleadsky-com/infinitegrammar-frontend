@@ -25,6 +25,72 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Redirect /grammatik structure to /deutsche-grammatik structure with niveau-lernen
+[[redirects]]
+  from = "/grammatik"
+  to = "/deutsche-grammatik"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/"
+  to = "/deutsche-grammatik"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/thema/*"
+  to = "/deutsche-grammatik/thema/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1"
+  to = "/deutsche-grammatik/a1-niveau-lernen"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/*"
+  to = "/deutsche-grammatik/a1-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2"
+  to = "/deutsche-grammatik/a2-niveau-lernen"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/*"
+  to = "/deutsche-grammatik/a2-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1"
+  to = "/deutsche-grammatik/b1-niveau-lernen"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/*"
+  to = "/deutsche-grammatik/b1-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2"
+  to = "/deutsche-grammatik/b2-niveau-lernen"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/*"
+  to = "/deutsche-grammatik/b2-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1"
+  to = "/deutsche-grammatik/c1-niveau-lernen"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/*"
+  to = "/deutsche-grammatik/c1-niveau-lernen/:splat"
+  status = 301
+
 # Redirect old grammar URLs to new SEO-optimized URLs
 # A1 Level
 [[redirects]]
