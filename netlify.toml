@@ -26,7 +26,7 @@
   status = 200
 
 # TRAILING SLASH ENFORCEMENT - Must come before other redirects
-# Enforce trailing slashes on all canonical URLs (prioritized over other rules)
+# Enforce trailing slashes on all canonical URLs (most specific rules first)
 
 # Prüfungszentren pages - add trailing slash
 [[redirects]]
@@ -41,28 +41,57 @@
   status = 301
   force = true
 
-# Deutsche Grammatik - add trailing slash
+# Deutsche Grammatik - add trailing slash (specific patterns first!)
+# Most specific: level + topic (3 segments)
 [[redirects]]
-  from = "/deutsche-grammatik"
-  to = "/deutsche-grammatik/"
+  from = "/deutsche-grammatik/:level/:topic"
+  to = "/deutsche-grammatik/:level/:topic/"
   status = 301
   force = true
+  conditions = {path = ["!*.js", "!*.css", "!*.json", "!*.xml", "!*.txt"]}
 
-[[redirects]]
-  from = "/deutsche-grammatik/:level"
-  to = "/deutsche-grammatik/:level/"
-  status = 301
-  force = true
-
+# Specific: thema + topic (3 segments)
 [[redirects]]
   from = "/deutsche-grammatik/thema/:topic"
   to = "/deutsche-grammatik/thema/:topic/"
   status = 301
   force = true
 
+# Specific: just level (2 segments)
 [[redirects]]
-  from = "/deutsche-grammatik/:level/:topic"
-  to = "/deutsche-grammatik/:level/:topic/"
+  from = "/deutsche-grammatik/a1-niveau-lernen"
+  to = "/deutsche-grammatik/a1-niveau-lernen/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deutsche-grammatik/a2-niveau-lernen"
+  to = "/deutsche-grammatik/a2-niveau-lernen/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deutsche-grammatik/b1-niveau-lernen"
+  to = "/deutsche-grammatik/b1-niveau-lernen/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deutsche-grammatik/b2-niveau-lernen"
+  to = "/deutsche-grammatik/b2-niveau-lernen/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/deutsche-grammatik/c1-niveau-lernen"
+  to = "/deutsche-grammatik/c1-niveau-lernen/"
+  status = 301
+  force = true
+
+# General: just deutsche-grammatik (1 segment)
+[[redirects]]
+  from = "/deutsche-grammatik"
+  to = "/deutsche-grammatik/"
   status = 301
   force = true
 
