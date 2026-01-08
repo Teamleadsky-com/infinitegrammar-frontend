@@ -265,21 +265,21 @@ const LevelSelection = () => {
                 {t('levelSelection.exerciseStats')}
               </button>
               <a
-                href="/pruefungszentren"
+                href="/pruefungszentren/"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/pruefungszentren");
+                  navigate("/pruefungszentren/");
                 }}
               >
                 {t('levelSelection.examCenters')}
               </a>
               <a
-                href="/grammatik"
+                href="/deutsche-grammatik/"
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate("/grammatik");
+                  navigate("/deutsche-grammatik/");
                 }}
               >
                 {t('levelSelection.grammarReference')}

@@ -24,7 +24,7 @@ const GrammatikLevel = () => {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Niveau nicht gefunden</h1>
-          <Button onClick={() => navigate('/grammatik')}>Zurück zur Übersicht</Button>
+          <Button onClick={() => navigate('/deutsche-grammatik/')}>Zurück zur Übersicht</Button>
         </div>
       </div>
     );

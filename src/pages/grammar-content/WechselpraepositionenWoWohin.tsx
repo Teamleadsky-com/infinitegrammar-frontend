@@ -16,12 +16,12 @@ const WechselpraepositionenWoWohin = () => {
   const pageTitle = 'Wechselpräpositionen: Wo? Wohin? (B1)';
   const pageDescription =
     'Wechselpräpositionen (B1): Wo vs. Wohin – Dativ oder Akkusativ? Mit Regeln, Beispielen und häufigen Fehlern.';
-  const pageUrl = 'https://www.infinitegrammar.de/grammatik/b1/wechselpraepositionen-wo-wohin';
+  const pageUrl = 'https://www.infinitegrammar.de/deutsche-grammatik/b1-niveau-lernen/wechselpraepositionen-wo-wohin-dativ-akkusativ/';
 
   const relatedTopics = [
-    { title: 'Präpositionen Ort+Zeit', slug: 'praepositionen-ort-zeit', level: 'b1' },
-    { title: 'Artikel & Kasus', slug: 'artikel-kasus', level: 'a2' },
-    { title: 'Verben mit Präposition', slug: 'verben-mit-praeposition', level: 'b1' },
+    { title: 'Präpositionen Ort+Zeit', slug: 'praepositionen-ort-zeit-kombiniert', level: 'b1' },
+    { title: 'Artikel & Kasus', slug: 'artikel-kasus-vier-faelle-deutsch', level: 'a2' },
+    { title: 'Verben mit Präposition', slug: 'verben-mit-praeposition-warten-auf-denken-an', level: 'b1' },
   ];
 
   return (
@@ -43,7 +43,7 @@ const WechselpraepositionenWoWohin = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/grammatik/b1')}>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/deutsche-grammatik/b1-niveau-lernen/')}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div>
@@ -65,11 +65,11 @@ const WechselpraepositionenWoWohin = () => {
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 animate-fade-in">
-          <button onClick={() => navigate('/grammatik')} className="hover:text-primary transition-colors">
+          <button onClick={() => navigate('/deutsche-grammatik/')} className="hover:text-primary transition-colors">
             Grammatik
           </button>
           <span>→</span>
-          <button onClick={() => navigate('/grammatik/b1')} className="hover:text-primary transition-colors">
+          <button onClick={() => navigate('/deutsche-grammatik/b1-niveau-lernen/')} className="hover:text-primary transition-colors">
             B1
           </button>
           <span>→</span>
@@ -273,7 +273,7 @@ const WechselpraepositionenWoWohin = () => {
             <Button size="lg" onClick={() => navigate('/exercise?section=Präpositionen')}>
               Wechselpräpositionen jetzt üben
             </Button>
-            <Button variant="outline" size="lg" onClick={() => navigate('/grammatik/thema/kasus')}>
+            <Button variant="outline" size="lg" onClick={() => navigate('/deutsche-grammatik/thema/kasus/')}>
               Zur Übersicht: Kasus & Präpositionen
             </Button>
           </div>
@@ -354,7 +354,7 @@ const WechselpraepositionenWoWohin = () => {
               <Card
                 key={topic.slug}
                 className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary"
-                onClick={() => navigate(`/grammatik/${topic.level}/${topic.slug}`)}
+                onClick={() => navigate(`/deutsche-grammatik/${topic.level}-niveau-lernen/${topic.slug}/`)}
               >
                 <div className="flex items-center gap-2 mb-1">
                   <span className="px-2 py-0.5 bg-primary/10 text-primary text-xs font-semibold rounded uppercase">
@@ -369,10 +369,10 @@ const WechselpraepositionenWoWohin = () => {
 
         {/* Back to Overview */}
         <div className="flex justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.9s' }}>
-          <Button variant="outline" onClick={() => navigate('/grammatik/b1')}>
+          <Button variant="outline" onClick={() => navigate('/deutsche-grammatik/b1-niveau-lernen/')}>
             <ArrowLeft className="mr-2 h-4 w-4" /> Zurück zu B1
           </Button>
-          <Button variant="outline" onClick={() => navigate('/grammatik')}>
+          <Button variant="outline" onClick={() => navigate('/deutsche-grammatik/')}>
             Zur Grammatik-Übersicht
           </Button>
         </div>
