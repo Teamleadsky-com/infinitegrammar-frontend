@@ -67,7 +67,7 @@ const GrammatikLevel = () => {
 
   const pageTitle = `Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt | InfiniteGrammar`;
   const pageDescription = levelMetaDescriptions[normalizedLevel];
-  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen`;
+  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/`;
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
@@ -112,7 +112,7 @@ const GrammatikLevel = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik/' },
             { name: normalizedLevel, url: pageUrl }
           ]
         }}

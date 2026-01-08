@@ -43,7 +43,7 @@ const GrammatikContent = () => {
 
   const pageTitle = `${topic.title}: Regeln & Beispiele einfach erklärt | InfiniteGrammar`;
   const pageDescription = topic.metaDescription;
-  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/${slug}`;
+  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/${slug}/`;
 
   // Map topic to exercise section
   const exerciseSection = content?.exerciseSection || 'Verben';
@@ -91,8 +91,8 @@ const GrammatikContent = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik' },
-            { name: topic.level, url: `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen` },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik/' },
+            { name: topic.level, url: `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/` },
             { name: topic.title, url: pageUrl }
           ]
         }}

@@ -61,7 +61,7 @@ const Grammatik = () => {
     <div className="min-h-screen bg-gradient-subtle">
       <Helmet>
         <title>Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar</title>
-        <link rel="canonical" href="https://www.infinitegrammar.de/deutsche-grammatik" />
+        <link rel="canonical" href="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta
           name="description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
@@ -71,7 +71,7 @@ const Grammatik = () => {
           property="og:description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
-        <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik" />
+        <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />

@@ -42,7 +42,7 @@ const GrammatikTopic = () => {
 
   const pageTitle = `${category.name} – Deutsche Grammatik`;
   const pageDescription = `${category.name}: ${category.description} Alle Regeln mit Beispielen und Übungen (A1-C1).`;
-  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/thema/${topic}`;
+  const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/thema/${topic}/`;
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
