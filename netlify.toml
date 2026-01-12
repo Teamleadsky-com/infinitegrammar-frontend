@@ -25,6 +25,19 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
+# Redirect non-www to www (canonical domain)
+[[redirects]]
+  from = "http://infinitegrammar.de/*"
+  to = "https://www.infinitegrammar.de/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://infinitegrammar.de/*"
+  to = "https://www.infinitegrammar.de/:splat"
+  status = 301
+  force = true
+
 # NO TRAILING SLASH REDIRECTS - Let React Router handle all /deutsche-grammatik/* URLs
 # Sitemap lists canonical URLs with trailing slashes, but both work the same
 
