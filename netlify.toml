@@ -28,6 +28,17 @@
 # NO TRAILING SLASH REDIRECTS - Let React Router handle all /deutsche-grammatik/* URLs
 # Sitemap lists canonical URLs with trailing slashes, but both work the same
 
+# Redirect main pages without slash to with slash (matches sitemap canonical)
+[[redirects]]
+  from = "/pruefungszentren"
+  to = "/pruefungszentren/"
+  status = 301
+
+[[redirects]]
+  from = "/deutsche-grammatik"
+  to = "/deutsche-grammatik/"
+  status = 301
+
 # Redirect /grammatik structure to /deutsche-grammatik structure with niveau-lernen
 [[redirects]]
   from = "/grammatik"
