@@ -9,6 +9,9 @@ const __dirname = path.dirname(__filename);
 
 // Pages to prerender for SEO - using NEW /deutsche-grammatik/ URL structure
 const PAGES = [
+  // Homepage
+  '/',
+
   // Main pages
   '/deutsche-grammatik',
   '/pruefungszentren',
