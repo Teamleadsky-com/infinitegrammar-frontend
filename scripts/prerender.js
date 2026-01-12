@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer';
-import { createServer } from 'vite';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from 'http';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,17 +96,39 @@ async function prerender() {
 
   const distDir = path.resolve(__dirname, '../dist');
 
-  // Start a local server to serve the built app
-  console.log('Starting preview server...');
-  const server = await createServer({
-    root: distDir,
-    server: { port: 4173 },
-    configFile: false,
+  // Start a simple static file server to serve the production build
+  console.log('Starting static file server...');
+
+  const server = http.createServer((req, res) => {
+    // Serve the index.html for all routes (SPA fallback)
+    const filePath = path.join(distDir, req.url === '/' ? 'index.html' : req.url);
+
+    // Check if file exists, otherwise serve index.html
+    if (fs.existsSync(filePath) && fs.statSync(filePath).isFile()) {
+      const ext = path.extname(filePath);
+      const contentType = {
+        '.html': 'text/html',
+        '.js': 'application/javascript',
+        '.css': 'text/css',
+        '.json': 'application/json',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.svg': 'image/svg+xml',
+      }[ext] || 'text/plain';
+
+      res.writeHead(200, { 'Content-Type': contentType });
+      res.end(fs.readFileSync(filePath));
+    } else {
+      // SPA fallback - serve index.html for all routes
+      res.writeHead(200, { 'Content-Type': 'text/html' });
+      res.end(fs.readFileSync(path.join(distDir, 'index.html')));
+    }
   });
 
-  await server.listen();
-  const baseUrl = 'http://localhost:4173';
-  console.log(`Preview server running at ${baseUrl}`);
+  const port = 4173;
+  await new Promise((resolve) => server.listen(port, resolve));
+  const baseUrl = `http://localhost:${port}`;
+  console.log(`Static file server running at ${baseUrl}`);
 
   // Launch browser
   console.log('Launching browser...');
@@ -161,7 +183,7 @@ async function prerender() {
     console.log('\nPrerendering complete!');
   } finally {
     await browser.close();
-    await server.close();
+    await new Promise((resolve) => server.close(resolve));
   }
 }
 
