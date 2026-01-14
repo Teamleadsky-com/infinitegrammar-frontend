@@ -98,7 +98,7 @@ const CityExamPage = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Prüfungszentren', url: 'https://www.infinitegrammar.de/pruefungszentren' },
+            { name: 'Prüfungszentren', url: 'https://www.infinitegrammar.de/pruefungszentren/' },
             { name: `${examDisplay} ${content.city}`, url: pageUrl }
           ]
         }}

@@ -27,7 +27,7 @@ const PruefungsZentren = () => {
 
   const pageTitle = "telc & TestDaF Prüfungszentren Deutschland: Finden & Anmelden | InfiniteGrammar";
   const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren & Institute. ✓ Alle Bundesländer ✓ Termine checken ✓ Anmeldungstipps ✓ Kostenlos';
-  const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren';
+  const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren/';
 
   // Popular level/section combinations for quick testing
   const quickTestOptions = [
