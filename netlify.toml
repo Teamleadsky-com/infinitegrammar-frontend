@@ -52,6 +52,328 @@
   to = "/deutsche-grammatik/"
   status = 301
 
+# Redirect /grammatik structure to /deutsche-grammatik structure with niveau-lernen
+[[redirects]]
+  from = "/grammatik"
+  to = "/deutsche-grammatik/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/"
+  to = "/deutsche-grammatik/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/thema/*"
+  to = "/deutsche-grammatik/thema/:splat/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1"
+  to = "/deutsche-grammatik/a1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/*"
+  to = "/deutsche-grammatik/a1-niveau-lernen/:splat/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2"
+  to = "/deutsche-grammatik/a2-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/*"
+  to = "/deutsche-grammatik/a2-niveau-lernen/:splat/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1"
+  to = "/deutsche-grammatik/b1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/*"
+  to = "/deutsche-grammatik/b1-niveau-lernen/:splat/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2"
+  to = "/deutsche-grammatik/b2-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/*"
+  to = "/deutsche-grammatik/b2-niveau-lernen/:splat/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1"
+  to = "/deutsche-grammatik/c1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/*"
+  to = "/deutsche-grammatik/c1-niveau-lernen/:splat/"
+  status = 301
+
+# Redirect old grammar URLs to new SEO-optimized URLs (avoiding redirect chains)
+# A1 Level
+[[redirects]]
+  from = "/grammatik/a1/wortstellung"
+  to = "/deutsche-grammatik/a1-niveau-lernen/wortstellung-regeln-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/praesens"
+  to = "/deutsche-grammatik/a1-niveau-lernen/praesens-gegenwart-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/imperativ"
+  to = "/deutsche-grammatik/a1-niveau-lernen/imperativ-befehlsform-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/artikel-nominativ"
+  to = "/deutsche-grammatik/a1-niveau-lernen/artikel-nominativ-der-die-das/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/personalpronomen-nominativ"
+  to = "/deutsche-grammatik/a1-niveau-lernen/personalpronomen-nominativ-ich-du-er/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/pluralbildung"
+  to = "/deutsche-grammatik/a1-niveau-lernen/pluralbildung-plural-deutsch-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/praepositionen-ort"
+  to = "/deutsche-grammatik/a1-niveau-lernen/lokale-praepositionen-ort-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/zeitpraepositionen"
+  to = "/deutsche-grammatik/a1-niveau-lernen/temporale-praepositionen-zeit-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/adjektive-grundform"
+  to = "/deutsche-grammatik/a1-niveau-lernen/adjektive-grundform-deutsch/"
+  status = 301
+
+# A2 Level
+[[redirects]]
+  from = "/grammatik/a2/komplexe-saetze"
+  to = "/deutsche-grammatik/a2-niveau-lernen/komplexe-saetze-nebensaetze-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/perfekt-praeteritum"
+  to = "/deutsche-grammatik/a2-niveau-lernen/perfekt-praeteritum-vergangenheit-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/modalverben"
+  to = "/deutsche-grammatik/a2-niveau-lernen/modalverben-koennen-muessen-wollen-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/trennbare-verben"
+  to = "/deutsche-grammatik/a2-niveau-lernen/trennbare-verben-aufstehen-einkaufen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/pronomen-grundlagen"
+  to = "/deutsche-grammatik/a2-niveau-lernen/pronomen-akkusativ-dativ-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/artikel-kasus"
+  to = "/deutsche-grammatik/a2-niveau-lernen/artikel-kasus-vier-faelle-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/praepositionen-ort-richtung"
+  to = "/deutsche-grammatik/a2-niveau-lernen/praepositionen-ort-richtung-wo-wohin/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/adjektivdeklination-einstieg"
+  to = "/deutsche-grammatik/a2-niveau-lernen/adjektivdeklination-einstieg-endungen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/komparativ-superlativ"
+  to = "/deutsche-grammatik/a2-niveau-lernen/komparativ-superlativ-steigerung-adjektive/"
+  status = 301
+
+# B1 Level
+[[redirects]]
+  from = "/grammatik/b1/nebensaetze-konjunktionen"
+  to = "/deutsche-grammatik/b1-niveau-lernen/nebensaetze-konjunktionen-weil-dass-obwohl/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/relativsaetze"
+  to = "/deutsche-grammatik/b1-niveau-lernen/relativsaetze-relativpronomen-deutsch/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/indirekte-fragen"
+  to = "/deutsche-grammatik/b1-niveau-lernen/indirekte-fragen-ob-wann-wo-wie/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/futur"
+  to = "/deutsche-grammatik/b1-niveau-lernen/futur-1-zukunft-deutsch-werden/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/modalverben-praeteritum"
+  to = "/deutsche-grammatik/b1-niveau-lernen/modalverben-praeteritum-konnte-musste/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/konjunktiv-2"
+  to = "/deutsche-grammatik/b1-niveau-lernen/konjunktiv-2-wuensche-hoeflichkeit/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/reflexive-verben"
+  to = "/deutsche-grammatik/b1-niveau-lernen/reflexive-verben-sich-freuen-erinnern/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/verben-mit-praeposition"
+  to = "/deutsche-grammatik/b1-niveau-lernen/verben-mit-praeposition-warten-auf-denken-an/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/wechselpraepositionen-wo-wohin"
+  to = "/deutsche-grammatik/b1-niveau-lernen/wechselpraepositionen-wo-wohin-dativ-akkusativ/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/praepositionen-ort-zeit"
+  to = "/deutsche-grammatik/b1-niveau-lernen/praepositionen-ort-zeit-kombiniert/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/adjektivdeklination-nom-akk"
+  to = "/deutsche-grammatik/b1-niveau-lernen/adjektivdeklination-nominativ-akkusativ-b1/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/passiv-einstieg"
+  to = "/deutsche-grammatik/b1-niveau-lernen/passiv-einstieg-vorgangspassiv-werden/"
+  status = 301
+
+# B2 Level
+[[redirects]]
+  from = "/grammatik/b2/infinitivsaetze"
+  to = "/deutsche-grammatik/b2-niveau-lernen/infinitivsaetze-um-zu-ohne-zu/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/konjunktiv-2-konditionalsaetze"
+  to = "/deutsche-grammatik/b2-niveau-lernen/konjunktiv-2-irreale-bedingungen-wenn/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/indirekte-rede"
+  to = "/deutsche-grammatik/b2-niveau-lernen/indirekte-rede-konjunktiv-1-2/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/nomen-verb-verbindungen"
+  to = "/deutsche-grammatik/b2-niveau-lernen/nomen-verb-verbindungen-funktionsverben/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/feste-praeposition-rektion"
+  to = "/deutsche-grammatik/b2-niveau-lernen/feste-praepositionen-rektion-verben-nomen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/adjektivdeklination-system-komplett"
+  to = "/deutsche-grammatik/b2-niveau-lernen/adjektivdeklination-komplett-alle-faelle/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/passiv-vertieft"
+  to = "/deutsche-grammatik/b2-niveau-lernen/passiv-vertieft-zustandspassiv-modalverben/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/nominalisierung"
+  to = "/deutsche-grammatik/b2-niveau-lernen/nominalisierung-nominalphrasen-verben-adjektive/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/genitiv-erweiterung"
+  to = "/deutsche-grammatik/b2-niveau-lernen/genitiv-erweiterung-genitivattribute/"
+  status = 301
+
+# C1 Level
+[[redirects]]
+  from = "/grammatik/c1/komplexer-satzbau"
+  to = "/deutsche-grammatik/c1-niveau-lernen/komplexer-satzbau-mehrfache-einbettung/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/konjunktiv-1-berichtssprache"
+  to = "/deutsche-grammatik/c1-niveau-lernen/konjunktiv-1-berichtssprache-journalismus/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/funktionsverbgefuege"
+  to = "/deutsche-grammatik/c1-niveau-lernen/funktionsverbgefuege-gehobene-sprache/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/feste-verbindungen"
+  to = "/deutsche-grammatik/c1-niveau-lernen/feste-verbindungen-idiome-kollokationen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/verben-mit-praeposition-advanced"
+  to = "/deutsche-grammatik/c1-niveau-lernen/verben-mit-praeposition-fortgeschritten-c1/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/komplexe-praepositionsausdruecke"
+  to = "/deutsche-grammatik/c1-niveau-lernen/komplexe-praepositionsausdruecke-mehrteilig/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/adjektivdeklination-komplex"
+  to = "/deutsche-grammatik/c1-niveau-lernen/adjektivdeklination-komplex-nominalgruppen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/passiv-komplex"
+  to = "/deutsche-grammatik/c1-niveau-lernen/passiv-komplex-ersatzformen-unpersoenlich/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/nominalstil"
+  to = "/deutsche-grammatik/c1-niveau-lernen/nominalstil-informationsverdichtung/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/partizipialkonstruktionen"
+  to = "/deutsche-grammatik/c1-niveau-lernen/partizipialkonstruktionen-erweiterte-attribute/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/genitiv-gehobene-sprache"
+  to = "/deutsche-grammatik/c1-niveau-lernen/genitiv-gehobene-sprache-genitivketten/"
+  status = 301
+
 # Ensure sitemap.xml and robots.txt are served as static files (not redirected to React app)
 [[redirects]]
   from = "/sitemap.xml"
