@@ -53,6 +53,7 @@
   status = 301
 
 # Redirect /grammatik structure to /deutsche-grammatik structure with niveau-lernen
+# IMPORTANT: Specific redirects MUST come before wildcard redirects (first match wins)
 [[redirects]]
   from = "/grammatik"
   to = "/deutsche-grammatik/"
@@ -63,62 +64,8 @@
   to = "/deutsche-grammatik/"
   status = 301
 
-[[redirects]]
-  from = "/grammatik/thema/*"
-  to = "/deutsche-grammatik/thema/:splat/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/a1"
-  to = "/deutsche-grammatik/a1-niveau-lernen/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/a1/*"
-  to = "/deutsche-grammatik/a1-niveau-lernen/:splat/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/a2"
-  to = "/deutsche-grammatik/a2-niveau-lernen/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/a2/*"
-  to = "/deutsche-grammatik/a2-niveau-lernen/:splat/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/b1"
-  to = "/deutsche-grammatik/b1-niveau-lernen/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/b1/*"
-  to = "/deutsche-grammatik/b1-niveau-lernen/:splat/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/b2"
-  to = "/deutsche-grammatik/b2-niveau-lernen/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/b2/*"
-  to = "/deutsche-grammatik/b2-niveau-lernen/:splat/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/c1"
-  to = "/deutsche-grammatik/c1-niveau-lernen/"
-  status = 301
-
-[[redirects]]
-  from = "/grammatik/c1/*"
-  to = "/deutsche-grammatik/c1-niveau-lernen/:splat/"
-  status = 301
-
 # Redirect old grammar URLs to new SEO-optimized URLs (avoiding redirect chains)
+# These specific redirects MUST be placed BEFORE the wildcard redirects below
 # A1 Level
 [[redirects]]
   from = "/grammatik/a1/wortstellung"
@@ -372,6 +319,63 @@
 [[redirects]]
   from = "/grammatik/c1/genitiv-gehobene-sprache"
   to = "/deutsche-grammatik/c1-niveau-lernen/genitiv-gehobene-sprache-genitivketten/"
+  status = 301
+
+# Generic wildcard redirects (MUST come AFTER specific redirects above)
+# Note: No trailing slash on :splat to prevent double slashes
+[[redirects]]
+  from = "/grammatik/thema/*"
+  to = "/deutsche-grammatik/thema/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1"
+  to = "/deutsche-grammatik/a1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a1/*"
+  to = "/deutsche-grammatik/a1-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2"
+  to = "/deutsche-grammatik/a2-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/a2/*"
+  to = "/deutsche-grammatik/a2-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1"
+  to = "/deutsche-grammatik/b1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b1/*"
+  to = "/deutsche-grammatik/b1-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2"
+  to = "/deutsche-grammatik/b2-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/b2/*"
+  to = "/deutsche-grammatik/b2-niveau-lernen/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1"
+  to = "/deutsche-grammatik/c1-niveau-lernen/"
+  status = 301
+
+[[redirects]]
+  from = "/grammatik/c1/*"
+  to = "/deutsche-grammatik/c1-niveau-lernen/:splat"
   status = 301
 
 # Ensure sitemap.xml and robots.txt are served as static files (not redirected to React app)
