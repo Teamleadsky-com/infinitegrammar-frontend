@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,15 @@ const VerifyMagicLink = () => {
   const { refreshUser } = useAuth();
   const [status, setStatus] = useState<VerificationStatus>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
+  const verificationAttemptedRef = useRef(false);
 
   useEffect(() => {
+    // Prevent duplicate verification attempts (React StrictMode / re-renders)
+    if (verificationAttemptedRef.current) {
+      return;
+    }
+    verificationAttemptedRef.current = true;
+
     const verifyToken = async () => {
       const token = searchParams.get('token');
 
