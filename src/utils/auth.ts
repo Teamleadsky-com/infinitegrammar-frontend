@@ -128,8 +128,9 @@ export function isAuthenticated(): boolean {
 }
 
 /**
- * Update user data in localStorage
+ * Update user data in localStorage and mark as logged in
  */
 export function updateUserData(user: User): void {
   localStorage.setItem('user', JSON.stringify(user));
+  localStorage.setItem('isLoggedIn', 'true');
 }
