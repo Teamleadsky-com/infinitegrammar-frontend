@@ -232,8 +232,13 @@ const Exercise = () => {
         }
 
         if (isInitial) {
-          setAvailableExercises(newExercises);
-          selectNextExercise(newExercises, null);
+          // Set the first exercise as current, rest as available
+          const [firstExercise, ...restExercises] = newExercises;
+          setCurrentExercise(firstExercise);
+          lastShownIdRef.current = firstExercise.id;
+          shownExerciseIdsRef.current.add(firstExercise.id);
+          setAvailableExercises(restExercises);
+          console.log('Initial exercise selected:', firstExercise.id, 'Remaining:', restExercises.length);
         } else {
           // Append to existing exercises
           setAvailableExercises(prev => [...prev, ...newExercises]);
@@ -257,40 +262,6 @@ const Exercise = () => {
       } else {
         setIsFetchingNext(false);
       }
-    }
-  };
-
-  const selectNextExercise = (exercises: BackendExercise[], lastShownId: string | null) => {
-    console.log('selectNextExercise called with', exercises.length, 'exercises');
-
-    if (exercises.length === 0) {
-      console.error('No exercises to select from!');
-      setLoadingExercises(false);
-      return;
-    }
-
-    // Pick the first unshown exercise
-    const selected = exercises[0];
-
-    if (selected) {
-      console.log('Selected exercise:', selected.id, selected);
-
-      try {
-        setCurrentExercise(selected);
-        lastShownIdRef.current = selected.id;
-        shownExerciseIdsRef.current.add(selected.id);
-
-        // Remove the selected exercise from available pool
-        setAvailableExercises(prev => prev.filter(ex => ex.id !== selected.id));
-
-        setLoadingExercises(false);
-      } catch (error) {
-        console.error('Error setting exercise:', error);
-        setLoadingExercises(false);
-      }
-    } else {
-      console.warn('No exercises available to select');
-      setLoadingExercises(false);
     }
   };
 
@@ -477,14 +448,26 @@ const Exercise = () => {
       setExercisesCompletedInBatch(0);
     }
 
-    // Select next exercise from available pool
-    if (availableExercises.length > 0) {
-      selectNextExercise(availableExercises, lastShownIdRef.current);
-    } else {
-      // If no exercises available, fetch new ones
-      console.log('No exercises in pool, fetching...');
-      fetchExercises(true);
-    }
+    // Select next exercise from available pool using state updater to get latest value
+    setAvailableExercises(prev => {
+      if (prev.length > 0) {
+        const nextExercise = prev[0];
+        console.log('Selecting next exercise:', nextExercise.id);
+
+        // Set the next exercise
+        setCurrentExercise(nextExercise);
+        lastShownIdRef.current = nextExercise.id;
+        shownExerciseIdsRef.current.add(nextExercise.id);
+
+        // Return the remaining exercises (removing the one we just selected)
+        return prev.slice(1);
+      } else {
+        // If no exercises available, fetch new ones
+        console.log('No exercises in pool, fetching...');
+        fetchExercises(true);
+        return prev;
+      }
+    });
   };
 
   const handleWaitlistModalClose = (open: boolean) => {

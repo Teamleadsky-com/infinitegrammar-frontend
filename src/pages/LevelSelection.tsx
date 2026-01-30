@@ -17,6 +17,7 @@ import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
+import { Footer } from "@/components/Footer";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 // ⚙️ FEATURE SWITCH: Sign In button behavior
@@ -85,7 +86,7 @@ const LevelSelection = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       <Helmet>
         <html lang={currentLanguage} />
         <title>{pageTitle}</title>
@@ -370,6 +371,8 @@ const LevelSelection = () => {
         open={showComingSoonModal}
         onOpenChange={setShowComingSoonModal}
       />
+
+      <Footer />
     </div>
   );
 };

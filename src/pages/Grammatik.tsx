@@ -16,6 +16,7 @@ import {
 import { ShareButton } from '@/components/ShareButton';
 import { QuickQuiz } from '@/components/QuickQuiz';
 import { ComingSoonModal } from '@/components/ComingSoonModal';
+import { Footer } from '@/components/Footer';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 
@@ -58,7 +59,7 @@ const Grammatik = () => {
     : [];
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar</title>
         <link rel="canonical" href="https://www.infinitegrammar.de/deutsche-grammatik/" />
@@ -422,6 +423,8 @@ const Grammatik = () => {
         onOpenChange={setShowComingSoonModal}
         language="de"
       />
+
+      <Footer />
     </div>
   );
 };

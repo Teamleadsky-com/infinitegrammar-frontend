@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, Target, Award } from "lucide-react";
 import { WaitlistModal } from "@/components/WaitlistModal";
+import { Footer } from "@/components/Footer";
 import { useExerciseStats } from "@/hooks/useExerciseStats";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -135,7 +136,7 @@ const Statistics = () => {
   }, [isAuthenticated, user]);
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen bg-background relative flex flex-col">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -323,6 +324,8 @@ const Statistics = () => {
         exercisesCompleted={stats.totalExercisesCompleted}
         openSource="statistics-page"
       />
+
+      <Footer />
     </div>
   );
 };

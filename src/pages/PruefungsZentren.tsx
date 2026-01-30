@@ -10,6 +10,7 @@ import { examCenters, uniqueStates, uniqueTypes } from "@/data/examCenters";
 import { ShareButton } from "@/components/ShareButton";
 import { QuickQuiz } from "@/components/QuickQuiz";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
+import { Footer } from "@/components/Footer";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
 
@@ -60,7 +61,7 @@ const PruefungsZentren = () => {
   }, [searchCity, filterState, filterType, filterExam, searchOrg]);
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
@@ -833,6 +834,8 @@ const PruefungsZentren = () => {
         onOpenChange={setShowComingSoonModal}
         language="de"
       />
+
+      <Footer />
     </div>
   );
 };
