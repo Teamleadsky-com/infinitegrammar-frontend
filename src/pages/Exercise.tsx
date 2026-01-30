@@ -13,7 +13,7 @@ import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
-import { markExerciseCompleted } from "@/utils/exerciseCompletion";
+import { markExerciseCompleted, LEVEL_ORDER } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
@@ -159,6 +159,10 @@ const Exercise = () => {
   const [isFetchingNext, setIsFetchingNext] = useState(false);
   const lastShownIdRef = useRef<string | null>(null);
   const shownExerciseIdsRef = useRef<Set<string>>(new Set());
+  // Progression tracking
+  const exhaustedGrammarSectionsRef = useRef<Map<string, Set<string>>>(new Map()); // level -> Set of exhausted grammar_section_ids
+  const exhaustedLevelsRef = useRef<Set<string>>(new Set());
+  const currentGrammarSectionRef = useRef<string | null>(null); // Track current grammar section for progression
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
   const { user, isAuthenticated, refreshUser } = useAuth();
 
@@ -171,97 +175,232 @@ const Exercise = () => {
   useEffect(() => {
     lastShownIdRef.current = null;
     shownExerciseIdsRef.current.clear();
+    exhaustedGrammarSectionsRef.current.clear();
+    exhaustedLevelsRef.current.clear();
+    currentGrammarSectionRef.current = grammarSection || null;
     setExercisesCompletedInBatch(0);
-    fetchExercises(true);
+    fetchExercisesWithProgression(true);
   }, [level, section, grammarSection]);
 
-  const fetchExercises = async (isInitial: boolean = false) => {
+  // Get the next CEFR level
+  const getNextLevel = (currentLevel: string): string | null => {
+    const currentIndex = LEVEL_ORDER.indexOf(currentLevel.toLowerCase() as any);
+    if (currentIndex === -1 || currentIndex === LEVEL_ORDER.length - 1) {
+      return null;
+    }
+    return LEVEL_ORDER[currentIndex + 1];
+  };
+
+  // Mark a grammar section as exhausted for a level
+  const markSectionExhausted = (levelKey: string, sectionId: string) => {
+    if (!exhaustedGrammarSectionsRef.current.has(levelKey)) {
+      exhaustedGrammarSectionsRef.current.set(levelKey, new Set());
+    }
+    exhaustedGrammarSectionsRef.current.get(levelKey)!.add(sectionId);
+    console.log(`Marked section ${sectionId} as exhausted for level ${levelKey}`);
+  };
+
+  // Fetch exercises with progression logic
+  const fetchExercisesWithProgression = async (isInitial: boolean = false) => {
     if (isInitial) {
       setLoadingExercises(true);
     } else {
       setIsFetchingNext(true);
     }
 
-    try {
-      const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+    const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
 
-      let url = `${API_BASE}/exercises?level=${level.toUpperCase()}&limit=5`;
+    // Progression steps:
+    // 1. Try current grammar section (if set)
+    // 2. Try same level, same topic (any grammar section)
+    // 3. Try same level, any topic
+    // 4. Try next higher level
+    // 5. Try random (no filters)
 
-      // Add user ID for progressive delivery if authenticated
-      if (isAuthenticated && user?.id) {
-        url += `&userId=${user.id}`;
+    const progressionSteps: Array<{
+      level: string | null;
+      topic: string | null;
+      grammarSection: string | null;
+      description: string;
+    }> = [];
+
+    // Step 1: Current grammar section (if specified)
+    if (currentGrammarSectionRef.current) {
+      progressionSteps.push({
+        level: level.toUpperCase(),
+        topic: null,
+        grammarSection: currentGrammarSectionRef.current,
+        description: `grammar section ${currentGrammarSectionRef.current} at ${level.toUpperCase()}`
+      });
+    }
+
+    // Step 2: Same level, same topic (any grammar section)
+    progressionSteps.push({
+      level: level.toUpperCase(),
+      topic: section,
+      grammarSection: null,
+      description: `topic ${section} at ${level.toUpperCase()}`
+    });
+
+    // Step 3: Same level, any topic
+    progressionSteps.push({
+      level: level.toUpperCase(),
+      topic: null,
+      grammarSection: null,
+      description: `any topic at ${level.toUpperCase()}`
+    });
+
+    // Step 4: Higher levels
+    let nextLevel = getNextLevel(level);
+    while (nextLevel) {
+      if (!exhaustedLevelsRef.current.has(nextLevel)) {
+        progressionSteps.push({
+          level: nextLevel.toUpperCase(),
+          topic: null,
+          grammarSection: null,
+          description: `any topic at ${nextLevel.toUpperCase()}`
+        });
       }
+      nextLevel = getNextLevel(nextLevel);
+    }
 
-      // Add grammar section or topic filter
-      if (grammarSection) {
-        url += `&grammarSection=${grammarSection}`;
-      } else {
-        url += `&topic=${section}`;
-      }
+    // Step 5: Random (no level filter)
+    progressionSteps.push({
+      level: null,
+      topic: null,
+      grammarSection: null,
+      description: 'random exercises'
+    });
 
-      console.log('Fetching 5 exercises from:', url);
+    // Try each progression step
+    for (const step of progressionSteps) {
+      try {
+        let url = `${API_BASE}/exercises?limit=5`;
 
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Fetched exercises:', data.exercises?.length || 0);
-
-      if (data.exercises && data.exercises.length > 0) {
-        console.log('Received exercises from API:', data.exercises.length);
-        console.log('Already shown IDs:', Array.from(shownExerciseIdsRef.current));
-
-        // Filter out exercises we've already shown
-        const newExercises = data.exercises.filter(
-          (ex: BackendExercise) => !shownExerciseIdsRef.current.has(ex.id)
-        );
-
-        console.log('New exercises after filtering:', newExercises.length);
-
-        if (newExercises.length === 0) {
-          console.warn('All fetched exercises were already shown, fetching again...');
-          // Clear the shown IDs and try fetching again
-          if (isInitial) {
-            shownExerciseIdsRef.current.clear();
-            fetchExercises(true);
-          }
-          return;
+        if (step.level) {
+          url += `&level=${step.level}`;
         }
 
-        if (isInitial) {
-          // Set the first exercise as current, rest as available
-          const [firstExercise, ...restExercises] = newExercises;
+        if (isAuthenticated && user?.id) {
+          url += `&userId=${user.id}`;
+        }
+
+        if (step.grammarSection) {
+          url += `&grammarSection=${step.grammarSection}`;
+        } else if (step.topic) {
+          url += `&topic=${step.topic}`;
+        }
+
+        console.log(`Trying progression step: ${step.description}`, url);
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          console.warn(`HTTP ${response.status} for ${step.description}`);
+          continue;
+        }
+
+        const data = await response.json();
+
+        if (data.exercises && data.exercises.length > 0) {
+          // Filter out exercises we've already shown
+          const newExercises = data.exercises.filter(
+            (ex: BackendExercise) => !shownExerciseIdsRef.current.has(ex.id)
+          );
+
+          if (newExercises.length > 0) {
+            console.log(`Found ${newExercises.length} new exercises from ${step.description}`);
+
+            // Track the grammar section of the first exercise
+            const firstExerciseSection = newExercises[0].grammar_section_id;
+            if (firstExerciseSection) {
+              currentGrammarSectionRef.current = firstExerciseSection;
+            }
+
+            if (isInitial) {
+              const [firstExercise, ...restExercises] = newExercises;
+              setCurrentExercise(firstExercise);
+              lastShownIdRef.current = firstExercise.id;
+              shownExerciseIdsRef.current.add(firstExercise.id);
+              setAvailableExercises(restExercises);
+
+              // Show progression toast if level changed
+              if (step.level && step.level.toLowerCase() !== level.toLowerCase()) {
+                toast({
+                  title: "Level Up!",
+                  description: `Moving to ${step.level} exercises`,
+                });
+                // Update URL to reflect new level
+                const params = new URLSearchParams();
+                params.set("level", step.level.toLowerCase());
+                params.set("section", firstExercise.grammar_ui_topics?.[0] || section);
+                setSearchParams(params, { replace: true });
+              } else if (step.topic && step.topic !== section) {
+                toast({
+                  title: "Topic Changed",
+                  description: `Now practicing ${step.topic}`,
+                });
+              }
+
+              console.log('Initial exercise selected:', firstExercise.id);
+            } else {
+              setAvailableExercises(prev => [...prev, ...newExercises]);
+            }
+
+            setLoadingExercises(false);
+            setIsFetchingNext(false);
+            return; // Success, exit the function
+          } else {
+            console.log(`All exercises from ${step.description} already shown`);
+            // Mark this section/level as exhausted
+            if (step.grammarSection && step.level) {
+              markSectionExhausted(step.level, step.grammarSection);
+            }
+          }
+        } else {
+          console.log(`No exercises found for ${step.description}`);
+          // Mark this section/level as exhausted
+          if (step.grammarSection && step.level) {
+            markSectionExhausted(step.level, step.grammarSection);
+          } else if (step.level && !step.topic && !step.grammarSection) {
+            exhaustedLevelsRef.current.add(step.level.toLowerCase());
+            console.log(`Marked level ${step.level} as exhausted`);
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching from ${step.description}:`, error);
+      }
+    }
+
+    // If we get here, all progression steps failed
+    console.warn('All progression steps exhausted, clearing shown IDs and retrying...');
+    if (isInitial) {
+      // Clear everything and try again from the beginning
+      shownExerciseIdsRef.current.clear();
+      exhaustedGrammarSectionsRef.current.clear();
+      exhaustedLevelsRef.current.clear();
+
+      // Fetch one more time, if still nothing, use mock
+      try {
+        const url = `${API_BASE}/exercises?level=${level.toUpperCase()}&topic=${section}&limit=5`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.exercises && data.exercises.length > 0) {
+          const [firstExercise, ...restExercises] = data.exercises;
           setCurrentExercise(firstExercise);
           lastShownIdRef.current = firstExercise.id;
           shownExerciseIdsRef.current.add(firstExercise.id);
           setAvailableExercises(restExercises);
-          console.log('Initial exercise selected:', firstExercise.id, 'Remaining:', restExercises.length);
         } else {
-          // Append to existing exercises
-          setAvailableExercises(prev => [...prev, ...newExercises]);
-        }
-      } else {
-        console.warn('No exercises found for', { level, section, grammarSection });
-        if (isInitial) {
           setCurrentExercise(mockBackendExercise);
-          setLoadingExercises(false);
         }
-      }
-    } catch (error) {
-      console.error('Error fetching exercises:', error);
-      if (isInitial) {
+      } catch {
         setCurrentExercise(mockBackendExercise);
-        setLoadingExercises(false);
       }
-    } finally {
-      if (isInitial) {
-        setLoadingExercises(false);
-      } else {
-        setIsFetchingNext(false);
-      }
+      setLoadingExercises(false);
+    } else {
+      setIsFetchingNext(false);
     }
   };
 
@@ -272,53 +411,6 @@ const Exercise = () => {
     }
   }, [currentExercise?.id]);
 
-  // Detect progression and update URL when exercise changes
-  useEffect(() => {
-    if (!currentExercise) return;
-
-    const exerciseLevel = currentExercise.level.toLowerCase();
-    const exerciseTopics = currentExercise.grammar_ui_topics;
-    const currentLevelLower = level.toLowerCase();
-    const currentSectionLower = section.toLowerCase();
-
-    // Skip progression checks if grammar_ui_topics is missing
-    if (!exerciseTopics || exerciseTopics.length === 0) {
-      return;
-    }
-
-    // Check if level has progressed
-    if (exerciseLevel !== currentLevelLower) {
-      const params = new URLSearchParams();
-      params.set("level", exerciseLevel);
-      params.set("section", exerciseTopics[0]);
-      if (grammarSection) {
-        params.delete("grammar");
-      }
-      setSearchParams(params, { replace: true });
-
-      toast({
-        title: "Level Up!",
-        description: `Congratulations! You've advanced to ${exerciseLevel.toUpperCase()}`,
-      });
-      return;
-    }
-
-    // Check if topic has progressed
-    if (!exerciseTopics.includes(currentSectionLower as any)) {
-      const params = new URLSearchParams();
-      params.set("level", level);
-      params.set("section", exerciseTopics[0]);
-      if (grammarSection) {
-        params.delete("grammar");
-      }
-      setSearchParams(params, { replace: true });
-
-      toast({
-        title: "Topic Completed!",
-        description: `Moving to ${exerciseTopics[0]} exercises`,
-      });
-    }
-  }, [currentExercise, level, section, grammarSection]);
 
   // Process current exercise for display
   const exerciseData = useMemo(() => {
@@ -440,7 +532,7 @@ const Exercise = () => {
     // Prefetch next batch when user completes 3 exercises
     if (newCount === 3 && !isFetchingNext) {
       console.log('Prefetching next batch of 5 exercises...');
-      fetchExercises(false);
+      fetchExercisesWithProgression(false);
     }
 
     // Reset counter when reaching 5
@@ -459,12 +551,17 @@ const Exercise = () => {
         lastShownIdRef.current = nextExercise.id;
         shownExerciseIdsRef.current.add(nextExercise.id);
 
+        // Track the grammar section for progression
+        if (nextExercise.grammar_section_id) {
+          currentGrammarSectionRef.current = nextExercise.grammar_section_id;
+        }
+
         // Return the remaining exercises (removing the one we just selected)
         return prev.slice(1);
       } else {
-        // If no exercises available, fetch new ones
-        console.log('No exercises in pool, fetching...');
-        fetchExercises(true);
+        // If no exercises available, fetch new ones with progression
+        console.log('No exercises in pool, fetching with progression...');
+        fetchExercisesWithProgression(true);
         return prev;
       }
     });
