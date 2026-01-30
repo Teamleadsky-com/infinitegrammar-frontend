@@ -19,4 +19,4 @@
  * Use this flag when improving exercise quality and you don't want
  * visitors to see work-in-progress exercises.
  */
-export const EXERCISES_MAINTENANCE_MODE = true;
+export const EXERCISES_MAINTENANCE_MODE = false;

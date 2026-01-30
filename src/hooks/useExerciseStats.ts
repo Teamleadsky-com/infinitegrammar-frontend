@@ -11,7 +11,7 @@ const STORAGE_KEY = "exerciseStats";
 
 // ⚙️ FEATURE SWITCH: Enable/disable waitlist popup
 // Set to false to completely disable waitlist, set to true to enable it
-const WAITLIST_ENABLED = true;
+const WAITLIST_ENABLED = false;
 
 // ⚙️ CONFIGURATION: Change this value to set after how many completed exercises the waitlist popup appears
 // Example: 2 = show after every 2 exercises, 5 = show after every 5 exercises, 10 = show after every 10 exercises
