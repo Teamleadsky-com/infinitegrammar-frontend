@@ -39,6 +39,8 @@ export const ReportExerciseModal = ({
   gaps,
 }: ReportExerciseModalProps) => {
   const [reportText, setReportText] = useState("");
+  const [honeypotName, setHoneypotName] = useState("");
+  const [honeypotEmail, setHoneypotEmail] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,6 +60,12 @@ export const ReportExerciseModal = ({
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
+
+    // Honeypot check - silently reject bot submissions
+    if (honeypotName || honeypotEmail) {
+      setIsSubmitted(true);
+      return;
+    }
 
     // Validate report text
     if (!reportText.trim()) {
@@ -79,13 +87,26 @@ export const ReportExerciseModal = ({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode({
           "form-name": "exercise-report",
-          "bot-field": "", // Honeypot field (must be empty)
+          "bot-field": "",
+          name: "", // Honeypot field
+          email: "", // Honeypot field
           subject: exerciseId, // Subject line for email notifications
           exerciseId,
           exerciseText: exerciseText.substring(0, 200), // Limit text length
           gaps: formatGapsData(),
           reportText,
           timestamp: new Date().toISOString(),
+        }),
+      });
+
+      // Mark exercise as inactive in the database
+      const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+      await fetch(`${API_BASE}/report-exercise`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          exerciseId,
+          reportText,
         }),
       });
 
@@ -105,6 +126,8 @@ export const ReportExerciseModal = ({
     // Reset state after modal closes
     setTimeout(() => {
       setReportText("");
+      setHoneypotName("");
+      setHoneypotEmail("");
       setError("");
       setIsSubmitted(false);
     }, 300);
@@ -134,10 +157,35 @@ export const ReportExerciseModal = ({
               {/* Required hidden input for Netlify */}
               <input type="hidden" name="form-name" value="exercise-report" />
 
-              {/* Honeypot field */}
+              {/* Honeypot fields */}
               <p className="hidden">
                 <label>
                   Don't fill this out if you're human: <input name="bot-field" />
+                </label>
+              </p>
+              <p className="hidden" aria-hidden="true">
+                <label>
+                  Name:{" "}
+                  <input
+                    name="name"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypotName}
+                    onChange={(e) => setHoneypotName(e.target.value)}
+                  />
+                </label>
+              </p>
+              <p className="hidden" aria-hidden="true">
+                <label>
+                  Email:{" "}
+                  <input
+                    name="email"
+                    type="email"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypotEmail}
+                    onChange={(e) => setHoneypotEmail(e.target.value)}
+                  />
                 </label>
               </p>
 

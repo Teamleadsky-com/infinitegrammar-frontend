@@ -19,7 +19,7 @@ import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
 // ⚙️ FEATURE SWITCH: Enable/disable report exercise button
 // Set to false to hide the report button, set to true to show it
-const REPORT_EXERCISE_ENABLED = false;
+const REPORT_EXERCISE_ENABLED = true;
 
 // Backend response format (simplified structure)
 import { GrammarUiTopicId } from "@/data/grammarSections";
