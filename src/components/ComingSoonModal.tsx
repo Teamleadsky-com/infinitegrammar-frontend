@@ -33,6 +33,7 @@ export const ComingSoonModal = ({ open, onOpenChange, language }: ComingSoonModa
   const currentLang = language || i18n.language;
   const tLang = (key: string) => t(key, { lng: currentLang });
   const [email, setEmail] = useState("");
+  const [honeypotName, setHoneypotName] = useState("");
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,6 +45,12 @@ export const ComingSoonModal = ({ open, onOpenChange, language }: ComingSoonModa
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
+
+    // Honeypot check - silently reject bot submissions
+    if (honeypotName) {
+      setIsSubmitted(true);
+      return;
+    }
 
     // Validate email
     if (!email.trim()) {
@@ -66,7 +73,8 @@ export const ComingSoonModal = ({ open, onOpenChange, language }: ComingSoonModa
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: encode({
           "form-name": "coming-soon-waitlist",
-          "bot-field": "", // Honeypot field (must be empty)
+          "bot-field": "",
+          name: "", // Honeypot field (must be empty)
           email,
           timestamp: new Date().toISOString(),
         }),
@@ -99,6 +107,7 @@ export const ComingSoonModal = ({ open, onOpenChange, language }: ComingSoonModa
     // Reset state after modal closes
     setTimeout(() => {
       setEmail("");
+      setHoneypotName("");
       setError("");
       setIsSubmitted(false);
       setIsSubmitting(false);
@@ -139,11 +148,23 @@ export const ComingSoonModal = ({ open, onOpenChange, language }: ComingSoonModa
                 {/* Required hidden input for Netlify */}
                 <input type="hidden" name="form-name" value="coming-soon-waitlist" />
 
-                {/* Honeypot field */}
+                {/* Honeypot fields */}
                 <p className="hidden">
                   <label>
                     Don't fill this out if you're human:{" "}
                     <input name="bot-field" />
+                  </label>
+                </p>
+                <p className="hidden" aria-hidden="true">
+                  <label>
+                    Name:{" "}
+                    <input
+                      name="name"
+                      tabIndex={-1}
+                      autoComplete="off"
+                      value={honeypotName}
+                      onChange={(e) => setHoneypotName(e.target.value)}
+                    />
                   </label>
                 </p>
 
