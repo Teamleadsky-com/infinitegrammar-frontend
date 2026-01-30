@@ -154,6 +154,7 @@ const Exercise = () => {
   const [showExplanations, setShowExplanations] = useState(false);
   const [currentExercise, setCurrentExercise] = useState<BackendExercise | null>(null);
   const [availableExercises, setAvailableExercises] = useState<BackendExercise[]>([]);
+  const availableExercisesRef = useRef<BackendExercise[]>([]);
   const [loadingExercises, setLoadingExercises] = useState(true);
   const [exercisesCompletedInBatch, setExercisesCompletedInBatch] = useState(0);
   const [isFetchingNext, setIsFetchingNext] = useState(false);
@@ -170,6 +171,11 @@ const Exercise = () => {
   const level = searchParams.get("level") || "b2";
   const section = searchParams.get("section") || "verben";
   const grammarSection = searchParams.get("grammar");
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    availableExercisesRef.current = availableExercises;
+  }, [availableExercises]);
 
   // Fetch exercises from API when level or section changes
   useEffect(() => {
@@ -322,6 +328,7 @@ const Exercise = () => {
               setCurrentExercise(firstExercise);
               lastShownIdRef.current = firstExercise.id;
               shownExerciseIdsRef.current.add(firstExercise.id);
+              availableExercisesRef.current = restExercises;
               setAvailableExercises(restExercises);
 
               // Show progression toast if level changed
@@ -342,9 +349,11 @@ const Exercise = () => {
                 });
               }
 
-              console.log('Initial exercise selected:', firstExercise.id);
+              console.log('Initial exercise selected:', firstExercise.id, 'Available:', restExercises.length);
             } else {
-              setAvailableExercises(prev => [...prev, ...newExercises]);
+              const updated = [...availableExercisesRef.current, ...newExercises];
+              availableExercisesRef.current = updated;
+              setAvailableExercises(updated);
             }
 
             setLoadingExercises(false);
@@ -391,9 +400,13 @@ const Exercise = () => {
           setCurrentExercise(firstExercise);
           lastShownIdRef.current = firstExercise.id;
           shownExerciseIdsRef.current.add(firstExercise.id);
+          availableExercisesRef.current = restExercises;
           setAvailableExercises(restExercises);
+          console.log('Fallback exercise selected:', firstExercise.id, 'Available:', restExercises.length);
         } else {
           setCurrentExercise(mockBackendExercise);
+          availableExercisesRef.current = [];
+          setAvailableExercises([]);
         }
       } catch {
         setCurrentExercise(mockBackendExercise);
@@ -540,31 +553,35 @@ const Exercise = () => {
       setExercisesCompletedInBatch(0);
     }
 
-    // Select next exercise from available pool using state updater to get latest value
-    setAvailableExercises(prev => {
-      if (prev.length > 0) {
-        const nextExercise = prev[0];
-        console.log('Selecting next exercise:', nextExercise.id);
+    // Select next exercise from available pool using ref for latest value
+    const currentAvailable = availableExercisesRef.current;
 
-        // Set the next exercise
-        setCurrentExercise(nextExercise);
-        lastShownIdRef.current = nextExercise.id;
-        shownExerciseIdsRef.current.add(nextExercise.id);
+    if (currentAvailable.length > 0) {
+      const nextExercise = currentAvailable[0];
+      const remaining = currentAvailable.slice(1);
 
-        // Track the grammar section for progression
-        if (nextExercise.grammar_section_id) {
-          currentGrammarSectionRef.current = nextExercise.grammar_section_id;
-        }
+      console.log('Selecting next exercise:', nextExercise.id, 'Remaining:', remaining.length);
 
-        // Return the remaining exercises (removing the one we just selected)
-        return prev.slice(1);
-      } else {
-        // If no exercises available, fetch new ones with progression
-        console.log('No exercises in pool, fetching with progression...');
-        fetchExercisesWithProgression(true);
-        return prev;
+      // Update ref immediately for consistency
+      availableExercisesRef.current = remaining;
+
+      // Set the next exercise
+      setCurrentExercise(nextExercise);
+      lastShownIdRef.current = nextExercise.id;
+      shownExerciseIdsRef.current.add(nextExercise.id);
+
+      // Track the grammar section for progression
+      if (nextExercise.grammar_section_id) {
+        currentGrammarSectionRef.current = nextExercise.grammar_section_id;
       }
-    });
+
+      // Update state to match ref
+      setAvailableExercises(remaining);
+    } else {
+      // If no exercises available, fetch new ones with progression
+      console.log('No exercises in pool, fetching with progression...');
+      fetchExercisesWithProgression(true);
+    }
   };
 
   const handleWaitlistModalClose = (open: boolean) => {
