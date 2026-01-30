@@ -82,7 +82,12 @@ const LevelSelection = () => {
       return;
     }
 
-    navigate("/exercise");
+    // Randomly select a level and section
+    const randomLevel = levels[Math.floor(Math.random() * levels.length)].id;
+    const randomSection = sections[Math.floor(Math.random() * sections.length)].id;
+
+    // Navigate with the random level and section (same as clicking a specific topic)
+    navigate(`/exercise?level=${randomLevel}&section=${randomSection}`);
   };
 
   return (
