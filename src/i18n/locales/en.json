@@ -114,6 +114,9 @@
     "totalByLevel": "Total Exercises by Level",
     "totalBySection": "Total Exercises by Grammar Section",
     "totalByTopic": "Total Exercises by Content Topic",
+    "scatterByTopic": "Exercise Distribution by Content Topic",
+    "contentTopics": "Content Topics",
+    "exerciseCount": "Exercise Count",
     "coverage": "Coverage",
     "heatmap": "Exercise Count Heatmap: Level × Grammar Section",
     "continueLearning": "Continue Learning"
