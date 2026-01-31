@@ -180,14 +180,41 @@ export const handler: Handler = async (event) => {
     };
 
     const calculateCumulativeByCategory = (data: any[], categoryKey: string) => {
-      const cumulativeMap = new Map<string, number>();
-      return data.map((row: any) => {
-        const category = row[categoryKey];
-        const currentCount = cumulativeMap.get(category) || 0;
-        const newCount = currentCount + parseInt(row.count, 10);
-        cumulativeMap.set(category, newCount);
-        return { ...row, count: newCount };
+      // Get all unique periods and categories
+      const periods = [...new Set(data.map(row => row.period.getTime()))].sort((a, b) => a - b);
+      const categories = [...new Set(data.map(row => row[categoryKey]))];
+
+      // Build a map of period+category -> count for quick lookup
+      const dataMap = new Map<string, number>();
+      data.forEach(row => {
+        const key = `${row.period.getTime()}-${row[categoryKey]}`;
+        dataMap.set(key, parseInt(row.count, 10));
       });
+
+      // Calculate cumulative values, carrying forward for missing period-category combinations
+      const result: any[] = [];
+      const cumulativeByCategory = new Map<string, number>();
+
+      for (const periodTime of periods) {
+        for (const category of categories) {
+          const key = `${periodTime}-${category}`;
+          const dayCount = dataMap.get(key) || 0;
+          const previousCumulative = cumulativeByCategory.get(category) || 0;
+          const newCumulative = previousCumulative + dayCount;
+          cumulativeByCategory.set(category, newCumulative);
+
+          // Only include if cumulative is > 0 (the category has appeared at least once)
+          if (newCumulative > 0) {
+            result.push({
+              period: new Date(periodTime),
+              [categoryKey]: category,
+              count: newCumulative
+            });
+          }
+        }
+      }
+
+      return result;
     };
 
     // Apply cumulative calculations
