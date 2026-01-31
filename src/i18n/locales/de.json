@@ -114,9 +114,6 @@
     "totalByLevel": "Gesamtübungen nach Niveau",
     "totalBySection": "Gesamtübungen nach Grammatikbereich",
     "totalByTopic": "Gesamtübungen nach Inhaltsthema",
-    "scatterByTopic": "Übungsverteilung nach Inhaltsthema",
-    "contentTopics": "Inhaltsthemen",
-    "exerciseCount": "Übungsanzahl",
     "coverage": "Abdeckung",
     "heatmap": "Übungsanzahl-Heatmap: Niveau × Grammatikbereich",
     "continueLearning": "Weiter lernen"

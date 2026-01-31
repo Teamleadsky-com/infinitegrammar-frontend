@@ -18,10 +18,6 @@ import {
   AreaChart,
   Area,
   Legend,
-  ScatterChart,
-  Scatter,
-  Cell,
-  LabelList,
 } from "recharts";
 import {
   Select,
@@ -418,28 +414,23 @@ const ExerciseStats = () => {
                   </ResponsiveContainer>
                 </Card>
 
-                {/* Scatter Plot by Content Topic */}
+                {/* Snapshot by Content Topic */}
                 <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.scatterByTopic')}</h3>
-                  <ResponsiveContainer width="100%" height={400}>
-                    <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
+                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalByTopic')}</h3>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={countsByTopic}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis
-                        type="number"
-                        dataKey="index"
-                        name="index"
+                        dataKey="topic"
                         stroke="hsl(var(--muted-foreground))"
                         style={{ fontSize: "12px" }}
-                        tick={false}
-                        label={{ value: t('exerciseStats.contentTopics'), position: 'insideBottom', offset: -10, style: { fontSize: '12px', fill: 'hsl(var(--muted-foreground))' } }}
+                        angle={-45}
+                        textAnchor="end"
+                        height={100}
                       />
                       <YAxis
-                        type="number"
-                        dataKey="count"
-                        name={t('exerciseStats.exerciseCount')}
                         stroke="hsl(var(--muted-foreground))"
                         style={{ fontSize: "12px" }}
-                        label={{ value: t('exerciseStats.exerciseCount'), angle: -90, position: 'insideLeft', style: { fontSize: '12px', fill: 'hsl(var(--muted-foreground))' } }}
                       />
                       <Tooltip
                         contentStyle={{
@@ -447,34 +438,13 @@ const ExerciseStats = () => {
                           border: "1px solid hsl(var(--border))",
                           borderRadius: "8px",
                         }}
-                        formatter={(value: number, name: string) => {
-                          if (name === 'count') return [value, t('exerciseStats.exerciseCount')];
-                          return [value, name];
-                        }}
-                        labelFormatter={(label: number) => {
-                          const item = countsByTopic.find((_, idx) => idx === label);
-                          return item?.topic || '';
-                        }}
                       />
-                      <Scatter
-                        data={countsByTopic.map((item, idx) => ({ ...item, index: idx }))}
+                      <Bar
+                        dataKey="count"
                         fill="hsl(var(--primary))"
-                      >
-                        {countsByTopic.map((_, idx) => (
-                          <Cell
-                            key={`cell-${idx}`}
-                            fill={`hsl(${(idx * 360) / Math.max(countsByTopic.length, 1)}, 70%, 50%)`}
-                          />
-                        ))}
-                        <LabelList
-                          dataKey="topic"
-                          position="top"
-                          style={{ fontSize: '10px', fill: 'hsl(var(--foreground))' }}
-                          angle={-45}
-                          offset={10}
-                        />
-                      </Scatter>
-                    </ScatterChart>
+                        radius={[8, 8, 0, 0]}
+                      />
+                    </BarChart>
                   </ResponsiveContainer>
                 </Card>
               </div>
