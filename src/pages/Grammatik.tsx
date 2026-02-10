@@ -236,11 +236,11 @@ const Grammatik = () => {
                     {filteredTopics.map((topic) => (
                       <a
                         key={topic.id}
-                        href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`}
+                        href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}/`}
                         className="block no-underline"
                         onClick={(e) => {
                           e.preventDefault();
-                          navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`);
+                          navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}/`);
                         }}
                       >
                         <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
@@ -309,11 +309,11 @@ const Grammatik = () => {
                 return (
                   <a
                     key={level.level}
-                    href={`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen`}
+                    href={`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`}
                     className="block no-underline"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate(`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen`);
+                      navigate(`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`);
                     }}
                   >
                     <Card
@@ -344,11 +344,11 @@ const Grammatik = () => {
               {Object.entries(grammarCategories).map(([key, category], idx) => (
                 <a
                   key={key}
-                  href={`/deutsche-grammatik/thema/${key}`}
+                  href={`/deutsche-grammatik/thema/${key}/`}
                   className="block no-underline"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/deutsche-grammatik/thema/${key}`);
+                    navigate(`/deutsche-grammatik/thema/${key}/`);
                   }}
                 >
                   <Card
@@ -371,11 +371,11 @@ const Grammatik = () => {
             {popularTopics.map((topic) => (
               <a
                 key={topic.id}
-                href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`}
+                href={`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}/`}
                 className="block no-underline"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}`);
+                  navigate(`/deutsche-grammatik/${topic.level.toLowerCase()}-niveau-lernen/${topic.slug}/`);
                 }}
               >
                 <Card className="p-4 hover:shadow-lg transition-shadow cursor-pointer">

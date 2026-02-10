@@ -115,11 +115,11 @@ const GrammatikContent = () => {
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4 min-w-0 flex-1">
               <a
-                href={`/deutsche-grammatik/${levelCode}-niveau-lernen`}
+                href={`/deutsche-grammatik/${levelCode}-niveau-lernen/`}
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 shrink-0"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen`);
+                  navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen/`);
                 }}
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -156,22 +156,22 @@ const GrammatikContent = () => {
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4 md:mb-6 animate-fade-in">
           <a
-            href="/deutsche-grammatik"
+            href="/deutsche-grammatik/"
             className="hover:text-primary transition-colors"
             onClick={(e) => {
               e.preventDefault();
-              navigate('/deutsche-grammatik');
+              navigate('/deutsche-grammatik/');
             }}
           >
             Grammatik
           </a>
           <span>→</span>
           <a
-            href={`/deutsche-grammatik/${levelCode}-niveau-lernen`}
+            href={`/deutsche-grammatik/${levelCode}-niveau-lernen/`}
             className="hover:text-primary transition-colors"
             onClick={(e) => {
               e.preventDefault();
-              navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen`);
+              navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen/`);
             }}
           >
             {topic.level}
@@ -292,11 +292,11 @@ const GrammatikContent = () => {
               {topic.title} jetzt üben
             </Button>
             <a
-              href={`/deutsche-grammatik/thema/${topic.category}`}
+              href={`/deutsche-grammatik/thema/${topic.category}/`}
               className="inline-flex items-center justify-center whitespace-normal rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 w-full sm:w-auto py-3"
               onClick={(e) => {
                 e.preventDefault();
-                navigate(`/deutsche-grammatik/thema/${topic.category}`);
+                navigate(`/deutsche-grammatik/thema/${topic.category}/`);
               }}
             >
               Zur Übersicht: {topic.category}
@@ -336,11 +336,11 @@ const GrammatikContent = () => {
               {relatedTopics.map((relatedTopic) => (
                 <a
                   key={relatedTopic.id}
-                  href={`/deutsche-grammatik/${relatedTopic.level.toLowerCase()}-niveau-lernen/${relatedTopic.slug}`}
+                  href={`/deutsche-grammatik/${relatedTopic.level.toLowerCase()}-niveau-lernen/${relatedTopic.slug}/`}
                   className="block no-underline"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/deutsche-grammatik/${relatedTopic.level.toLowerCase()}-niveau-lernen/${relatedTopic.slug}`);
+                    navigate(`/deutsche-grammatik/${relatedTopic.level.toLowerCase()}-niveau-lernen/${relatedTopic.slug}/`);
                   }}
                 >
                   <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
@@ -361,21 +361,21 @@ const GrammatikContent = () => {
         {/* Back to Overview */}
         <div className="flex justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.9s' }}>
           <a
-            href={`/deutsche-grammatik/${levelCode}-niveau-lernen`}
+            href={`/deutsche-grammatik/${levelCode}-niveau-lernen/`}
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
             onClick={(e) => {
               e.preventDefault();
-              navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen`);
+              navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen/`);
             }}
           >
             <ArrowLeft className="mr-2 h-4 w-4" /> Zurück zu {topic.level}
           </a>
           <a
-            href="/deutsche-grammatik"
+            href="/deutsche-grammatik/"
             className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
             onClick={(e) => {
               e.preventDefault();
-              navigate('/deutsche-grammatik');
+              navigate('/deutsche-grammatik/');
             }}
           >
             Zur Grammatik-Übersicht
