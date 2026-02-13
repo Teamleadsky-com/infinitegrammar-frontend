@@ -6,10 +6,6 @@
 [build.environment]
   NPM_CONFIG_PRODUCTION = "false"
 
-# Sitemap plugin - automatically generates sitemap from routes
-[[plugins]]
-  package = "@netlify/plugin-sitemap"
-
 [dev]
   # Tell Netlify CLI that Vite runs on port 8080
   targetPort = 8080
