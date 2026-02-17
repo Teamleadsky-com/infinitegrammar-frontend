@@ -115,7 +115,7 @@
     "totalBySection": "Total Exercises by Grammar Section",
     "totalByTopic": "Total Exercises by Content Topic",
     "coverage": "Coverage",
-    "heatmap": "Exercise Count Heatmap: Level × Grammar Section",
+    "heatmap": "Exercise Count per Level and Grammar Section",
     "continueLearning": "Continue Learning"
   },
   "comingSoon": {

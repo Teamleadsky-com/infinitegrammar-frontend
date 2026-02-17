@@ -467,7 +467,7 @@ const ExerciseStats = () => {
                           .filter((item) => item.level !== 'NULL')
                           .sort((a, b) => {
                             // Sort by level first
-                            const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1'];
+                            const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
                             const levelDiff = levelOrder.indexOf(a.level) - levelOrder.indexOf(b.level);
                             if (levelDiff !== 0) return levelDiff;
 
