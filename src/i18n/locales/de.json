@@ -116,7 +116,12 @@
     "totalByTopic": "Gesamtübungen nach Inhaltsthema",
     "coverage": "Abdeckung",
     "heatmap": "Übungsanzahl pro Niveau und Grammatikbereich",
-    "continueLearning": "Weiter lernen"
+    "continueLearning": "Weiter lernen",
+    "sectionDemand": "Übungsbedarf nach Grammatikbereich",
+    "completed": "Abgeschlossen",
+    "remaining": "Verbleibend",
+    "sortByPopularity": "Nach Beliebtheit sortieren",
+    "sortByRemaining": "Nach verbleibenden sortieren"
   },
   "comingSoon": {
     "title": "Übungen kommen bald",

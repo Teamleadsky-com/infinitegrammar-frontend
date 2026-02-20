@@ -116,7 +116,12 @@
     "totalByTopic": "Total Exercises by Content Topic",
     "coverage": "Coverage",
     "heatmap": "Exercise Count per Level and Grammar Section",
-    "continueLearning": "Continue Learning"
+    "continueLearning": "Continue Learning",
+    "sectionDemand": "Exercise Demand by Grammar Section",
+    "completed": "Completed",
+    "remaining": "Remaining",
+    "sortByPopularity": "Sort by Popularity",
+    "sortByRemaining": "Sort by Remaining"
   },
   "comingSoon": {
     "title": "Exercises Coming Soon",

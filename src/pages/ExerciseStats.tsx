@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp, BarChart3, Grid3x3 } from "lucide-react";
+import { ArrowLeft, TrendingUp, BarChart3, Grid3x3, ShieldCheck } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   BarChart,
@@ -37,10 +38,15 @@ const COLORS = {
 };
 
 type PeriodType = 'daily' | 'weekly' | 'monthly';
+type DemandSort = 'popularity' | 'remaining';
+
+const ADMIN_EMAIL = 'aleksandr.zuravliov1@gmail.com';
 
 const ExerciseStats = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const isAdmin = user?.email === ADMIN_EMAIL;
   const [period, setPeriod] = useState<PeriodType>('daily');
   const [loading, setLoading] = useState(true);
 
@@ -57,6 +63,10 @@ const ExerciseStats = () => {
 
   // State for coverage data
   const [heatmapData, setHeatmapData] = useState<any[]>([]);
+
+  // State for admin demand data
+  const [demandData, setDemandData] = useState<any[]>([]);
+  const [demandSort, setDemandSort] = useState<DemandSort>('popularity');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -125,6 +135,17 @@ const ExerciseStats = () => {
           setHeatmapData(coverageData.heatmap || []);
         }
 
+        // Fetch admin demand data (only for admin)
+        if (isAdmin) {
+          const demandResponse = await fetch(
+            `${API_BASE}/admin-section-demand`
+          );
+          if (demandResponse.ok) {
+            const demandResult = await demandResponse.json();
+            setDemandData(demandResult.sections || []);
+          }
+        }
+
       } catch (error) {
         console.error('Error fetching exercise stats:', error);
       } finally {
@@ -133,7 +154,7 @@ const ExerciseStats = () => {
     };
 
     fetchStats();
-  }, [period]);
+  }, [period, isAdmin]);
 
   // Get unique sections and their final counts
   const allSections = Array.from(
@@ -519,6 +540,100 @@ const ExerciseStats = () => {
                   </div>
                 </Card>
               </div>
+
+              {/* Admin: Section Demand Chart */}
+              {isAdmin && demandData.length > 0 && (() => {
+                const sortedDemand = [...demandData].sort((a, b) => {
+                  if (demandSort === 'remaining') {
+                    return b.remaining - a.remaining;
+                  }
+                  return b.uniqueUsers - a.uniqueUsers;
+                }).map((item) => ({
+                  ...item,
+                  label: `${item.sectionName} (${item.level})`,
+                }));
+
+                return (
+                  <div className="space-y-6 pt-12 border-t border-border">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <ShieldCheck className="h-6 w-6 text-primary" />
+                        <h2 className="text-2xl font-bold">{t('exerciseStats.sectionDemand')}</h2>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant={demandSort === 'popularity' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setDemandSort('popularity')}
+                        >
+                          {t('exerciseStats.sortByPopularity')}
+                        </Button>
+                        <Button
+                          variant={demandSort === 'remaining' ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setDemandSort('remaining')}
+                        >
+                          {t('exerciseStats.sortByRemaining')}
+                        </Button>
+                      </div>
+                    </div>
+
+                    <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.8s" }}>
+                      <ResponsiveContainer width="100%" height={Math.max(400, sortedDemand.length * 36)}>
+                        <BarChart data={sortedDemand} layout="vertical" margin={{ left: 20, right: 20 }}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                          <XAxis
+                            type="number"
+                            stroke="hsl(var(--muted-foreground))"
+                            style={{ fontSize: "12px" }}
+                          />
+                          <YAxis
+                            type="category"
+                            dataKey="label"
+                            stroke="hsl(var(--muted-foreground))"
+                            style={{ fontSize: "11px" }}
+                            width={250}
+                            tick={{ fill: "hsl(var(--foreground))" }}
+                          />
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "hsl(var(--popover))",
+                              border: "1px solid hsl(var(--border))",
+                              borderRadius: "8px",
+                            }}
+                            formatter={(value: number, name: string) => {
+                              const label = name === 'completed'
+                                ? t('exerciseStats.completed')
+                                : t('exerciseStats.remaining');
+                              return [value, label];
+                            }}
+                            labelFormatter={(label) => label}
+                          />
+                          <Legend
+                            formatter={(value) => {
+                              if (value === 'completed') return t('exerciseStats.completed');
+                              if (value === 'remaining') return t('exerciseStats.remaining');
+                              return value;
+                            }}
+                          />
+                          <Bar
+                            dataKey="completed"
+                            stackId="a"
+                            fill="hsl(142, 70%, 45%)"
+                            radius={[0, 0, 0, 0]}
+                          />
+                          <Bar
+                            dataKey="remaining"
+                            stackId="a"
+                            fill="hsl(38, 92%, 50%)"
+                            radius={[0, 4, 4, 0]}
+                          />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </Card>
+                  </div>
+                );
+              })()}
 
               {/* Action Button */}
               <div className="flex justify-center animate-fade-in mt-12" style={{ animationDelay: "0.9s" }}>
