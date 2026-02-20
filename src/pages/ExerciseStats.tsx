@@ -545,9 +545,9 @@ const ExerciseStats = () => {
               {isAdmin && demandData.length > 0 && (() => {
                 const sortedDemand = [...demandData].sort((a, b) => {
                   if (demandSort === 'remaining') {
-                    return b.remaining - a.remaining;
+                    return a.remaining - b.remaining;
                   }
-                  return b.uniqueUsers - a.uniqueUsers;
+                  return b.completed - a.completed;
                 }).map((item) => ({
                   ...item,
                   label: `${item.sectionName} (${item.level})`,
