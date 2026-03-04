@@ -130,12 +130,13 @@ export const handler: Handler = async (event) => {
         }
 
         case 'update_config': {
-          const { max_emails_per_week, comeback_mode_after_days, comeback_max_per_week } = body;
+          const { max_emails_per_week, comeback_mode_after_days, comeback_max_per_week, winback_after_days } = body;
           await sql`
             UPDATE campaign_config SET
               max_emails_per_week = COALESCE(${max_emails_per_week}, max_emails_per_week),
               comeback_mode_after_days = COALESCE(${comeback_mode_after_days}, comeback_mode_after_days),
               comeback_max_per_week = COALESCE(${comeback_max_per_week}, comeback_max_per_week),
+              winback_after_days = COALESCE(${winback_after_days}, winback_after_days),
               updated_at = NOW()
             WHERE id = 1
           `;
@@ -221,6 +222,110 @@ export const handler: Handler = async (event) => {
             message: `Test email sent to ${test_email}`,
             template: slug,
             section: section.name,
+          });
+        }
+
+        case 'send_winback': {
+          // Get winback config
+          const configRows = await sql`SELECT winback_after_days FROM campaign_config WHERE id = 1`;
+          const winbackDays = configRows[0]?.winback_after_days || 14;
+
+          // Get winback template
+          const winbackTemplates = await sql`
+            SELECT * FROM email_templates WHERE slug = 'winback' AND is_active = true
+          `;
+          if (winbackTemplates.length === 0) {
+            return createResponse(400, { error: 'Winback template not found or inactive' });
+          }
+          const winbackTemplate = winbackTemplates[0];
+
+          // Find inactive users:
+          // - registered but no exercise completion in winback_after_days
+          // - not unsubscribed
+          // - not already sent a winback email in the last 30 days
+          const inactiveUsers = await sql`
+            SELECT u.id, u.email, u.name
+            FROM users u
+            LEFT JOIN email_preferences ep ON u.id = ep.user_id
+            WHERE (ep.subscribed IS NULL OR ep.subscribed = true)
+              AND (ep.frequency IS NULL OR ep.frequency != 'paused' OR (ep.paused_until IS NOT NULL AND ep.paused_until <= NOW()))
+              AND NOT EXISTS (
+                SELECT 1 FROM exercise_completions ec
+                WHERE ec.user_id = u.id::text
+                  AND ec.completed_at > NOW() - INTERVAL '1 day' * ${winbackDays}
+              )
+              AND NOT EXISTS (
+                SELECT 1 FROM email_sends es
+                WHERE es.user_id = u.id
+                  AND es.template_slug = 'winback'
+                  AND es.sent_at > NOW() - INTERVAL '30 days'
+              )
+            ORDER BY u.created_at DESC
+            LIMIT 500
+          `;
+
+          if (inactiveUsers.length === 0) {
+            return createResponse(200, { success: true, sent_count: 0, message: 'No inactive users found' });
+          }
+
+          let sentCount = 0;
+          let errorCount = 0;
+
+          for (const user of inactiveUsers) {
+            try {
+              const trackingToken = crypto.randomBytes(16).toString('hex');
+
+              // Get or create preference token
+              const existingToken = await sql`
+                SELECT token FROM email_preference_tokens WHERE user_id = ${user.id}::uuid
+              `;
+              let prefToken: string;
+              if (existingToken.length > 0) {
+                prefToken = existingToken[0].token;
+              } else {
+                prefToken = crypto.randomBytes(32).toString('hex');
+                await sql`
+                  INSERT INTO email_preference_tokens (user_id, token)
+                  VALUES (${user.id}::uuid, ${prefToken})
+                `;
+              }
+
+              const preferencesUrl = `${SITE_URL}/email-preferences?token=${prefToken}`;
+              const deepLink = `/?utm_source=email&utm_medium=campaign&utm_campaign=winback&t=${trackingToken}`;
+
+              const vars: Record<string, string> = {
+                first_name: user.name || 'dort',
+                cta_url: `${SITE_URL}/api/email-track?t=${trackingToken}`,
+                preferences_url: preferencesUrl,
+              };
+
+              const html = renderTemplate(winbackTemplate.body_html, vars);
+              const subject = renderTemplate(winbackTemplate.subject, vars);
+
+              await transporter.sendMail({ from: FROM_EMAIL, to: user.email, subject, html });
+
+              await sql`
+                INSERT INTO email_sends (user_id, template_slug, tracking_token, deep_link)
+                VALUES (${user.id}::uuid, 'winback', ${trackingToken}, ${deepLink})
+              `;
+
+              sentCount++;
+
+              // Rate limit: 2s between sends
+              if (sentCount < inactiveUsers.length) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+              }
+            } catch (err) {
+              console.error(`Failed to send winback to ${user.email}:`, err);
+              errorCount++;
+            }
+          }
+
+          return createResponse(200, {
+            success: true,
+            sent_count: sentCount,
+            error_count: errorCount,
+            total_inactive: inactiveUsers.length,
           });
         }
 

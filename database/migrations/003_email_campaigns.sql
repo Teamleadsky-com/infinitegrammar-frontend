@@ -155,6 +155,7 @@ CREATE TABLE campaign_config (
   max_emails_per_week INTEGER DEFAULT 2,
   comeback_mode_after_days INTEGER DEFAULT 30,
   comeback_max_per_week INTEGER DEFAULT 1,
+  winback_after_days INTEGER DEFAULT 14,
   updated_at TIMESTAMP DEFAULT NOW()
 );
 

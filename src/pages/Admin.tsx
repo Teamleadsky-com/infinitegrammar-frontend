@@ -59,11 +59,16 @@ const Admin = () => {
   // Template editing state
   const [editingTemplates, setEditingTemplates] = useState<Record<number, { subject: string; body_html: string }>>({});
 
+  // Winback state
+  const [sendingWinback, setSendingWinback] = useState(false);
+  const [winbackResult, setWinbackResult] = useState<any>(null);
+
   // Settings state
   const [settingsForm, setSettingsForm] = useState({
     max_emails_per_week: 2,
     comeback_mode_after_days: 30,
     comeback_max_per_week: 1,
+    winback_after_days: 14,
   });
 
   const API_BASE = import.meta.env.DEV
@@ -90,6 +95,7 @@ const Admin = () => {
           max_emails_per_week: result.config.max_emails_per_week,
           comeback_mode_after_days: result.config.comeback_mode_after_days,
           comeback_max_per_week: result.config.comeback_max_per_week,
+          winback_after_days: result.config.winback_after_days || 14,
         });
         // Initialize template editing state
         const tmplState: Record<number, { subject: string; body_html: string }> = {};
@@ -123,6 +129,29 @@ const Admin = () => {
       toast({ title: "Error", variant: "destructive" });
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSendWinback = async () => {
+    setSendingWinback(true);
+    setWinbackResult(null);
+    try {
+      const response = await fetch(`${API_BASE}/campaign-admin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ admin_email: ADMIN_EMAIL, action: "send_winback" }),
+      });
+      const result = await response.json();
+      setWinbackResult(result);
+      if (result.success) {
+        toast({ title: t("admin.winbackSent", { count: result.sent_count }) });
+      } else {
+        toast({ title: result.error || "Error", variant: "destructive" });
+      }
+    } catch (error) {
+      toast({ title: "Error", variant: "destructive" });
+    } finally {
+      setSendingWinback(false);
     }
   };
 
@@ -261,6 +290,36 @@ const Admin = () => {
                     <Badge variant="outline">{data?.preferences?.reduced_frequency || 0}</Badge>
                     <span className="text-sm">{t("admin.reducedFrequency")}</span>
                   </div>
+                </div>
+              </Card>
+
+              {/* Winback Campaign */}
+              <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-lg font-semibold">{t("admin.winbackTitle")}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {t("admin.winbackDesc", { days: settingsForm.winback_after_days })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <Button
+                    onClick={handleSendWinback}
+                    disabled={sendingWinback}
+                    className="gap-2"
+                  >
+                    <Send className="h-4 w-4" />
+                    {sendingWinback ? t("admin.winbackSending") : t("admin.winbackSendButton")}
+                  </Button>
+                  {winbackResult && (
+                    <p className="text-sm text-muted-foreground">
+                      {t("admin.winbackResult", {
+                        sent: winbackResult.sent_count || 0,
+                        total: winbackResult.total_inactive || 0,
+                      })}
+                    </p>
+                  )}
                 </div>
               </Card>
             </TabsContent>
@@ -412,6 +471,20 @@ const Admin = () => {
                       }
                     />
                     <p className="text-xs text-muted-foreground">{t("admin.comebackMaxPerWeekDesc")}</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>{t("admin.winbackAfterDays")}</Label>
+                    <Input
+                      type="number"
+                      min={7}
+                      max={90}
+                      value={settingsForm.winback_after_days}
+                      onChange={(e) =>
+                        setSettingsForm((f) => ({ ...f, winback_after_days: parseInt(e.target.value) || 14 }))
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground">{t("admin.winbackAfterDaysDesc")}</p>
                   </div>
 
                   <div className="pt-4 border-t">
