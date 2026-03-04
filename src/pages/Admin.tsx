@@ -62,6 +62,7 @@ const Admin = () => {
   // Winback state
   const [sendingWinback, setSendingWinback] = useState(false);
   const [winbackResult, setWinbackResult] = useState<any>(null);
+  const [winbackDaysInput, setWinbackDaysInput] = useState(14);
 
   // Settings state
   const [settingsForm, setSettingsForm] = useState({
@@ -97,6 +98,7 @@ const Admin = () => {
           comeback_max_per_week: result.config.comeback_max_per_week,
           winback_after_days: result.config.winback_after_days || 14,
         });
+        setWinbackDaysInput(result.config.winback_after_days || 14);
         // Initialize template editing state
         const tmplState: Record<number, { subject: string; body_html: string }> = {};
         result.templates?.forEach((t: any) => {
@@ -139,7 +141,7 @@ const Admin = () => {
       const response = await fetch(`${API_BASE}/campaign-admin`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ admin_email: ADMIN_EMAIL, action: "send_winback" }),
+        body: JSON.stringify({ admin_email: ADMIN_EMAIL, action: "send_winback", winback_days: winbackDaysInput }),
       });
       const result = await response.json();
       setWinbackResult(result);
@@ -295,15 +297,22 @@ const Admin = () => {
 
               {/* Winback Campaign */}
               <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold">{t("admin.winbackTitle")}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {t("admin.winbackDesc", { days: settingsForm.winback_after_days })}
-                    </p>
+                <h3 className="text-lg font-semibold mb-2">{t("admin.winbackTitle")}</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t("admin.winbackDesc", { days: winbackDaysInput })}
+                </p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <Label className="whitespace-nowrap">{t("admin.winbackInactiveDays")}</Label>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={365}
+                      className="w-24"
+                      value={winbackDaysInput}
+                      onChange={(e) => setWinbackDaysInput(parseInt(e.target.value) || 14)}
+                    />
                   </div>
-                </div>
-                <div className="flex items-center gap-4">
                   <Button
                     onClick={handleSendWinback}
                     disabled={sendingWinback}
@@ -312,15 +321,15 @@ const Admin = () => {
                     <Send className="h-4 w-4" />
                     {sendingWinback ? t("admin.winbackSending") : t("admin.winbackSendButton")}
                   </Button>
-                  {winbackResult && (
-                    <p className="text-sm text-muted-foreground">
-                      {t("admin.winbackResult", {
-                        sent: winbackResult.sent_count || 0,
-                        total: winbackResult.total_inactive || 0,
-                      })}
-                    </p>
-                  )}
                 </div>
+                {winbackResult && (
+                  <p className="text-sm text-muted-foreground mt-3">
+                    {t("admin.winbackResult", {
+                      sent: winbackResult.sent_count || 0,
+                      total: winbackResult.total_inactive || 0,
+                    })}
+                  </p>
+                )}
               </Card>
             </TabsContent>
 

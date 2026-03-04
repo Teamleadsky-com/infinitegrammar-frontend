@@ -226,9 +226,12 @@ export const handler: Handler = async (event) => {
         }
 
         case 'send_winback': {
-          // Get winback config
-          const configRows = await sql`SELECT winback_after_days FROM campaign_config WHERE id = 1`;
-          const winbackDays = configRows[0]?.winback_after_days || 14;
+          // Use days from request body, fall back to config
+          let winbackDays = parseInt(body.winback_days) || 0;
+          if (!winbackDays) {
+            const configRows = await sql`SELECT winback_after_days FROM campaign_config WHERE id = 1`;
+            winbackDays = configRows[0]?.winback_after_days || 14;
+          }
 
           // Get winback template
           const winbackTemplates = await sql`
@@ -239,8 +242,12 @@ export const handler: Handler = async (event) => {
           }
           const winbackTemplate = winbackTemplates[0];
 
+          // Compute cutoff date in JS to avoid INTERVAL parameter issues
+          const cutoffDate = new Date(Date.now() - winbackDays * 24 * 60 * 60 * 1000).toISOString();
+          const winbackCutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
           // Find inactive users:
-          // - registered but no exercise completion in winback_after_days
+          // - registered but no exercise completion since cutoff
           // - not unsubscribed
           // - not already sent a winback email in the last 30 days
           const inactiveUsers = await sql`
@@ -251,14 +258,14 @@ export const handler: Handler = async (event) => {
               AND (ep.frequency IS NULL OR ep.frequency != 'paused' OR (ep.paused_until IS NOT NULL AND ep.paused_until <= NOW()))
               AND NOT EXISTS (
                 SELECT 1 FROM exercise_completions ec
-                WHERE ec.user_id = u.id::text
-                  AND ec.completed_at > NOW() - INTERVAL '1 day' * ${winbackDays}
+                WHERE ec.user_id = u.id
+                  AND ec.completed_at > ${cutoffDate}::timestamp
               )
               AND NOT EXISTS (
                 SELECT 1 FROM email_sends es
                 WHERE es.user_id = u.id
                   AND es.template_slug = 'winback'
-                  AND es.sent_at > NOW() - INTERVAL '30 days'
+                  AND es.sent_at > ${winbackCutoff}::timestamp
               )
             ORDER BY u.created_at DESC
             LIMIT 500

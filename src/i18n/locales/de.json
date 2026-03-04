@@ -176,6 +176,7 @@
     "spacedRepetitionSchedule": "Spaced-Repetition-Zeitplan",
     "winbackTitle": "Winback-Kampagne",
     "winbackDesc": "Einmalige E-Mail an alle Nutzer senden, die seit {{days}}+ Tagen inaktiv sind.",
+    "winbackInactiveDays": "Inaktive Tage:",
     "winbackSendButton": "Winback-E-Mails senden",
     "winbackSending": "Wird gesendet...",
     "winbackSent": "Winback an {{count}} Nutzer gesendet",
