@@ -16,6 +16,9 @@
   # Set Node.js version
   node_bundler = "esbuild"
 
+[functions."campaign-processor"]
+  schedule = "0 * * * *"
+
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/:splat"

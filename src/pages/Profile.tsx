@@ -386,6 +386,35 @@ const Profile = () => {
             </div>
           </Card>
 
+          {/* Email Notifications */}
+          <Card className="p-6 shadow-lg animate-fade-in">
+            <h2 className="text-2xl font-semibold mb-4">{t("profile.emailNotifications")}</h2>
+            <p className="text-sm text-muted-foreground mb-4">
+              {t("profile.emailNotificationsDesc")}
+            </p>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+                try {
+                  const response = await fetch(`${API_BASE}/get-preference-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: user.id }),
+                  });
+                  if (response.ok) {
+                    const { token } = await response.json();
+                    navigate(`/email-preferences?token=${token}`);
+                  }
+                } catch {
+                  toast({ title: "Error", variant: "destructive" });
+                }
+              }}
+            >
+              {t("profile.managePreferences")}
+            </Button>
+          </Card>
+
           {/* Danger Zone - Delete Account */}
           <Card className="p-6 shadow-lg animate-fade-in border-destructive">
             <h2 className="text-2xl font-semibold mb-4 text-destructive">Danger Zone</h2>

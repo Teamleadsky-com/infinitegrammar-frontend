@@ -19,6 +19,8 @@ import Grammatik from "./pages/Grammatik";
 import GrammatikLevel from "./pages/GrammatikLevel";
 import GrammatikTopic from "./pages/GrammatikTopic";
 import GrammatikContent from "./pages/GrammatikContent";
+import Admin from "./pages/Admin";
+import EmailPreferences from "./pages/EmailPreferences";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +48,8 @@ const App = () => (
               <Route path="/deutsche-grammatik/thema/:topic" element={<GrammatikTopic />} />
               <Route path="/deutsche-grammatik/:level/:slug" element={<GrammatikContent />} />
               <Route path="/deutsche-grammatik/:level" element={<GrammatikLevel />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/email-preferences" element={<EmailPreferences />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

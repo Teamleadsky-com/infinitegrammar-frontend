@@ -196,6 +196,46 @@ export const handler: Handler = async (event) => {
 
       await sql`COMMIT`;
 
+      // Update campaign schedule for spaced repetition emails (non-blocking)
+      try {
+        const SPACED_INTERVALS = [1, 3, 7, 14]; // days
+        const nextSendAt = new Date(Date.now() + SPACED_INTERVALS[0] * 24 * 60 * 60 * 1000);
+
+        // Calculate preferred send hour from last 5 completions
+        const recentHours = await sql`
+          SELECT EXTRACT(HOUR FROM completed_at AT TIME ZONE 'UTC')::integer as hour
+          FROM exercise_completions
+          WHERE user_id = ${user_id}::uuid
+          ORDER BY completed_at DESC
+          LIMIT 5
+        `;
+        const preferredHour = recentHours.length > 0
+          ? recentHours.map((r: any) => r.hour).sort((a: number, b: number) => a - b)[Math.floor(recentHours.length / 2)]
+          : null;
+
+        await sql`
+          INSERT INTO campaign_schedule (user_id, grammar_section_id, last_practice_at, step, next_send_at, preferred_send_hour, status)
+          VALUES (${user_id}::uuid, ${exercise.grammar_section_id}, NOW(), 0, ${nextSendAt}, ${preferredHour}, 'active')
+          ON CONFLICT (user_id, grammar_section_id)
+          DO UPDATE SET
+            last_practice_at = NOW(),
+            step = 0,
+            next_send_at = ${nextSendAt},
+            preferred_send_hour = ${preferredHour},
+            status = 'active',
+            updated_at = NOW()
+        `;
+
+        // Ensure email_preferences row exists
+        await sql`
+          INSERT INTO email_preferences (user_id)
+          VALUES (${user_id}::uuid)
+          ON CONFLICT (user_id) DO NOTHING
+        `;
+      } catch (campaignErr) {
+        console.error('Campaign schedule update failed (non-critical):', campaignErr);
+      }
+
       return createResponse(200, {
         success: true,
         completion: {

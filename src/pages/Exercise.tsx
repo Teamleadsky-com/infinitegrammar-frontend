@@ -171,6 +171,21 @@ const Exercise = () => {
   const level = searchParams.get("level") || "b2";
   const section = searchParams.get("section") || "verben";
   const grammarSection = searchParams.get("grammar");
+  const emailTrackingToken = searchParams.get("t");
+
+  // Track email campaign exercise start
+  const emailTrackSentRef = useRef(false);
+  useEffect(() => {
+    if (emailTrackingToken && !emailTrackSentRef.current) {
+      emailTrackSentRef.current = true;
+      const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+      fetch(`${API_BASE}/email-track-exercise`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracking_token: emailTrackingToken, event: 'started' }),
+      }).catch(() => {});
+    }
+  }, [emailTrackingToken]);
 
   // Keep ref in sync with state
   useEffect(() => {
@@ -481,6 +496,15 @@ const Exercise = () => {
 
       const result = await response.json();
       console.log('✅ Exercise completion submitted successfully:', result);
+
+      // Track email campaign exercise completion
+      if (emailTrackingToken) {
+        fetch(`${API_BASE}/email-track-exercise`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tracking_token: emailTrackingToken, event: 'completed' }),
+        }).catch(() => {});
+      }
 
       // Refresh user data to get updated stats
       console.log('🔄 Refreshing user data...');
