@@ -317,11 +317,6 @@ export const handler: Handler = async (event) => {
               `;
 
               sentCount++;
-
-              // Rate limit: 2s between sends
-              if (sentCount < inactiveUsers.length) {
-                await new Promise(resolve => setTimeout(resolve, 2000));
-              }
             } catch (err) {
               console.error(`Failed to send winback to ${user.email}:`, err);
               errorCount++;

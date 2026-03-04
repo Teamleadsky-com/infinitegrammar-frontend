@@ -143,15 +143,21 @@ const Admin = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ admin_email: ADMIN_EMAIL, action: "send_winback", winback_days: winbackDaysInput }),
       });
+      if (!response.ok) {
+        const errorText = await response.text();
+        toast({ title: `Error ${response.status}`, description: errorText, variant: "destructive" });
+        return;
+      }
       const result = await response.json();
       setWinbackResult(result);
       if (result.success) {
         toast({ title: t("admin.winbackSent", { count: result.sent_count }) });
+        await fetchData();
       } else {
         toast({ title: result.error || "Error", variant: "destructive" });
       }
-    } catch (error) {
-      toast({ title: "Error", variant: "destructive" });
+    } catch (error: any) {
+      toast({ title: "Network Error", description: error.message || "Request failed", variant: "destructive" });
     } finally {
       setSendingWinback(false);
     }
