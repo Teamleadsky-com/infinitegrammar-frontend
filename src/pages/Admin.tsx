@@ -43,7 +43,7 @@ const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 const Admin = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
 
   const isAdmin = user?.email === ADMIN_EMAIL;
@@ -71,12 +71,13 @@ const Admin = () => {
     : "/api";
 
   useEffect(() => {
+    if (authLoading) return;
     if (!isAdmin) {
       navigate("/");
       return;
     }
     fetchData();
-  }, [isAdmin]);
+  }, [isAdmin, authLoading]);
 
   const fetchData = async () => {
     setLoading(true);
@@ -137,6 +138,10 @@ const Admin = () => {
       { name: t("admin.totalCompleted"), value: parseInt(f.total_completed) || 0 },
     ];
   };
+
+  if (authLoading || !isAdmin) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-background">
