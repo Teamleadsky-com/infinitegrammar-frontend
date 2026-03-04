@@ -12,7 +12,7 @@
  * 5. Advance schedule to next step or mark completed
  */
 
-import { schedule } from '@netlify/functions';
+import { Handler } from '@netlify/functions';
 import { sql } from './_shared/db';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
@@ -50,7 +50,7 @@ async function getOrCreatePrefToken(userId: string): Promise<string> {
   return token;
 }
 
-export const handler = schedule('0 * * * *', async () => {
+export const handler: Handler = async () => {
   console.log('Campaign processor started');
 
   try {
@@ -228,4 +228,4 @@ export const handler = schedule('0 * * * *', async () => {
     console.error('Campaign processor error:', error);
     return { statusCode: 500, body: 'Campaign processor failed' };
   }
-});
+};
