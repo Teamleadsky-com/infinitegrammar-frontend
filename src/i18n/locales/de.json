@@ -144,6 +144,7 @@
   "admin": {
     "title": "Kampagnen-Admin",
     "dashboard": "Dashboard",
+    "statisticsTab": "Statistiken",
     "templates": "Vorlagen",
     "settings": "Einstellungen",
     "campaignEnabled": "Kampagne aktiviert",

@@ -144,6 +144,7 @@
   "admin": {
     "title": "Campaign Admin",
     "dashboard": "Dashboard",
+    "statisticsTab": "Statistics",
     "templates": "Templates",
     "settings": "Settings",
     "campaignEnabled": "Campaign Enabled",

@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, TrendingUp, BarChart3, Grid3x3, ShieldCheck } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
+import { ArrowLeft, TrendingUp, BarChart3 } from "lucide-react";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import {
   BarChart,
@@ -38,15 +37,10 @@ const COLORS = {
 };
 
 type PeriodType = 'daily' | 'weekly' | 'monthly';
-type DemandSort = 'popularity' | 'remaining';
-
-const ADMIN_EMAIL = 'aleksandr.zuravliov1@gmail.com';
 
 const ExerciseStats = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { user } = useAuth();
-  const isAdmin = user?.email === ADMIN_EMAIL;
   const [period, setPeriod] = useState<PeriodType>('daily');
   const [loading, setLoading] = useState(true);
 
@@ -58,15 +52,6 @@ const ExerciseStats = () => {
 
   // State for snapshot data
   const [countsByLevel, setCountsByLevel] = useState<any[]>([]);
-  const [countsBySection, setCountsBySection] = useState<any[]>([]);
-  const [countsByTopic, setCountsByTopic] = useState<any[]>([]);
-
-  // State for coverage data
-  const [heatmapData, setHeatmapData] = useState<any[]>([]);
-
-  // State for admin demand data
-  const [demandData, setDemandData] = useState<any[]>([]);
-  const [demandSort, setDemandSort] = useState<DemandSort>('popularity');
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -122,28 +107,6 @@ const ExerciseStats = () => {
         if (snapshotResponse.ok) {
           const snapshotData = await snapshotResponse.json();
           setCountsByLevel(snapshotData.byLevel || []);
-          setCountsBySection(snapshotData.bySection || []);
-          setCountsByTopic(snapshotData.byTopic || []);
-        }
-
-        // Fetch coverage stats
-        const coverageResponse = await fetch(
-          `${API_BASE}/exercise-coverage-stats`
-        );
-        if (coverageResponse.ok) {
-          const coverageData = await coverageResponse.json();
-          setHeatmapData(coverageData.heatmap || []);
-        }
-
-        // Fetch admin demand data (only for admin)
-        if (isAdmin) {
-          const demandResponse = await fetch(
-            `${API_BASE}/admin-section-demand`
-          );
-          if (demandResponse.ok) {
-            const demandResult = await demandResponse.json();
-            setDemandData(demandResult.sections || []);
-          }
         }
 
       } catch (error) {
@@ -154,7 +117,7 @@ const ExerciseStats = () => {
     };
 
     fetchStats();
-  }, [period, isAdmin]);
+  }, [period]);
 
   // Get unique sections and their final counts
   const allSections = Array.from(
@@ -401,239 +364,7 @@ const ExerciseStats = () => {
                   </ResponsiveContainer>
                 </Card>
 
-                {/* Snapshot by Grammar Section */}
-                <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.5s" }}>
-                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalBySection')}</h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={countsBySection}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis
-                        dataKey="section"
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={100}
-                      />
-                      <YAxis
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="hsl(var(--success))"
-                        radius={[8, 8, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Card>
-
-                {/* Snapshot by Content Topic */}
-                <Card className="p-6 animate-fade-in" style={{ animationDelay: "0.6s" }}>
-                  <h3 className="text-lg font-semibold mb-4">{t('exerciseStats.totalByTopic')}</h3>
-                  <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={countsByTopic}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis
-                        dataKey="topic"
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={100}
-                      />
-                      <YAxis
-                        stroke="hsl(var(--muted-foreground))"
-                        style={{ fontSize: "12px" }}
-                      />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(var(--popover))",
-                          border: "1px solid hsl(var(--border))",
-                          borderRadius: "8px",
-                        }}
-                      />
-                      <Bar
-                        dataKey="count"
-                        fill="hsl(var(--primary))"
-                        radius={[8, 8, 0, 0]}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </Card>
               </div>
-
-              {/* Coverage Analysis Section */}
-              <div className="space-y-6 pt-12">
-                <div className="flex items-center gap-2">
-                  <Grid3x3 className="h-6 w-6 text-primary" />
-                  <h2 className="text-2xl font-bold">{t('exerciseStats.coverage')}</h2>
-                </div>
-
-                {/* Exercise Count Table */}
-                <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.7s" }}>
-                  <h3 className="text-base md:text-lg font-semibold mb-4">{t('exerciseStats.heatmap')}</h3>
-                  <div className="overflow-x-auto -mx-4 md:mx-0">
-                    <div className="px-4 md:px-0">
-                      {(() => {
-                        // Transform heatmap data into flat list
-                        const tableData = heatmapData
-                          .filter((item) => item.level !== 'NULL')
-                          .sort((a, b) => {
-                            // Sort by level first
-                            const levelOrder = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
-                            const levelDiff = levelOrder.indexOf(a.level) - levelOrder.indexOf(b.level);
-                            if (levelDiff !== 0) return levelDiff;
-
-                            // Then by order in level
-                            if (a.orderInLevel !== null && b.orderInLevel !== null) {
-                              return a.orderInLevel - b.orderInLevel;
-                            }
-
-                            // Finally by name
-                            return a.sectionName.localeCompare(b.sectionName);
-                          });
-
-                        return (
-                          <div className="min-w-max">
-                            <table className="w-full border-collapse text-sm md:text-base">
-                              <thead>
-                                <tr>
-                                  <th className="border border-border p-2 md:p-3 text-left bg-muted/50 text-xs md:text-sm">
-                                    Level
-                                  </th>
-                                  <th className="border border-border p-2 md:p-3 text-left bg-muted/50 text-xs md:text-sm">
-                                    Grammar Section
-                                  </th>
-                                  <th className="border border-border p-2 md:p-3 text-center bg-muted/50 text-xs md:text-sm">
-                                    Count
-                                  </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {tableData.map((item, idx) => (
-                                  <tr key={idx} className="hover:bg-muted/30">
-                                    <td className="border border-border p-2 md:p-3 font-medium text-xs md:text-sm">
-                                      {item.level}
-                                    </td>
-                                    <td className="border border-border p-2 md:p-3 text-xs md:text-sm">
-                                      {item.sectionName}
-                                    </td>
-                                    <td className="border border-border p-2 md:p-3 text-center font-semibold text-xs md:text-sm">
-                                      {item.count}
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                </Card>
-              </div>
-
-              {/* Admin: Section Demand Chart */}
-              {isAdmin && demandData.length > 0 && (() => {
-                const sortedDemand = [...demandData].sort((a, b) => {
-                  if (demandSort === 'remaining') {
-                    return a.remaining - b.remaining;
-                  }
-                  return b.completed - a.completed;
-                }).map((item) => ({
-                  ...item,
-                  label: `${item.sectionName} (${item.level})`,
-                }));
-
-                return (
-                  <div className="space-y-6 pt-12 border-t border-border">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-6 w-6 text-primary" />
-                        <h2 className="text-2xl font-bold">{t('exerciseStats.sectionDemand')}</h2>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button
-                          variant={demandSort === 'popularity' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setDemandSort('popularity')}
-                        >
-                          {t('exerciseStats.sortByPopularity')}
-                        </Button>
-                        <Button
-                          variant={demandSort === 'remaining' ? 'default' : 'outline'}
-                          size="sm"
-                          onClick={() => setDemandSort('remaining')}
-                        >
-                          {t('exerciseStats.sortByRemaining')}
-                        </Button>
-                      </div>
-                    </div>
-
-                    <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.8s" }}>
-                      <ResponsiveContainer width="100%" height={Math.max(400, sortedDemand.length * 36)}>
-                        <BarChart data={sortedDemand} layout="vertical" margin={{ left: 20, right: 20 }}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                          <XAxis
-                            type="number"
-                            stroke="hsl(var(--muted-foreground))"
-                            style={{ fontSize: "12px" }}
-                          />
-                          <YAxis
-                            type="category"
-                            dataKey="label"
-                            stroke="hsl(var(--muted-foreground))"
-                            style={{ fontSize: "11px" }}
-                            width={250}
-                            tick={{ fill: "hsl(var(--foreground))" }}
-                          />
-                          <Tooltip
-                            contentStyle={{
-                              backgroundColor: "hsl(var(--popover))",
-                              border: "1px solid hsl(var(--border))",
-                              borderRadius: "8px",
-                            }}
-                            formatter={(value: number, name: string) => {
-                              const label = name === 'completed'
-                                ? t('exerciseStats.completed')
-                                : t('exerciseStats.remaining');
-                              return [value, label];
-                            }}
-                            labelFormatter={(label) => label}
-                          />
-                          <Legend
-                            formatter={(value) => {
-                              if (value === 'completed') return t('exerciseStats.completed');
-                              if (value === 'remaining') return t('exerciseStats.remaining');
-                              return value;
-                            }}
-                          />
-                          <Bar
-                            dataKey="completed"
-                            stackId="a"
-                            fill="hsl(142, 70%, 45%)"
-                            radius={[0, 0, 0, 0]}
-                          />
-                          <Bar
-                            dataKey="remaining"
-                            stackId="a"
-                            fill="hsl(38, 92%, 50%)"
-                            radius={[0, 4, 4, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </Card>
-                  </div>
-                );
-              })()}
 
               {/* Action Button */}
               <div className="flex justify-center animate-fade-in mt-12" style={{ animationDelay: "0.9s" }}>
