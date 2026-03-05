@@ -197,6 +197,7 @@ export const handler: Handler = async (event) => {
       await sql`COMMIT`;
 
       // Update campaign schedule for spaced repetition emails (non-blocking)
+      // Only one active schedule per user — always for the last section they worked on.
       try {
         const SPACED_INTERVALS = [1, 3, 7, 14]; // days
         const nextSendAt = new Date(Date.now() + SPACED_INTERVALS[0] * 24 * 60 * 60 * 1000);
@@ -213,6 +214,16 @@ export const handler: Handler = async (event) => {
           ? recentHours.map((r: any) => r.hour).sort((a: number, b: number) => a - b)[Math.floor(recentHours.length / 2)]
           : null;
 
+        // Cancel all other active schedules for this user
+        await sql`
+          UPDATE campaign_schedule
+          SET status = 'cancelled', updated_at = NOW()
+          WHERE user_id = ${user_id}::uuid
+            AND status = 'active'
+            AND grammar_section_id != ${exercise.grammar_section_id}
+        `;
+
+        // Upsert schedule for the current section
         await sql`
           INSERT INTO campaign_schedule (user_id, grammar_section_id, last_practice_at, step, next_send_at, preferred_send_hour, status)
           VALUES (${user_id}::uuid, ${exercise.grammar_section_id}, NOW(), 0, ${nextSendAt}, ${preferredHour}, 'active')
