@@ -142,11 +142,11 @@
     "errorGeneric": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
   },
   "admin": {
-    "title": "Kampagnen-Admin",
-    "dashboard": "Dashboard",
-    "statisticsTab": "Statistiken",
-    "templates": "Vorlagen",
-    "settings": "Einstellungen",
+    "title": "Admin",
+    "dashboard": "Kampagne",
+    "statisticsTab": "Übungsstatistiken",
+    "templates": "Kampagnen-Vorlagen",
+    "settings": "Kampagnen-Einstellungen",
     "campaignEnabled": "Kampagne aktiviert",
     "campaignDisabled": "Kampagne deaktiviert",
     "activeSchedules": "Aktive Zeitpläne",

@@ -142,11 +142,11 @@
     "errorGeneric": "Something went wrong. Please try again."
   },
   "admin": {
-    "title": "Campaign Admin",
-    "dashboard": "Dashboard",
-    "statisticsTab": "Statistics",
-    "templates": "Templates",
-    "settings": "Settings",
+    "title": "Admin",
+    "dashboard": "Campaign",
+    "statisticsTab": "Exercise Statistics",
+    "templates": "Campaign Templates",
+    "settings": "Campaign Settings",
     "campaignEnabled": "Campaign Enabled",
     "campaignDisabled": "Campaign Disabled",
     "activeSchedules": "Active Schedules",
