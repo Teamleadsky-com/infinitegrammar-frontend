@@ -9,6 +9,8 @@
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
 
+const ADMIN_EMAIL = 'aleksandr.zuravliov1@gmail.com';
+
 export const handler: Handler = async (event) => {
   // Handle CORS preflight
   if (event.httpMethod === 'OPTIONS') {
@@ -20,6 +22,10 @@ export const handler: Handler = async (event) => {
   }
 
   try {
+    // Exclude admin user from demand calculation
+    const adminUser = await sql`SELECT id FROM users WHERE email = ${ADMIN_EMAIL} LIMIT 1`;
+    const adminId = adminUser[0]?.id;
+
     const data = await sql`
       SELECT
         gs.name AS section_name,
@@ -32,6 +38,8 @@ export const handler: Handler = async (event) => {
       JOIN grammar_sections gs ON gs.id = up.grammar_section_id
       LEFT JOIN exercises e ON e.grammar_section_id = gs.id AND e.is_active = true
       LEFT JOIN exercise_completions ec ON ec.exercise_id = e.id
+        AND (${adminId}::uuid IS NULL OR ec.user_id != ${adminId}::uuid)
+      WHERE ${adminId}::uuid IS NULL OR up.user_id != ${adminId}::uuid
       GROUP BY gs.id, gs.name, gs.level
       ORDER BY COUNT(DISTINCT up.user_id) DESC, gs.level, gs.name
     `;
