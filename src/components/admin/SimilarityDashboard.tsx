@@ -66,27 +66,58 @@ interface FeatureData {
   orderNumber: number | null;
 }
 
+interface ExerciseDetail {
+  id: string;
+  text: string;
+  level: string;
+  orderNumber: number;
+  grammarSectionId: string;
+  gaps: Array<{ gapNumber: number; correctAnswer: string }>;
+  features: { grammarSectionId: string; level: string } | null;
+}
+
 interface PairDetail {
-  exerciseA: {
-    id: string;
-    text: string;
-    level: string;
-    orderNumber: number;
-    grammarSectionId: string;
-    features: { grammarSectionId: string; level: string } | null;
-  };
-  exerciseB: {
-    id: string;
-    text: string;
-    level: string;
-    orderNumber: number;
-    grammarSectionId: string;
-    features: { grammarSectionId: string; level: string } | null;
-  };
+  exerciseA: ExerciseDetail | null;
+  exerciseB: ExerciseDetail | null;
   similarityScore: number | null;
 }
 
 type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "maxSimilarity" | "pairsAbove80" | "pairsAbove90";
+
+/** Replace [1], [2] etc. with correct answers as highlighted spans */
+const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
+  if (!gaps || gaps.length === 0) return text;
+
+  const gapMap: Record<number, string> = {};
+  for (const g of gaps) gapMap[g.gapNumber] = g.correctAnswer;
+
+  const parts: Array<string | { answer: string; num: number }> = [];
+  let lastIndex = 0;
+  const regex = /\[(\d+)\]/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const num = parseInt(match[1], 10);
+    parts.push({ answer: gapMap[num] || `[${num}]`, num });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.map((part, i) =>
+    typeof part === "string" ? (
+      <span key={i}>{part}</span>
+    ) : (
+      <span key={i} className="font-semibold text-primary bg-primary/10 px-1 rounded" title={`Gap ${part.num}`}>
+        {part.answer}
+      </span>
+    )
+  );
+};
 
 const getSimBadgeVariant = (score: number): "destructive" | "secondary" | "default" => {
   if (score >= 0.85) return "destructive";
@@ -592,7 +623,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     </div>
                     <Card className="p-3">
                       <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                        {ex?.text || "N/A"}
+                        {ex?.text ? renderTextWithGaps(ex.text, ex.gaps || []) : "N/A"}
                       </p>
                     </Card>
                   </div>
