@@ -40,6 +40,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { SimilarityDashboard } from "@/components/admin/SimilarityDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
@@ -235,7 +236,7 @@ const Admin = () => {
           </div>
         ) : (
           <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="dashboard" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 {t("admin.dashboard")}
@@ -251,6 +252,10 @@ const Admin = () => {
               <TabsTrigger value="statistics" className="gap-2">
                 <Grid3x3 className="h-4 w-4" />
                 {t("admin.statisticsTab")}
+              </TabsTrigger>
+              <TabsTrigger value="similarity" className="gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                {t("admin.similarity.tabLabel", "Similarity")}
               </TabsTrigger>
             </TabsList>
 
@@ -694,6 +699,11 @@ const Admin = () => {
                   </div>
                 </div>
               </Card>
+            </TabsContent>
+
+            {/* Similarity Tab */}
+            <TabsContent value="similarity" className="space-y-6">
+              <SimilarityDashboard apiBase={API_BASE} />
             </TabsContent>
           </Tabs>
         )}

@@ -1,0 +1,80 @@
+/**
+ * GET /api/admin-similarity-heatmap
+ *
+ * Returns pairwise similarity scores and exercise features for a specific section.
+ * Query params: section_id (required), run_id (required)
+ */
+
+import { Handler } from '@netlify/functions';
+import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
+
+export const handler: Handler = async (event) => {
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers: corsHeaders, body: '' };
+  }
+
+  if (event.httpMethod !== 'GET') {
+    return createResponse(405, { error: 'Method not allowed' });
+  }
+
+  try {
+    const sectionId = event.queryStringParameters?.section_id;
+    const runId = event.queryStringParameters?.run_id;
+
+    if (!sectionId || !runId) {
+      return createResponse(400, { error: 'section_id and run_id are required' });
+    }
+
+    // Get exercise IDs for this section/run
+    const exerciseIds = await sql`
+      SELECT exercise_id
+      FROM exercise_similarity_features
+      WHERE run_id = ${runId}::uuid
+        AND grammar_section_id = ${sectionId}
+      ORDER BY exercise_id
+    `;
+
+    const ids = exerciseIds.map((r: any) => r.exercise_id);
+
+    if (ids.length === 0) {
+      return createResponse(200, { pairs: [], features: [] });
+    }
+
+    // Get all pairwise scores where both exercises are in this section
+    const pairs = await sql`
+      SELECT exercise_a_id, exercise_b_id, cosine_similarity
+      FROM exercise_pairwise_similarity
+      WHERE run_id = ${runId}::uuid
+        AND exercise_a_id = ANY(${ids}::uuid[])
+        AND exercise_b_id = ANY(${ids}::uuid[])
+      ORDER BY cosine_similarity DESC
+    `;
+
+    // Get features
+    const features = await sql`
+      SELECT ef.exercise_id, ef.grammar_section_id, ef.level,
+             e.text, e.order_number
+      FROM exercise_similarity_features ef
+      LEFT JOIN exercises e ON e.id = ef.exercise_id::text
+      WHERE ef.run_id = ${runId}::uuid
+        AND ef.grammar_section_id = ${sectionId}
+      ORDER BY ef.exercise_id
+    `;
+
+    return createResponse(200, {
+      pairs: pairs.map((row: any) => ({
+        exerciseAId: row.exercise_a_id,
+        exerciseBId: row.exercise_b_id,
+        similarityScore: parseFloat(row.cosine_similarity),
+      })),
+      features: features.map((row: any) => ({
+        exerciseId: row.exercise_id,
+        level: row.level?.toUpperCase() || '',
+        textPreview: row.text ? row.text.substring(0, 80) + (row.text.length > 80 ? '...' : '') : null,
+        orderNumber: row.order_number,
+      })),
+    });
+  } catch (error) {
+    return handleError(error);
+  }
+};

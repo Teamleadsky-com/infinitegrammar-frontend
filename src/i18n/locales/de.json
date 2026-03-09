@@ -186,7 +186,23 @@
     "winbackAfterDaysDesc": "Nutzer ohne Übungsabschlüsse in dieser Anzahl von Tagen gelten als inaktiv für Winback.",
     "period_week": "7 Tage",
     "period_month": "30 Tage",
-    "period_all": "Gesamt"
+    "period_all": "Gesamt",
+    "similarity": {
+      "tabLabel": "Ähnlichkeit",
+      "noData": "Keine Ähnlichkeitsanalysen gefunden. Führe zuerst das Analyseskript aus.",
+      "sectionOverview": "Sektionsübersicht",
+      "heatmap": "Ähnlichkeits-Heatmap",
+      "pairDetail": "Paarvergleich",
+      "avgSimilarity": "Durchschn. Ähnlichkeit",
+      "maxSimilarity": "Max. Ähnlichkeit",
+      "pairsAbove80": "Paare >80%",
+      "pairsAbove90": "Paare >90%",
+      "exerciseA": "Übung A",
+      "exerciseB": "Übung B",
+      "similarityScore": "Ähnlichkeitswert",
+      "gapCount": "Lückenanzahl",
+      "textLength": "Textlänge"
+    }
   },
   "emailPreferences": {
     "title": "E-Mail-Einstellungen",

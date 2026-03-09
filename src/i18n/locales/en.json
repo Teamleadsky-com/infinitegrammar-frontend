@@ -186,7 +186,23 @@
     "winbackAfterDaysDesc": "Users with no exercise completions in this many days are considered inactive for winback.",
     "period_week": "7 Days",
     "period_month": "30 Days",
-    "period_all": "All Time"
+    "period_all": "All Time",
+    "similarity": {
+      "tabLabel": "Similarity",
+      "noData": "No similarity analysis runs found. Run the analysis script first.",
+      "sectionOverview": "Section Overview",
+      "heatmap": "Similarity Heatmap",
+      "pairDetail": "Pair Comparison",
+      "avgSimilarity": "Avg Similarity",
+      "maxSimilarity": "Max Similarity",
+      "pairsAbove80": "Pairs >80%",
+      "pairsAbove90": "Pairs >90%",
+      "exerciseA": "Exercise A",
+      "exerciseB": "Exercise B",
+      "similarityScore": "Similarity Score",
+      "gapCount": "Gap Count",
+      "textLength": "Text Length"
+    }
   },
   "emailPreferences": {
     "title": "Email Preferences",
