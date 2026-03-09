@@ -52,19 +52,43 @@ export const handler: Handler = async (event) => {
         JOIN section_exercises se ON se.exercise_id = ep.exercise_a_id
         WHERE ep.run_id = ${run.id}::uuid
       ),
-      section_stats AS (
+      -- Percentile values from all pairs
+      pair_percentiles AS (
         SELECT
           grammar_section_id,
           COUNT(*) AS total_pairs,
-          COUNT(*) FILTER (WHERE cosine_similarity >= 0.3) AS pairs_above_30,
-          COUNT(*) FILTER (WHERE cosine_similarity >= 0.5) AS pairs_above_50,
-          COUNT(*) FILTER (WHERE cosine_similarity >= 0.75) AS pairs_above_75,
-          COUNT(*) FILTER (WHERE cosine_similarity >= 0.9) AS pairs_above_90,
           PERCENTILE_CONT(0.30) WITHIN GROUP (ORDER BY cosine_similarity) AS p30,
           PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY cosine_similarity) AS p50,
           PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY cosine_similarity) AS p75,
           PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY cosine_similarity) AS p90
         FROM section_pairs
+        GROUP BY grammar_section_id
+      ),
+      -- Per-exercise max similarity to any neighbor
+      exercise_max_sim AS (
+        SELECT
+          se.grammar_section_id,
+          se.exercise_id,
+          GREATEST(
+            COALESCE(MAX(ep_a.cosine_similarity), 0),
+            COALESCE(MAX(ep_b.cosine_similarity), 0)
+          ) AS max_neighbor_sim
+        FROM section_exercises se
+        LEFT JOIN exercise_pairwise_similarity ep_a
+          ON ep_a.run_id = ${run.id}::uuid AND ep_a.exercise_a_id = se.exercise_id
+        LEFT JOIN exercise_pairwise_similarity ep_b
+          ON ep_b.run_id = ${run.id}::uuid AND ep_b.exercise_b_id = se.exercise_id
+        GROUP BY se.grammar_section_id, se.exercise_id
+      ),
+      -- Count exercises whose max neighbor sim exceeds thresholds
+      exercise_counts AS (
+        SELECT
+          grammar_section_id,
+          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.3) AS exercises_above_30,
+          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.5) AS exercises_above_50,
+          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.75) AS exercises_above_75,
+          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.9) AS exercises_above_90
+        FROM exercise_max_sim
         GROUP BY grammar_section_id
       )
       SELECT
@@ -75,18 +99,19 @@ export const handler: Handler = async (event) => {
         ss.mean_similarity,
         ss.max_similarity,
         ss.min_similarity,
-        COALESCE(st.p30, 0) AS p30,
-        COALESCE(st.p50, 0) AS p50,
-        COALESCE(st.p75, 0) AS p75,
-        COALESCE(st.p90, 0) AS p90,
-        COALESCE(st.total_pairs, 0) AS total_pairs,
-        COALESCE(st.pairs_above_30, 0) AS pairs_above_30,
-        COALESCE(st.pairs_above_50, 0) AS pairs_above_50,
-        COALESCE(st.pairs_above_75, 0) AS pairs_above_75,
-        COALESCE(st.pairs_above_90, 0) AS pairs_above_90
+        COALESCE(pp.p30, 0) AS p30,
+        COALESCE(pp.p50, 0) AS p50,
+        COALESCE(pp.p75, 0) AS p75,
+        COALESCE(pp.p90, 0) AS p90,
+        COALESCE(pp.total_pairs, 0) AS total_pairs,
+        COALESCE(ec.exercises_above_30, 0) AS exercises_above_30,
+        COALESCE(ec.exercises_above_50, 0) AS exercises_above_50,
+        COALESCE(ec.exercises_above_75, 0) AS exercises_above_75,
+        COALESCE(ec.exercises_above_90, 0) AS exercises_above_90
       FROM section_similarity_summary ss
       LEFT JOIN grammar_sections gs ON gs.id = ss.grammar_section_id
-      LEFT JOIN section_stats st ON st.grammar_section_id = ss.grammar_section_id
+      LEFT JOIN pair_percentiles pp ON pp.grammar_section_id = ss.grammar_section_id
+      LEFT JOIN exercise_counts ec ON ec.grammar_section_id = ss.grammar_section_id
       WHERE ss.run_id = ${run.id}::uuid
         AND ss.max_similarity >= ${minSimilarity}
       ORDER BY ss.max_similarity DESC, section_name
@@ -116,10 +141,10 @@ export const handler: Handler = async (event) => {
         p50: parseFloat(row.p50),
         p75: parseFloat(row.p75),
         p90: parseFloat(row.p90),
-        pairsAbove30: parseInt(row.pairs_above_30, 10),
-        pairsAbove50: parseInt(row.pairs_above_50, 10),
-        pairsAbove75: parseInt(row.pairs_above_75, 10),
-        pairsAbove90: parseInt(row.pairs_above_90, 10),
+        exercisesAbove30: parseInt(row.exercises_above_30, 10),
+        exercisesAbove50: parseInt(row.exercises_above_50, 10),
+        exercisesAbove75: parseInt(row.exercises_above_75, 10),
+        exercisesAbove90: parseInt(row.exercises_above_90, 10),
       })),
     });
   } catch (error) {
