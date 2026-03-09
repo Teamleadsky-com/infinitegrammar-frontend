@@ -45,11 +45,18 @@ interface SectionSummary {
   sectionName: string;
   level: string;
   exerciseCount: number;
+  totalPairs: number;
   meanSimilarity: number;
   maxSimilarity: number;
   minSimilarity: number;
-  p90Similarity: number;
-  pairsAbove80: number;
+  medianSimilarity: number;
+  p30: number;
+  p50: number;
+  p75: number;
+  p90: number;
+  pairsAbove30: number;
+  pairsAbove50: number;
+  pairsAbove75: number;
   pairsAbove90: number;
 }
 
@@ -82,7 +89,7 @@ interface PairDetail {
   similarityScore: number | null;
 }
 
-type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "maxSimilarity" | "pairsAbove80" | "pairsAbove90";
+type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianSimilarity" | "maxSimilarity" | "pairsAbove30" | "pairsAbove50" | "pairsAbove75" | "pairsAbove90";
 
 /** Replace [1], [2] etc. with correct answers as highlighted spans */
 const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
@@ -333,13 +340,22 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   Exercises <SortIcon columnKey="exerciseCount" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("meanSimilarity")}>
-                  Avg Sim <SortIcon columnKey="meanSimilarity" />
+                  Avg <SortIcon columnKey="meanSimilarity" />
+                </th>
+                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianSimilarity")}>
+                  Median <SortIcon columnKey="medianSimilarity" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
-                  Max Sim <SortIcon columnKey="maxSimilarity" />
+                  Max <SortIcon columnKey="maxSimilarity" />
                 </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("pairsAbove80")}>
-                  &gt;80% <SortIcon columnKey="pairsAbove80" />
+                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("pairsAbove30")}>
+                  &gt;30% <SortIcon columnKey="pairsAbove30" />
+                </th>
+                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("pairsAbove50")}>
+                  &gt;50% <SortIcon columnKey="pairsAbove50" />
+                </th>
+                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("pairsAbove75")}>
+                  &gt;75% <SortIcon columnKey="pairsAbove75" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("pairsAbove90")}>
                   &gt;90% <SortIcon columnKey="pairsAbove90" />
@@ -359,17 +375,31 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   </td>
                   <td className="text-right py-2 px-2">{s.exerciseCount}</td>
                   <td className="text-right py-2 px-2">{s.meanSimilarity.toFixed(3)}</td>
+                  <td className="text-right py-2 px-2">{s.medianSimilarity.toFixed(3)}</td>
                   <td className="text-right py-2 px-2">
                     <Badge variant={getSimBadgeVariant(s.maxSimilarity)}>
                       {s.maxSimilarity.toFixed(3)}
                     </Badge>
                   </td>
                   <td className="text-right py-2 px-2">
-                    {s.pairsAbove80 > 0 ? (
-                      <span className="text-orange-600 font-medium">{s.pairsAbove80}</span>
+                    <span className="text-muted-foreground">{s.pairsAbove30}</span>
+                    <span className="text-xs text-muted-foreground ml-1">({s.p30.toFixed(2)})</span>
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    {s.pairsAbove50 > 0 ? (
+                      <span className="font-medium">{s.pairsAbove50}</span>
                     ) : (
                       <span className="text-muted-foreground">0</span>
                     )}
+                    <span className="text-xs text-muted-foreground ml-1">({s.p50.toFixed(2)})</span>
+                  </td>
+                  <td className="text-right py-2 px-2">
+                    {s.pairsAbove75 > 0 ? (
+                      <span className="text-orange-600 font-medium">{s.pairsAbove75}</span>
+                    ) : (
+                      <span className="text-muted-foreground">0</span>
+                    )}
+                    <span className="text-xs text-muted-foreground ml-1">({s.p75.toFixed(2)})</span>
                   </td>
                   <td className="text-right py-2 px-2">
                     {s.pairsAbove90 > 0 ? (
@@ -377,6 +407,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     ) : (
                       <span className="text-muted-foreground">0</span>
                     )}
+                    <span className="text-xs text-muted-foreground ml-1">({s.p90.toFixed(2)})</span>
                   </td>
                 </tr>
               ))}

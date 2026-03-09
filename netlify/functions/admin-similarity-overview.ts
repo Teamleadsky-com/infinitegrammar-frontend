@@ -2,6 +2,7 @@
  * GET /api/admin-similarity-overview
  *
  * Returns section-level similarity summary for the latest completed run.
+ * Includes percentile values (p30, p50/median, p75, p90) and pair counts above thresholds.
  * Optional query param: min_similarity (float) to filter sections.
  */
 
@@ -36,8 +37,36 @@ export const handler: Handler = async (event) => {
 
     const run = runs[0];
 
-    // Get section summaries for this run, joined with grammar_sections for name/level
+    // Get section summaries with percentiles and threshold counts computed from pairwise data
     const sections = await sql`
+      WITH section_exercises AS (
+        SELECT grammar_section_id, exercise_id
+        FROM exercise_similarity_features
+        WHERE run_id = ${run.id}::uuid
+      ),
+      section_pairs AS (
+        SELECT
+          se.grammar_section_id,
+          ep.cosine_similarity
+        FROM exercise_pairwise_similarity ep
+        JOIN section_exercises se ON se.exercise_id = ep.exercise_a_id
+        WHERE ep.run_id = ${run.id}::uuid
+      ),
+      section_stats AS (
+        SELECT
+          grammar_section_id,
+          COUNT(*) AS total_pairs,
+          COUNT(*) FILTER (WHERE cosine_similarity >= 0.3) AS pairs_above_30,
+          COUNT(*) FILTER (WHERE cosine_similarity >= 0.5) AS pairs_above_50,
+          COUNT(*) FILTER (WHERE cosine_similarity >= 0.75) AS pairs_above_75,
+          COUNT(*) FILTER (WHERE cosine_similarity >= 0.9) AS pairs_above_90,
+          PERCENTILE_CONT(0.30) WITHIN GROUP (ORDER BY cosine_similarity) AS p30,
+          PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY cosine_similarity) AS p50,
+          PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY cosine_similarity) AS p75,
+          PERCENTILE_CONT(0.90) WITHIN GROUP (ORDER BY cosine_similarity) AS p90
+        FROM section_pairs
+        GROUP BY grammar_section_id
+      )
       SELECT
         ss.grammar_section_id,
         COALESCE(gs.name, ss.grammar_section_id) AS section_name,
@@ -46,17 +75,18 @@ export const handler: Handler = async (event) => {
         ss.mean_similarity,
         ss.max_similarity,
         ss.min_similarity,
-        ss.p90_similarity,
-        (SELECT COUNT(*) FROM exercise_pairwise_similarity ep
-         WHERE ep.run_id = ss.run_id
-           AND ep.exercise_a_id IN (SELECT exercise_id FROM exercise_similarity_features WHERE run_id = ss.run_id AND grammar_section_id = ss.grammar_section_id)
-           AND ep.cosine_similarity >= 0.8) AS pairs_above_80,
-        (SELECT COUNT(*) FROM exercise_pairwise_similarity ep
-         WHERE ep.run_id = ss.run_id
-           AND ep.exercise_a_id IN (SELECT exercise_id FROM exercise_similarity_features WHERE run_id = ss.run_id AND grammar_section_id = ss.grammar_section_id)
-           AND ep.cosine_similarity >= 0.9) AS pairs_above_90
+        COALESCE(st.p30, 0) AS p30,
+        COALESCE(st.p50, 0) AS p50,
+        COALESCE(st.p75, 0) AS p75,
+        COALESCE(st.p90, 0) AS p90,
+        COALESCE(st.total_pairs, 0) AS total_pairs,
+        COALESCE(st.pairs_above_30, 0) AS pairs_above_30,
+        COALESCE(st.pairs_above_50, 0) AS pairs_above_50,
+        COALESCE(st.pairs_above_75, 0) AS pairs_above_75,
+        COALESCE(st.pairs_above_90, 0) AS pairs_above_90
       FROM section_similarity_summary ss
       LEFT JOIN grammar_sections gs ON gs.id = ss.grammar_section_id
+      LEFT JOIN section_stats st ON st.grammar_section_id = ss.grammar_section_id
       WHERE ss.run_id = ${run.id}::uuid
         AND ss.max_similarity >= ${minSimilarity}
       ORDER BY ss.max_similarity DESC, section_name
@@ -77,11 +107,18 @@ export const handler: Handler = async (event) => {
         sectionName: row.section_name,
         level: row.level?.toUpperCase() || '',
         exerciseCount: parseInt(row.exercise_count, 10),
+        totalPairs: parseInt(row.total_pairs, 10),
         meanSimilarity: parseFloat(row.mean_similarity),
         maxSimilarity: parseFloat(row.max_similarity),
         minSimilarity: parseFloat(row.min_similarity),
-        p90Similarity: parseFloat(row.p90_similarity),
-        pairsAbove80: parseInt(row.pairs_above_80, 10),
+        medianSimilarity: parseFloat(row.p50),
+        p30: parseFloat(row.p30),
+        p50: parseFloat(row.p50),
+        p75: parseFloat(row.p75),
+        p90: parseFloat(row.p90),
+        pairsAbove30: parseInt(row.pairs_above_30, 10),
+        pairsAbove50: parseInt(row.pairs_above_50, 10),
+        pairsAbove75: parseInt(row.pairs_above_75, 10),
         pairsAbove90: parseInt(row.pairs_above_90, 10),
       })),
     });
