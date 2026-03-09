@@ -525,6 +525,36 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   </div>
                 </Card>
               )}
+
+              {/* Least similar pairs list */}
+              {pairs.length > 0 && (
+                <Card className="p-6">
+                  <h4 className="font-semibold mb-4">Least Similar Pairs</h4>
+                  <div className="space-y-2">
+                    {[...pairs].reverse().slice(0, 20).map((p, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center justify-between p-2 rounded hover:bg-muted/50 cursor-pointer transition-colors"
+                        onClick={() => fetchPairDetail(p.exerciseAId, p.exerciseBId)}
+                      >
+                        <div className="flex items-center gap-2 text-sm">
+                          <span className="font-mono text-xs">{shortId(p.exerciseAId)}</span>
+                          <span className="text-muted-foreground">↔</span>
+                          <span className="font-mono text-xs">{shortId(p.exerciseBId)}</span>
+                          {featureMap[p.exerciseAId]?.textPreview && (
+                            <span className="text-xs text-muted-foreground truncate max-w-[200px]">
+                              {featureMap[p.exerciseAId].textPreview}
+                            </span>
+                          )}
+                        </div>
+                        <Badge variant="default">
+                          {(p.similarityScore * 100).toFixed(1)}%
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
             </>
           )}
         </div>
