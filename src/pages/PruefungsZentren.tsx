@@ -685,66 +685,66 @@ const PruefungsZentren = () => {
                 <h3 className="text-sm font-semibold text-muted-foreground mb-3">telc Prüfungszentren</h3>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href="/pruefungszentren/telc-berlin"
+                    href="/pruefungszentren/telc-berlin/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-berlin');
+                      navigate('/pruefungszentren/telc-berlin/');
                     }}
                   >
                     telc Berlin
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/telc-muenchen"
+                    href="/pruefungszentren/telc-muenchen/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-muenchen');
+                      navigate('/pruefungszentren/telc-muenchen/');
                     }}
                   >
                     telc München
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/telc-hamburg"
+                    href="/pruefungszentren/telc-hamburg/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-hamburg');
+                      navigate('/pruefungszentren/telc-hamburg/');
                     }}
                   >
                     telc Hamburg
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/telc-koeln"
+                    href="/pruefungszentren/telc-koeln/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-koeln');
+                      navigate('/pruefungszentren/telc-koeln/');
                     }}
                   >
                     telc Köln
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/telc-frankfurt"
+                    href="/pruefungszentren/telc-frankfurt/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-frankfurt');
+                      navigate('/pruefungszentren/telc-frankfurt/');
                     }}
                   >
                     telc Frankfurt
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/telc-stuttgart"
+                    href="/pruefungszentren/telc-stuttgart/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/telc-stuttgart');
+                      navigate('/pruefungszentren/telc-stuttgart/');
                     }}
                   >
                     telc Stuttgart
@@ -757,66 +757,66 @@ const PruefungsZentren = () => {
                 <h3 className="text-sm font-semibold text-muted-foreground mb-3">TestDaF Testzentren</h3>
                 <div className="flex flex-wrap gap-2">
                   <a
-                    href="/pruefungszentren/testdaf-berlin"
+                    href="/pruefungszentren/testdaf-berlin/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-berlin');
+                      navigate('/pruefungszentren/testdaf-berlin/');
                     }}
                   >
                     TestDaF Berlin
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/testdaf-muenchen"
+                    href="/pruefungszentren/testdaf-muenchen/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-muenchen');
+                      navigate('/pruefungszentren/testdaf-muenchen/');
                     }}
                   >
                     TestDaF München
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/testdaf-hamburg"
+                    href="/pruefungszentren/testdaf-hamburg/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-hamburg');
+                      navigate('/pruefungszentren/testdaf-hamburg/');
                     }}
                   >
                     TestDaF Hamburg
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/testdaf-koeln"
+                    href="/pruefungszentren/testdaf-koeln/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-koeln');
+                      navigate('/pruefungszentren/testdaf-koeln/');
                     }}
                   >
                     TestDaF Köln
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/testdaf-frankfurt"
+                    href="/pruefungszentren/testdaf-frankfurt/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-frankfurt');
+                      navigate('/pruefungszentren/testdaf-frankfurt/');
                     }}
                   >
                     TestDaF Frankfurt
                   </a>
                   <span className="text-muted-foreground">·</span>
                   <a
-                    href="/pruefungszentren/testdaf-stuttgart"
+                    href="/pruefungszentren/testdaf-stuttgart/"
                     className="text-primary hover:underline font-medium"
                     onClick={(e) => {
                       e.preventDefault();
-                      navigate('/pruefungszentren/testdaf-stuttgart');
+                      navigate('/pruefungszentren/testdaf-stuttgart/');
                     }}
                   >
                     TestDaF Stuttgart

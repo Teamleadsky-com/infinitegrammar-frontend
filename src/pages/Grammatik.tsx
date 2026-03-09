@@ -88,7 +88,7 @@ const Grammatik = () => {
         data={{
           headline: 'Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt',
           description: 'Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen',
-          url: 'https://www.infinitegrammar.de/deutsche-grammatik',
+          url: 'https://www.infinitegrammar.de/deutsche-grammatik/',
           datePublished: '2025-12-15T10:00:00+01:00',
           dateModified: '2026-01-06T14:00:00+01:00',
           keywords: ['Deutsche Grammatik', 'Grammatik lernen', 'A1 Grammatik', 'B1 Grammatik', 'C1 Grammatik', 'Deutsch lernen']
@@ -99,7 +99,7 @@ const Grammatik = () => {
         data={{
           headline: 'Deutsche Grammatik A1-C1',
           description: 'Komplette deutsche Grammatik von A1 bis C1 mit Regeln, Beispielen und interaktiven Übungen',
-          url: 'https://www.infinitegrammar.de/deutsche-grammatik',
+          url: 'https://www.infinitegrammar.de/deutsche-grammatik/',
           educationalLevel: 'A1-C1',
           learningResourceType: 'Grammar Reference',
           keywords: ['Deutsche Grammatik', 'Grammatikregeln', 'Deutsch lernen', 'Grammatik Übungen']
@@ -110,7 +110,7 @@ const Grammatik = () => {
         data={{
           breadcrumbs: [
             { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik' }
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik/' }
           ]
         }}
       />
@@ -141,7 +141,7 @@ const Grammatik = () => {
               Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt
             </h1>
             <ShareButton
-              url="https://www.infinitegrammar.de/deutsche-grammatik"
+              url="https://www.infinitegrammar.de/deutsche-grammatik/"
               title="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt"
               description="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
             />

@@ -43,11 +43,11 @@ const CityExamPage = () => {
   // SEO meta data
   const pageTitle = content ? `${content.title} | InfiniteGrammar` : 'Prüfungszentren';
   const pageDescription = content ? content.metaDescription : 'Finde Prüfungszentren in Deutschland';
-  const pageUrl = `https://www.infinitegrammar.de/pruefungszentren/${exam}-${city}`;
+  const pageUrl = `https://www.infinitegrammar.de/pruefungszentren/${exam}-${city}/`;
 
   // If no content found, redirect to main directory
   if (!content) {
-    navigate('/pruefungszentren');
+    navigate('/pruefungszentren/');
     return null;
   }
 
@@ -237,7 +237,7 @@ const CityExamPage = () => {
           <div className="mt-6 text-center">
             <Button
               variant="outline"
-              onClick={() => navigate('/pruefungszentren')}
+              onClick={() => navigate('/pruefungszentren/')}
               className="gap-2"
             >
               <BookOpen className="h-4 w-4" />
