@@ -24,7 +24,7 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
-import { ArrowLeft, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Info } from "lucide-react";
 
 interface SimilarityDashboardProps {
   apiBase: string;
@@ -322,100 +322,193 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
 
       {/* Section Overview Table */}
       <Card className="p-6 animate-fade-in">
-        <h3 className="text-lg font-semibold mb-4">{t("admin.similarity.sectionOverview", "Section Overview")}</h3>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("sectionName")}>
-                  Section <SortIcon columnKey="sectionName" />
-                </th>
-                <th className="text-left py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("level")}>
-                  Level <SortIcon columnKey="level" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exerciseCount")}>
-                  Total <SortIcon columnKey="exerciseCount" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("meanSimilarity")}>
-                  Avg <SortIcon columnKey="meanSimilarity" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianMaxSim")}>
-                  Median <SortIcon columnKey="medianMaxSim" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
-                  Max <SortIcon columnKey="maxSimilarity" />
-                </th>
-                <th className="text-center py-2 px-2">0–0.1</th>
-                <th className="text-center py-2 px-2">0.1–0.25</th>
-                <th className="text-center py-2 px-2">0.25–0.5</th>
-                <th className="text-center py-2 px-2">0.5–0.75</th>
-                <th className="text-center py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("bucket75plus")}>
-                  &gt;0.75 <SortIcon columnKey="bucket75plus" />
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sortedSections.map((s) => {
-                const pct = (n: number) => s.exerciseCount > 0 ? Math.round((n / s.exerciseCount) * 100) : 0;
-                return (
-                <tr
-                  key={s.grammarSectionId}
-                  className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => fetchHeatmap(s)}
-                >
-                  <td className="py-2 px-2 font-medium">{s.sectionName}</td>
-                  <td className="py-2 px-2">
-                    <Badge variant="outline" className="text-xs">{s.level}</Badge>
-                  </td>
-                  <td className="text-right py-2 px-2">{s.exerciseCount}</td>
-                  <td className="text-right py-2 px-2">{s.meanSimilarity.toFixed(3)}</td>
-                  <td className="text-right py-2 px-2">{s.medianMaxSim.toFixed(3)}</td>
-                  <td className="text-right py-2 px-2">
-                    <Badge variant={getSimBadgeVariant(s.maxSimilarity)}>
-                      {s.maxSimilarity.toFixed(3)}
-                    </Badge>
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    {s.bucket0_10 > 0 ? (
-                      <span className="text-green-600 font-medium">{s.bucket0_10}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket0_10)}%)</span></span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    {s.bucket10_25 > 0 ? (
-                      <span className="text-green-600 font-medium">{s.bucket10_25}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket10_25)}%)</span></span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    {s.bucket25_50 > 0 ? (
-                      <span>{s.bucket25_50}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket25_50)}%)</span></span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    {s.bucket50_75 > 0 ? (
-                      <span className="text-orange-600 font-medium">{s.bucket50_75}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket50_75)}%)</span></span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                  <td className="text-center py-2 px-2">
-                    {s.bucket75plus > 0 ? (
-                      <span className="text-red-600 font-medium">{s.bucket75plus}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket75plus)}%)</span></span>
-                    ) : (
-                      <span className="text-muted-foreground">—</span>
-                    )}
-                  </td>
-                </tr>
-                );
-              })}
-            </tbody>
-          </table>
+        <div className="mb-5">
+          <h3 className="text-lg font-semibold">Section Overview</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            For each exercise, we compute its highest cosine similarity to any other exercise in the same section.
+            The distribution columns show how many exercises fall into each similarity range.
+            Click a row to explore the pairwise heatmap.
+          </p>
         </div>
+        <TooltipProvider delayDuration={200}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                {/* Column group headers */}
+                <tr className="border-b bg-muted/30">
+                  <th colSpan={3} className="text-left py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                    Grammar Section
+                  </th>
+                  <th colSpan={3} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1">
+                        Pairwise Similarity
+                        <Info className="h-3 w-3" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p>Cosine similarity across all exercise pairs in the section. Avg and Median summarize the overall distribution, Max shows the highest single pair.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th colSpan={5} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
+                    <Tooltip>
+                      <TooltipTrigger className="inline-flex items-center gap-1">
+                        Exercise Distribution by Max Neighbor Similarity
+                        <Info className="h-3 w-3" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p>Each exercise is placed into a bucket based on its highest similarity to any other exercise. Shows count/total (percentage). Green = unique, orange = moderately similar, red = near-duplicate.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </th>
+                </tr>
+                {/* Individual column headers */}
+                <tr className="border-b">
+                  <th className="text-left py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("sectionName")}>
+                    Section <SortIcon columnKey="sectionName" />
+                  </th>
+                  <th className="text-left py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("level")}>
+                    Level <SortIcon columnKey="level" />
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exerciseCount")}>
+                    <Tooltip>
+                      <TooltipTrigger>Exercises <SortIcon columnKey="exerciseCount" /></TooltipTrigger>
+                      <TooltipContent>Total active exercises in this section</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary border-l" onClick={() => handleSort("meanSimilarity")}>
+                    <Tooltip>
+                      <TooltipTrigger>Avg <SortIcon columnKey="meanSimilarity" /></TooltipTrigger>
+                      <TooltipContent>Mean pairwise similarity across all exercise pairs</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianMaxSim")}>
+                    <Tooltip>
+                      <TooltipTrigger>Median <SortIcon columnKey="medianMaxSim" /></TooltipTrigger>
+                      <TooltipContent>Median of per-exercise max neighbor similarity</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
+                    <Tooltip>
+                      <TooltipTrigger>Max <SortIcon columnKey="maxSimilarity" /></TooltipTrigger>
+                      <TooltipContent>Highest similarity between any two exercises</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-center py-2 px-2 border-l">
+                    <Tooltip>
+                      <TooltipTrigger className="text-green-700 dark:text-green-400">0–0.1</TooltipTrigger>
+                      <TooltipContent>Very unique — almost no overlap with other exercises</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-center py-2 px-2">
+                    <Tooltip>
+                      <TooltipTrigger className="text-green-600 dark:text-green-400">0.1–0.25</TooltipTrigger>
+                      <TooltipContent>Mostly unique — low similarity to nearest neighbor</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-center py-2 px-2">
+                    <Tooltip>
+                      <TooltipTrigger>0.25–0.5</TooltipTrigger>
+                      <TooltipContent>Moderate — some shared structure or vocabulary</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-center py-2 px-2">
+                    <Tooltip>
+                      <TooltipTrigger className="text-orange-600 dark:text-orange-400">0.5–0.75</TooltipTrigger>
+                      <TooltipContent>Similar — significant overlap, review recommended</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-center py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("bucket75plus")}>
+                    <Tooltip>
+                      <TooltipTrigger className="text-red-600 dark:text-red-400">&gt;0.75 <SortIcon columnKey="bucket75plus" /></TooltipTrigger>
+                      <TooltipContent>Near-duplicate — very high similarity, likely needs deduplication</TooltipContent>
+                    </Tooltip>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedSections.map((s) => {
+                  const pct = (n: number) => s.exerciseCount > 0 ? Math.round((n / s.exerciseCount) * 100) : 0;
+                  return (
+                  <tr
+                    key={s.grammarSectionId}
+                    className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => fetchHeatmap(s)}
+                  >
+                    <td className="py-2.5 px-2 font-medium">{s.sectionName}</td>
+                    <td className="py-2.5 px-2">
+                      <Badge variant="outline" className="text-xs">{s.level}</Badge>
+                    </td>
+                    <td className="text-right py-2.5 px-2 tabular-nums">{s.exerciseCount}</td>
+                    <td className="text-right py-2.5 px-2 tabular-nums border-l">{s.meanSimilarity.toFixed(3)}</td>
+                    <td className="text-right py-2.5 px-2 tabular-nums">{s.medianMaxSim.toFixed(3)}</td>
+                    <td className="text-right py-2.5 px-2">
+                      <Badge variant={getSimBadgeVariant(s.maxSimilarity)} className="tabular-nums">
+                        {s.maxSimilarity.toFixed(3)}
+                      </Badge>
+                    </td>
+                    <td className="text-center py-2.5 px-2 border-l">
+                      {s.bucket0_10 > 0 ? (
+                        <span className="text-green-700 dark:text-green-400">
+                          <span className="font-medium">{s.bucket0_10}</span>
+                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
+                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket0_10)}%)</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
+                    </td>
+                    <td className="text-center py-2.5 px-2">
+                      {s.bucket10_25 > 0 ? (
+                        <span className="text-green-600 dark:text-green-400">
+                          <span className="font-medium">{s.bucket10_25}</span>
+                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
+                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket10_25)}%)</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
+                    </td>
+                    <td className="text-center py-2.5 px-2">
+                      {s.bucket25_50 > 0 ? (
+                        <span>
+                          <span className="font-medium">{s.bucket25_50}</span>
+                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
+                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket25_50)}%)</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
+                    </td>
+                    <td className="text-center py-2.5 px-2">
+                      {s.bucket50_75 > 0 ? (
+                        <span className="text-orange-600 dark:text-orange-400">
+                          <span className="font-medium">{s.bucket50_75}</span>
+                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
+                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket50_75)}%)</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
+                    </td>
+                    <td className="text-center py-2.5 px-2">
+                      {s.bucket75plus > 0 ? (
+                        <span className="text-red-600 dark:text-red-400">
+                          <span className="font-medium">{s.bucket75plus}</span>
+                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
+                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket75plus)}%)</span>
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
+                    </td>
+                  </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TooltipProvider>
       </Card>
 
       {/* Heatmap + Neighbor Chart (shown when section is selected) */}
