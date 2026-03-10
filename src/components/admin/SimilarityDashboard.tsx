@@ -16,6 +16,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   BarChart,
   Bar,
   XAxis,
@@ -45,16 +52,16 @@ interface SectionSummary {
   sectionName: string;
   level: string;
   exerciseCount: number;
-  totalPairs: number;
-  meanSimilarity: number;
-  maxSimilarity: number;
-  minSimilarity: number;
-  medianAvgSim: number;
-  bucket0_10: number;
-  bucket10_25: number;
-  bucket25_50: number;
-  bucket50_75: number;
-  bucket75plus: number;
+  hasRunData: boolean;
+  meanSimilarity: number | null;
+  maxSimilarity: number | null;
+  minSimilarity: number | null;
+  medianAvgSim: number | null;
+  bucket0_10: number | null;
+  bucket10_25: number | null;
+  bucket25_50: number | null;
+  bucket50_75: number | null;
+  bucket75plus: number | null;
 }
 
 interface PairData {
@@ -143,7 +150,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const { t } = useTranslation();
 
   // Overview state
-  const [run, setRun] = useState<RunInfo | null>(null);
+  const [runs, setRuns] = useState<RunInfo[]>([]);
+  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [sections, setSections] = useState<SectionSummary[]>([]);
   const [loadingOverview, setLoadingOverview] = useState(true);
   const [sortKey, setSortKey] = useState<SortKey>("maxSimilarity");
@@ -168,17 +176,27 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     setTimeout(() => setCopiedId(null), 1500);
   };
 
+  // Selected run derived from state
+  const selectedRun = useMemo(
+    () => runs.find((r) => r.id === selectedRunId) || null,
+    [runs, selectedRunId]
+  );
+
   // Fetch overview on mount
   useEffect(() => {
     fetchOverview();
   }, []);
 
-  const fetchOverview = async () => {
+  const fetchOverview = async (runId?: string) => {
     setLoadingOverview(true);
     try {
-      const res = await fetch(`${apiBase}/admin-similarity-overview`);
+      const url = runId
+        ? `${apiBase}/admin-similarity-overview?run_id=${encodeURIComponent(runId)}`
+        : `${apiBase}/admin-similarity-overview`;
+      const res = await fetch(url);
       const data = await res.json();
-      setRun(data.run);
+      setRuns(data.runs || []);
+      setSelectedRunId(data.selectedRunId || null);
       setSections(data.sections || []);
     } catch (err) {
       console.error("Failed to fetch similarity overview:", err);
@@ -187,13 +205,18 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     }
   };
 
+  const handleRunChange = (runId: string) => {
+    setSelectedSection(null);
+    fetchOverview(runId);
+  };
+
   const fetchHeatmap = useCallback(async (section: SectionSummary) => {
-    if (!run) return;
+    if (!selectedRunId || !section.hasRunData) return;
     setLoadingHeatmap(true);
     setSelectedSection(section);
     try {
       const res = await fetch(
-        `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${run.id}`
+        `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${selectedRunId}`
       );
       const data = await res.json();
       setPairs(data.pairs || []);
@@ -203,15 +226,15 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     } finally {
       setLoadingHeatmap(false);
     }
-  }, [apiBase, run]);
+  }, [apiBase, selectedRunId]);
 
   const fetchPairDetail = useCallback(async (exerciseA: string, exerciseB: string) => {
-    if (!run) return;
+    if (!selectedRunId) return;
     setLoadingDetail(true);
     setDetailOpen(true);
     try {
       const res = await fetch(
-        `${apiBase}/admin-similarity-pair-detail?exercise_a=${encodeURIComponent(exerciseA)}&exercise_b=${encodeURIComponent(exerciseB)}&run_id=${run.id}`
+        `${apiBase}/admin-similarity-pair-detail?exercise_a=${encodeURIComponent(exerciseA)}&exercise_b=${encodeURIComponent(exerciseB)}&run_id=${selectedRunId}`
       );
       const data = await res.json();
       setPairDetail(data);
@@ -220,13 +243,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     } finally {
       setLoadingDetail(false);
     }
-  }, [apiBase, run]);
+  }, [apiBase, selectedRunId]);
 
   // Sorted sections
   const sortedSections = useMemo(() => {
     const sorted = [...sections].sort((a, b) => {
       const aVal = a[sortKey];
       const bVal = b[sortKey];
+      // Nulls always go last
+      if (aVal == null && bVal == null) return 0;
+      if (aVal == null) return 1;
+      if (bVal == null) return -1;
       if (typeof aVal === "string" && typeof bVal === "string") {
         return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
       }
@@ -293,6 +320,11 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
 
   const shortId = (id: string) => id.length > 8 ? `...${id.slice(-6)}` : id;
 
+  const formatRunLabel = (r: RunInfo) => {
+    const date = new Date(r.completedAt).toLocaleString("de-DE");
+    return `${date} — ${r.totalExercises} ex, ${r.totalPairs.toLocaleString()} pairs, ${r.durationSeconds.toFixed(1)}s`;
+  };
+
   if (loadingOverview) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -301,34 +333,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     );
   }
 
-  if (!run) {
-    return (
-      <Card className="p-8 text-center">
-        <p className="text-muted-foreground">{t("admin.similarity.noData", "No similarity analysis runs found. Run the analysis script first.")}</p>
-      </Card>
-    );
-  }
-
   return (
     <div className="space-y-6">
-      {/* Run Info Banner */}
-      <Card className="p-4 animate-fade-in">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <div className="flex items-center gap-3">
-            <Badge variant="default">{run.status}</Badge>
-            <span className="text-sm text-muted-foreground">
-              {new Date(run.completedAt).toLocaleString("de-DE")}
-            </span>
-          </div>
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <span>{run.totalExercises} exercises</span>
-            <span>{run.totalPairs.toLocaleString()} pairs</span>
-            <span>{run.durationSeconds.toFixed(1)}s</span>
-            <span>{sections.length} sections</span>
-          </div>
-        </div>
-      </Card>
-
       {/* Section Overview Table */}
       <Card className="p-6 animate-fade-in">
         <div className="mb-5">
@@ -338,6 +344,37 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
             The distribution columns show how many exercises fall into each similarity range.
             Click a row to explore the pairwise heatmap.
           </p>
+
+          {/* Run selector */}
+          <div className="mt-3 flex items-center gap-3 flex-wrap">
+            {runs.length > 0 ? (
+              <>
+                <span className="text-sm font-medium">Analysis run:</span>
+                <Select
+                  value={selectedRunId || ""}
+                  onValueChange={handleRunChange}
+                >
+                  <SelectTrigger className="w-auto min-w-[350px] h-8 text-xs">
+                    <SelectValue placeholder="Select a run..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {runs.map((r) => (
+                      <SelectItem key={r.id} value={r.id} className="text-xs">
+                        {formatRunLabel(r)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {selectedRun && (
+                  <Badge variant="default" className="text-xs">{selectedRun.status}</Badge>
+                )}
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">
+                {t("admin.similarity.noData", "No similarity analysis runs found. Run the analysis script first.")}
+              </p>
+            )}
+          </div>
         </div>
         <TooltipProvider delayDuration={200}>
           <div className="overflow-x-auto">
@@ -437,81 +474,64 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
               </thead>
               <tbody>
                 {sortedSections.map((s) => {
-                  const pct = (n: number) => s.exerciseCount > 0 ? Math.round((n / s.exerciseCount) * 100) : 0;
+                  const hasData = s.hasRunData;
+                  const exCount = hasData ? s.exerciseCount : s.exerciseCount;
+                  const pct = (n: number | null) => (n != null && exCount > 0) ? Math.round((n / exCount) * 100) : 0;
+
+                  const renderBucket = (val: number | null, colorClass: string) => {
+                    if (!hasData || val == null) return <span className="text-muted-foreground/50">—</span>;
+                    if (val === 0) return <span className="text-muted-foreground/50">—</span>;
+                    return (
+                      <span className={colorClass}>
+                        <span className="font-medium">{val}</span>
+                        <span className="text-xs text-muted-foreground">/{exCount}</span>
+                        <span className="text-xs text-muted-foreground ml-0.5">({pct(val)}%)</span>
+                      </span>
+                    );
+                  };
+
                   return (
-                  <tr
-                    key={s.grammarSectionId}
-                    className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
-                    onClick={() => fetchHeatmap(s)}
-                  >
-                    <td className="py-2.5 px-2 font-medium">{s.sectionName}</td>
-                    <td className="py-2.5 px-2">
-                      <Badge variant="outline" className="text-xs">{s.level}</Badge>
-                    </td>
-                    <td className="text-right py-2.5 px-2 tabular-nums">{s.exerciseCount}</td>
-                    <td className="text-right py-2.5 px-2 tabular-nums border-l">{s.meanSimilarity.toFixed(3)}</td>
-                    <td className="text-right py-2.5 px-2 tabular-nums">{s.medianAvgSim.toFixed(3)}</td>
-                    <td className="text-right py-2.5 px-2">
-                      <Badge variant={getSimBadgeVariant(s.maxSimilarity)} className="tabular-nums">
-                        {s.maxSimilarity.toFixed(3)}
-                      </Badge>
-                    </td>
-                    <td className="text-center py-2.5 px-2 border-l">
-                      {s.bucket0_10 > 0 ? (
-                        <span className="text-green-700 dark:text-green-400">
-                          <span className="font-medium">{s.bucket0_10}</span>
-                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
-                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket0_10)}%)</span>
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </td>
-                    <td className="text-center py-2.5 px-2">
-                      {s.bucket10_25 > 0 ? (
-                        <span className="text-green-600 dark:text-green-400">
-                          <span className="font-medium">{s.bucket10_25}</span>
-                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
-                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket10_25)}%)</span>
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </td>
-                    <td className="text-center py-2.5 px-2">
-                      {s.bucket25_50 > 0 ? (
-                        <span>
-                          <span className="font-medium">{s.bucket25_50}</span>
-                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
-                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket25_50)}%)</span>
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </td>
-                    <td className="text-center py-2.5 px-2">
-                      {s.bucket50_75 > 0 ? (
-                        <span className="text-orange-600 dark:text-orange-400">
-                          <span className="font-medium">{s.bucket50_75}</span>
-                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
-                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket50_75)}%)</span>
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </td>
-                    <td className="text-center py-2.5 px-2">
-                      {s.bucket75plus > 0 ? (
-                        <span className="text-red-600 dark:text-red-400">
-                          <span className="font-medium">{s.bucket75plus}</span>
-                          <span className="text-xs text-muted-foreground">/{s.exerciseCount}</span>
-                          <span className="text-xs text-muted-foreground ml-0.5">({pct(s.bucket75plus)}%)</span>
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground/50">—</span>
-                      )}
-                    </td>
-                  </tr>
+                    <tr
+                      key={s.grammarSectionId}
+                      className={`border-b transition-colors ${hasData ? "hover:bg-muted/50 cursor-pointer" : "opacity-60"}`}
+                      onClick={() => hasData && fetchHeatmap(s)}
+                    >
+                      <td className="py-2.5 px-2 font-medium">{s.sectionName}</td>
+                      <td className="py-2.5 px-2">
+                        <Badge variant="outline" className="text-xs">{s.level}</Badge>
+                      </td>
+                      <td className="text-right py-2.5 px-2 tabular-nums">{s.exerciseCount}</td>
+                      <td className="text-right py-2.5 px-2 tabular-nums border-l">
+                        {hasData && s.meanSimilarity != null ? s.meanSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
+                      </td>
+                      <td className="text-right py-2.5 px-2 tabular-nums">
+                        {hasData && s.medianAvgSim != null ? s.medianAvgSim.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
+                      </td>
+                      <td className="text-right py-2.5 px-2">
+                        {hasData && s.maxSimilarity != null ? (
+                          <Badge variant={getSimBadgeVariant(s.maxSimilarity)} className="tabular-nums">
+                            {s.maxSimilarity.toFixed(3)}
+                          </Badge>
+                        ) : (
+                          <span className="text-muted-foreground/50">—</span>
+                        )}
+                      </td>
+                      <td className="text-center py-2.5 px-2 border-l">
+                        {renderBucket(s.bucket0_10, "text-green-700 dark:text-green-400")}
+                      </td>
+                      <td className="text-center py-2.5 px-2">
+                        {renderBucket(s.bucket10_25, "text-green-600 dark:text-green-400")}
+                      </td>
+                      <td className="text-center py-2.5 px-2">
+                        {renderBucket(s.bucket25_50, "")}
+                      </td>
+                      <td className="text-center py-2.5 px-2">
+                        {renderBucket(s.bucket50_75, "text-orange-600 dark:text-orange-400")}
+                      </td>
+                      <td className="text-center py-2.5 px-2">
+                        {renderBucket(s.bucket75plus, "text-red-600 dark:text-red-400")}
+                      </td>
+                    </tr>
                   );
                 })}
               </tbody>
