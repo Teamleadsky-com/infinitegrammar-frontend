@@ -315,6 +315,28 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       .sort((a, b) => b.maxSimilarity - a.maxSimilarity);
   }, [pairs]);
 
+  // Neighbor proximity strip data: for each exercise, similarity to next 1-5 exercises
+  const PROXIMITY_RANGE = 5;
+  const proximityData = useMemo(() => {
+    const { exerciseIds, matrix } = heatmapMatrix;
+    if (exerciseIds.length === 0) return [];
+
+    return exerciseIds.map((id, idx) => {
+      const neighbors: Array<{ distance: number; targetId: string; score: number | null }> = [];
+      for (let d = 1; d <= PROXIMITY_RANGE; d++) {
+        const targetIdx = idx + d;
+        if (targetIdx < exerciseIds.length) {
+          const targetId = exerciseIds[targetIdx];
+          const score = matrix[id]?.[targetId] ?? null;
+          neighbors.push({ distance: d, targetId, score });
+        } else {
+          neighbors.push({ distance: d, targetId: "", score: null });
+        }
+      }
+      return { exerciseId: id, orderNumber: featureMap[id]?.orderNumber, neighbors };
+    });
+  }, [heatmapMatrix, featureMap]);
+
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
       setSortAsc(!sortAsc);
@@ -670,6 +692,83 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       ))}
                     </div>
                     <span>High</span>
+                  </div>
+                </Card>
+              )}
+
+              {/* Neighbor Proximity Strip */}
+              {proximityData.length > 0 && (
+                <Card className="p-6">
+                  <h4 className="font-semibold mb-1">Sequential Neighbor Similarity</h4>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    For each exercise, shows similarity to the next 1–5 exercises in sequence.
+                    Orange/red in the +1 column means consecutive exercises feel repetitive.
+                  </p>
+                  <div className="overflow-x-auto">
+                    <TooltipProvider>
+                      <table className="border-collapse text-xs">
+                        <thead>
+                          <tr>
+                            <th className="py-1.5 px-2 text-left font-medium text-muted-foreground">Exercise</th>
+                            {Array.from({ length: PROXIMITY_RANGE }, (_, i) => (
+                              <th key={i} className="py-1.5 px-3 text-center font-medium text-muted-foreground">
+                                +{i + 1}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {proximityData.map((row) => (
+                            <tr key={row.exerciseId} className="border-t border-muted/30">
+                              <td className="py-1 px-2 font-medium whitespace-nowrap">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span
+                                      className="cursor-pointer hover:text-primary transition-colors"
+                                      onClick={() => copyToClipboard(row.exerciseId)}
+                                    >
+                                      {copiedId === row.exerciseId
+                                        ? <Check className="h-3 w-3 inline text-green-500" />
+                                        : heatmapLabel(row.exerciseId)}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left">
+                                    <p className="font-mono">{row.exerciseId}<br/>Click to copy</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </td>
+                              {row.neighbors.map((n) => (
+                                <td key={n.distance} className="p-0">
+                                  {n.score != null ? (
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <div
+                                          className="w-full h-7 flex items-center justify-center cursor-pointer hover:ring-1 hover:ring-primary transition-all"
+                                          style={{ backgroundColor: getHeatmapBg(n.score) }}
+                                          onClick={() => n.targetId && fetchPairDetail(row.exerciseId, n.targetId)}
+                                        >
+                                          <span className="tabular-nums" style={{ color: n.score >= 0.5 ? "white" : undefined }}>
+                                            {n.score.toFixed(2)}
+                                          </span>
+                                        </div>
+                                      </TooltipTrigger>
+                                      <TooltipContent>
+                                        <p>
+                                          {heatmapLabel(row.exerciseId)} → {heatmapLabel(n.targetId)}<br/>
+                                          Similarity: {(n.score * 100).toFixed(1)}%
+                                        </p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  ) : (
+                                    <div className="w-full h-7 bg-muted/20" />
+                                  )}
+                                </td>
+                              ))}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </TooltipProvider>
                   </div>
                 </Card>
               )}
