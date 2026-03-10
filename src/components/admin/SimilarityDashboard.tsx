@@ -49,7 +49,7 @@ interface SectionSummary {
   meanSimilarity: number;
   maxSimilarity: number;
   minSimilarity: number;
-  medianMaxSim: number;
+  medianAvgSim: number;
   bucket0_10: number;
   bucket10_25: number;
   bucket25_50: number;
@@ -86,7 +86,7 @@ interface PairDetail {
   similarityScore: number | null;
 }
 
-type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianMaxSim" | "maxSimilarity" | "bucket75plus";
+type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianAvgSim" | "maxSimilarity" | "bucket75plus";
 
 /** Replace [1], [2] etc. with correct answers as highlighted spans */
 const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
@@ -334,7 +334,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
         <div className="mb-5">
           <h3 className="text-lg font-semibold">Section Overview</h3>
           <p className="text-sm text-muted-foreground mt-1">
-            For each exercise, we compute its highest cosine similarity to any other exercise in the same section.
+            For each exercise, we compute its average cosine similarity to all other exercises in the same section.
             The distribution columns show how many exercises fall into each similarity range.
             Click a row to explore the pairwise heatmap.
           </p>
@@ -362,11 +362,11 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   <th colSpan={5} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
                     <Tooltip>
                       <TooltipTrigger className="inline-flex items-center gap-1">
-                        Exercise Distribution by Max Neighbor Similarity
+                        Exercise Distribution by Avg Neighbor Similarity
                         <Info className="h-3 w-3" />
                       </TooltipTrigger>
                       <TooltipContent side="top" className="max-w-xs">
-                        <p>Each exercise is placed into a bucket based on its highest similarity to any other exercise. Shows count/total (percentage). Green = unique, orange = moderately similar, red = near-duplicate.</p>
+                        <p>Each exercise is placed into a bucket based on its average similarity to all other exercises. Shows count/total (percentage). Green = unique, orange = moderately similar, red = near-duplicate.</p>
                       </TooltipContent>
                     </Tooltip>
                   </th>
@@ -391,10 +391,10 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       <TooltipContent>Mean pairwise similarity across all exercise pairs</TooltipContent>
                     </Tooltip>
                   </th>
-                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianMaxSim")}>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianAvgSim")}>
                     <Tooltip>
-                      <TooltipTrigger>Median <SortIcon columnKey="medianMaxSim" /></TooltipTrigger>
-                      <TooltipContent>Median of per-exercise max neighbor similarity</TooltipContent>
+                      <TooltipTrigger>Median <SortIcon columnKey="medianAvgSim" /></TooltipTrigger>
+                      <TooltipContent>Median of per-exercise average neighbor similarity</TooltipContent>
                     </Tooltip>
                   </th>
                   <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
@@ -450,7 +450,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     </td>
                     <td className="text-right py-2.5 px-2 tabular-nums">{s.exerciseCount}</td>
                     <td className="text-right py-2.5 px-2 tabular-nums border-l">{s.meanSimilarity.toFixed(3)}</td>
-                    <td className="text-right py-2.5 px-2 tabular-nums">{s.medianMaxSim.toFixed(3)}</td>
+                    <td className="text-right py-2.5 px-2 tabular-nums">{s.medianAvgSim.toFixed(3)}</td>
                     <td className="text-right py-2.5 px-2">
                       <Badge variant={getSimBadgeVariant(s.maxSimilarity)} className="tabular-nums">
                         {s.maxSimilarity.toFixed(3)}

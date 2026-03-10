@@ -44,34 +44,37 @@ export const handler: Handler = async (event) => {
         FROM exercise_similarity_features
         WHERE run_id = ${run.id}::uuid
       ),
-      -- Per-exercise max similarity to any neighbor
-      exercise_max_sim AS (
+      -- Per-exercise average similarity to all neighbors
+      exercise_avg_sim AS (
         SELECT
           se.grammar_section_id,
           se.exercise_id,
-          GREATEST(
-            COALESCE(MAX(ep_a.cosine_similarity), 0),
-            COALESCE(MAX(ep_b.cosine_similarity), 0)
-          ) AS max_neighbor_sim
+          COALESCE(
+            (
+              SELECT AVG(sub.cosine_similarity)
+              FROM (
+                SELECT ep.cosine_similarity FROM exercise_pairwise_similarity ep
+                WHERE ep.run_id = ${run.id}::uuid AND ep.exercise_a_id = se.exercise_id
+                UNION ALL
+                SELECT ep.cosine_similarity FROM exercise_pairwise_similarity ep
+                WHERE ep.run_id = ${run.id}::uuid AND ep.exercise_b_id = se.exercise_id
+              ) sub
+            ), 0
+          ) AS avg_neighbor_sim
         FROM section_exercises se
-        LEFT JOIN exercise_pairwise_similarity ep_a
-          ON ep_a.run_id = ${run.id}::uuid AND ep_a.exercise_a_id = se.exercise_id
-        LEFT JOIN exercise_pairwise_similarity ep_b
-          ON ep_b.run_id = ${run.id}::uuid AND ep_b.exercise_b_id = se.exercise_id
-        GROUP BY se.grammar_section_id, se.exercise_id
       ),
-      -- Bucket exercises by max-neighbor-similarity ranges
+      -- Bucket exercises by avg-neighbor-similarity ranges
       exercise_buckets AS (
         SELECT
           grammar_section_id,
           COUNT(*) AS total,
-          COUNT(*) FILTER (WHERE max_neighbor_sim < 0.1) AS bucket_0_10,
-          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.1 AND max_neighbor_sim < 0.25) AS bucket_10_25,
-          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.25 AND max_neighbor_sim < 0.5) AS bucket_25_50,
-          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.5 AND max_neighbor_sim < 0.75) AS bucket_50_75,
-          COUNT(*) FILTER (WHERE max_neighbor_sim >= 0.75) AS bucket_75_plus,
-          PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY max_neighbor_sim) AS median_max_sim
-        FROM exercise_max_sim
+          COUNT(*) FILTER (WHERE avg_neighbor_sim < 0.1) AS bucket_0_10,
+          COUNT(*) FILTER (WHERE avg_neighbor_sim >= 0.1 AND avg_neighbor_sim < 0.25) AS bucket_10_25,
+          COUNT(*) FILTER (WHERE avg_neighbor_sim >= 0.25 AND avg_neighbor_sim < 0.5) AS bucket_25_50,
+          COUNT(*) FILTER (WHERE avg_neighbor_sim >= 0.5 AND avg_neighbor_sim < 0.75) AS bucket_50_75,
+          COUNT(*) FILTER (WHERE avg_neighbor_sim >= 0.75) AS bucket_75_plus,
+          PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY avg_neighbor_sim) AS median_avg_sim
+        FROM exercise_avg_sim
         GROUP BY grammar_section_id
       )
       SELECT
@@ -82,7 +85,7 @@ export const handler: Handler = async (event) => {
         ss.mean_similarity,
         ss.max_similarity,
         ss.min_similarity,
-        COALESCE(eb.median_max_sim, 0) AS median_max_sim,
+        COALESCE(eb.median_avg_sim, 0) AS median_avg_sim,
         COALESCE(eb.bucket_0_10, 0) AS bucket_0_10,
         COALESCE(eb.bucket_10_25, 0) AS bucket_10_25,
         COALESCE(eb.bucket_25_50, 0) AS bucket_25_50,
@@ -115,7 +118,7 @@ export const handler: Handler = async (event) => {
         meanSimilarity: parseFloat(row.mean_similarity),
         maxSimilarity: parseFloat(row.max_similarity),
         minSimilarity: parseFloat(row.min_similarity),
-        medianMaxSim: parseFloat(row.median_max_sim),
+        medianAvgSim: parseFloat(row.median_avg_sim),
         bucket0_10: parseInt(row.bucket_0_10, 10),
         bucket10_25: parseInt(row.bucket_10_25, 10),
         bucket25_50: parseInt(row.bucket_25_50, 10),
