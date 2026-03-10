@@ -37,14 +37,12 @@ interface SimilarityDashboardProps {
   apiBase: string;
 }
 
-interface RunInfo {
+interface SectionRunInfo {
   id: string;
-  createdAt: string;
   completedAt: string;
   totalExercises: number;
   totalPairs: number;
   durationSeconds: number;
-  status: string;
 }
 
 interface SectionSummary {
@@ -53,6 +51,9 @@ interface SectionSummary {
   level: string;
   exerciseCount: number;
   hasRunData: boolean;
+  latestRunId: string | null;
+  latestRunDate: string | null;
+  availableRuns: SectionRunInfo[];
   meanSimilarity: number | null;
   maxSimilarity: number | null;
   minSimilarity: number | null;
@@ -154,12 +155,12 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const heatmapRef = useRef<HTMLDivElement>(null);
 
   // Overview state
-  const [runs, setRuns] = useState<RunInfo[]>([]);
-  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [sections, setSections] = useState<SectionSummary[]>([]);
   const [loadingOverview, setLoadingOverview] = useState(true);
   const [sortKey, setSortKey] = useState<SortKey>("maxSimilarity");
   const [sortAsc, setSortAsc] = useState(false);
+  // Per-section run overrides (when user picks a non-default run)
+  const [sectionRunOverrides, setSectionRunOverrides] = useState<Record<string, string>>({});
 
   // Heatmap state
   const [selectedSection, setSelectedSection] = useState<SectionSummary | null>(null);
@@ -180,27 +181,16 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     setTimeout(() => setCopiedId(null), 1500);
   };
 
-  // Selected run derived from state
-  const selectedRun = useMemo(
-    () => runs.find((r) => r.id === selectedRunId) || null,
-    [runs, selectedRunId]
-  );
-
   // Fetch overview on mount
   useEffect(() => {
     fetchOverview();
   }, []);
 
-  const fetchOverview = async (runId?: string) => {
+  const fetchOverview = async () => {
     setLoadingOverview(true);
     try {
-      const url = runId
-        ? `${apiBase}/admin-similarity-overview?run_id=${encodeURIComponent(runId)}`
-        : `${apiBase}/admin-similarity-overview`;
-      const res = await fetch(url);
+      const res = await fetch(`${apiBase}/admin-similarity-overview`);
       const data = await res.json();
-      setRuns(data.runs || []);
-      setSelectedRunId(data.selectedRunId || null);
       setSections(data.sections || []);
     } catch (err) {
       console.error("Failed to fetch similarity overview:", err);
@@ -209,18 +199,54 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     }
   };
 
-  const handleRunChange = (runId: string) => {
-    setSelectedSection(null);
-    fetchOverview(runId);
+  /** Get the active run_id for a section (override or latest) */
+  const getActiveRunId = (section: SectionSummary): string | null => {
+    return sectionRunOverrides[section.grammarSectionId] || section.latestRunId;
   };
 
-  const fetchHeatmap = useCallback(async (section: SectionSummary) => {
-    if (!selectedRunId || !section.hasRunData) return;
+  /** Handle per-section run change from the dropdown */
+  const handleSectionRunChange = async (sectionId: string, runId: string) => {
+    setSectionRunOverrides((prev) => ({ ...prev, [sectionId]: runId }));
+    // Fetch updated stats for this section+run
+    try {
+      const res = await fetch(
+        `${apiBase}/admin-similarity-section-stats?section_id=${encodeURIComponent(sectionId)}&run_id=${encodeURIComponent(runId)}`
+      );
+      const data = await res.json();
+      if (data.data) {
+        setSections((prev) =>
+          prev.map((s) =>
+            s.grammarSectionId === sectionId
+              ? {
+                  ...s,
+                  hasRunData: true,
+                  meanSimilarity: data.data.meanSimilarity,
+                  maxSimilarity: data.data.maxSimilarity,
+                  minSimilarity: data.data.minSimilarity,
+                  medianAvgSim: data.data.medianAvgSim,
+                  bucket0_10: data.data.bucket0_10,
+                  bucket10_25: data.data.bucket10_25,
+                  bucket25_50: data.data.bucket25_50,
+                  bucket50_75: data.data.bucket50_75,
+                  bucket75plus: data.data.bucket75plus,
+                }
+              : s
+          )
+        );
+      }
+    } catch (err) {
+      console.error("Failed to fetch section stats:", err);
+    }
+  };
+
+  const fetchHeatmap = useCallback(async (section: SectionSummary, runIdOverride?: string) => {
+    const runId = runIdOverride || getActiveRunId(section);
+    if (!runId || !section.hasRunData) return;
     setLoadingHeatmap(true);
     setSelectedSection(section);
     try {
       const res = await fetch(
-        `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${selectedRunId}`
+        `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${runId}`
       );
       const data = await res.json();
       setPairs(data.pairs || []);
@@ -231,15 +257,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       setLoadingHeatmap(false);
       setTimeout(() => heatmapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     }
-  }, [apiBase, selectedRunId]);
+  }, [apiBase, sectionRunOverrides]);
 
   const fetchPairDetail = useCallback(async (exerciseA: string, exerciseB: string) => {
-    if (!selectedRunId) return;
+    if (!selectedSection) return;
+    const runId = getActiveRunId(selectedSection);
+    if (!runId) return;
     setLoadingDetail(true);
     setDetailOpen(true);
     try {
       const res = await fetch(
-        `${apiBase}/admin-similarity-pair-detail?exercise_a=${encodeURIComponent(exerciseA)}&exercise_b=${encodeURIComponent(exerciseB)}&run_id=${selectedRunId}`
+        `${apiBase}/admin-similarity-pair-detail?exercise_a=${encodeURIComponent(exerciseA)}&exercise_b=${encodeURIComponent(exerciseB)}&run_id=${runId}`
       );
       const data = await res.json();
       setPairDetail(data);
@@ -248,7 +276,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     } finally {
       setLoadingDetail(false);
     }
-  }, [apiBase, selectedRunId]);
+  }, [apiBase, selectedSection, sectionRunOverrides]);
 
   // Sorted sections
   const sortedSections = useMemo(() => {
@@ -360,9 +388,13 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     return order != null ? `#${order} ${idPart}` : idPart;
   };
 
-  const formatRunLabel = (r: RunInfo) => {
+  const formatRunLabel = (r: SectionRunInfo) => {
     const date = new Date(r.completedAt).toLocaleString("de-DE");
     return `${date} — ${r.totalExercises} ex, ${r.totalPairs.toLocaleString()} pairs, ${r.durationSeconds.toFixed(1)}s`;
+  };
+
+  const formatRunDate = (r: SectionRunInfo) => {
+    return new Date(r.completedAt).toLocaleDateString("de-DE");
   };
 
   if (loadingOverview) {
@@ -382,39 +414,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
           <p className="text-sm text-muted-foreground mt-1">
             For each exercise, we compute its average cosine similarity to all other exercises in the same section.
             The distribution columns show how many exercises fall into each similarity range.
-            Click a row to explore the pairwise heatmap.
+            Each section independently uses its latest analysis run. Click a row to explore the pairwise heatmap.
           </p>
-
-          {/* Run selector */}
-          <div className="mt-3 flex items-center gap-3 flex-wrap">
-            {runs.length > 0 ? (
-              <>
-                <span className="text-sm font-medium">Analysis run:</span>
-                <Select
-                  value={selectedRunId || undefined}
-                  onValueChange={handleRunChange}
-                >
-                  <SelectTrigger className="w-auto min-w-[350px] h-8 text-xs">
-                    <SelectValue placeholder="Select a run..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {runs.map((r) => (
-                      <SelectItem key={r.id} value={r.id} className="text-xs">
-                        {formatRunLabel(r)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedRun && (
-                  <Badge variant="default" className="text-xs">{selectedRun.status}</Badge>
-                )}
-              </>
-            ) : (
-              <p className="text-sm text-muted-foreground italic">
-                {t("admin.similarity.noData", "No similarity analysis runs found. Run the analysis script first.")}
-              </p>
-            )}
-          </div>
         </div>
         <TooltipProvider delayDuration={200}>
           <div className="overflow-x-auto">
@@ -422,7 +423,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
               <thead>
                 {/* Column group headers */}
                 <tr className="border-b bg-muted/30">
-                  <th colSpan={3} className="text-left py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                  <th colSpan={4} className="text-left py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Grammar Section
                   </th>
                   <th colSpan={3} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
@@ -460,6 +461,12 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     <Tooltip>
                       <TooltipTrigger>Exercises <SortIcon columnKey="exerciseCount" /></TooltipTrigger>
                       <TooltipContent>Total active exercises in this section</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-left py-2 px-2">
+                    <Tooltip>
+                      <TooltipTrigger>Run</TooltipTrigger>
+                      <TooltipContent>Analysis run used for this section's data. Switch to view different runs.</TooltipContent>
                     </Tooltip>
                   </th>
                   <th className="text-right py-2 px-2 cursor-pointer hover:text-primary border-l" onClick={() => handleSort("meanSimilarity")}>
@@ -541,6 +548,27 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                         <Badge variant="outline" className="text-xs">{s.level}</Badge>
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums">{s.exerciseCount}</td>
+                      <td className="py-1 px-2" onClick={(e) => e.stopPropagation()}>
+                        {s.availableRuns.length > 0 ? (
+                          <Select
+                            value={sectionRunOverrides[s.grammarSectionId] || s.latestRunId || undefined}
+                            onValueChange={(runId) => handleSectionRunChange(s.grammarSectionId, runId)}
+                          >
+                            <SelectTrigger className="h-7 w-auto min-w-[90px] text-xs">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {s.availableRuns.map((r) => (
+                                <SelectItem key={r.id} value={r.id} className="text-xs">
+                                  {formatRunLabel(r)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        ) : (
+                          <span className="text-muted-foreground/50 text-xs">—</span>
+                        )}
+                      </td>
                       <td className="text-right py-2.5 px-2 tabular-nums border-l">
                         {hasData && s.meanSimilarity != null ? s.meanSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
                       </td>
@@ -583,7 +611,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       {/* Heatmap + Neighbor Chart (shown when section is selected) */}
       {selectedSection && (
         <div className="space-y-6 animate-fade-in" ref={heatmapRef}>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <Button variant="ghost" size="sm" onClick={() => {
               setSelectedSection(null);
               setTimeout(() => sectionTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
@@ -593,6 +621,26 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
             <h3 className="text-lg font-semibold">
               {selectedSection.sectionName} ({selectedSection.level})
             </h3>
+            {selectedSection.availableRuns.length > 1 && (
+              <Select
+                value={getActiveRunId(selectedSection) || undefined}
+                onValueChange={(runId) => {
+                  handleSectionRunChange(selectedSection.grammarSectionId, runId);
+                  fetchHeatmap(selectedSection, runId);
+                }}
+              >
+                <SelectTrigger className="h-8 w-auto min-w-[300px] text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {selectedSection.availableRuns.map((r) => (
+                    <SelectItem key={r.id} value={r.id} className="text-xs">
+                      {formatRunLabel(r)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           </div>
 
           {loadingHeatmap ? (
