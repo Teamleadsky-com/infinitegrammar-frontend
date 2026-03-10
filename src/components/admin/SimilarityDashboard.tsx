@@ -267,6 +267,13 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     return sorted;
   }, [sections, sortKey, sortAsc]);
 
+  // Feature lookup for labels
+  const featureMap = useMemo(() => {
+    const map: Record<string, FeatureData> = {};
+    for (const f of features) map[f.exerciseId] = f;
+    return map;
+  }, [features]);
+
   // Build heatmap matrix
   const heatmapMatrix = useMemo(() => {
     if (pairs.length === 0) return { exerciseIds: [], matrix: {} as Record<string, Record<string, number>> };
@@ -307,13 +314,6 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       .map(([id, score]) => ({ exerciseId: id, maxSimilarity: score }))
       .sort((a, b) => b.maxSimilarity - a.maxSimilarity);
   }, [pairs]);
-
-  // Feature lookup for labels
-  const featureMap = useMemo(() => {
-    const map: Record<string, FeatureData> = {};
-    for (const f of features) map[f.exerciseId] = f;
-    return map;
-  }, [features]);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -369,7 +369,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
               <>
                 <span className="text-sm font-medium">Analysis run:</span>
                 <Select
-                  value={selectedRunId || ""}
+                  value={selectedRunId || undefined}
                   onValueChange={handleRunChange}
                 >
                   <SelectTrigger className="w-auto min-w-[350px] h-8 text-xs">
