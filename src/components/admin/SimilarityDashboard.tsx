@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -149,6 +149,10 @@ const getHeatmapBg = (score: number): string => {
 export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const { t } = useTranslation();
 
+  // Scroll refs
+  const sectionTableRef = useRef<HTMLDivElement>(null);
+  const heatmapRef = useRef<HTMLDivElement>(null);
+
   // Overview state
   const [runs, setRuns] = useState<RunInfo[]>([]);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
@@ -225,6 +229,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       console.error("Failed to fetch heatmap:", err);
     } finally {
       setLoadingHeatmap(false);
+      setTimeout(() => heatmapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
     }
   }, [apiBase, selectedRunId]);
 
@@ -349,7 +354,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   return (
     <div className="space-y-6">
       {/* Section Overview Table */}
-      <Card className="p-6 animate-fade-in">
+      <Card className="p-6 animate-fade-in" ref={sectionTableRef}>
         <div className="mb-5">
           <h3 className="text-lg font-semibold">Section Overview</h3>
           <p className="text-sm text-muted-foreground mt-1">
@@ -555,9 +560,12 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
 
       {/* Heatmap + Neighbor Chart (shown when section is selected) */}
       {selectedSection && (
-        <div className="space-y-6 animate-fade-in">
+        <div className="space-y-6 animate-fade-in" ref={heatmapRef}>
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => setSelectedSection(null)}>
+            <Button variant="ghost" size="sm" onClick={() => {
+              setSelectedSection(null);
+              setTimeout(() => sectionTableRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
+            }}>
               <ArrowLeft className="h-4 w-4 mr-1" /> Back
             </Button>
             <h3 className="text-lg font-semibold">
@@ -688,16 +696,22 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                           type="category"
                           dataKey="exerciseId"
                           width={75}
-                          tick={{ fontSize: 10 }}
-                          tickFormatter={(v) => v.length > 10 ? `...${v.slice(-8)}` : v}
+                          tick={{ fontSize: 10, cursor: "pointer" }}
+                          tickFormatter={(v) => {
+                            const order = featureMap[v]?.orderNumber;
+                            const idPart = v.length > 10 ? `...${v.slice(-6)}` : v;
+                            return order != null ? `#${order} ${idPart}` : idPart;
+                          }}
+                          onClick={(_e: any, payload: any) => {
+                            if (payload?.value) copyToClipboard(payload.value);
+                          }}
                         />
                         <RechartsTooltip
                           formatter={(value: number) => [`${(value * 100).toFixed(2)}%`, "Max Similarity"]}
-                          labelFormatter={(label) => `Exercise: ${label}`}
+                          labelFormatter={(label) => `Exercise: ${label} — click label to copy ID`}
                         />
                         <Bar
                           dataKey="maxSimilarity"
-                          fill="#3b82f6"
                           cursor="pointer"
                           onClick={(data) => {
                             const ex = data.exerciseId;
@@ -707,6 +721,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                             if (topPair) {
                               fetchPairDetail(topPair.exerciseAId, topPair.exerciseBId);
                             }
+                          }}
+                          shape={(props: any) => {
+                            const { x, y, width, height, payload } = props;
+                            return (
+                              <rect
+                                x={x} y={y} width={width} height={height}
+                                fill={getHeatmapBg(payload.maxSimilarity)}
+                                stroke={getHeatmapBg(payload.maxSimilarity)}
+                                rx={2}
+                              />
+                            );
                           }}
                         />
                       </BarChart>
@@ -727,18 +752,33 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                         onClick={() => fetchPairDetail(p.exerciseAId, p.exerciseBId)}
                       >
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="font-mono text-xs">{shortId(p.exerciseAId)}</span>
+                          <span
+                            className="font-mono text-xs cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-0.5"
+                            onClick={(e) => { e.stopPropagation(); copyToClipboard(p.exerciseAId); }}
+                            title="Click to copy ID"
+                          >
+                            {copiedId === p.exerciseAId ? <Check className="h-3 w-3 text-green-500" /> : shortId(p.exerciseAId)}
+                          </span>
                           <span className="text-muted-foreground">↔</span>
-                          <span className="font-mono text-xs">{shortId(p.exerciseBId)}</span>
+                          <span
+                            className="font-mono text-xs cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-0.5"
+                            onClick={(e) => { e.stopPropagation(); copyToClipboard(p.exerciseBId); }}
+                            title="Click to copy ID"
+                          >
+                            {copiedId === p.exerciseBId ? <Check className="h-3 w-3 text-green-500" /> : shortId(p.exerciseBId)}
+                          </span>
                           {featureMap[p.exerciseAId]?.textPreview && (
                             <span className="text-xs text-muted-foreground truncate max-w-[200px]">
                               {featureMap[p.exerciseAId].textPreview}
                             </span>
                           )}
                         </div>
-                        <Badge variant={getSimBadgeVariant(p.similarityScore)}>
+                        <span
+                          className="text-xs font-medium px-2 py-0.5 rounded"
+                          style={{ backgroundColor: getHeatmapBg(p.similarityScore), color: p.similarityScore >= 0.5 ? "white" : undefined }}
+                        >
                           {(p.similarityScore * 100).toFixed(1)}%
-                        </Badge>
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -757,18 +797,33 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                         onClick={() => fetchPairDetail(p.exerciseAId, p.exerciseBId)}
                       >
                         <div className="flex items-center gap-2 text-sm">
-                          <span className="font-mono text-xs">{shortId(p.exerciseAId)}</span>
+                          <span
+                            className="font-mono text-xs cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-0.5"
+                            onClick={(e) => { e.stopPropagation(); copyToClipboard(p.exerciseAId); }}
+                            title="Click to copy ID"
+                          >
+                            {copiedId === p.exerciseAId ? <Check className="h-3 w-3 text-green-500" /> : shortId(p.exerciseAId)}
+                          </span>
                           <span className="text-muted-foreground">↔</span>
-                          <span className="font-mono text-xs">{shortId(p.exerciseBId)}</span>
+                          <span
+                            className="font-mono text-xs cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-0.5"
+                            onClick={(e) => { e.stopPropagation(); copyToClipboard(p.exerciseBId); }}
+                            title="Click to copy ID"
+                          >
+                            {copiedId === p.exerciseBId ? <Check className="h-3 w-3 text-green-500" /> : shortId(p.exerciseBId)}
+                          </span>
                           {featureMap[p.exerciseAId]?.textPreview && (
                             <span className="text-xs text-muted-foreground truncate max-w-[200px]">
                               {featureMap[p.exerciseAId].textPreview}
                             </span>
                           )}
                         </div>
-                        <Badge variant="default">
+                        <span
+                          className="text-xs font-medium px-2 py-0.5 rounded"
+                          style={{ backgroundColor: getHeatmapBg(p.similarityScore) }}
+                        >
                           {(p.similarityScore * 100).toFixed(1)}%
-                        </Badge>
+                        </span>
                       </div>
                     ))}
                   </div>
