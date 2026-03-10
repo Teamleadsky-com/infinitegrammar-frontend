@@ -49,15 +49,12 @@ interface SectionSummary {
   meanSimilarity: number;
   maxSimilarity: number;
   minSimilarity: number;
-  medianSimilarity: number;
-  p30: number;
-  p50: number;
-  p75: number;
-  p90: number;
-  exercisesAbove30: number;
-  exercisesAbove50: number;
-  exercisesAbove75: number;
-  exercisesAbove90: number;
+  medianMaxSim: number;
+  bucket0_10: number;
+  bucket10_25: number;
+  bucket25_50: number;
+  bucket50_75: number;
+  bucket75plus: number;
 }
 
 interface PairData {
@@ -89,7 +86,7 @@ interface PairDetail {
   similarityScore: number | null;
 }
 
-type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianSimilarity" | "maxSimilarity" | "exercisesAbove30" | "exercisesAbove50" | "exercisesAbove75" | "exercisesAbove90";
+type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianMaxSim" | "maxSimilarity" | "bucket75plus";
 
 /** Replace [1], [2] etc. with correct answers as highlighted spans */
 const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
@@ -337,33 +334,30 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   Level <SortIcon columnKey="level" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exerciseCount")}>
-                  Exercises <SortIcon columnKey="exerciseCount" />
+                  Total <SortIcon columnKey="exerciseCount" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("meanSimilarity")}>
                   Avg <SortIcon columnKey="meanSimilarity" />
                 </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianSimilarity")}>
-                  Median <SortIcon columnKey="medianSimilarity" />
+                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianMaxSim")}>
+                  Median <SortIcon columnKey="medianMaxSim" />
                 </th>
                 <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
                   Max <SortIcon columnKey="maxSimilarity" />
                 </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exercisesAbove30")}>
-                  &gt;30% <SortIcon columnKey="exercisesAbove30" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exercisesAbove50")}>
-                  &gt;50% <SortIcon columnKey="exercisesAbove50" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exercisesAbove75")}>
-                  &gt;75% <SortIcon columnKey="exercisesAbove75" />
-                </th>
-                <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("exercisesAbove90")}>
-                  &gt;90% <SortIcon columnKey="exercisesAbove90" />
+                <th className="text-center py-2 px-2">0–0.1</th>
+                <th className="text-center py-2 px-2">0.1–0.25</th>
+                <th className="text-center py-2 px-2">0.25–0.5</th>
+                <th className="text-center py-2 px-2">0.5–0.75</th>
+                <th className="text-center py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("bucket75plus")}>
+                  &gt;0.75 <SortIcon columnKey="bucket75plus" />
                 </th>
               </tr>
             </thead>
             <tbody>
-              {sortedSections.map((s) => (
+              {sortedSections.map((s) => {
+                const pct = (n: number) => s.exerciseCount > 0 ? Math.round((n / s.exerciseCount) * 100) : 0;
+                return (
                 <tr
                   key={s.grammarSectionId}
                   className="border-b hover:bg-muted/50 cursor-pointer transition-colors"
@@ -375,42 +369,50 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   </td>
                   <td className="text-right py-2 px-2">{s.exerciseCount}</td>
                   <td className="text-right py-2 px-2">{s.meanSimilarity.toFixed(3)}</td>
-                  <td className="text-right py-2 px-2">{s.medianSimilarity.toFixed(3)}</td>
+                  <td className="text-right py-2 px-2">{s.medianMaxSim.toFixed(3)}</td>
                   <td className="text-right py-2 px-2">
                     <Badge variant={getSimBadgeVariant(s.maxSimilarity)}>
                       {s.maxSimilarity.toFixed(3)}
                     </Badge>
                   </td>
-                  <td className="text-right py-2 px-2">
-                    <span className="text-muted-foreground">{s.exercisesAbove30}</span>
-                    <span className="text-xs text-muted-foreground ml-1">({s.p30.toFixed(2)})</span>
-                  </td>
-                  <td className="text-right py-2 px-2">
-                    {s.exercisesAbove50 > 0 ? (
-                      <span className="font-medium">{s.exercisesAbove50}</span>
+                  <td className="text-center py-2 px-2">
+                    {s.bucket0_10 > 0 ? (
+                      <span className="text-green-600 font-medium">{s.bucket0_10}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket0_10)}%)</span></span>
                     ) : (
-                      <span className="text-muted-foreground">0</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
-                    <span className="text-xs text-muted-foreground ml-1">({s.p50.toFixed(2)})</span>
                   </td>
-                  <td className="text-right py-2 px-2">
-                    {s.exercisesAbove75 > 0 ? (
-                      <span className="text-orange-600 font-medium">{s.exercisesAbove75}</span>
+                  <td className="text-center py-2 px-2">
+                    {s.bucket10_25 > 0 ? (
+                      <span className="text-green-600 font-medium">{s.bucket10_25}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket10_25)}%)</span></span>
                     ) : (
-                      <span className="text-muted-foreground">0</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
-                    <span className="text-xs text-muted-foreground ml-1">({s.p75.toFixed(2)})</span>
                   </td>
-                  <td className="text-right py-2 px-2">
-                    {s.exercisesAbove90 > 0 ? (
-                      <span className="text-red-600 font-medium">{s.exercisesAbove90}</span>
+                  <td className="text-center py-2 px-2">
+                    {s.bucket25_50 > 0 ? (
+                      <span>{s.bucket25_50}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket25_50)}%)</span></span>
                     ) : (
-                      <span className="text-muted-foreground">0</span>
+                      <span className="text-muted-foreground">—</span>
                     )}
-                    <span className="text-xs text-muted-foreground ml-1">({s.p90.toFixed(2)})</span>
+                  </td>
+                  <td className="text-center py-2 px-2">
+                    {s.bucket50_75 > 0 ? (
+                      <span className="text-orange-600 font-medium">{s.bucket50_75}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket50_75)}%)</span></span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </td>
+                  <td className="text-center py-2 px-2">
+                    {s.bucket75plus > 0 ? (
+                      <span className="text-red-600 font-medium">{s.bucket75plus}/{s.exerciseCount} <span className="text-xs">({pct(s.bucket75plus)}%)</span></span>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
