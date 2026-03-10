@@ -278,9 +278,15 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       matrix[p.exerciseBId][p.exerciseAId] = p.similarityScore;
     }
 
-    const exerciseIds = Array.from(ids).sort();
+    // Sort by order_number (from features), fallback to ID
+    const exerciseIds = Array.from(ids).sort((a, b) => {
+      const orderA = featureMap[a]?.orderNumber ?? Infinity;
+      const orderB = featureMap[b]?.orderNumber ?? Infinity;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.localeCompare(b);
+    });
     return { exerciseIds, matrix };
-  }, [pairs]);
+  }, [pairs, featureMap]);
 
   // Neighbor chart data: max similarity per exercise
   const neighborData = useMemo(() => {
@@ -319,6 +325,13 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   };
 
   const shortId = (id: string) => id.length > 8 ? `...${id.slice(-6)}` : id;
+
+  /** Label for heatmap axes: "#order ...id" */
+  const heatmapLabel = (id: string) => {
+    const order = featureMap[id]?.orderNumber;
+    const idPart = shortId(id);
+    return order != null ? `#${order} ${idPart}` : idPart;
+  };
 
   const formatRunLabel = (r: RunInfo) => {
     const date = new Date(r.completedAt).toLocaleString("de-DE");
@@ -576,7 +589,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                                       className="cursor-pointer hover:text-primary transition-colors"
                                       onClick={() => copyToClipboard(id)}
                                     >
-                                      {copiedId === id ? <Check className="h-3 w-3 inline text-green-500" /> : shortId(id)}
+                                      {copiedId === id ? <Check className="h-3 w-3 inline text-green-500" /> : heatmapLabel(id)}
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent side="top"><p className="text-xs font-mono">{id}<br/>Click to copy</p></TooltipContent>
@@ -595,7 +608,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                                       className="cursor-pointer hover:text-primary transition-colors"
                                       onClick={() => copyToClipboard(rowId)}
                                     >
-                                      {copiedId === rowId ? <Check className="h-3 w-3 inline text-green-500" /> : shortId(rowId)}
+                                      {copiedId === rowId ? <Check className="h-3 w-3 inline text-green-500" /> : heatmapLabel(rowId)}
                                     </span>
                                   </TooltipTrigger>
                                   <TooltipContent side="left"><p className="text-xs font-mono">{rowId}<br/>Click to copy</p></TooltipContent>
