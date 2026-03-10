@@ -34,7 +34,7 @@ export const handler: Handler = async (event) => {
         WHERE id IN (${exerciseA}, ${exerciseB})
       `,
       sql`
-        SELECT exercise_id, gap_number, correct_answer
+        SELECT exercise_id, gap_number, correct_answer, distractors
         FROM exercise_gaps
         WHERE exercise_id IN (${exerciseA}, ${exerciseB})
         ORDER BY exercise_id, gap_number
@@ -56,12 +56,13 @@ export const handler: Handler = async (event) => {
     ]);
 
     // Group gaps by exercise_id
-    const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string }>> = {};
+    const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>> = {};
     for (const g of gaps) {
       if (!gapsMap[g.exercise_id]) gapsMap[g.exercise_id] = [];
       gapsMap[g.exercise_id].push({
         gapNumber: parseInt(g.gap_number, 10),
         correctAnswer: g.correct_answer,
+        distractors: g.distractors || [],
       });
     }
 

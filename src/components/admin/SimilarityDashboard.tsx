@@ -24,7 +24,7 @@ import {
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
 } from "recharts";
-import { ArrowLeft, ChevronDown, ChevronUp, Info } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Info, Copy, Check } from "lucide-react";
 
 interface SimilarityDashboardProps {
   apiBase: string;
@@ -76,7 +76,7 @@ interface ExerciseDetail {
   level: string;
   orderNumber: number;
   grammarSectionId: string;
-  gaps: Array<{ gapNumber: number; correctAnswer: string }>;
+  gaps: Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>;
   features: { grammarSectionId: string; level: string } | null;
 }
 
@@ -129,13 +129,14 @@ const getSimBadgeVariant = (score: number): "destructive" | "secondary" | "defau
   return "default";
 };
 
+/** Heatmap colors matching the header distribution buckets:
+ *  0–0.1: green, 0.1–0.25: green, 0.25–0.5: neutral, 0.5–0.75: orange, >0.75: red */
 const getHeatmapBg = (score: number): string => {
-  if (score >= 0.9) return "rgba(239, 68, 68, 0.8)";
-  if (score >= 0.85) return "rgba(239, 68, 68, 0.5)";
-  if (score >= 0.8) return "rgba(251, 146, 60, 0.5)";
-  if (score >= 0.7) return "rgba(250, 204, 21, 0.4)";
-  if (score >= 0.5) return "rgba(134, 239, 172, 0.3)";
-  return "rgba(187, 247, 208, 0.2)";
+  if (score >= 0.75) return "rgba(220, 38, 38, 0.6)";   // red-600
+  if (score >= 0.5) return "rgba(234, 88, 12, 0.5)";     // orange-600
+  if (score >= 0.25) return "rgba(156, 163, 175, 0.25)";  // gray-400
+  if (score >= 0.1) return "rgba(22, 163, 74, 0.25)";    // green-600
+  return "rgba(22, 163, 74, 0.15)";                       // green-600 lighter
 };
 
 export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
@@ -158,6 +159,14 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const [pairDetail, setPairDetail] = useState<PairDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
+
+  // Copy-to-clipboard feedback
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const copyToClipboard = (id: string) => {
+    navigator.clipboard.writeText(id);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 1500);
+  };
 
   // Fetch overview on mount
   useEffect(() => {
@@ -541,7 +550,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                             <th className="p-1 text-xs"></th>
                             {heatmapMatrix.exerciseIds.map((id) => (
                               <th key={id} className="p-1 text-xs" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
-                                {shortId(id)}
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span
+                                      className="cursor-pointer hover:text-primary transition-colors"
+                                      onClick={() => copyToClipboard(id)}
+                                    >
+                                      {copiedId === id ? <Check className="h-3 w-3 inline text-green-500" /> : shortId(id)}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top"><p className="text-xs font-mono">{id}<br/>Click to copy</p></TooltipContent>
+                                </Tooltip>
                               </th>
                             ))}
                           </tr>
@@ -550,7 +569,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                           {heatmapMatrix.exerciseIds.map((rowId) => (
                             <tr key={rowId}>
                               <td className="p-1 text-xs font-medium whitespace-nowrap">
-                                {shortId(rowId)}
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span
+                                      className="cursor-pointer hover:text-primary transition-colors"
+                                      onClick={() => copyToClipboard(rowId)}
+                                    >
+                                      {copiedId === rowId ? <Check className="h-3 w-3 inline text-green-500" /> : shortId(rowId)}
+                                    </span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="left"><p className="text-xs font-mono">{rowId}<br/>Click to copy</p></TooltipContent>
+                                </Tooltip>
                               </td>
                               {heatmapMatrix.exerciseIds.map((colId) => {
                                 if (rowId === colId) {
@@ -595,8 +624,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground">
                     <span>Low</span>
                     <div className="flex gap-0.5">
-                      {[0.3, 0.5, 0.7, 0.8, 0.85, 0.9].map((s) => (
-                        <div key={s} className="w-4 h-4" style={{ backgroundColor: getHeatmapBg(s) }} />
+                      {[0.05, 0.15, 0.35, 0.6, 0.8].map((s) => (
+                        <div key={s} className="w-4 h-4 rounded-sm" style={{ backgroundColor: getHeatmapBg(s) }} />
                       ))}
                     </div>
                     <span>High</span>
@@ -742,7 +771,14 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       <Badge variant="outline" className="text-xs">
                         {idx === 0 ? "Exercise A" : "Exercise B"}
                       </Badge>
-                      <span className="text-xs font-mono text-muted-foreground">{shortId(ex?.id || "")}</span>
+                      <span
+                        className="text-xs font-mono text-muted-foreground cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-1"
+                        onClick={() => ex?.id && copyToClipboard(ex.id)}
+                        title="Click to copy full ID"
+                      >
+                        {shortId(ex?.id || "")}
+                        {copiedId === ex?.id ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3" />}
+                      </span>
                       {ex?.level && (
                         <Badge variant="outline" className="text-xs">{ex.level}</Badge>
                       )}
@@ -752,6 +788,32 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                         {ex?.text ? renderTextWithGaps(ex.text, ex.gaps || []) : "N/A"}
                       </p>
                     </Card>
+                    {/* Correct answers & distractors */}
+                    {ex?.gaps && ex.gaps.length > 0 && (
+                      <Card className="p-3">
+                        <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                          Answers & Distractors
+                        </h5>
+                        <div className="space-y-2">
+                          {ex.gaps.map((gap) => (
+                            <div key={gap.gapNumber} className="text-sm">
+                              <span className="text-xs text-muted-foreground mr-1.5">Gap {gap.gapNumber}:</span>
+                              <span className="font-medium text-green-700 dark:text-green-400">{gap.correctAnswer}</span>
+                              {gap.distractors && gap.distractors.length > 0 && (
+                                <span className="text-muted-foreground">
+                                  {" / "}
+                                  {gap.distractors.map((d, i) => (
+                                    <span key={i} className="text-red-600/70 dark:text-red-400/70">
+                                      {d}{i < gap.distractors.length - 1 ? ", " : ""}
+                                    </span>
+                                  ))}
+                                </span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
+                    )}
                   </div>
                 ))}
               </div>
