@@ -33,22 +33,25 @@ export const handler: Handler = async (event) => {
         WHERE run_id = ${runId}::uuid
           AND grammar_section_id = ${sectionId}
       ),
+      pair_agg AS (
+        SELECT exercise_id, AVG(cosine_similarity) AS avg_sim
+        FROM (
+          SELECT ep.exercise_a_id AS exercise_id, ep.cosine_similarity
+          FROM exercise_pairwise_similarity ep
+          WHERE ep.run_id = ${runId}::uuid
+            AND ep.exercise_a_id IN (SELECT exercise_id FROM section_exercises)
+          UNION ALL
+          SELECT ep.exercise_b_id AS exercise_id, ep.cosine_similarity
+          FROM exercise_pairwise_similarity ep
+          WHERE ep.run_id = ${runId}::uuid
+            AND ep.exercise_b_id IN (SELECT exercise_id FROM section_exercises)
+        ) all_pairs
+        GROUP BY exercise_id
+      ),
       exercise_avg_sim AS (
-        SELECT
-          se.exercise_id,
-          COALESCE(
-            (
-              SELECT AVG(sub.cosine_similarity)
-              FROM (
-                SELECT ep.cosine_similarity FROM exercise_pairwise_similarity ep
-                WHERE ep.run_id = ${runId}::uuid AND ep.exercise_a_id = se.exercise_id
-                UNION ALL
-                SELECT ep.cosine_similarity FROM exercise_pairwise_similarity ep
-                WHERE ep.run_id = ${runId}::uuid AND ep.exercise_b_id = se.exercise_id
-              ) sub
-            ), 0
-          ) AS avg_neighbor_sim
+        SELECT COALESCE(pa.avg_sim, 0) AS avg_neighbor_sim
         FROM section_exercises se
+        LEFT JOIN pair_agg pa ON pa.exercise_id = se.exercise_id
       ),
       exercise_buckets AS (
         SELECT
