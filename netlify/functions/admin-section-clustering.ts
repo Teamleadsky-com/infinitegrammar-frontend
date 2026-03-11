@@ -52,16 +52,17 @@ export const handler: Handler = async (event) => {
 
     // Fetch labels for exercises
     const exercises = await sql`
-      SELECT id, order_number, text
+      SELECT id, order_number, text, created_at
       FROM exercises
       WHERE id = ANY(${exercise_ids})
     `;
 
-    const exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null }> = {};
+    const exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null; createdAt: string | null }> = {};
     for (const e of exercises) {
       exerciseLabels[e.id] = {
         orderNumber: e.order_number != null ? parseInt(e.order_number, 10) : null,
         textPreview: e.text ? e.text.substring(0, 60) + (e.text.length > 60 ? '...' : '') : null,
+        createdAt: e.created_at || null,
       };
     }
 

@@ -18,12 +18,12 @@ import {
 interface ClusteringDendrogramProps {
   linkageMatrix: [number, number, number, number][];
   exerciseIds: string[];
-  exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null }>;
+  exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null; createdAt?: string | null }>;
   onCopyId: (id: string) => void;
   copiedId: string | null;
 }
 
-const LEAF_LABEL_WIDTH = 140;
+const LEAF_LABEL_WIDTH = 220;
 const PADDING_LEFT = 40;
 const PADDING_TOP = 30;
 const PADDING_BOTTOM = 10;
@@ -71,11 +71,18 @@ export const ClusteringDendrogram = ({
 
   const shortId = (id: string) => id.length > 8 ? `...${id.slice(-6)}` : id;
 
+  const formatDate = (iso: string) => {
+    const d = new Date(iso);
+    return `${d.getDate()}.${d.getMonth() + 1}.${String(d.getFullYear()).slice(2)}`;
+  };
+
   const leafLabel = (id: string) => {
     const info = exerciseLabels[id];
     const order = info?.orderNumber;
     const idPart = shortId(id);
-    return order != null ? `#${order} ${idPart}` : idPart;
+    const label = order != null ? `#${order} ${idPart}` : idPart;
+    const date = info?.createdAt ? formatDate(info.createdAt) : null;
+    return date ? `${label}  ${date}` : label;
   };
 
   // Distance axis ticks

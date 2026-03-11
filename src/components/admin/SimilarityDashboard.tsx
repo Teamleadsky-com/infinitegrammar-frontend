@@ -173,7 +173,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const [clusteringData, setClusteringData] = useState<{
     linkageMatrix: [number, number, number, number][];
     exerciseIds: string[];
-    exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null }>;
+    exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null; createdAt?: string | null }>;
   } | null>(null);
 
   // Pair detail state
