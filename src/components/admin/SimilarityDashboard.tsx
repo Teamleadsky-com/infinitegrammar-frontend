@@ -1011,6 +1011,9 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       <Badge variant="outline" className="text-xs">
                         {idx === 0 ? "Exercise A" : "Exercise B"}
                       </Badge>
+                      {ex?.orderNumber != null && (
+                        <span className="text-xs font-mono text-muted-foreground">#{ex.orderNumber}</span>
+                      )}
                       <span
                         className="text-xs font-mono text-muted-foreground cursor-pointer hover:text-primary transition-colors inline-flex items-center gap-1"
                         onClick={() => ex?.id && copyToClipboard(ex.id)}
