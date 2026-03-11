@@ -32,6 +32,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { ArrowLeft, ChevronDown, ChevronUp, Info, Copy, Check } from "lucide-react";
+import { ClusteringDendrogram } from "./ClusteringDendrogram";
 
 interface SimilarityDashboardProps {
   apiBase: string;
@@ -168,6 +169,13 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   const [features, setFeatures] = useState<FeatureData[]>([]);
   const [loadingHeatmap, setLoadingHeatmap] = useState(false);
 
+  // Clustering state
+  const [clusteringData, setClusteringData] = useState<{
+    linkageMatrix: [number, number, number, number][];
+    exerciseIds: string[];
+    exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null }>;
+  } | null>(null);
+
   // Pair detail state
   const [pairDetail, setPairDetail] = useState<PairDetail | null>(null);
   const [loadingDetail, setLoadingDetail] = useState(false);
@@ -244,13 +252,26 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     if (!runId || !section.hasRunData) return;
     setLoadingHeatmap(true);
     setSelectedSection(section);
+    setClusteringData(null);
     try {
-      const res = await fetch(
-        `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${runId}`
-      );
-      const data = await res.json();
-      setPairs(data.pairs || []);
-      setFeatures(data.features || []);
+      const [heatmapRes, clusteringRes] = await Promise.all([
+        fetch(
+          `${apiBase}/admin-similarity-heatmap?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${runId}`
+        ),
+        fetch(
+          `${apiBase}/admin-section-clustering?section_id=${encodeURIComponent(section.grammarSectionId)}&run_id=${runId}`
+        ).catch(() => null),
+      ]);
+      const heatmapData = await heatmapRes.json();
+      setPairs(heatmapData.pairs || []);
+      setFeatures(heatmapData.features || []);
+
+      if (clusteringRes && clusteringRes.ok) {
+        const cData = await clusteringRes.json();
+        if (cData.linkageMatrix && cData.exerciseIds?.length >= 3) {
+          setClusteringData(cData);
+        }
+      }
     } catch (err) {
       console.error("Failed to fetch heatmap:", err);
     } finally {
@@ -654,6 +675,17 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
             </Card>
           ) : (
             <>
+              {/* Clustering Dendrogram */}
+              {clusteringData && (
+                <ClusteringDendrogram
+                  linkageMatrix={clusteringData.linkageMatrix}
+                  exerciseIds={clusteringData.exerciseIds}
+                  exerciseLabels={clusteringData.exerciseLabels}
+                  onCopyId={copyToClipboard}
+                  copiedId={copiedId}
+                />
+              )}
+
               {/* Similarity Heatmap */}
               {heatmapMatrix.exerciseIds.length > 0 && heatmapMatrix.exerciseIds.length <= 50 && (
                 <Card className="p-6">
