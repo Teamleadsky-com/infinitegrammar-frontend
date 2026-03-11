@@ -259,9 +259,14 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     }
   }, [apiBase, sectionRunOverrides]);
 
+  // Stable ref to avoid stale closure in fetchPairDetail
+  const activeRunIdRef = useRef<string | null>(null);
+  useEffect(() => {
+    activeRunIdRef.current = selectedSection ? getActiveRunId(selectedSection) : null;
+  }, [selectedSection, sectionRunOverrides]);
+
   const fetchPairDetail = useCallback(async (exerciseA: string, exerciseB: string) => {
-    if (!selectedSection) return;
-    const runId = getActiveRunId(selectedSection);
+    const runId = activeRunIdRef.current;
     if (!runId) return;
     setLoadingDetail(true);
     setDetailOpen(true);
@@ -276,7 +281,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
     } finally {
       setLoadingDetail(false);
     }
-  }, [apiBase, selectedSection, sectionRunOverrides]);
+  }, [apiBase]);
 
   // Sorted sections
   const sortedSections = useMemo(() => {
