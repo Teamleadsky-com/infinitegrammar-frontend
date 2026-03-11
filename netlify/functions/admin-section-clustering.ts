@@ -25,13 +25,24 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'section_id and run_id are required' });
     }
 
-    const rows = await sql`
+    // Try exact run first, then fall back to latest clustering run for this section
+    let rows = await sql`
       SELECT exercise_ids, linkage_matrix
       FROM section_clustering
       WHERE grammar_section_id = ${sectionId}
         AND run_id = ${runId}::uuid
       LIMIT 1
     `;
+
+    if (rows.length === 0) {
+      rows = await sql`
+        SELECT exercise_ids, linkage_matrix
+        FROM section_clustering
+        WHERE grammar_section_id = ${sectionId}
+        ORDER BY created_at DESC
+        LIMIT 1
+      `;
+    }
 
     if (rows.length === 0) {
       return createResponse(200, { linkageMatrix: null, exerciseIds: [], exerciseLabels: {} });
