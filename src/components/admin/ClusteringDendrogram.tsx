@@ -36,12 +36,16 @@ export const ClusteringDendrogram = ({
   onCopyId,
   copiedId,
 }: ClusteringDendrogramProps) => {
-  const [threshold, setThreshold] = useState([0.5]);
+  // Slider works in similarity space (0 = opposite, 1 = identical)
+  const [simThreshold, setSimThreshold] = useState([0.5]);
 
   const maxDistance = useMemo(() => {
     if (linkageMatrix.length === 0) return 1;
     return Math.max(...linkageMatrix.map((r) => r[2]));
   }, [linkageMatrix]);
+
+  // Convert similarity threshold to distance for the algorithm
+  const distThreshold = 1 - simThreshold[0];
 
   const { leaves, internals, colorMap, svgWidth, svgHeight, thresholdX, root } = useMemo(() => {
     const tree = linkageToTree(linkageMatrix, exerciseIds);
@@ -59,15 +63,15 @@ export const ClusteringDendrogram = ({
     });
 
     const { leaves: l, internals: n } = collectNodes(tree);
-    const colors = assignClusterColors(tree, threshold[0]);
+    const colors = assignClusterColors(tree, distThreshold);
 
     // Threshold line x position
     const usableWidth = w - LEAF_LABEL_WIDTH - PADDING_LEFT;
     const md = tree.distance || 1;
-    const tx = PADDING_LEFT + (1 - threshold[0] / md) * usableWidth;
+    const tx = PADDING_LEFT + (1 - distThreshold / md) * usableWidth;
 
     return { leaves: l, internals: n, colorMap: colors, svgWidth: w, svgHeight: h, thresholdX: tx, root: tree };
-  }, [linkageMatrix, exerciseIds, threshold]);
+  }, [linkageMatrix, exerciseIds, distThreshold]);
 
   const shortId = (id: string) => id.length > 8 ? `...${id.slice(-6)}` : id;
 
@@ -85,7 +89,7 @@ export const ClusteringDendrogram = ({
     return date ? `${label}  ${date}` : label;
   };
 
-  // Distance axis ticks
+  // Similarity axis ticks (inverted from distance)
   const axisTicks = useMemo(() => {
     const md = root.distance || 1;
     const usableWidth = svgWidth - LEAF_LABEL_WIDTH - PADDING_LEFT;
@@ -95,38 +99,42 @@ export const ClusteringDendrogram = ({
     for (let i = 0; i <= count; i++) {
       const d = i * step;
       const x = PADDING_LEFT + (1 - d / md) * usableWidth;
-      ticks.push({ x, label: d.toFixed(2) });
+      const sim = 1 - d;
+      ticks.push({ x, label: sim.toFixed(2) });
     }
     return ticks;
   }, [root, svgWidth]);
 
   if (exerciseIds.length < 3) return null;
 
+  // Slider min similarity = 1 - maxDistance (clamped to 0)
+  const minSim = Math.floor(Math.max(0, 1 - maxDistance) * 100) / 100;
+
   return (
     <Card className="p-6">
       <h4 className="font-semibold mb-1">Exercise Clustering</h4>
       <p className="text-xs text-muted-foreground mb-4">
-        Hierarchical clustering by cosine distance. Exercises merged at lower distances are more similar.
-        Adjust the threshold to identify clusters.
+        Hierarchical clustering by cosine similarity. Exercises merged at higher similarity are more alike.
+        Drag the threshold to group exercises: higher values = stricter clusters (only near-duplicates), lower values = looser clusters.
       </p>
 
       <div className="flex items-center gap-3 mb-4">
-        <span className="text-xs text-muted-foreground whitespace-nowrap">Cluster threshold:</span>
+        <span className="text-xs text-muted-foreground whitespace-nowrap">Similarity threshold:</span>
         <Slider
-          value={threshold}
-          onValueChange={setThreshold}
-          min={0}
-          max={Math.ceil(maxDistance * 100) / 100}
+          value={simThreshold}
+          onValueChange={setSimThreshold}
+          min={minSim}
+          max={1}
           step={0.01}
           className="w-48"
         />
-        <span className="text-xs tabular-nums w-10 text-right">{threshold[0].toFixed(2)}</span>
+        <span className="text-xs tabular-nums w-10 text-right">{simThreshold[0].toFixed(2)}</span>
       </div>
 
       <div className="overflow-auto" style={{ maxHeight: 600 }}>
         <TooltipProvider delayDuration={100}>
           <svg width={svgWidth} height={svgHeight} className="select-none">
-            {/* Distance axis */}
+            {/* Similarity axis */}
             <line
               x1={PADDING_LEFT} y1={14} x2={svgWidth - LEAF_LABEL_WIDTH} y2={14}
               stroke="#d1d5db" strokeWidth={1}
@@ -139,7 +147,7 @@ export const ClusteringDendrogram = ({
             ))}
 
             {/* Threshold line */}
-            {threshold[0] < (root.distance || 1) && (
+            {distThreshold < (root.distance || 1) && (
               <line
                 x1={thresholdX} y1={PADDING_TOP - 10} x2={thresholdX} y2={svgHeight - PADDING_BOTTOM}
                 stroke="#6366f1" strokeWidth={1.5} strokeDasharray="4 3" opacity={0.6}
@@ -182,7 +190,7 @@ export const ClusteringDendrogram = ({
                     </TooltipTrigger>
                     <TooltipContent side="top">
                       <p className="text-xs">
-                        Distance: {node.distance.toFixed(4)}<br />
+                        Similarity: {(1 - node.distance).toFixed(4)}<br />
                         Cluster size: {node.count} exercises
                       </p>
                     </TooltipContent>

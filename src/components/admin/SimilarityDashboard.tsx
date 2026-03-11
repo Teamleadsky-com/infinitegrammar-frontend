@@ -601,14 +601,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       <td className="text-right py-2.5 px-2 tabular-nums">
                         {hasData && s.medianAvgSim != null ? s.medianAvgSim.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
                       </td>
-                      <td className="text-right py-2.5 px-2">
-                        {hasData && s.maxSimilarity != null ? (
-                          <Badge variant={getSimBadgeVariant(s.maxSimilarity)} className="tabular-nums">
-                            {s.maxSimilarity.toFixed(3)}
-                          </Badge>
-                        ) : (
-                          <span className="text-muted-foreground/50">—</span>
-                        )}
+                      <td className="text-right py-2.5 px-2 tabular-nums">
+                        {hasData && s.maxSimilarity != null ? s.maxSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
                       </td>
                       <td className="text-center py-2.5 px-2 border-l">
                         {renderBucket(s.bucket0_10, "text-green-700 dark:text-green-400")}
