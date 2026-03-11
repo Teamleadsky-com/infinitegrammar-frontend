@@ -486,6 +486,7 @@ const Exercise = () => {
           total_answers: totalAnswers,
           practiced_level: level,
           practiced_topic: section,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         }),
       });
 

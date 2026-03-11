@@ -31,7 +31,7 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Request body is required' });
     }
 
-    const { user_id, exercise_id, correct_answers, total_answers, time_spent_seconds, practiced_level, practiced_topic } =
+    const { user_id, exercise_id, correct_answers, total_answers, time_spent_seconds, practiced_level, practiced_topic, timezone } =
       JSON.parse(event.body);
 
     // Validate required fields
@@ -202,9 +202,12 @@ export const handler: Handler = async (event) => {
         const SPACED_INTERVALS = [1, 3, 7, 14]; // days
         const nextSendAt = new Date(Date.now() + SPACED_INTERVALS[0] * 24 * 60 * 60 * 1000);
 
-        // Calculate preferred send hour from last 5 completions
+        // Determine user timezone (from request or fallback to Europe/Berlin for a German learning app)
+        const userTimezone = timezone || 'Europe/Berlin';
+
+        // Calculate preferred send hour in the USER's local timezone
         const recentHours = await sql`
-          SELECT EXTRACT(HOUR FROM completed_at AT TIME ZONE 'UTC')::integer as hour
+          SELECT EXTRACT(HOUR FROM completed_at AT TIME ZONE ${userTimezone})::integer as hour
           FROM exercise_completions
           WHERE user_id = ${user_id}::uuid
           ORDER BY completed_at DESC
@@ -223,16 +226,17 @@ export const handler: Handler = async (event) => {
             AND grammar_section_id != ${exercise.grammar_section_id}
         `;
 
-        // Upsert schedule for the current section
+        // Upsert schedule for the current section (preferred_send_hour is now a LOCAL hour)
         await sql`
-          INSERT INTO campaign_schedule (user_id, grammar_section_id, last_practice_at, step, next_send_at, preferred_send_hour, status)
-          VALUES (${user_id}::uuid, ${exercise.grammar_section_id}, NOW(), 0, ${nextSendAt}, ${preferredHour}, 'active')
+          INSERT INTO campaign_schedule (user_id, grammar_section_id, last_practice_at, step, next_send_at, preferred_send_hour, timezone, status)
+          VALUES (${user_id}::uuid, ${exercise.grammar_section_id}, NOW(), 0, ${nextSendAt}, ${preferredHour}, ${userTimezone}, 'active')
           ON CONFLICT (user_id, grammar_section_id)
           DO UPDATE SET
             last_practice_at = NOW(),
             step = 0,
             next_send_at = ${nextSendAt},
             preferred_send_hour = ${preferredHour},
+            timezone = ${userTimezone},
             status = 'active',
             updated_at = NOW()
         `;

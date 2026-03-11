@@ -62,12 +62,13 @@ export const handler: Handler = async () => {
       return { statusCode: 200, body: 'Campaign disabled' };
     }
 
-    const currentHour = new Date().getUTCHours();
     let processed = 0;
     let sent = 0;
     let skipped = 0;
 
     // 2. Find all due sends for this hour
+    // preferred_send_hour is stored as a LOCAL hour in the user's timezone.
+    // We compare it against the current hour in that timezone (handles DST automatically).
     const dueSends = await sql`
       SELECT
         cs.id, cs.user_id, cs.grammar_section_id, cs.last_practice_at,
@@ -81,12 +82,15 @@ export const handler: Handler = async () => {
       LEFT JOIN email_preferences ep ON cs.user_id = ep.user_id
       WHERE cs.status = 'active'
         AND cs.next_send_at <= NOW()
-        AND (cs.preferred_send_hour = ${currentHour} OR cs.preferred_send_hour IS NULL)
+        AND (
+          cs.preferred_send_hour IS NULL
+          OR cs.preferred_send_hour = EXTRACT(HOUR FROM NOW() AT TIME ZONE COALESCE(cs.timezone, 'Europe/Berlin'))::integer
+        )
       ORDER BY cs.next_send_at ASC
       LIMIT 100
     `;
 
-    console.log(`Found ${dueSends.length} due sends for hour ${currentHour}`);
+    console.log(`Found ${dueSends.length} due sends`);
 
     // 3. Process each due send
     for (const send of dueSends) {
