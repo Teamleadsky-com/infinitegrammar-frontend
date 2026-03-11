@@ -54,7 +54,7 @@ export const handler: Handler = async (event) => {
     const exercises = await sql`
       SELECT id, order_number, text
       FROM exercises
-      WHERE id = ANY(${exercise_ids}::uuid[])
+      WHERE id = ANY(${exercise_ids})
     `;
 
     const exerciseLabels: Record<string, { orderNumber: number | null; textPreview: string | null }> = {};
