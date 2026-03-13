@@ -119,6 +119,8 @@ export const handler: Handler = async (event) => {
         ss.mean_similarity,
         ss.max_similarity,
         ss.min_similarity,
+        ss.weighted_neighbor_score,
+        ss.ordering_quality_ratio,
         eb.median_avg_sim,
         eb.bucket_0_10,
         eb.bucket_10_25,
@@ -157,6 +159,8 @@ export const handler: Handler = async (event) => {
           bucket25_50: row.bucket_25_50 != null ? parseInt(row.bucket_25_50, 10) : null,
           bucket50_75: row.bucket_50_75 != null ? parseInt(row.bucket_50_75, 10) : null,
           bucket75plus: row.bucket_75_plus != null ? parseInt(row.bucket_75_plus, 10) : null,
+          weightedNeighborScore: row.weighted_neighbor_score != null ? parseFloat(row.weighted_neighbor_score) : null,
+          orderingQualityRatio: row.ordering_quality_ratio != null ? parseFloat(row.ordering_quality_ratio) : null,
         };
       }),
     });

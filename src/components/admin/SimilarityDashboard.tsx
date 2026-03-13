@@ -64,6 +64,8 @@ interface SectionSummary {
   bucket25_50: number | null;
   bucket50_75: number | null;
   bucket75plus: number | null;
+  weightedNeighborScore: number | null;
+  orderingQualityRatio: number | null;
 }
 
 interface PairData {
@@ -95,7 +97,7 @@ interface PairDetail {
   similarityScore: number | null;
 }
 
-type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianAvgSim" | "maxSimilarity" | "bucket75plus";
+type SortKey = "sectionName" | "level" | "exerciseCount" | "meanSimilarity" | "medianAvgSim" | "maxSimilarity" | "weightedNeighborScore" | "orderingQualityRatio" | "bucket75plus";
 
 /** Replace [1], [2] etc. with correct answers as highlighted spans */
 const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
@@ -136,6 +138,20 @@ const getSimBadgeVariant = (score: number): "destructive" | "secondary" | "defau
   if (score >= 0.85) return "destructive";
   if (score >= 0.7) return "secondary";
   return "default";
+};
+
+const getWnsColor = (score: number): string => {
+  if (score > 0.5) return "text-red-600 dark:text-red-400";
+  if (score > 0.35) return "text-orange-600 dark:text-orange-400";
+  if (score >= 0.2) return "";
+  return "text-green-700 dark:text-green-400";
+};
+
+const getOqrColor = (score: number): string => {
+  if (score > 1.0) return "text-red-600 dark:text-red-400";
+  if (score > 0.75) return "text-orange-600 dark:text-orange-400";
+  if (score >= 0.5) return "";
+  return "text-green-700 dark:text-green-400";
 };
 
 /** Heatmap colors matching the header distribution buckets:
@@ -237,6 +253,8 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   bucket25_50: data.data.bucket25_50,
                   bucket50_75: data.data.bucket50_75,
                   bucket75plus: data.data.bucket75plus,
+                  weightedNeighborScore: data.data.weightedNeighborScore,
+                  orderingQualityRatio: data.data.orderingQualityRatio,
                 }
               : s
           )
@@ -452,7 +470,7 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   <th colSpan={4} className="text-left py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Grammar Section
                   </th>
-                  <th colSpan={3} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
+                  <th colSpan={5} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
                     <Tooltip>
                       <TooltipTrigger className="inline-flex items-center gap-1">
                         Pairwise Similarity
@@ -511,6 +529,22 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     <Tooltip>
                       <TooltipTrigger>Max <SortIcon columnKey="maxSimilarity" /></TooltipTrigger>
                       <TooltipContent>Highest similarity between any two exercises</TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("weightedNeighborScore")}>
+                    <Tooltip>
+                      <TooltipTrigger>WNS <SortIcon columnKey="weightedNeighborScore" /></TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p>Weighted Neighborhood Score — average similarity to the next 1–5 exercises in sequence (weights: +1=50%, +2=25%, +3=12.5%, +4=7.5%, +5=5%). Lower = more varied sequence.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </th>
+                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("orderingQualityRatio")}>
+                    <Tooltip>
+                      <TooltipTrigger>OQR <SortIcon columnKey="orderingQualityRatio" /></TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-xs">
+                        <p>Ordering Quality Ratio — where adjacent exercise pairs rank among all pairs by similarity. Below 1.0 means reordering is working (adjacent pairs are less similar than the average pair). Scale-invariant: comparable across runs.</p>
+                      </TooltipContent>
                     </Tooltip>
                   </th>
                   <th className="text-center py-2 px-2 border-l">
@@ -603,6 +637,16 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums">
                         {hasData && s.maxSimilarity != null ? s.maxSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
+                      </td>
+                      <td className="text-right py-2.5 px-2 tabular-nums">
+                        {hasData && s.weightedNeighborScore != null
+                          ? <span className={getWnsColor(s.weightedNeighborScore)}>{s.weightedNeighborScore.toFixed(2)}</span>
+                          : <span className="text-muted-foreground/50">—</span>}
+                      </td>
+                      <td className="text-right py-2.5 px-2 tabular-nums">
+                        {hasData && s.orderingQualityRatio != null
+                          ? <span className={getOqrColor(s.orderingQualityRatio)}>{s.orderingQualityRatio.toFixed(2)}</span>
+                          : <span className="text-muted-foreground/50">—</span>}
                       </td>
                       <td className="text-center py-2.5 px-2 border-l">
                         {renderBucket(s.bucket0_10, "text-green-700 dark:text-green-400")}
