@@ -25,12 +25,19 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'section_id and run_id are required' });
     }
 
-    // Get exercise IDs for this section/run
+    // Get exercise IDs for this section/run from pairwise similarity data
     const exerciseIds = await sql`
-      SELECT exercise_id
-      FROM exercise_similarity_features
-      WHERE run_id = ${runId}::uuid
-        AND grammar_section_id = ${sectionId}
+      SELECT DISTINCT exercise_id FROM (
+        SELECT exercise_a_id AS exercise_id
+        FROM exercise_pairwise_similarity
+        WHERE run_id = ${runId}::uuid
+        UNION
+        SELECT exercise_b_id
+        FROM exercise_pairwise_similarity
+        WHERE run_id = ${runId}::uuid
+      ) all_ids
+      JOIN exercises e ON e.id = all_ids.exercise_id::text
+        AND e.grammar_section_id = ${sectionId}
       ORDER BY exercise_id
     `;
 
@@ -50,15 +57,14 @@ export const handler: Handler = async (event) => {
       ORDER BY cosine_similarity DESC
     `;
 
-    // Get features
+    // Get labels directly from exercises table
     const features = await sql`
-      SELECT ef.exercise_id, ef.grammar_section_id, ef.level,
+      SELECT e.id AS exercise_id, e.grammar_section_id, e.level,
              e.text, e.order_number
-      FROM exercise_similarity_features ef
-      LEFT JOIN exercises e ON e.id = ef.exercise_id::text
-      WHERE ef.run_id = ${runId}::uuid
-        AND ef.grammar_section_id = ${sectionId}
-      ORDER BY ef.exercise_id
+      FROM exercises e
+      WHERE e.grammar_section_id = ${sectionId}
+        AND e.id = ANY(${ids.map(String)})
+      ORDER BY e.id
     `;
 
     return createResponse(200, {

@@ -60,10 +60,17 @@ export const handler: Handler = async (event) => {
         ORDER BY grammar_section_id, sr2.completed_at DESC
       ),
       section_exercises AS (
-        SELECT ef.grammar_section_id, ef.exercise_id, sl.run_id
+        SELECT DISTINCT e.grammar_section_id, ep.exercise_a_id AS exercise_id, sl.run_id
         FROM section_latest sl
-        JOIN exercise_similarity_features ef
-          ON ef.grammar_section_id = sl.grammar_section_id AND ef.run_id = sl.run_id
+        JOIN exercise_pairwise_similarity ep ON ep.run_id = sl.run_id
+        JOIN exercises e ON e.id = ep.exercise_a_id::text
+          AND e.grammar_section_id = sl.grammar_section_id
+        UNION
+        SELECT DISTINCT e.grammar_section_id, ep.exercise_b_id, sl.run_id
+        FROM section_latest sl
+        JOIN exercise_pairwise_similarity ep ON ep.run_id = sl.run_id
+        JOIN exercises e ON e.id = ep.exercise_b_id::text
+          AND e.grammar_section_id = sl.grammar_section_id
       ),
       pair_agg AS (
         SELECT exercise_id, run_id, AVG(cosine_similarity) AS avg_sim

@@ -28,10 +28,17 @@ export const handler: Handler = async (event) => {
 
     const results = await sql`
       WITH section_exercises AS (
-        SELECT exercise_id
-        FROM exercise_similarity_features
-        WHERE run_id = ${runId}::uuid
-          AND grammar_section_id = ${sectionId}
+        SELECT DISTINCT exercise_id FROM (
+          SELECT exercise_a_id AS exercise_id
+          FROM exercise_pairwise_similarity
+          WHERE run_id = ${runId}::uuid
+          UNION
+          SELECT exercise_b_id
+          FROM exercise_pairwise_similarity
+          WHERE run_id = ${runId}::uuid
+        ) all_ids
+        JOIN exercises e ON e.id = all_ids.exercise_id::text
+          AND e.grammar_section_id = ${sectionId}
       ),
       pair_agg AS (
         SELECT exercise_id, AVG(cosine_similarity) AS avg_sim
