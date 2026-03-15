@@ -57,11 +57,14 @@ export const handler: Handler = async (event) => {
       ORDER BY cosine_similarity DESC
     `;
 
-    // Get labels directly from exercises table
+    // Get labels with run-specific order_number (falls back to live value for legacy runs)
     const features = await sql`
       SELECT e.id AS exercise_id, e.grammar_section_id, e.level,
-             e.text, e.order_number
+             e.text, COALESCE(ero.order_number, e.order_number) AS order_number
       FROM exercises e
+      LEFT JOIN exercise_run_order ero
+        ON ero.run_id = ${runId}::uuid
+        AND ero.exercise_id::text = e.id
       WHERE e.grammar_section_id = ${sectionId}
         AND e.id = ANY(${ids.map(String)})
       ORDER BY e.id
