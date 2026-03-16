@@ -362,15 +362,10 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
       matrix[p.exerciseBId][p.exerciseAId] = p.similarityScore;
     }
 
-    // Sort by order_number (from features), fallback to ID
-    const exerciseIds = Array.from(ids).sort((a, b) => {
-      const orderA = featureMap[a]?.orderNumber ?? Infinity;
-      const orderB = featureMap[b]?.orderNumber ?? Infinity;
-      if (orderA !== orderB) return orderA - orderB;
-      return a.localeCompare(b);
-    });
+    // Sort by ID for stable heatmap ordering across runs
+    const exerciseIds = Array.from(ids).sort((a, b) => a.localeCompare(b));
     return { exerciseIds, matrix };
-  }, [pairs, featureMap]);
+  }, [pairs]);
 
   // Neighbor chart data: max similarity per exercise
   const neighborData = useMemo(() => {
@@ -388,10 +383,19 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
   }, [pairs]);
 
   // Neighbor proximity strip data: for each exercise, similarity to next 1-5 exercises
+  // Uses order_number sorting (run-specific) to determine sequential neighbors
   const PROXIMITY_RANGE = 5;
   const proximityData = useMemo(() => {
-    const { exerciseIds, matrix } = heatmapMatrix;
-    if (exerciseIds.length === 0) return [];
+    const { exerciseIds: ids, matrix } = heatmapMatrix;
+    if (ids.length === 0) return [];
+
+    // Sort by order_number for sequential neighbor analysis
+    const exerciseIds = [...ids].sort((a, b) => {
+      const orderA = featureMap[a]?.orderNumber ?? Infinity;
+      const orderB = featureMap[b]?.orderNumber ?? Infinity;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.localeCompare(b);
+    });
 
     return exerciseIds.map((id, idx) => {
       const neighbors: Array<{ distance: number; targetId: string; score: number | null }> = [];
