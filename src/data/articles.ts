@@ -562,6 +562,181 @@ for iteration in range(max_iterations):
 `
   },
   {
+    slug: 'measuring-exercise-diversity',
+    title: 'Measuring Exercise Diversity Needed More Than Sentence Embeddings',
+    excerpt: 'After a grammar section contains enough material, a new question appears. Are these genuinely different exercises, or just many versions of the same one? Off-the-shelf sentence embeddings were not especially useful here.',
+    datePublished: '2026-03-12T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>After a grammar section contains enough material, a new question appears.</p>
+
+<p>Are these genuinely different exercises, or just many versions of the same one?</p>
+
+<p>That sounds straightforward until you try to measure it.</p>
+
+<p>Off-the-shelf sentence embeddings were not especially useful here. Two exercises can be semantically close because they both describe travel while testing different grammar. They can also be semantically distant while still feeling repetitive to a learner because the sentence structure, gap pattern, and answer morphology are nearly identical.</p>
+
+<p>What mattered operationally was not "topic similarity" in the generic NLP sense.</p>
+
+<p>It was something more specific:</p>
+
+<blockquote>How likely is a learner to experience these two exercises as redundant?</blockquote>
+
+<h2>A single embedding answered the wrong question</h2>
+
+<p>The failure mode of plain sentence embeddings was easy to spot.</p>
+
+<ul>
+<li>Same topic, different grammar \u2192 similarity too high</li>
+<li>Different topic, same grammatical scaffold \u2192 similarity too low</li>
+</ul>
+
+<p>That is a poor fit for a product where repetition is often structural rather than semantic.</p>
+
+<p>An exercise about travel and an exercise about housing may feel very different topically while still drilling the same pattern in almost the same way. From a learning point of view, that is not enough variation.</p>
+
+<p>So the similarity model had to be decomposed.</p>
+
+<h2>Similarity had to be treated as a multi-part signal</h2>
+
+<p>The representation used in the pipeline combines four feature blocks.</p>
+
+<h3>1. Word-level TF-IDF on the filled-in text</h3>
+
+<p>This captures lexical overlap and topic repetition.</p>
+
+<p>If two exercises repeatedly use the same vocabulary field, this block will show it.</p>
+
+<h3>2. Character n-grams on the correct answers</h3>
+
+<p>This captures morphological overlap.</p>
+
+<p>Two exercises can differ in surrounding nouns and verbs while still testing nearly identical inflection patterns. Character n-grams help expose that.</p>
+
+<h3>3. Structural features</h3>
+
+<p>This block includes things such as:</p>
+
+<ul>
+<li>gap count,</li>
+<li>average answer length,</li>
+<li>text length,</li>
+<li>average gap position,</li>
+<li>distractor count,</li>
+<li>and vocabulary-richness proxies.</li>
+</ul>
+
+<p>This is not glamorous, but it matters. Exercises can become repetitive simply because they are shaped the same way.</p>
+
+<h3>4. POS n-grams via spaCy</h3>
+
+<p>This is where the syntactic scaffold becomes visible.</p>
+
+<p>Two exercises can use different words and still repeat the same clause pattern, agreement mechanics, and target-slot position. POS n-grams are a practical way to capture that without building a full symbolic grammar engine.</p>
+
+<p>In simplified form, the weighting looks like this:</p>
+
+<pre><code>FEATURE_WEIGHTS = {
+    "text_tfidf": 0.35,
+    "answers_char_ngrams": 0.25,
+    "structure": 0.15,
+    "pos_ngrams": 0.25,
+}</code></pre>
+
+<p>Each block is normalized independently, weighted, concatenated, and then compared using cosine similarity.</p>
+
+<p>The important point is not the exact coefficients.</p>
+
+<p>The important point is that the model of similarity is explicitly multi-view. It encodes what "too similar" means for this product.</p>
+
+<h2>Why spaCy mattered here</h2>
+
+<p>spaCy was useful because perceived repetition is often structural.</p>
+
+<p>Two exercises can use different nouns and verbs while still repeating the same scaffold. For example, two sentences may both drill the same dative pattern in the same syntactic slot. A learner will often experience those as highly related even if a semantic model does not.</p>
+
+<p>That is where POS n-grams help.</p>
+
+<p>They do not solve the whole problem. They simply add a missing dimension that plain semantic similarity tends to miss.</p>
+
+<h2>Pairwise cosine scores are necessary and not sufficient</h2>
+
+<p>Raw pairwise similarity is useful, but not yet operational.</p>
+
+<p>A section with 40 exercises already has 780 pairs. A list of scores is not editorial support.</p>
+
+<p>That is why the pipeline stores both pairwise similarities and higher-level aggregates:</p>
+
+<ul>
+<li>section-level mean, median, and max similarity,</li>
+<li>distribution buckets,</li>
+<li>per-exercise max similarity,</li>
+<li>and clustering structures for visualization.</li>
+</ul>
+
+<p>The bucket view became especially useful in the admin area:</p>
+
+<ul>
+<li><code>0\u20130.10</code></li>
+<li><code>0.10\u20130.25</code></li>
+<li><code>0.25\u20130.50</code></li>
+<li><code>0.50\u20130.75</code></li>
+<li><code>>0.75</code></li>
+</ul>
+
+<p>The last bucket is the action bucket.</p>
+
+<p>Anything above roughly <code>0.5</code> deserves direct review as a near-duplicate candidate.</p>
+
+<h2>Clustering made the output legible</h2>
+
+<p>Clustering was the step that made the similarity system easier to trust.</p>
+
+<p>The pipeline stores a SciPy-compatible linkage matrix per section, and the frontend reconstructs it as a dendrogram. That makes families of related exercises visible quickly.</p>
+
+<p>This matters because pairwise similarity is flat. It tells you that A and B are close. It does not tell you whether A and B are part of a larger cluster of five exercises that all merge at high similarity.</p>
+
+<p>The dendrogram and the heatmap answer different questions:</p>
+
+<ul>
+<li>the <strong>heatmap</strong> shows where local overlap is dense,</li>
+<li>the <strong>dendrogram</strong> shows whether the overlap forms a family,</li>
+<li>the <strong>pair detail view</strong> answers whether the family is genuinely redundant or merely related.</li>
+</ul>
+
+<p>This progressive drill-down turned the metric from an abstract score into an editorial tool.</p>
+
+<h2>The metric changed content planning</h2>
+
+<p>The most practical effect of the similarity pipeline was that generation stopped being driven only by volume.</p>
+
+<p>Before the metric, the instinct was easy: add more exercises where the library looks thin.</p>
+
+<p>After the metric, the question became better:</p>
+
+<ul>
+<li>which sections are underfilled,</li>
+<li>which sections are over-clustered,</li>
+<li>which sections have enough items but not enough variation,</li>
+<li>and where does the next batch need to change the internal shape of the set rather than simply increase count?</li>
+</ul>
+
+<p>That is a much better operating question.</p>
+
+<h2>What the system still does not know</h2>
+
+<p>The metric measures overlap.</p>
+
+<p>It does <strong>not</strong> measure pedagogy directly. The pipeline does something important, but limited. It does not answer questions "is this a good learning sequence?" or "what is the completeness of the grammar section's exercises?"</p>
+
+<p>It answers a more modest and still useful question:</p>
+
+<blockquote>Where is the corpus likely to be repeating itself in ways that deserve editorial attention?</blockquote>
+
+<p>That turned out to be an important step to making the content quality measurable and sequencing deliberate.</p>
+`
+  },
+  {
     slug: 'similarity-calculation-vast-ai',
     title: 'Why Similarity Calculation Moved to Vast.ai',
     excerpt: 'Once the similarity pipeline became part of the operating routine, local execution stopped being attractive. Long CPU-heavy runs block the machine, get postponed, and eventually stop happening often enough.',

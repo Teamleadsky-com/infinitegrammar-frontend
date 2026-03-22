@@ -21,6 +21,7 @@ const PAGES = [
   '/articles/why-infinitegrammar-focuses-on-exam-grammar/',
   '/articles/gap-fill-quality-distractor-problem/',
   '/articles/batch-processing-exercise-generation/',
+  '/articles/measuring-exercise-diversity/',
   '/articles/similarity-calculation-vast-ai/',
 
   // Exam center city pages
