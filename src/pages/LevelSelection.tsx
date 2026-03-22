@@ -290,6 +290,16 @@ const LevelSelection = () => {
               >
                 {t('levelSelection.grammarReference')}
               </a>
+              <a
+                href="/articles/"
+                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/articles/");
+                }}
+              >
+                {t('levelSelection.articles')}
+              </a>
             </div>
           </div>
 

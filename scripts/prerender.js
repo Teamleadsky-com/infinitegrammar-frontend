@@ -15,6 +15,13 @@ const PAGES = [
   // Main pages
   '/deutsche-grammatik/',
   '/pruefungszentren/',
+  '/articles/',
+
+  // Article pages
+  '/articles/why-infinitegrammar-focuses-on-exam-grammar/',
+  '/articles/gap-fill-quality-distractor-problem/',
+  '/articles/batch-processing-exercise-generation/',
+  '/articles/similarity-calculation-vast-ai/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',

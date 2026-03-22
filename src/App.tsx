@@ -19,6 +19,8 @@ import Grammatik from "./pages/Grammatik";
 import GrammatikLevel from "./pages/GrammatikLevel";
 import GrammatikTopic from "./pages/GrammatikTopic";
 import GrammatikContent from "./pages/GrammatikContent";
+import Articles from "./pages/Articles";
+import ArticleContent from "./pages/ArticleContent";
 import Admin from "./pages/Admin";
 import EmailPreferences from "./pages/EmailPreferences";
 import NotFound from "./pages/NotFound";
@@ -48,6 +50,8 @@ const App = () => (
               <Route path="/deutsche-grammatik/thema/:topic" element={<GrammatikTopic />} />
               <Route path="/deutsche-grammatik/:level/:slug" element={<GrammatikContent />} />
               <Route path="/deutsche-grammatik/:level" element={<GrammatikLevel />} />
+              <Route path="/articles" element={<Articles />} />
+              <Route path="/articles/:slug" element={<ArticleContent />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/email-preferences" element={<EmailPreferences />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
