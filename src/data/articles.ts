@@ -1360,6 +1360,178 @@ DO UPDATE SET
 
 <p>It becomes an extension of the product\u2019s core promise: repeated practice of specific grammar areas at the right moment.</p>
 `
+  },
+  {
+    slug: 'admin-dashboard-content-system',
+    title: 'The Admin Dashboard Became Part of the Content System',
+    excerpt: 'Once exercise generation, similarity scoring, reordering, and email scheduling were in place, the dashboard stopped being an internal convenience layer. It became the operating surface of the content system itself.',
+    datePublished: '2026-03-21T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>It is easy to think of an admin dashboard as reporting infrastructure that appears after the product starts working.</p>
+
+<p>In InfiniteGrammar.de, that turned out to be not the case. Once exercise generation, similarity scoring, reordering, and email scheduling were in place, the dashboard stopped being an internal convenience layer. It became the operating surface of the content system itself.</p>
+
+<p>The product was no longer just a set of exercises. It was a growing corpus with uneven coverage, variable demand, occasional redundancy, and several feedback loops that needed coordination. Without a way to inspect those dynamics, content decisions would drift back toward instinct and spot checks.</p>
+
+<h2>The problem was not lack of data</h2>
+
+<p>By the time the admin area started to matter, the system already had enough raw data to be misleading. There were tables for grammar sections, exercises, user completions, email events, similarity runs, clustering outputs, and ordering snapshots.</p>
+
+<p>The problem was not collection. The problem was operational translation. The useful question was never "what data do we have?" It was:</p>
+
+<blockquote>Which view makes the next content or product decision easier to see?</blockquote>
+
+<h2>1. Where is content missing?</h2>
+
+<p>The <strong>coverage heatmap</strong> crosses CEFR level with grammar section and shows how many exercises exist in each cell. It is the fastest way to see whether the library is shaped like a curriculum or just growing opportunistically.</p>
+
+<p>The <strong>inventory charts</strong> show exercise counts per grammar section and per content topic. These views shift content planning from "what feels underdeveloped?" to "which cells in the matrix are thin, empty, or overrepresented?"</p>
+
+<h2>2. Where is learner demand concentrating?</h2>
+
+<p>Coverage alone is not enough. A section can be underfilled and irrelevant, or overfilled and still actively consumed.</p>
+
+<p>The <strong>exercise demand chart</strong> combines completion counts with remaining stock and shows, per grammar section, how much of the available content learners are actually completing and how much untouched material remains.</p>
+
+<p>A section with high completion activity and low remaining depth is a candidate for expansion. A section with many remaining exercises but little usage may not have a content problem \u2014 it may have a discoverability or prioritisation problem. The response is different.</p>
+
+<h2>3. Is the content set internally healthy?</h2>
+
+<p>This is where the similarity dashboard becomes an editorial tool. The key object is the <strong>section overview table</strong>. For each grammar section it shows:</p>
+
+<ul>
+<li>exercise count,</li>
+<li>mean / median / max similarity,</li>
+<li>similarity bucket distribution,</li>
+<li>Weighted Neighbourhood Score (WNS),</li>
+<li>Ordering Quality Ratio (OQR),</li>
+<li>and the active run selector.</li>
+</ul>
+
+<p>This table is intentionally dense. It exists to answer a triage question:</p>
+
+<blockquote>Which sections deserve attention first, and what kind of attention do they need?</blockquote>
+
+<p>A section with items in the <strong>&gt; 0.75</strong> similarity bucket likely contains near-duplicates. A section with elevated WNS but modest max similarity may not have duplicate content but may still produce a poor learner sequence. A section with a compressed similarity distribution may simply be intrinsically dense and need broader scenario variation. These are different problems. The overview table is what separates them.</p>
+
+<h2>4. What exactly is wrong inside a section?</h2>
+
+<p>Once a section is selected, the dashboard moves from triage to diagnosis with several specialised views.</p>
+
+<h3>The dendrogram</h3>
+
+<p>Shows whether the section contains clear internal clusters and how those clusters change under different similarity thresholds. The threshold slider lets the operator move from "show almost-duplicates" to "show broader structural families" \u2014 closer to how an editor thinks about the set.</p>
+
+<h3>The heatmap</h3>
+
+<p>Makes local structure visible at a glance. A red block near the diagonal means the learner is likely to hit repetition in sequence. Isolated warm cells far from the diagonal mean similarity exists but is distributed safely. Ordering snapshots are essential here \u2014 without them, historical heatmaps would render in the latest order and lose most of their value.</p>
+
+<h3>The neighbour strip</h3>
+
+<p>Answers the question: how similar is each exercise to the next one, the one after that, and the one after that? This is the visual counterpart of the WNS metric.</p>
+
+<h3>The pair detail view</h3>
+
+<p>Shows the full exercise text, answers, distractors, metadata, and similarity score side by side. The dashboard should not end at "the metric says these are similar." It has to end at "do I keep both, rewrite one, move one, or remove one?" That is the real editorial decision point.</p>
+
+<h2>How metrics changed content planning</h2>
+
+<p>Metrics such as WNS and rank-based OQR are only useful if they change decisions. That happened in two ways.</p>
+
+<p>First, they made section triage faster. It became easier to see where the problem was duplication, where it was sequencing, and where it was just a need for more variety.</p>
+
+<p>Second, they changed content planning. Generation stopped being driven only by volume. The next batch could be justified by coverage gaps, demand pressure, or diversity problems visible in the section-level views.</p>
+
+<h2>The campaign views belong to the same system</h2>
+
+<p>The campaign funnel and learner statistics views answer the same operational question from another angle: what gets used, where learners return, where they drop, and whether the product is creating repeated practice around the right grammar areas.</p>
+
+<p>That is why the dashboard combines coverage, demand, similarity, and campaign views instead of splitting them into unrelated admin screens. The product is one system. The dashboard reflects that.</p>
+`
+  },
+  {
+    slug: 'tech-stack-content-heavy-language-product',
+    title: 'The Tech Stack Behind InfiniteGrammar.de',
+    excerpt: 'A breakdown of the technologies used across the learner-facing app, admin dashboard, content generation pipeline, and similarity analysis system \u2014 and what I would probably do differently.',
+    datePublished: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>This is a factual overview of the technologies used in InfiniteGrammar.de, organised by workload. The system has several distinct parts that run differently and were built with different tools.</p>
+
+<h2>Frontend</h2>
+
+<p>The learner-facing app and the admin dashboard are both built with <strong>React 18</strong>, <strong>TypeScript</strong>, and <strong>Vite</strong> (with the SWC plugin for compilation speed). Styling uses <strong>Tailwind CSS</strong> with <strong>shadcn/ui</strong> components built on <strong>Radix UI</strong> primitives.</p>
+
+<p>Other frontend libraries in use:</p>
+
+<ul>
+<li><strong>React Router v6</strong> for routing.</li>
+<li><strong>TanStack Query (React Query)</strong> for server-state fetching and caching.</li>
+<li><strong>Recharts</strong> for charts in the admin dashboard.</li>
+<li><strong>i18next</strong> for German/English internationalisation.</li>
+<li><strong>react-helmet-async</strong> for per-route SEO meta tags.</li>
+<li><strong>zod</strong> + <strong>react-hook-form</strong> for form validation.</li>
+<li><strong>lucide-react</strong> for icons.</li>
+</ul>
+
+<p>The admin dashboard also uses custom SVG components for dendrograms and similarity heatmaps that are not covered by Recharts.</p>
+
+<h2>Backend</h2>
+
+<p>The API layer runs as <strong>Netlify Functions</strong> (serverless) written in TypeScript. These handle exercise fetching, progress tracking, statistics, campaign logic, and admin endpoints.</p>
+
+<p>The backend uses raw SQL queries against the database rather than an ORM. This was a deliberate choice \u2014 many admin queries use PostgreSQL-specific features (CTEs, conditional aggregations, window functions) that are easier to write and debug as explicit SQL.</p>
+
+<h2>Database</h2>
+
+<p><strong>Neon PostgreSQL</strong> (serverless Postgres) stores everything: exercises, gaps, distractors, user progress, completions, email campaign state, similarity runs, pairwise scores, clustering output, and ordering snapshots. The <code>@neondatabase/serverless</code> driver is used for connections from Netlify Functions.</p>
+
+<h2>Email</h2>
+
+<p>Transactional email is sent via the <strong>Resend</strong> API. The package.json also includes <strong>Nodemailer</strong> as a dependency. Email templates are plain string interpolation \u2014 no template engine.</p>
+
+<h2>SEO and prerendering</h2>
+
+<p>The app is a React SPA. For grammar topic pages and other SEO-relevant routes, <strong>Puppeteer</strong> runs at build time to prerender static HTML. The build script (<code>vite build && node scripts/prerender.js</code>) produces crawlable HTML for ~120 routes. A static <code>sitemap.xml</code> is maintained manually.</p>
+
+<h2>Content generation pipeline</h2>
+
+<p>Exercise generation runs as a separate <strong>Python</strong> system, not inside the Node.js/Netlify runtime. It calls the <strong>OpenAI API</strong> (including the Batch API for cost efficiency) to generate gap-fill exercises with distractors and explanations. The pipeline uses JSON-based run state for resumability and tracks each exercise through generation, assessment, and finalisation stages before writing to the database.</p>
+
+<h2>Similarity analysis pipeline</h2>
+
+<p>Also a separate <strong>Python</strong> system. It computes pairwise similarity between exercises within a grammar section using:</p>
+
+<ul>
+<li><strong>spaCy</strong> for POS-based linguistic features,</li>
+<li><strong>scikit-learn</strong> for TF-IDF vectorisation and similarity utilities,</li>
+<li><strong>NumPy</strong> for vector operations,</li>
+<li><strong>SciPy</strong> for hierarchical clustering (linkage output for dendrograms).</li>
+</ul>
+
+<p>There is also an experimental semantic-embedding path that can run on <strong>Vast.ai</strong> GPU instances using <strong>SGLang</strong> or <strong>vLLM</strong> with models like <strong>BAAI/bge-m3</strong>. Remote instances process a state file and never access the database or environment variables directly \u2014 results are collected back locally and written to the database in a separate finalisation step.</p>
+
+<h2>Hosting and deployment</h2>
+
+<p><strong>Netlify</strong> hosts the frontend and serverless functions. Deployment is triggered by git push. The Python pipelines run locally or on remote GPU instances, not on Netlify.</p>
+
+<h2>What I would probably do differently</h2>
+
+<p><strong>Puppeteer prerendering is fragile.</strong> It works, but it is slow (~120 routes at build time), breaks silently when components change, and produces HTML that can drift from what React hydrates on the client. A framework with built-in SSR or static generation \u2014 Next.js, Astro, or even Vite SSG \u2014 would handle this more reliably. The prerender script was a pragmatic shortcut that avoided a framework migration, but it has become the most maintenance-prone part of the build.</p>
+
+<p><strong>No ORM is fine until it is not.</strong> Raw SQL works well for the admin dashboard\u2019s complex queries. But for the simpler CRUD operations (user progress, completions, campaign state), a lightweight query builder like Kysely or Drizzle would reduce boilerplate and catch schema drift at compile time without sacrificing query control where it matters.</p>
+
+<p><strong>The frontend carries unused weight.</strong> The package.json includes the full set of Radix UI primitives via shadcn/ui, but many of them are never used (menubar, context menu, hover card, navigation menu, etc.). Tree-shaking handles some of this, but the dependency list is larger than it needs to be. A cleanup pass or a more selective shadcn/ui installation would reduce surface area.</p>
+
+<p><strong>Nodemailer and Resend are both in the dependency list.</strong> This is a leftover from migrating between providers. Only one should remain. Having both adds confusion about which path is active.</p>
+
+<p><strong>The admin dashboard probably should not live in the same React app.</strong> It shares a router and build with the learner-facing product, which means admin-only code (heavy chart libraries, heatmap components, similarity visualisations) is part of the same bundle. Splitting the admin into a separate app or using more aggressive code splitting would reduce the main app\u2019s bundle size and make the two concerns independently deployable.</p>
+
+<p><strong>Static sitemap maintenance does not scale.</strong> The sitemap is a manually edited XML file. With ~120 routes and growing, generating it from the route definitions or the database at build time would be less error-prone.</p>
+
+<p><strong>Python pipelines have no formal task runner.</strong> The generation and similarity pipelines use CLI scripts with JSON state files. This works at the current scale, but there is no retry logic, no scheduling, and no visibility into failed runs beyond log files. A lightweight task runner (even just a Makefile with targets, or something like Prefect for the Python side) would make pipeline operations more predictable as the number of grammar sections grows.</p>
+`
   }
 ];
 

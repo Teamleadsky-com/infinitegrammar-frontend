@@ -25,6 +25,8 @@ const PAGES = [
   '/articles/similarity-calculation-vast-ai/',
   '/articles/reordering-exercises-product-problem/',
   '/articles/email-campaigns-learning-system/',
+  '/articles/admin-dashboard-content-system/',
+  '/articles/tech-stack-content-heavy-language-product/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',
