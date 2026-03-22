@@ -1021,6 +1021,417 @@ vastai destroy instance INSTANCE_ID</code></pre>
 
 <p>Make sure to destroy the instance when done; stopping can reduce GPU cost, but destroying is the clean way to stop storage charges too.</p>
 `
+  },
+  {
+    slug: 'reordering-exercises-product-problem',
+    title: 'Why Sequencing Exercises Became a Product Problem, Not Just an Optimization Problem',
+    excerpt: 'Even a reasonably diverse section can feel repetitive if similar exercises appear back to back. A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence.',
+    datePublished: '2026-03-18T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>Obtaining the similarity scores highlighted another exercises library challenge.</p>
+
+<p>Even a reasonably diverse section can feel repetitive if similar exercises appear back to back.</p>
+
+<p>A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence.</p>
+
+<p>That changed the question.</p>
+
+<p>The issue was no longer just:</p>
+
+<blockquote>Are these exercises too similar overall?</blockquote>
+
+<p>It became:</p>
+
+<blockquote>In what order should they appear so that practice feels varied without breaking learner progress?</blockquote>
+
+<p>That sounds like a straightforward optimisation task.</p>
+
+<p>It turned out to be partly that, and partly a product-constraint problem.</p>
+
+<h2>Why order matters even when the content is acceptable</h2>
+
+<p>A grammar section can contain thirty or forty individually acceptable exercises and still create a poor learning experience.</p>
+
+<p>The failure mode is local repetition.</p>
+
+<p>If several consecutive exercises use the same content frame, the same sentence scaffold, or the same narrow variant of a grammar rule, the learner gets the feeling of doing the same task repeatedly. That is true even if, measured globally, the section still looks diverse.</p>
+
+<p>This is why similarity analysis alone was not enough.</p>
+
+<p>Similarity told me which pairs looked close. It did not tell me whether the learner would encounter those pairs consecutively.</p>
+
+<p>A content system that ignores order is still leaving part of the learning experience to chance.</p>
+
+<h2>The optimisation objective</h2>
+
+<p>At implementation level, the goal is simple:</p>
+
+<blockquote>Find an ordering that minimizes similarity between consecutive exercises.</blockquote>
+
+<p>In simplified form:</p>
+
+<pre><code>minimize = sum(similarity(ex_i, ex_i_plus_1) for i in range(n - 1))</code></pre>
+
+<p>This is closely related to a travelling-salesman-style path problem. The search space grows too quickly for exact optimisation to be attractive once sections become moderately large, so the real question is not how to find the theoretical optimum. It is how to find a sequence that is clearly better than insertion order or random shuffle.</p>
+
+<p>I ended up using a two-step heuristic.</p>
+
+<h2>Step 1: greedy nearest-neighbour seeding</h2>
+
+<p>The first step builds an initial sequence greedily.</p>
+
+<p>Start from the most "central" exercise in the section \u2014 the one with the highest average similarity to all others \u2014 and then repeatedly append the least similar remaining exercise.</p>
+
+<pre><code>start = int(np.argmax(sim_matrix.mean(axis=1)))
+
+visited = [False] * n
+sequence = [start]
+visited[start] = True
+
+for _ in range(n - 1):
+    current = sequence[-1]
+    best_next = min(
+        (j for j in range(n) if not visited[j]),
+        key=lambda j: sim_matrix[current][j]
+    )
+    sequence.append(best_next)
+    visited[best_next] = True</code></pre>
+
+<p>This does not produce an optimal path.</p>
+
+<p>What it does produce is a strong baseline quickly. It forces the sequence away from local similarity instead of inheriting generation order.</p>
+
+<p>That already improved sections materially. But it also left obvious local defects behind, especially in sections with multiple internal clusters.</p>
+
+<h2>Step 2: 2-opt improvement</h2>
+
+<p>To improve the greedy baseline, I added a 2-opt pass.</p>
+
+<p>2-opt is a standard local-search heuristic. It tries reversing every possible segment and keeps the reversal if it reduces the total similarity cost.</p>
+
+<pre><code>for i in range(n - 1):
+    for j in range(i + 2, n):
+        delta = 0.0
+        if i > 0:
+            delta -= sim_matrix[sequence[i - 1]][sequence[i]]
+            delta += sim_matrix[sequence[i - 1]][sequence[j]]
+        if j &lt; n - 1:
+            delta -= sim_matrix[sequence[j]][sequence[j + 1]]
+            delta += sim_matrix[sequence[i]][sequence[j + 1]]
+        if delta &lt; -1e-9:
+            sequence[i:j + 1] = sequence[i:j + 1][::-1]
+            improved = True</code></pre>
+
+<p>The value of 2-opt here is not theoretical elegance.</p>
+
+<p>It is that it reliably cleans up the most visible local mistakes left by the greedy pass. Small runs of similar exercises become more evenly distributed without requiring an expensive exact solver.</p>
+
+<p>For sections of the size used in InfiniteGrammar.de, that trade-off is good enough.</p>
+
+<h2>Random shuffle was a weak baseline</h2>
+
+<p>One thing became clear quickly.</p>
+
+<p>Random order is not a neutral baseline.</p>
+
+<p>If a section contains topic clusters, random shuffle still tends to leave local runs of similar items. Not always, but often enough that the learner experience remains uneven.</p>
+
+<p>In practice, the difference between shuffled order and similarity-aware order is not subtle when looking at neighbour metrics or at a heatmap ordered by <code>order_number</code>.</p>
+
+<p>This is a case where a relatively lightweight algorithm produces an outsized UX effect because the default order is effectively accidental.</p>
+
+<h2>The constraint that mattered more than the algorithm</h2>
+
+<p>The more interesting part was not the optimisation itself.</p>
+
+<p>It was the constraint that the optimisation was not allowed to violate.</p>
+
+<p>Learners progress through a grammar section in order. That progress is stored as the last completed exercise position. If I reorder the entire section after learners have already started it, the progress pointer no longer refers to the same pedagogical path.</p>
+
+<p>A learner could suddenly re-encounter completed material, skip unseen material, or resume in a sequence that no longer makes sense.</p>
+
+<p>So the reordering system ended up with two modes:</p>
+
+<ul>
+<li><strong>complete mode</strong> \u2014 reorder the full section when no one has started it,</li>
+<li><strong>untouched mode</strong> \u2014 reorder only exercises that no learner has completed yet.</li>
+</ul>
+
+<p>The implementation is simple:</p>
+
+<pre><code>touched_ids = db.fetch_touched_exercise_ids(conn, grammar_section_id)
+locked = [ex for ex in all_exercises if str(ex['id']) in touched_ids]
+free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code></pre>
+
+<p>The locked prefix keeps its positions. Only the remaining exercises are reordered.</p>
+
+<p>This is where the problem stops being purely algorithmic.</p>
+
+<p>A global optimum that breaks learner continuity is not a good solution. A weaker local optimum that respects learner progress is the right product decision.</p>
+
+<h2>The boundary had to be treated as a first-class part of the sequence</h2>
+
+<p>Once a section is split into locked and free exercises, the first free exercise cannot be chosen in isolation.</p>
+
+<p>It has to be chosen relative to the last locked exercise, because that boundary is exactly where the learner resumes.</p>
+
+<p>So the first free exercise is selected to be as dissimilar as possible from the last completed one. This reduces the chance that the learner resumes into a near-duplicate of something they just saw.</p>
+
+<p>That looks like a small implementation detail.</p>
+
+<p>It is not.</p>
+
+<p>The boundary between already-practised and still-upcoming material is the point where sequencing most directly affects the user experience.</p>
+
+<h2>Reordering needed its own metrics</h2>
+
+<p>Once reordering existed, I needed a way to check whether the new sequence was actually better.</p>
+
+<p>Two metrics became useful.</p>
+
+<h3>Weighted Neighbourhood Score (WNS)</h3>
+
+<p>WNS measures how similar each exercise is to the next few exercises, with stronger weight on the immediate neighbours.</p>
+
+<p>The point is simple: the learner feels local repetition, not just global overlap.</p>
+
+<h3>Ordering Quality Ratio (OQR)</h3>
+
+<p>OQR compares adjacent-pair behaviour to the full similarity distribution.</p>
+
+<p>The early version used a mean-ratio formula and turned out to be misleading, because it moved when the number of exercises changed even if the actual sequence quality did not. The fix was a <strong>rank-based OQR</strong>, which compares where adjacent pairs sit inside the full similarity distribution.</p>
+
+<p>That made the metric much more stable.</p>
+
+<h2>Order snapshots had to be stored per run</h2>
+
+<p>Once reordering became part of the workflow, another issue appeared.</p>
+
+<p>The dashboard needs to compare runs. That is only meaningful if each run remembers the exercise order that existed at the time it was computed.</p>
+
+<p>Otherwise an old similarity run would be shown in today\u2019s order, which destroys most of the explanatory value of heatmaps and neighbour views.</p>
+
+<p>That is why the system stores order snapshots per run. It makes historical comparison meaningful rather than cosmetic.</p>
+
+<h2>What sequencing actually changed</h2>
+
+<p>Reordering does not create diversity that is not there.</p>
+
+<p>It cannot fix a section whose underlying exercises are all too similar. That is still a content problem.</p>
+
+<p>What it can do is make the existing diversity more visible and more usable for the learner.</p>
+
+<p>That turned out to be important enough that sequencing stopped feeling like a backend optimisation task and started feeling like part of the product itself.</p>
+
+<p>The logic is simple.</p>
+
+<p>If the learner experiences the section as a sequence, then sequence quality is part of product quality.</p>
+
+<p>At that point, order is no longer a technical afterthought.</p>
+`
+  },
+  {
+    slug: 'email-campaigns-learning-system',
+    title: 'Email Campaigns Worked Better When Treated as a Learning System',
+    excerpt: 'The product is organised around narrow grammar sections rather than broad lessons. That changes the retention logic. The campaign system is section-based \u2014 every completion event can create or update one schedule for one user and one grammar section.',
+    datePublished: '2026-03-20T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>The question behind the email campaign was simple:</p>
+
+<blockquote>If the product is built around repeated practice of specific grammar sections, what is the lightest reminder system that helps learners return to the right section at roughly the right time?</blockquote>
+
+<p>That question matters because the product is organised around narrow grammar sections rather than broad lessons.</p>
+
+<p>A learner does not just "practice German." They practice things like:</p>
+
+<ul>
+<li>adjective declension after articles,</li>
+<li>verbs with fixed prepositions,</li>
+<li>sentence connectors in B2 texts,</li>
+<li>nominalisation in C1 written German.</li>
+</ul>
+
+<p>That changes the retention logic.</p>
+
+<p>The campaign system is section-based. Every completion event can create or update one schedule for one user and one grammar section.</p>
+
+<p>That gives the system something concrete to work with:</p>
+
+<ul>
+<li>what the learner practiced,</li>
+<li>when they practiced it,</li>
+<li>when it should next be revisited,</li>
+<li>and which link should take them directly back there.</li>
+</ul>
+
+<h2>The schedule is deliberately simple</h2>
+
+<p>The first version uses a fixed four-step review sequence.</p>
+
+<div class="table-wrapper">
+<table>
+<thead><tr><th>Step</th><th>Delay</th><th>Purpose</th></tr></thead>
+<tbody>
+<tr><td>0</td><td>+1 day</td><td>Catch the first forgetting drop</td></tr>
+<tr><td>1</td><td>+3 days</td><td>Reinforce while the pattern is still accessible</td></tr>
+<tr><td>2</td><td>+7 days</td><td>Move into a weekly review rhythm</td></tr>
+<tr><td>3</td><td>+14 days</td><td>Test whether the pattern is becoming durable</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>This is not a full adaptive spaced-repetition system.</p>
+
+<p>It is a practical review schedule for a lightweight email layer.</p>
+
+<p>That trade-off was intentional. A fixed schedule is easier to reason about, easier to debug, and easier to connect to concrete product actions. It also matches the current maturity of the product better than pretending to have a mastery model where the evidence is still thin.</p>
+
+<p>The key detail is that the schedule is <strong>resettable</strong>.</p>
+
+<p>If a learner practices the same section again before the schedule finishes, the system does not stack reminders. It updates the existing schedule instead. The most recent practice event becomes the new anchor.</p>
+
+<p>That logic lives in a simple upsert:</p>
+
+<pre><code>INSERT INTO campaign_schedule (
+  user_id,
+  grammar_section_id,
+  step,
+  next_send_at,
+  preferred_send_hour,
+  timezone,
+  status
+)
+VALUES (...)
+ON CONFLICT (user_id, grammar_section_id)
+DO UPDATE SET
+  step = 0,
+  next_send_at = EXCLUDED.next_send_at,
+  preferred_send_hour = EXCLUDED.preferred_send_hour,
+  timezone = EXCLUDED.timezone,
+  status = 'active';</code></pre>
+
+<p>That turns the schedule into a small state machine rather than a growing pile of pending emails.</p>
+
+<h2>Timezone awareness matters more than template polish</h2>
+
+<p>A reminder email sent at the wrong local hour is mostly noise.</p>
+
+<p>The system stores the learner\u2019s local send preference implicitly: when the schedule is created, it records the local hour and timezone. The hourly processor then checks whether a schedule is due <strong>and</strong> whether the current hour in that timezone matches the preferred hour.</p>
+
+<p>Conceptually, the eligibility logic looks like this:</p>
+
+<pre><code>WHERE cs.next_send_at &lt;= NOW()
+  AND (
+    cs.preferred_send_hour IS NULL
+    OR cs.preferred_send_hour = EXTRACT(
+         HOUR FROM NOW() AT TIME ZONE COALESCE(cs.timezone, 'Europe/Berlin')
+       )::integer
+  )</code></pre>
+
+<p>This solves a mundane but important product issue.</p>
+
+<p>A reminder that is technically on time in UTC can still be mistimed in the learner\u2019s actual day. The email does not need perfect personalisation. It does need temporal plausibility.</p>
+
+<h2>Most of the work is in the guardrails</h2>
+
+<p>The value of the system is not just in sending messages.</p>
+
+<p>It is in not sending the wrong ones.</p>
+
+<p>Before a message goes out, the processor applies several checks:</p>
+
+<ol>
+<li><strong>subscription state</strong> \u2014 do not send if the learner unsubscribed,</li>
+<li><strong>pause state</strong> \u2014 do not send during a pause window,</li>
+<li><strong>already-practiced check</strong> \u2014 cancel the reminder if the learner already returned to that section,</li>
+<li><strong>weekly cap</strong> \u2014 do not exceed the configured email frequency,</li>
+<li><strong>comeback mode</strong> \u2014 reduce cadence for learners who have been inactive longer.</li>
+</ol>
+
+<p>The third one is especially important.</p>
+
+<p>Without it, the system can produce the most irritating kind of reminder: an email asking a learner to review a section they already revisited on their own.</p>
+
+<p>From a systems perspective, that is a small state mismatch. From a product perspective, it makes the platform look inattentive.</p>
+
+<p>That is why the campaign processor is better understood as a decision layer than as a mail sender.</p>
+
+<h2>The funnel only became useful when it was broken into stages</h2>
+
+<p>The tracking model uses four states:</p>
+
+<ol>
+<li><strong>sent</strong></li>
+<li><strong>clicked</strong></li>
+<li><strong>exercise started</strong></li>
+<li><strong>exercise completed</strong></li>
+</ol>
+
+<p>The reason to track all four is simple.</p>
+
+<p>"Email worked" is too coarse to guide product changes.</p>
+
+<p>A click without a start suggests a landing or routing problem. A start without a completion suggests exercise friction or session design problems. A low click rate suggests a subject-line or relevance problem.</p>
+
+<p>Once the funnel was staged, it became much easier to tell where the problem actually was.</p>
+
+<p>That is the point where email analytics stopped being vanity metrics and started behaving like product diagnostics.</p>
+
+<h2>The useful decision was section-specific, not generic</h2>
+
+<p>This is the broader lesson.</p>
+
+<p>The product does not need generic "come back to the app" messages. It needs reminders tied to the learner\u2019s actual practice path.</p>
+
+<p>That is why the schedule is attached to grammar sections rather than to abstract activity streaks.</p>
+
+<p>A reminder that says, in effect, "come back to this exact grammar area you practiced three days ago" is much closer to the product\u2019s logic than a generic engagement email.</p>
+
+<p>The system becomes much lighter and much more relevant at the same time.</p>
+
+<h2>Why this worked better as a learning system than as marketing</h2>
+
+<p>Thinking of the campaign as a marketing feature would have produced the wrong design.</p>
+
+<p>The important questions are not:</p>
+
+<ul>
+<li>how many emails were sent,</li>
+<li>how polished the template looks,</li>
+<li>or how often users were nudged.</li>
+</ul>
+
+<p>The important questions are:</p>
+
+<ul>
+<li>was the reminder tied to the right section,</li>
+<li>did it arrive at a plausible time,</li>
+<li>did it respect the learner\u2019s recent activity,</li>
+<li>and where exactly did the learner drop after interacting with it?</li>
+</ul>
+
+<p>That is learning-system logic, not marketing logic.</p>
+
+<h2>The practical lesson</h2>
+
+<p>A lightweight email layer can be useful.</p>
+
+<p>But it becomes much more useful when it is tied to:</p>
+
+<ul>
+<li>explicit section state,</li>
+<li>a resettable schedule,</li>
+<li>good guardrails,</li>
+<li>timezone awareness,</li>
+<li>and a funnel that distinguishes between click, start, and completion.</li>
+</ul>
+
+<p>In that form, the email campaign stops being a generic retention add-on.</p>
+
+<p>It becomes an extension of the product\u2019s core promise: repeated practice of specific grammar areas at the right moment.</p>
+`
   }
 ];
 

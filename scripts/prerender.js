@@ -23,6 +23,8 @@ const PAGES = [
   '/articles/batch-processing-exercise-generation/',
   '/articles/measuring-exercise-diversity/',
   '/articles/similarity-calculation-vast-ai/',
+  '/articles/reordering-exercises-product-problem/',
+  '/articles/email-campaigns-learning-system/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',
