@@ -31,6 +31,11 @@ export const articles: Article[] = [
 
 <p>That changes the product problem completely.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/level-selection.png" alt="InfiniteGrammar level selection showing CEFR levels A1 through C1" />
+<figcaption>The product is structured around CEFR levels A1 through C1 — the same levels that define exam thresholds.</figcaption>
+</figure>
+
 <p>This is no longer open-ended language learning. It is preparation under constraints:</p>
 
 <ul>
@@ -101,6 +106,11 @@ export const articles: Article[] = [
 
 <p>The product is not trying to imitate telc or TestDaF directly. But the task design and the scenario design are clearly shaped by the fact that many learners work toward those kinds of exams.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/exercise-gap-fill.png" alt="A B2 gap-fill exercise with blanks embedded in a German text about working from home" />
+<figcaption>A B2 gap-fill exercise. The learner selects the correct verb form from four options for each blank — the same task structure used in telc and TestDaF exams.</figcaption>
+</figure>
+
 <h2>Why the content model is CEFR x grammar section x scenario</h2>
 
 <p>A second early decision was to structure content across three axes at once:</p>
@@ -118,6 +128,11 @@ export const articles: Article[] = [
 <p>The topic layer is therefore not decoration. It is part of the transfer logic.</p>
 
 <p>It also supports the exam-oriented use case. Many scenarios sit close to domains that repeatedly matter in preparation and later real life: work, education, housing, bureaucracy, formal communication, applications, and public life.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/grammar-overview.png" alt="Grammar reference overview with quick quizzes across levels and topics" />
+<figcaption>The grammar reference page organises content by level and topic — quick tests let learners target specific grammar areas directly.</figcaption>
+</figure>
 
 <h2>Why the product had to go deeper rather than broader</h2>
 
@@ -143,6 +158,11 @@ export const articles: Article[] = [
 </ul>
 
 <p>This is one of those cases where product strategy quietly commits you to infrastructure. Once the promise becomes "targeted depth," you need a way to produce depth, measure depth, and keep depth from degenerating into repetition.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar sections showing categories like Satzbau, Zeiten & Modi, and Verben & Ergänzungen with multiple topics each" />
+<figcaption>The B2 grammar reference: 9 sections across categories like sentence structure, tenses, and verb complements. Each section links to explanations and exercises.</figcaption>
+</figure>
 
 <h2>What this means in product terms</h2>
 

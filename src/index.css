@@ -185,3 +185,15 @@ All colors MUST be HSL.
 .article-content .table-wrapper {
   @apply overflow-x-auto mb-5;
 }
+
+.article-content .article-figure {
+  @apply my-8;
+}
+
+.article-content .article-figure img {
+  @apply w-full rounded-lg border shadow-sm;
+}
+
+.article-content .article-figure figcaption {
+  @apply text-sm text-muted-foreground mt-3 text-center italic;
+}
