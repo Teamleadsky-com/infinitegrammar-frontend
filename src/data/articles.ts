@@ -419,11 +419,6 @@ for iteration in range(max_iterations):
 
 <p>That is why the generation system ended up as a batch-processing workflow.</p>
 
-<figure class="article-figure">
-<img src="/images/articles/grammar-sections-b1.png" alt="B1 grammar sections showing 12 topics across sentence structure, tenses, verbs, prepositions, adjectives, and passive voice" />
-<figcaption>Each grammar section at each CEFR level needs dozens of exercises — the batch pipeline is what makes producing this volume practical.</figcaption>
-</figure>
-
 <h2>The synchronous loop was fine for testing and bad for production</h2>
 
 <p>The first version was synchronous:</p>
@@ -542,11 +537,6 @@ for iteration in range(max_iterations):
 
 <p>So the per-exercise logic stays conversational, while the run-level system stays asynchronous.</p>
 
-<figure class="article-figure">
-<img src="/images/articles/exercise-b2-infinitiv.png" alt="A B2 Infinitivs\u00e4tze exercise with six gaps to fill in" />
-<figcaption>The output of the pipeline: a structured gap-fill exercise with multiple blanks, each with its own set of options and a correct answer.</figcaption>
-</figure>
-
 <h2>The economics are what made this worthwhile</h2>
 
 <p>This was the practical reason for building the batch workflow.</p>
@@ -606,11 +596,6 @@ for iteration in range(max_iterations):
 <p>It was something more specific:</p>
 
 <blockquote>How likely is a learner to experience these two exercises as redundant?</blockquote>
-
-<figure class="article-figure">
-<img src="/images/articles/exercise-b2-infinitiv.png" alt="A B2 gap-fill exercise with six blanks" />
-<figcaption>Two exercises can use different words and topic contexts while still repeating the same sentence structure, gap pattern, and answer morphology. That kind of repetition is what the similarity system needs to detect.</figcaption>
-</figure>
 
 <h2>A single embedding answered the wrong question</h2>
 
@@ -704,11 +689,6 @@ for iteration in range(max_iterations):
 <li>and clustering structures for visualization.</li>
 </ul>
 
-<figure class="article-figure">
-<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar sections showing categories like Satzbau, Zeiten, Verben" />
-<figcaption>Each grammar section contains dozens of exercises. With 780 pairwise comparisons in a 40-exercise section, raw similarity scores need aggregation to be useful.</figcaption>
-</figure>
-
 <p>The bucket view became especially useful in the admin area:</p>
 
 <ul>
@@ -781,11 +761,6 @@ for iteration in range(max_iterations):
 <p>Once the similarity pipeline became part of the operating routine, local execution stopped being attractive.</p>
 
 <p>Similarity was no longer something I ran once in a while. It became something I wanted to run after a new generation batch, after reordering, and whenever a section started looking suspicious. At that point local execution became a friction point. Long CPU-heavy runs block the machine, get postponed, and eventually stop happening often enough.</p>
-
-<figure class="article-figure">
-<img src="/images/articles/grammar-hub-overview.png" alt="Grammar hub showing quick quizzes and topic search across all CEFR levels" />
-<figcaption>The grammar hub spans five CEFR levels with dozens of sections. Running similarity analysis across all of them regularly is what made remote compute necessary.</figcaption>
-</figure>
 
 <p>That is why I moved the similarity pipeline to Vast.ai.</p>
 
@@ -1062,11 +1037,6 @@ vastai destroy instance INSTANCE_ID</code></pre>
 
 <p>That turned out to be partly an optimisation task and partly a product-constraint problem.</p>
 
-<figure class="article-figure">
-<img src="/images/articles/exercise-a2-sequence.png" alt="An A2 gap-fill exercise showing the learner experience as a linear sequence" />
-<figcaption>Learners encounter exercises one after another. If consecutive exercises share the same structure and vocabulary, the section feels repetitive regardless of its overall diversity.</figcaption>
-</figure>
-
 <h2>Why order matters even when the content is acceptable</h2>
 
 <p>A grammar section can contain thirty or forty individually acceptable exercises and still create a poor learning experience. If several consecutive exercises use the same content frame, the same sentence scaffold, or the same narrow variant of a grammar rule, the learner feels stuck repeating the same task \u2014 even if, measured globally, the section looks diverse.</p>
@@ -1201,11 +1171,6 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
 <blockquote>If the product is built around repeated practice of specific grammar sections, what is the lightest reminder system that helps learners return to the right section at roughly the right time?</blockquote>
 
 <p>That question matters because the product is organised around narrow grammar sections rather than broad lessons.</p>
-
-<figure class="article-figure">
-<img src="/images/articles/grammar-content-page-b2.png" alt="A B2 grammar content page for Infinitivs\u00e4tze with a practice button" />
-<figcaption>Each email reminder links directly to a specific grammar section page like this one. The learner returns to the exact area they practiced, not to a generic homepage.</figcaption>
-</figure>
 
 <p>A learner does not just "practice German." They practice things like:</p>
 
@@ -1409,11 +1374,6 @@ DO UPDATE SET
 
 <p>The product was no longer just a set of exercises. It was a growing corpus with uneven coverage, variable demand, occasional redundancy, and several feedback loops that needed coordination. Without a way to inspect those dynamics, content decisions would drift back toward instinct and spot checks.</p>
 
-<figure class="article-figure">
-<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar level page showing multiple grammar categories and topics" />
-<figcaption>The learner-facing view of a grammar level. The admin dashboard operates on the same structure but shows exercise counts, similarity scores, demand metrics, and campaign data for each section.</figcaption>
-</figure>
-
 <h2>The problem was not lack of data</h2>
 
 <p>By the time the admin area started to matter, the system already had enough raw data to be misleading. There were tables for grammar sections, exercises, user completions, email events, similarity runs, clustering outputs, and ordering snapshots.</p>
@@ -1427,11 +1387,6 @@ DO UPDATE SET
 <p>The <strong>coverage heatmap</strong> crosses CEFR level with grammar section and shows how many exercises exist in each cell. It is the fastest way to see whether the library is shaped like a curriculum or just growing opportunistically.</p>
 
 <p>The <strong>inventory charts</strong> show exercise counts per grammar section and per content topic. These views shift content planning from "what feels underdeveloped?" to "which cells in the matrix are thin, empty, or overrepresented?"</p>
-
-<figure class="article-figure">
-<img src="/images/articles/level-selection.png" alt="Homepage showing CEFR levels A1 through C1 and grammar topic categories" />
-<figcaption>The coverage heatmap in the admin area crosses these CEFR levels with grammar sections to show where the library has gaps.</figcaption>
-</figure>
 
 <h2>2. Where is learner demand concentrating?</h2>
 
@@ -1504,11 +1459,6 @@ DO UPDATE SET
     htmlContent: `
 <p>This is a factual overview of the technologies used in InfiniteGrammar.de, organised by workload. The system has several distinct parts that run differently and were built with different tools.</p>
 
-<figure class="article-figure">
-<img src="/images/articles/exercise-dropdown-open.png" alt="Exercise with dropdown showing four verb options" />
-<figcaption>The learner-facing product: an interactive gap-fill exercise built with React, Tailwind, and shadcn/ui components.</figcaption>
-</figure>
-
 <h2>Frontend</h2>
 
 <p>The learner-facing app and the admin dashboard are both built with <strong>React 18</strong>, <strong>TypeScript</strong>, and <strong>Vite</strong> (with the SWC plugin for compilation speed). Styling uses <strong>Tailwind CSS</strong> with <strong>shadcn/ui</strong> components built on <strong>Radix UI</strong> primitives.</p>
@@ -1544,11 +1494,6 @@ DO UPDATE SET
 <h2>SEO and prerendering</h2>
 
 <p>The app is a React SPA. For grammar topic pages and other SEO-relevant routes, <strong>Puppeteer</strong> runs at build time to prerender static HTML. The build script (<code>vite build && node scripts/prerender.js</code>) produces crawlable HTML for ~120 routes. A static <code>sitemap.xml</code> is maintained manually.</p>
-
-<figure class="article-figure">
-<img src="/images/articles/grammar-content-page-b2.png" alt="A prerendered grammar content page with structured data, breadcrumbs, and practice CTA" />
-<figcaption>Pages like this grammar topic page are prerendered at build time so crawlers receive full HTML instead of an empty SPA shell.</figcaption>
-</figure>
 
 <h2>Content generation pipeline</h2>
 
@@ -1600,11 +1545,6 @@ DO UPDATE SET
 <p>The first version of InfiniteGrammar.de was designed in <strong>Loveable</strong>. The rest of the development and repair work was done in <strong>Claude Code</strong>. That combination was productive for shipping quickly. It also created a trap I did not recognise early enough.</p>
 
 <p>The app started as a <strong>React 18 + Vite + React Router SPA on Netlify</strong>. That is a reasonable shape for an interactive product. It is a weak default shape for a site that needs Google to index dozens of content pages.</p>
-
-<figure class="article-figure">
-<img src="/images/articles/pruefungszentren-overview.png" alt="Exam centers page showing telc and TestDaF locations across Germany" />
-<figcaption>Pages like this exam center overview need to be indexed by search engines. Without prerendering, crawlers would see only an empty SPA shell.</figcaption>
-</figure>
 
 <h2>The real problem was architectural</h2>
 
@@ -1662,11 +1602,6 @@ DO UPDATE SET
 <p>The turning point was moving to <strong>Puppeteer-based prerendering</strong> and treating it as part of the build itself. That changed the site from one SPA shell plus client rendering into a set of route-specific HTML documents that React could hydrate after load.</p>
 
 <p>That is a much cleaner SEO model for a content-heavy site on React + Vite + Netlify. It is still more fragile than using a framework with built-in SSR or SSG. But it is workable if the pipeline is disciplined.</p>
-
-<figure class="article-figure">
-<img src="/images/articles/articles-listing.png" alt="Articles listing page with card layout for each blog post" />
-<figcaption>The articles listing page \u2014 one of ~120 routes that are now prerendered at build time. Each page gets its own HTML document with proper meta tags, canonical URLs, and structured data.</figcaption>
-</figure>
 
 <h2>What the stack taught me</h2>
 
