@@ -47,7 +47,7 @@ const Articles = () => {
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
-          <h1 className="font-semibold text-lg">Articles</h1>
+          <h1 className="font-semibold text-lg">Infinite Grammar</h1>
         </div>
       </div>
 

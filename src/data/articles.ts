@@ -564,7 +564,7 @@ for iteration in range(max_iterations):
 
 <div class="table-wrapper">
 <table>
-<thead><tr><th>Method</th><th>How it works</th><th>When to use it</th></tr></thead>
+<thead><tr><th>Method</th><th>How it works</th><th>Used for</th></tr></thead>
 <tbody>
 <tr><td><code>spacy</code></td><td>TF-IDF text vectors + answer vectors + structure vectors + spaCy POS-tag vectors</td><td>Production path</td></tr>
 <tr><td><code>semantic</code></td><td>Neural embeddings from a remote Vast.ai endpoint such as <code>BAAI/bge-m3</code></td><td>Experimental</td></tr>
