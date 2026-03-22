@@ -206,6 +206,11 @@ export const articles: Article[] = [
 
 <p>That is exactly why the format is useful. It is also why quality is hard.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/exercise-dropdown-open.png" alt="A gap-fill exercise with a dropdown showing four verb form options: müssten, muss, musste, müsste" />
+<figcaption>A B2 Konjunktiv II exercise with the dropdown open. The learner chooses between four verb forms — all real German words, but only one fits this exact sentence.</figcaption>
+</figure>
+
 <h2>The format is simple. The specification is not.</h2>
 
 <p>A single exercise in InfiniteGrammar.de is a short text with multiple gaps. Each gap has:</p>
@@ -259,6 +264,11 @@ export const articles: Article[] = [
 <p>This is why I ended up treating the exercise format less as "text generation" and more as "error modelling."</p>
 
 <p>The distractors define a large part of the learning value.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/exercise-submitted.png" alt="Exercise after submission showing red incorrect answers with correct answers displayed, and one green correct answer, with a score of 1/6" />
+<figcaption>After submission: wrong answers appear in red with the correct form shown below. The score (1/6) and the visual feedback make both the learner's errors and the intended answers immediately visible.</figcaption>
+</figure>
 
 <h2>Generation had to start from a much narrower contract</h2>
 
@@ -329,6 +339,11 @@ for iteration in range(max_iterations):
 <p>The important design choice is the shared <code>messages</code> array.</p>
 
 <p>Without that shared context, regeneration is basically just another attempt. With it, the model sees the draft, the critique, and the reasons the exercise failed. That at least makes targeted repair possible.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/exercise-explanations.png" alt="Explanations view showing each gap with its correct answer and a detailed German grammar explanation" />
+<figcaption>The explanations view. Each gap shows the correct answer and a detailed explanation of the underlying grammar rule — not just what is correct, but why the alternatives are wrong.</figcaption>
+</figure>
 
 <h2>What the loop is good at</h2>
 
