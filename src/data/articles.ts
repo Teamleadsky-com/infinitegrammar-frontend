@@ -954,6 +954,72 @@ python -m spacy download de_core_news_sm</code></pre>
 <pre><code>cd /root/sim && nohup python vastai_similarity.py --action run --run-id &lt;RUN_ID&gt; > job.log 2>&1 & echo "PID: $!"</code></pre>
 
 <p>That is intentionally simple. No job queue, no orchestrator, no remote database access.</p>
+
+<h2>Condensed: Setting up Vast.ai instances and running calculations</h2>
+
+<p>The workflow is very straightforward, let me share it here.</p>
+
+<pre><code># 0) Install the Vast.ai CLI
+pip install vastai
+
+# 1) Set your API key
+# Get it from https://cloud.vast.ai/cli and paste it here
+vastai set api-key YOUR_API_KEY
+
+# 2) Create or upload an SSH key for new instances
+# Simplest CLI path:
+vastai create ssh-key --api-key YOUR_API_KEY
+
+# 3) Search for an instance
+# Cheap CPU box for generic Python / ETL / spaCy / data jobs
+vastai search offers 'cpu_cores>=8 num_gpus=0 dph&lt;0.10 reliability>0.95 inet_down>200' -o 'dph'
+
+# Or a single-GPU box for ML / embeddings / inference jobs
+vastai search offers 'gpu_ram>=16 num_gpus=1 dph&lt;0.50 reliability>0.98 cuda_vers>=12.0 inet_down>500' -o 'dph'
+
+# 4) Rent the machine
+# Replace OFFER_ID with the first column from search results
+# --image is required; --ssh and --direct make SSH access straightforward
+vastai create instance OFFER_ID --image pytorch/pytorch --disk 30 --ssh --direct
+
+# 5) Inspect the instance
+vastai show instances
+vastai show instance INSTANCE_ID --raw</code></pre>
+
+<p>After the instance is up, connect using the SSH command shown by Vast.ai in the console / instance details.</p>
+
+<pre><code>ssh -p SSH_PORT root@INSTANCE_IP
+
+# 6) Copy your code to the machine
+scp -P SSH_PORT -r ./your_project root@INSTANCE_IP:/root/work
+
+# 7) Connect
+ssh -p SSH_PORT root@INSTANCE_IP
+
+# 8) Inside the instance: install deps and run your job
+cd /root/work
+pip install -r requirements.txt
+
+# foreground
+python your_script.py --arg1 value1
+
+# or background
+nohup python your_script.py --arg1 value1 > job.log 2>&1 &
+tail -f job.log</code></pre>
+
+<p>If you need a port from the remote machine on your laptop, use SSH port forwarding:</p>
+
+<pre><code>ssh -p SSH_PORT root@INSTANCE_IP -L 8080:localhost:8080</code></pre>
+
+<p>When the job is finished, copy results back and terminate the instance:</p>
+
+<pre><code># 9) Copy results home
+scp -P SSH_PORT root@INSTANCE_IP:/root/work/output.json ./output.json
+
+# 10) Destroy the instance so billing stops
+vastai destroy instance INSTANCE_ID</code></pre>
+
+<p>Make sure to destroy the instance when done; stopping can reduce GPU cost, but destroying is the clean way to stop storage charges too.</p>
 `
   }
 ];
