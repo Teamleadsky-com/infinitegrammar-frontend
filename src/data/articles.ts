@@ -719,7 +719,35 @@ for iteration in range(max_iterations):
 <li>the <strong>pair detail view</strong> answers whether the family is genuinely redundant or merely related.</li>
 </ul>
 
+<figure class="article-figure">
+<img src="/images/articles/admin-similarity-heatmap-grid.png" alt="Similarity heatmap grid showing pairwise cosine similarity between exercises in a section, with color-coded cells from green (low) to red (high similarity)" />
+<figcaption>The heatmap makes local overlap visible at a glance. Each cell shows the cosine similarity between two exercises. A red or orange cell means two exercises are close enough to warrant review.</figcaption>
+</figure>
+
+<figure class="article-figure">
+<img src="/images/articles/admin-similarity-heatmap.png" alt="Dendrogram showing hierarchical clustering of exercises by cosine similarity, with colored branches indicating cluster families" />
+<figcaption>The dendrogram groups exercises into families by similarity. Exercises that merge at high thresholds form tight clusters — the ones most likely to feel repetitive to a learner.</figcaption>
+</figure>
+
+<figure class="article-figure">
+<img src="/images/articles/admin-similarity-pair-detail.png" alt="Pair comparison dialog showing two exercises side by side with highlighted gaps and answers, displaying 32.92% similarity" />
+<figcaption>The pair detail view shows the two exercises side by side with their gaps highlighted. This is where you decide whether high similarity means genuine redundancy or just topical overlap.</figcaption>
+</figure>
+
 <p>This progressive drill-down turned the metric from an abstract score into an editorial tool.</p>
+
+<h2>Sequential neighbor similarity</h2>
+
+<p>The pairwise heatmap answers which exercises are similar. It does not answer whether similar exercises are placed next to each other in the sequence a learner actually sees.</p>
+
+<p>That is what the sequential neighbor strip shows. For each exercise, it displays the cosine similarity to the next 1–5 exercises in order. Orange or red in the +1 column means the learner will encounter two exercises back-to-back that feel repetitive.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/admin-similarity-neighbor-strip.png" alt="Sequential neighbor similarity table showing each exercise's similarity to the next 1-5 exercises, with color-coded cells highlighting high-similarity neighbors" />
+<figcaption>The sequential neighbor strip. Each row is an exercise; the columns show similarity to the next 1–5 exercises in sequence. Red cells in the +1 or +2 columns signal pairs that a learner would experience as repetitive.</figcaption>
+</figure>
+
+<p>This view feeds directly into the reordering pipeline. If two exercises with high pairwise similarity happen to be sequential neighbors, the ordering algorithm tries to separate them.</p>
 
 <h2>The metric changed content planning</h2>
 
