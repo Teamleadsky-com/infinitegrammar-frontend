@@ -754,7 +754,7 @@ for iteration in range(max_iterations):
   {
     slug: 'similarity-calculation-vast-ai',
     title: 'Why Similarity Calculation Moved to Vast.ai',
-    excerpt: 'Once the similarity pipeline became part of the operating routine, local execution stopped being attractive. Long CPU-heavy runs block the machine, get postponed, and eventually stop happening often enough.',
+    excerpt: 'Once the similarity pipeline became part of the operating routine, local execution stopped being attractive. A cheap remote CPU instance proved to be a better place for this than a laptop.',
     datePublished: '2026-03-15T10:00:00+01:00',
     dateModified: '2026-03-22T10:00:00+01:00',
     htmlContent: `
