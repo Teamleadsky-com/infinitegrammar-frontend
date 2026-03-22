@@ -1029,59 +1029,31 @@ vastai destroy instance INSTANCE_ID</code></pre>
     datePublished: '2026-03-18T10:00:00+01:00',
     dateModified: '2026-03-22T10:00:00+01:00',
     htmlContent: `
-<p>Obtaining the similarity scores highlighted another exercises library challenge.</p>
+<p>Once I had pairwise similarity scores for every exercise in a grammar section, a new problem became visible: even a reasonably diverse section can feel repetitive if similar exercises appear back to back.</p>
 
-<p>Even a reasonably diverse section can feel repetitive if similar exercises appear back to back.</p>
-
-<p>A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence.</p>
-
-<p>That changed the question.</p>
-
-<p>The issue was no longer just:</p>
-
-<blockquote>Are these exercises too similar overall?</blockquote>
-
-<p>It became:</p>
+<p>A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence. That shifted the question from "are these exercises too similar overall?" to:</p>
 
 <blockquote>In what order should they appear so that practice feels varied without breaking learner progress?</blockquote>
 
-<p>That sounds like a straightforward optimisation task.</p>
-
-<p>It turned out to be partly that, and partly a product-constraint problem.</p>
+<p>That turned out to be partly an optimisation task and partly a product-constraint problem.</p>
 
 <h2>Why order matters even when the content is acceptable</h2>
 
-<p>A grammar section can contain thirty or forty individually acceptable exercises and still create a poor learning experience.</p>
+<p>A grammar section can contain thirty or forty individually acceptable exercises and still create a poor learning experience. If several consecutive exercises use the same content frame, the same sentence scaffold, or the same narrow variant of a grammar rule, the learner feels stuck repeating the same task \u2014 even if, measured globally, the section looks diverse.</p>
 
-<p>The failure mode is local repetition.</p>
-
-<p>If several consecutive exercises use the same content frame, the same sentence scaffold, or the same narrow variant of a grammar rule, the learner gets the feeling of doing the same task repeatedly. That is true even if, measured globally, the section still looks diverse.</p>
-
-<p>This is why similarity analysis alone was not enough.</p>
-
-<p>Similarity told me which pairs looked close. It did not tell me whether the learner would encounter those pairs consecutively.</p>
-
-<p>A content system that ignores order is still leaving part of the learning experience to chance.</p>
+<p>Similarity analysis told me which pairs looked close. It did not tell me whether the learner would encounter those pairs consecutively. A content system that ignores order leaves part of the learning experience to chance.</p>
 
 <h2>The optimisation objective</h2>
 
-<p>At implementation level, the goal is simple:</p>
-
-<blockquote>Find an ordering that minimizes similarity between consecutive exercises.</blockquote>
-
-<p>In simplified form:</p>
+<p>The goal is to find an ordering that minimizes similarity between consecutive exercises:</p>
 
 <pre><code>minimize = sum(similarity(ex_i, ex_i_plus_1) for i in range(n - 1))</code></pre>
 
-<p>This is closely related to a travelling-salesman-style path problem. The search space grows too quickly for exact optimisation to be attractive once sections become moderately large, so the real question is not how to find the theoretical optimum. It is how to find a sequence that is clearly better than insertion order or random shuffle.</p>
+<p>This is closely related to a travelling-salesman-style path problem. The search space grows too quickly for exact optimisation, so the real question is how to find a sequence that is clearly better than insertion order or random shuffle. I used a two-step heuristic.</p>
 
-<p>I ended up using a two-step heuristic.</p>
+<h3>Step 1: greedy nearest-neighbour seeding</h3>
 
-<h2>Step 1: greedy nearest-neighbour seeding</h2>
-
-<p>The first step builds an initial sequence greedily.</p>
-
-<p>Start from the most "central" exercise in the section \u2014 the one with the highest average similarity to all others \u2014 and then repeatedly append the least similar remaining exercise.</p>
+<p>Start from the most "central" exercise \u2014 the one with the highest average similarity to all others \u2014 and repeatedly append the least similar remaining exercise:</p>
 
 <pre><code>start = int(np.argmax(sim_matrix.mean(axis=1)))
 
@@ -1098,17 +1070,11 @@ for _ in range(n - 1):
     sequence.append(best_next)
     visited[best_next] = True</code></pre>
 
-<p>This does not produce an optimal path.</p>
+<p>This produces a strong baseline quickly. It forces the sequence away from local similarity instead of inheriting generation order. But it leaves local defects behind, especially in sections with multiple internal clusters.</p>
 
-<p>What it does produce is a strong baseline quickly. It forces the sequence away from local similarity instead of inheriting generation order.</p>
+<h3>Step 2: 2-opt improvement</h3>
 
-<p>That already improved sections materially. But it also left obvious local defects behind, especially in sections with multiple internal clusters.</p>
-
-<h2>Step 2: 2-opt improvement</h2>
-
-<p>To improve the greedy baseline, I added a 2-opt pass.</p>
-
-<p>2-opt is a standard local-search heuristic. It tries reversing every possible segment and keeps the reversal if it reduces the total similarity cost.</p>
+<p>2-opt is a standard local-search heuristic. It tries reversing every possible segment and keeps the reversal if it reduces the total similarity cost:</p>
 
 <pre><code>for i in range(n - 1):
     for j in range(i + 2, n):
@@ -1123,112 +1089,74 @@ for _ in range(n - 1):
             sequence[i:j + 1] = sequence[i:j + 1][::-1]
             improved = True</code></pre>
 
-<p>The value of 2-opt here is not theoretical elegance.</p>
+<p>2-opt reliably cleans up the most visible local mistakes left by the greedy pass. Small runs of similar exercises become more evenly distributed without requiring an expensive exact solver.</p>
 
-<p>It is that it reliably cleans up the most visible local mistakes left by the greedy pass. Small runs of similar exercises become more evenly distributed without requiring an expensive exact solver.</p>
-
-<p>For sections of the size used in InfiniteGrammar.de, that trade-off is good enough.</p>
-
-<h2>Random shuffle was a weak baseline</h2>
-
-<p>One thing became clear quickly.</p>
-
-<p>Random order is not a neutral baseline.</p>
-
-<p>If a section contains topic clusters, random shuffle still tends to leave local runs of similar items. Not always, but often enough that the learner experience remains uneven.</p>
-
-<p>In practice, the difference between shuffled order and similarity-aware order is not subtle when looking at neighbour metrics or at a heatmap ordered by <code>order_number</code>.</p>
-
-<p>This is a case where a relatively lightweight algorithm produces an outsized UX effect because the default order is effectively accidental.</p>
+<p>Random shuffle, by comparison, is not a neutral baseline. If a section contains topic clusters, random order still tends to leave local runs of similar items. The difference between shuffled order and similarity-aware order is visible immediately in the dashboard heatmaps.</p>
 
 <h2>The constraint that mattered more than the algorithm</h2>
 
-<p>The more interesting part was not the optimisation itself.</p>
+<p>Learners progress through a grammar section in order. That progress is stored as the last completed exercise position. Reordering an entire section after learners have started it would break their progress pointer \u2014 they could re-encounter completed material, skip unseen material, or resume into a sequence that no longer makes sense.</p>
 
-<p>It was the constraint that the optimisation was not allowed to violate.</p>
-
-<p>Learners progress through a grammar section in order. That progress is stored as the last completed exercise position. If I reorder the entire section after learners have already started it, the progress pointer no longer refers to the same pedagogical path.</p>
-
-<p>A learner could suddenly re-encounter completed material, skip unseen material, or resume in a sequence that no longer makes sense.</p>
-
-<p>So the reordering system ended up with two modes:</p>
+<p>So the reordering system has two modes:</p>
 
 <ul>
 <li><strong>complete mode</strong> \u2014 reorder the full section when no one has started it,</li>
 <li><strong>untouched mode</strong> \u2014 reorder only exercises that no learner has completed yet.</li>
 </ul>
 
-<p>The implementation is simple:</p>
-
 <pre><code>touched_ids = db.fetch_touched_exercise_ids(conn, grammar_section_id)
 locked = [ex for ex in all_exercises if str(ex['id']) in touched_ids]
 free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code></pre>
 
-<p>The locked prefix keeps its positions. Only the remaining exercises are reordered.</p>
+<p>The locked prefix keeps its positions. Only the remaining exercises are reordered. A global optimum that breaks learner continuity is not a good solution \u2014 a weaker local optimum that respects learner progress is the right product decision.</p>
 
-<p>This is where the problem stops being purely algorithmic.</p>
+<p>There is one additional detail at the boundary: the first free exercise is selected to be as dissimilar as possible from the last locked exercise, because that is exactly where the learner resumes. This reduces the chance that the learner returns into a near-duplicate of something they just completed.</p>
 
-<p>A global optimum that breaks learner continuity is not a good solution. A weaker local optimum that respects learner progress is the right product decision.</p>
+<h2>Two metrics make reordering decisions actionable</h2>
 
-<h2>The boundary had to be treated as a first-class part of the sequence</h2>
-
-<p>Once a section is split into locked and free exercises, the first free exercise cannot be chosen in isolation.</p>
-
-<p>It has to be chosen relative to the last locked exercise, because that boundary is exactly where the learner resumes.</p>
-
-<p>So the first free exercise is selected to be as dissimilar as possible from the last completed one. This reduces the chance that the learner resumes into a near-duplicate of something they just saw.</p>
-
-<p>That looks like a small implementation detail.</p>
-
-<p>It is not.</p>
-
-<p>The boundary between already-practised and still-upcoming material is the point where sequencing most directly affects the user experience.</p>
-
-<h2>Reordering needed its own metrics</h2>
-
-<p>Once reordering existed, I needed a way to check whether the new sequence was actually better.</p>
-
-<p>Two metrics became useful.</p>
+<p>Reordering without measurement is guesswork. The admin dashboard tracks two custom metrics that make the quality of each section\u2019s sequence visible and comparable across runs.</p>
 
 <h3>Weighted Neighbourhood Score (WNS)</h3>
 
-<p>WNS measures how similar each exercise is to the next few exercises, with stronger weight on the immediate neighbours.</p>
+<p><strong>Weighted Neighbourhood Score (WNS)</strong> measures the weighted average similarity of each exercise to the next five exercises in the sequence. The weights decrease exponentially: the immediate next exercise contributes 50%, the one after that 25%, then 12.5%, 7.5%, and 5%. This reflects how learners actually perceive repetition \u2014 the immediate neighbour matters most.</p>
 
-<p>The point is simple: the learner feels local repetition, not just global overlap.</p>
+<p>Lower is better. The dashboard uses colour-coded thresholds to make this actionable at a glance:</p>
+
+<ul>
+<li><strong>green</strong> (WNS \u2264 0.20) \u2014 good sequence variety, no action needed,</li>
+<li><strong>orange</strong> (WNS 0.35\u20130.50) \u2014 noticeable local repetition, reordering recommended,</li>
+<li><strong>red</strong> (WNS > 0.50) \u2014 strong local repetition, reordering or content review needed.</li>
+</ul>
+
+<p>A WNS above 0.35 is the threshold that triggers a reordering recommendation in the dashboard.</p>
 
 <h3>Ordering Quality Ratio (OQR)</h3>
 
-<p>OQR compares adjacent-pair behaviour to the full similarity distribution.</p>
+<p><strong>Ordering Quality Ratio (OQR)</strong> is a rank-based metric that compares where adjacent-pair similarities sit within the full pairwise similarity distribution. It answers the question: are the exercises that happen to be neighbours in the sequence more or less similar than the average pair in the section?</p>
 
-<p>The early version used a mean-ratio formula and turned out to be misleading, because it moved when the number of exercises changed even if the actual sequence quality did not. The fix was a <strong>rank-based OQR</strong>, which compares where adjacent pairs sit inside the full similarity distribution.</p>
+<p>The early version used a simple mean-ratio formula, but that turned out to be misleading \u2014 it shifted when the number of exercises changed even if the actual sequence quality did not. The current version is rank-based, which makes it scale-invariant and stable across sections of different sizes.</p>
 
-<p>That made the metric much more stable.</p>
+<p>Lower is better. An OQR near 0 means adjacent pairs are drawn from the least similar end of the distribution \u2014 exactly what good sequencing should produce. The dashboard displays this alongside WNS, so the two metrics reinforce each other: WNS shows the absolute local similarity, and OQR shows whether the ordering is making efficient use of the available diversity.</p>
 
-<h2>Order snapshots had to be stored per run</h2>
+<h2>The dashboard ties it all together</h2>
 
-<p>Once reordering became part of the workflow, another issue appeared.</p>
+<p>Both metrics are stored per similarity run in the <code>section_similarity_summary</code> table, alongside the exercise order snapshot that existed at the time of the run. That makes historical comparison meaningful: when comparing two runs, the dashboard shows each run\u2019s metrics against its own ordering, not today\u2019s.</p>
 
-<p>The dashboard needs to compare runs. That is only meaningful if each run remembers the exercise order that existed at the time it was computed.</p>
+<p>The practical workflow is:</p>
 
-<p>Otherwise an old similarity run would be shown in today\u2019s order, which destroys most of the explanatory value of heatmaps and neighbour views.</p>
+<ol>
+<li>Run similarity analysis for a section \u2014 the dashboard shows WNS, OQR, and a heatmap of the current order.</li>
+<li>If WNS > 0.35 or the heatmap shows visible clustering along the diagonal, trigger a reorder.</li>
+<li>After reordering, run similarity again \u2014 compare the new WNS and OQR against the previous run to confirm improvement.</li>
+</ol>
 
-<p>That is why the system stores order snapshots per run. It makes historical comparison meaningful rather than cosmetic.</p>
+<p>This turns exercise sequencing from a one-time operation into a repeatable quality check. Sections that receive new exercises can be re-evaluated and reordered without guessing whether the change helped.</p>
 
 <h2>What sequencing actually changed</h2>
 
-<p>Reordering does not create diversity that is not there.</p>
+<p>Reordering does not create diversity that is not there. It cannot fix a section whose underlying exercises are all too similar \u2014 that is still a content problem. What it can do is make the existing diversity more visible and more usable for the learner.</p>
 
-<p>It cannot fix a section whose underlying exercises are all too similar. That is still a content problem.</p>
-
-<p>What it can do is make the existing diversity more visible and more usable for the learner.</p>
-
-<p>That turned out to be important enough that sequencing stopped feeling like a backend optimisation task and started feeling like part of the product itself.</p>
-
-<p>The logic is simple.</p>
-
-<p>If the learner experiences the section as a sequence, then sequence quality is part of product quality.</p>
-
-<p>At that point, order is no longer a technical afterthought.</p>
+<p>If the learner experiences the section as a sequence, then sequence quality is part of product quality. At that point, order is no longer a technical afterthought.</p>
 `
   },
   {
