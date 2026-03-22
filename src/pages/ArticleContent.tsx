@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft } from 'lucide-react';
-import { getArticleBySlug } from '@/data/articles';
+import { articles, getArticleBySlug } from '@/data/articles';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { Footer } from '@/components/Footer';
 
@@ -97,14 +97,17 @@ const ArticleContent = () => {
               alt="Alex"
               className="w-10 h-10 rounded-full object-cover"
             />
-            <a
-              href="https://www.linkedin.com/in/aleksandrz/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              Alex
-            </a>
+            <div>
+              <a
+                href="https://www.linkedin.com/in/aleksandrz/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-medium hover:text-primary transition-colors"
+              >
+                Alex
+              </a>
+              <p className="text-xs text-muted-foreground">Building InfiniteGrammar.de</p>
+            </div>
           </div>
         </header>
 
@@ -113,29 +116,29 @@ const ArticleContent = () => {
           dangerouslySetInnerHTML={{ __html: article.htmlContent }}
         />
 
-        {/* Author footer */}
-        <div className="mt-12 pt-8 border-t">
-          <div className="flex items-center gap-4">
-            <img
-              src="/images/author-alex.jpg"
-              alt="Alex"
-              className="w-14 h-14 rounded-full object-cover"
-            />
-            <div>
+        {/* Next article */}
+        {(() => {
+          const currentIndex = articles.findIndex(a => a.slug === article.slug);
+          const nextArticle = currentIndex >= 0 && currentIndex < articles.length - 1
+            ? articles[currentIndex + 1]
+            : null;
+          if (!nextArticle) return null;
+          return (
+            <div className="mt-12 pt-8 border-t">
+              <p className="text-sm text-muted-foreground mb-2">Next article</p>
               <a
-                href="https://www.linkedin.com/in/aleksandrz/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold hover:text-primary transition-colors"
+                href={`/articles/${nextArticle.slug}/`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/articles/${nextArticle.slug}/`);
+                }}
+                className="text-lg font-semibold hover:text-primary transition-colors"
               >
-                Alex
+                {nextArticle.title} &rarr;
               </a>
-              <p className="text-sm text-muted-foreground">
-                Building InfiniteGrammar.de
-              </p>
             </div>
-          </div>
-        </div>
+          );
+        })()}
       </div>
 
       <Footer />
