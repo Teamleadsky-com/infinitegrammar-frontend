@@ -27,6 +27,7 @@ const PAGES = [
   '/articles/email-campaigns-learning-system/',
   '/articles/admin-dashboard-content-system/',
   '/articles/tech-stack-content-heavy-language-product/',
+  '/articles/react-spa-seo-postmortem/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',

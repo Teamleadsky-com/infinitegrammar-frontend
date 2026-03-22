@@ -419,6 +419,11 @@ for iteration in range(max_iterations):
 
 <p>That is why the generation system ended up as a batch-processing workflow.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/grammar-sections-b1.png" alt="B1 grammar sections showing 12 topics across sentence structure, tenses, verbs, prepositions, adjectives, and passive voice" />
+<figcaption>Each grammar section at each CEFR level needs dozens of exercises — the batch pipeline is what makes producing this volume practical.</figcaption>
+</figure>
+
 <h2>The synchronous loop was fine for testing and bad for production</h2>
 
 <p>The first version was synchronous:</p>
@@ -537,6 +542,11 @@ for iteration in range(max_iterations):
 
 <p>So the per-exercise logic stays conversational, while the run-level system stays asynchronous.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/exercise-b2-infinitiv.png" alt="A B2 Infinitivs\u00e4tze exercise with six gaps to fill in" />
+<figcaption>The output of the pipeline: a structured gap-fill exercise with multiple blanks, each with its own set of options and a correct answer.</figcaption>
+</figure>
+
 <h2>The economics are what made this worthwhile</h2>
 
 <p>This was the practical reason for building the batch workflow.</p>
@@ -596,6 +606,11 @@ for iteration in range(max_iterations):
 <p>It was something more specific:</p>
 
 <blockquote>How likely is a learner to experience these two exercises as redundant?</blockquote>
+
+<figure class="article-figure">
+<img src="/images/articles/exercise-b2-infinitiv.png" alt="A B2 gap-fill exercise with six blanks" />
+<figcaption>Two exercises can use different words and topic contexts while still repeating the same sentence structure, gap pattern, and answer morphology. That kind of repetition is what the similarity system needs to detect.</figcaption>
+</figure>
 
 <h2>A single embedding answered the wrong question</h2>
 
@@ -689,6 +704,11 @@ for iteration in range(max_iterations):
 <li>and clustering structures for visualization.</li>
 </ul>
 
+<figure class="article-figure">
+<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar sections showing categories like Satzbau, Zeiten, Verben" />
+<figcaption>Each grammar section contains dozens of exercises. With 780 pairwise comparisons in a 40-exercise section, raw similarity scores need aggregation to be useful.</figcaption>
+</figure>
+
 <p>The bucket view became especially useful in the admin area:</p>
 
 <ul>
@@ -761,6 +781,11 @@ for iteration in range(max_iterations):
 <p>Once the similarity pipeline became part of the operating routine, local execution stopped being attractive.</p>
 
 <p>Similarity was no longer something I ran once in a while. It became something I wanted to run after a new generation batch, after reordering, and whenever a section started looking suspicious. At that point local execution became a friction point. Long CPU-heavy runs block the machine, get postponed, and eventually stop happening often enough.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/grammar-hub-overview.png" alt="Grammar hub showing quick quizzes and topic search across all CEFR levels" />
+<figcaption>The grammar hub spans five CEFR levels with dozens of sections. Running similarity analysis across all of them regularly is what made remote compute necessary.</figcaption>
+</figure>
 
 <p>That is why I moved the similarity pipeline to Vast.ai.</p>
 
@@ -1037,6 +1062,11 @@ vastai destroy instance INSTANCE_ID</code></pre>
 
 <p>That turned out to be partly an optimisation task and partly a product-constraint problem.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/exercise-a2-sequence.png" alt="An A2 gap-fill exercise showing the learner experience as a linear sequence" />
+<figcaption>Learners encounter exercises one after another. If consecutive exercises share the same structure and vocabulary, the section feels repetitive regardless of its overall diversity.</figcaption>
+</figure>
+
 <h2>Why order matters even when the content is acceptable</h2>
 
 <p>A grammar section can contain thirty or forty individually acceptable exercises and still create a poor learning experience. If several consecutive exercises use the same content frame, the same sentence scaffold, or the same narrow variant of a grammar rule, the learner feels stuck repeating the same task \u2014 even if, measured globally, the section looks diverse.</p>
@@ -1171,6 +1201,11 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
 <blockquote>If the product is built around repeated practice of specific grammar sections, what is the lightest reminder system that helps learners return to the right section at roughly the right time?</blockquote>
 
 <p>That question matters because the product is organised around narrow grammar sections rather than broad lessons.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/grammar-content-page-b2.png" alt="A B2 grammar content page for Infinitivs\u00e4tze with a practice button" />
+<figcaption>Each email reminder links directly to a specific grammar section page like this one. The learner returns to the exact area they practiced, not to a generic homepage.</figcaption>
+</figure>
 
 <p>A learner does not just "practice German." They practice things like:</p>
 
@@ -1374,6 +1409,11 @@ DO UPDATE SET
 
 <p>The product was no longer just a set of exercises. It was a growing corpus with uneven coverage, variable demand, occasional redundancy, and several feedback loops that needed coordination. Without a way to inspect those dynamics, content decisions would drift back toward instinct and spot checks.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar level page showing multiple grammar categories and topics" />
+<figcaption>The learner-facing view of a grammar level. The admin dashboard operates on the same structure but shows exercise counts, similarity scores, demand metrics, and campaign data for each section.</figcaption>
+</figure>
+
 <h2>The problem was not lack of data</h2>
 
 <p>By the time the admin area started to matter, the system already had enough raw data to be misleading. There were tables for grammar sections, exercises, user completions, email events, similarity runs, clustering outputs, and ordering snapshots.</p>
@@ -1387,6 +1427,11 @@ DO UPDATE SET
 <p>The <strong>coverage heatmap</strong> crosses CEFR level with grammar section and shows how many exercises exist in each cell. It is the fastest way to see whether the library is shaped like a curriculum or just growing opportunistically.</p>
 
 <p>The <strong>inventory charts</strong> show exercise counts per grammar section and per content topic. These views shift content planning from "what feels underdeveloped?" to "which cells in the matrix are thin, empty, or overrepresented?"</p>
+
+<figure class="article-figure">
+<img src="/images/articles/level-selection.png" alt="Homepage showing CEFR levels A1 through C1 and grammar topic categories" />
+<figcaption>The coverage heatmap in the admin area crosses these CEFR levels with grammar sections to show where the library has gaps.</figcaption>
+</figure>
 
 <h2>2. Where is learner demand concentrating?</h2>
 
@@ -1459,6 +1504,11 @@ DO UPDATE SET
     htmlContent: `
 <p>This is a factual overview of the technologies used in InfiniteGrammar.de, organised by workload. The system has several distinct parts that run differently and were built with different tools.</p>
 
+<figure class="article-figure">
+<img src="/images/articles/exercise-dropdown-open.png" alt="Exercise with dropdown showing four verb options" />
+<figcaption>The learner-facing product: an interactive gap-fill exercise built with React, Tailwind, and shadcn/ui components.</figcaption>
+</figure>
+
 <h2>Frontend</h2>
 
 <p>The learner-facing app and the admin dashboard are both built with <strong>React 18</strong>, <strong>TypeScript</strong>, and <strong>Vite</strong> (with the SWC plugin for compilation speed). Styling uses <strong>Tailwind CSS</strong> with <strong>shadcn/ui</strong> components built on <strong>Radix UI</strong> primitives.</p>
@@ -1494,6 +1544,11 @@ DO UPDATE SET
 <h2>SEO and prerendering</h2>
 
 <p>The app is a React SPA. For grammar topic pages and other SEO-relevant routes, <strong>Puppeteer</strong> runs at build time to prerender static HTML. The build script (<code>vite build && node scripts/prerender.js</code>) produces crawlable HTML for ~120 routes. A static <code>sitemap.xml</code> is maintained manually.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/grammar-content-page-b2.png" alt="A prerendered grammar content page with structured data, breadcrumbs, and practice CTA" />
+<figcaption>Pages like this grammar topic page are prerendered at build time so crawlers receive full HTML instead of an empty SPA shell.</figcaption>
+</figure>
 
 <h2>Content generation pipeline</h2>
 
@@ -1531,6 +1586,173 @@ DO UPDATE SET
 <p><strong>Static sitemap maintenance does not scale.</strong> The sitemap is a manually edited XML file. With ~120 routes and growing, generating it from the route definitions or the database at build time would be less error-prone.</p>
 
 <p><strong>Python pipelines have no formal task runner.</strong> The generation and similarity pipelines use CLI scripts with JSON state files. This works at the current scale, but there is no retry logic, no scheduling, and no visibility into failed runs beyond log files. A lightweight task runner (even just a Makefile with targets, or something like Prefect for the Python side) would make pipeline operations more predictable as the number of grammar sections grows.</p>
+`
+  },
+  {
+    slug: 'react-spa-seo-postmortem',
+    title: 'React SPA SEO Postmortem: What I Learned Shipping a Content-Heavy Product',
+    excerpt: 'SEO is not a content problem first. It is a rendering, routing, and deployment problem. A plain React SPA is not SEO-ready by default \u2014 here is what went wrong and what I would do differently.',
+    datePublished: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-22T10:00:00+01:00',
+    htmlContent: `
+<p>I learned this the hard way: SEO is not a content problem first. It is a rendering, routing, and deployment problem.</p>
+
+<p>The first version of InfiniteGrammar.de was designed in <strong>Loveable</strong>. The rest of the development and repair work was done in <strong>Claude Code</strong>. That combination was productive for shipping quickly. It also created a trap I did not recognise early enough.</p>
+
+<p>The app started as a <strong>React 18 + Vite + React Router SPA on Netlify</strong>. That is a reasonable shape for an interactive product. It is a weak default shape for a site that needs Google to index dozens of content pages.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/pruefungszentren-overview.png" alt="Exam centers page showing telc and TestDaF locations across Germany" />
+<figcaption>Pages like this exam center overview need to be indexed by search engines. Without prerendering, crawlers would see only an empty SPA shell.</figcaption>
+</figure>
+
+<h2>The real problem was architectural</h2>
+
+<p>The site had many pages that were meant to rank: grammar overview pages, CEFR-level pages, grammar-section pages, exam-related pages. But the initial frontend stack behaved like this:</p>
+
+<ul>
+<li>React Router resolved routes client-side,</li>
+<li>Vite built a static SPA shell,</li>
+<li>Netlify served <code>index.html</code> and let the browser render the page,</li>
+<li>content lived in the application layer rather than in pre-rendered HTML.</li>
+</ul>
+
+<p>For a crawler, that meant weak or inconsistent signals unless additional SEO infrastructure was added deliberately. The main lesson is simple:</p>
+
+<blockquote>If a product depends on organic search, a plain React SPA is not SEO-ready by default.</blockquote>
+
+<p>That does not mean it cannot rank. It means SEO has to be treated as part of the architecture, not as a late polish pass.</p>
+
+<h2>The mistakes that mattered most</h2>
+
+<h3>1. Treating meta tags as the main SEO task</h3>
+
+<p>The first instinct was to improve titles, descriptions, Open Graph tags, and route metadata. That helped presentation. It did not solve indexation. The real issue was that the crawler still had to deal with a client-rendered application shell.</p>
+
+<p>A page can have a polished title and still be a weak SEO page.</p>
+
+<h3>2. Patching SEO outside the rendering model</h3>
+
+<p>I tried approaches that modified or injected metadata after build instead of making prerendered pages the actual output. That created duplication: one source of truth in React, another in scripts, sometimes a third in sitemap or redirect logic. Once several systems define the same URLs and metadata, drift becomes likely. That drift caused real problems.</p>
+
+<h3>3. Changing URLs too often</h3>
+
+<p>One of the most expensive mistakes was changing URL structures repeatedly while the site was already being crawled. Every URL migration required redirects. Repeated migrations created chains. Chains wasted crawl budget, added latency, and weakened the consistency of the signals being sent.</p>
+
+<p>For SEO, URL stability is not an implementation detail. It is a product decision.</p>
+
+<h3>4. Underestimating trailing-slash consistency</h3>
+
+<p>This was one of the most damaging issues and also one of the easiest to miss. In a Netlify setup that serves prerendered directory-based routes, <code>/page/</code> and <code>/page</code> are not equivalent. One may return <code>200</code>, the other may return <code>301</code>.</p>
+
+<p>If the sitemap, canonical tags, internal links, and prerender script disagree about slash format, the site starts generating unnecessary redirects on its own canonical pages. The rule I would apply now is absolute:</p>
+
+<blockquote>Pick one URL format and make every system obey it.</blockquote>
+
+<p>That includes React links, React Router navigation, sitemap generation, canonical tags, prerender page lists, and Netlify redirect rules.</p>
+
+<h3>5. Letting the sitemap drift away from the build</h3>
+
+<p>A sitemap is only useful if it reflects what the build actually produces. In my case, the sitemap, the prerender script, and the route definitions were not always generated from the same source of truth. That meant some URLs were valid in one place and missing or redirected in another.</p>
+
+<p>A sitemap should not be maintained as a separate editorial object. It should be derived from the same route inventory that powers prerendering and canonical generation.</p>
+
+<h3>6. Treating prerendering as an add-on</h3>
+
+<p>The turning point was moving to <strong>Puppeteer-based prerendering</strong> and treating it as part of the build itself. That changed the site from one SPA shell plus client rendering into a set of route-specific HTML documents that React could hydrate after load.</p>
+
+<p>That is a much cleaner SEO model for a content-heavy site on React + Vite + Netlify. It is still more fragile than using a framework with built-in SSR or SSG. But it is workable if the pipeline is disciplined.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/articles-listing.png" alt="Articles listing page with card layout for each blog post" />
+<figcaption>The articles listing page \u2014 one of ~120 routes that are now prerendered at build time. Each page gets its own HTML document with proper meta tags, canonical URLs, and structured data.</figcaption>
+</figure>
+
+<h2>What the stack taught me</h2>
+
+<p>Loveable made it easy to get a usable frontend quickly. Claude Code made it easy to iterate quickly. But speed of UI iteration can hide SEO debt if the underlying rendering model is wrong for search-driven growth.</p>
+
+<p>The repair cost was real because the key question had not been asked early enough:</p>
+
+<blockquote>Does this stack produce stable, crawlable HTML for every page I want indexed?</blockquote>
+
+<p>That question should have been answered before scaling content.</p>
+
+<h2>What I would do differently now</h2>
+
+<h3>Path 1: use a framework with built-in SSR or SSG</h3>
+
+<p>For content-heavy products, this is the cleaner answer. Use Next.js, Astro, Remix, or another framework where route-level HTML generation is part of the normal architecture. That removes a large amount of custom SEO plumbing.</p>
+
+<h3>Path 2: stay on React + Vite, but define the SEO system on day one</h3>
+
+<p>If the stack remains React 18 + TypeScript + Vite + React Router + Netlify + react-helmet-async + Puppeteer, then the following should exist before launch:</p>
+
+<ul>
+<li>a route inventory as a single source of truth,</li>
+<li>build-time prerendering for every indexable route,</li>
+<li>per-route canonical tags,</li>
+<li>a sitemap generated from the same route inventory,</li>
+<li>structured data for key content types,</li>
+<li>robots rules for public vs private areas,</li>
+<li>one enforced trailing-slash policy,</li>
+<li>and redirect tests as part of deployment validation.</li>
+</ul>
+
+<p>That would have prevented most of the struggle.</p>
+
+<h2>SEO guidelines I would now give Claude Code for this stack</h2>
+
+<h3>Architecture rules</h3>
+
+<ol>
+<li>Treat SEO as a rendering problem first, not as a metadata problem.</li>
+<li>Assume a plain React SPA is not sufficient for indexable content pages.</li>
+<li>For every public route that should rank, produce prerendered HTML at build time.</li>
+<li>Keep private routes out of the crawl surface: <code>/auth</code>, <code>/profile</code>, <code>/admin</code>, <code>/statistics</code>.</li>
+<li>Pick one canonical URL format and enforce it everywhere.</li>
+</ol>
+
+<h3>Route and URL rules</h3>
+
+<ol start="6">
+<li>Use one route inventory as the single source of truth for sitemap generation, prerender targets, canonical generation, and internal linking.</li>
+<li>Do not change URL structures unless absolutely necessary.</li>
+<li>If URLs must change, use one-hop <code>301</code> redirects only.</li>
+<li>Do not allow internal links to point at redirecting URLs.</li>
+<li>Treat trailing-slash consistency as mandatory, not cosmetic.</li>
+</ol>
+
+<h3>Metadata rules</h3>
+
+<ol start="11">
+<li>Use react-helmet-async for per-route titles, descriptions, and canonical tags.</li>
+<li>Add structured data where appropriate: <code>WebSite</code>, <code>BreadcrumbList</code>, <code>FAQPage</code>, <code>Article</code>, <code>LearningResource</code>.</li>
+<li>Keep canonical URLs aligned with the actual deployed route format.</li>
+<li>Make sure social tags and search tags are consistent, but do not mistake social metadata for SEO completeness.</li>
+</ol>
+
+<h3>Build and deployment rules</h3>
+
+<ol start="15">
+<li>Make Puppeteer prerendering part of the build, not a side script.</li>
+<li>Fail the build if an indexable route is missing prerendered output.</li>
+<li>Fail the build if sitemap URLs do not match the prerender route list.</li>
+<li>Fail the build if canonical URLs and route inventory disagree.</li>
+<li>Add automated checks for <code>200</code> on canonical pages and for accidental <code>301</code> or <code>404</code> responses.</li>
+<li>Keep Netlify redirects minimal and explicit.</li>
+</ol>
+
+<h3>Crawl-surface rules</h3>
+
+<ol start="21">
+<li>Maintain a strict <code>robots.txt</code> for public vs private routes.</li>
+<li>Do not let the sitemap be blocked by headers or robots directives.</li>
+<li>Make sure every public content page is reachable through internal links, not only via the sitemap.</li>
+<li>Treat crawlability, canonicals, redirects, sitemap output, and prerendering as one system.</li>
+</ol>
+
+<p>The frontend was easy to ship. The search surface was not. For content-heavy products, that distinction matters very early.</p>
 `
   }
 ];
