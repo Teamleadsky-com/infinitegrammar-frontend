@@ -13,7 +13,7 @@ export const articles: Article[] = [
     title: 'Why InfiniteGrammar.de Started with Exam-Driven Grammar Demand',
     excerpt: 'The real question was not "How do I build a German learning app?" It was: where is there a repeated, high-stakes need for much more grammar practice than the market usually provides?',
     datePublished: '2026-03-01T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-01T10:00:00+01:00',
     htmlContent: `
 <p>When I started InfiniteGrammar.de, the key question was not "How do I build a German learning app?"</p>
 
@@ -192,7 +192,7 @@ export const articles: Article[] = [
     title: 'Gap-Fill Exercise Quality Is a Distractor Design Problem',
     excerpt: 'A grammar gap-fill exercise looks deceptively simple. A short text, a few blanks, four options per blank. But what separates a useful exercise from a weak one is usually the quality of the wrong answers.',
     datePublished: '2026-03-05T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-05T10:00:00+01:00',
     htmlContent: `
 <p>A grammar gap-fill exercise looks deceptively simple.</p>
 
@@ -407,7 +407,7 @@ for iteration in range(max_iterations):
     title: 'Batch Processing: Making Exercise Generation Practical',
     excerpt: 'The interesting part of the generation pipeline is not only the prompt. It is the operating model around the prompt \u2014 throughput, resumability, and cost discipline.',
     datePublished: '2026-03-10T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-10T10:00:00+01:00',
     htmlContent: `
 <p>The interesting part of the generation pipeline is not only the prompt.</p>
 
@@ -581,7 +581,7 @@ for iteration in range(max_iterations):
     title: 'Measuring Exercise Diversity Needed More Than Sentence Embeddings',
     excerpt: 'After a grammar section contains enough material, a new question appears. Are these genuinely different exercises, or just many versions of the same one? Off-the-shelf sentence embeddings were not especially useful here.',
     datePublished: '2026-03-12T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-23T10:00:00+01:00',
     htmlContent: `
 <p>After a grammar section contains enough material, a new question appears.</p>
 
@@ -784,7 +784,7 @@ for iteration in range(max_iterations):
     title: 'Why Similarity Calculation Moved to Vast.ai',
     excerpt: 'Once the similarity pipeline became part of the operating routine, local execution stopped being attractive. A cheap remote CPU instance proved to be a better place for this than a laptop.',
     datePublished: '2026-03-15T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-15T10:00:00+01:00',
     htmlContent: `
 <p>Once the similarity pipeline became part of the operating routine, local execution stopped being attractive.</p>
 
@@ -1055,7 +1055,7 @@ vastai destroy instance INSTANCE_ID</code></pre>
     title: 'Why Sequencing Exercises Became a Product Problem, Not Just an Optimization Problem',
     excerpt: 'Even a reasonably diverse section can feel repetitive if similar exercises appear back to back. A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence.',
     datePublished: '2026-03-18T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-23T10:00:00+01:00',
     htmlContent: `
 <p>Once I had pairwise similarity scores for every exercise in a grammar section, a new problem became visible: even a reasonably diverse section can feel repetitive if similar exercises appear back to back.</p>
 
@@ -1203,7 +1203,7 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
     title: 'Email Campaigns Worked Better When Treated as a Learning System',
     excerpt: 'The product is organised around narrow grammar sections rather than broad lessons. That changes the retention logic. The campaign system is section-based \u2014 every completion event can create or update one schedule for one user and one grammar section.',
     datePublished: '2026-03-20T10:00:00+01:00',
-    dateModified: '2026-03-22T10:00:00+01:00',
+    dateModified: '2026-03-20T10:00:00+01:00',
     htmlContent: `
 <p>The question behind the email campaign was simple:</p>
 
