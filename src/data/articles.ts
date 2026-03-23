@@ -1180,6 +1180,17 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
 
 <p>This turns exercise sequencing from a one-time operation into a repeatable quality check. Sections that receive new exercises can be re-evaluated and reordered without guessing whether the change helped.</p>
 
+<div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0;">
+<figure style="flex: 1; min-width: 280px;">
+<img src="/images/articles/admin-neighbor-strip-before.png" alt="Sequential Neighbor Similarity before reordering \u2014 higher similarity values in the +1 column indicate consecutive exercises feel repetitive" loading="lazy" />
+<figcaption>Before reordering: elevated similarity in the +1 column (e.g. 0.57, 0.47) means consecutive exercises overlap noticeably.</figcaption>
+</figure>
+<figure style="flex: 1; min-width: 280px;">
+<img src="/images/articles/admin-neighbor-strip-after.png" alt="Sequential Neighbor Similarity after reordering \u2014 lower similarity values show improved exercise sequencing" loading="lazy" />
+<figcaption>After reordering: +1 values drop substantially (mostly below 0.20), confirming the sequence now spreads similar exercises apart.</figcaption>
+</figure>
+</div>
+
 <h2>What sequencing actually changed</h2>
 
 <p>Reordering does not create diversity that is not there. It cannot fix a section whose underlying exercises are all too similar \u2014 that is still a content problem. What it can do is make the existing diversity more visible and more usable for the learner.</p>
