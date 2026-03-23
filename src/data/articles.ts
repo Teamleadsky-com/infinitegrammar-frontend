@@ -1416,6 +1416,16 @@ DO UPDATE SET
 
 <p>The <strong>inventory charts</strong> show exercise counts per grammar section and per content topic. These views shift content planning from "what feels underdeveloped?" to "which cells in the matrix are thin, empty, or overrepresented?"</p>
 
+<figure>
+<img src="/images/articles/admin-coverage-heatmap.png" alt="Coverage heatmap showing exercise counts across CEFR levels and grammar sections" loading="lazy" />
+<figcaption>The coverage heatmap crosses CEFR level with grammar section, revealing whether content develops systematically or opportunistically.</figcaption>
+</figure>
+
+<figure>
+<img src="/images/articles/admin-inventory-charts.png" alt="Inventory bar charts showing exercise counts by grammar section and content topic" loading="lazy" />
+<figcaption>Inventory charts segment exercises by grammar section and content topic for data-driven content planning.</figcaption>
+</figure>
+
 <h2>2. Where is learner demand concentrating?</h2>
 
 <p>Coverage alone is not enough. A section can be underfilled and irrelevant, or overfilled and still actively consumed.</p>
@@ -1423,6 +1433,11 @@ DO UPDATE SET
 <p>The <strong>exercise demand chart</strong> combines completion counts with remaining stock and shows, per grammar section, how much of the available content learners are actually completing and how much untouched material remains.</p>
 
 <p>A section with high completion activity and low remaining depth is a candidate for expansion. A section with many remaining exercises but little usage may not have a content problem \u2014 it may have a discoverability or prioritisation problem. The response is different.</p>
+
+<figure>
+<img src="/images/articles/admin-exercise-demand.png" alt="Exercise demand chart showing completion counts and remaining stock per grammar section" loading="lazy" />
+<figcaption>The exercise demand chart combines completion counts with remaining stock, identifying where content needs expansion versus where discoverability is the issue.</figcaption>
+</figure>
 
 <h2>3. Is the content set internally healthy?</h2>
 
@@ -1436,6 +1451,11 @@ DO UPDATE SET
 <li>Ordering Quality Ratio (OQR),</li>
 <li>and the active run selector.</li>
 </ul>
+
+<figure>
+<img src="/images/articles/admin-similarity-overview.png" alt="Section overview table showing exercise counts, similarity metrics, and distribution buckets" loading="lazy" />
+<figcaption>The section overview table shows similarity metrics, distribution buckets, WNS, and OQR for each grammar section \u2014 the starting point for content triage.</figcaption>
+</figure>
 
 <p>This table is intentionally dense. It exists to answer a triage question:</p>
 
@@ -1451,17 +1471,37 @@ DO UPDATE SET
 
 <p>Shows whether the section contains clear internal clusters and how those clusters change under different similarity thresholds. The threshold slider lets the operator move from "show almost-duplicates" to "show broader structural families" \u2014 closer to how an editor thinks about the set.</p>
 
+<figure>
+<img src="/images/articles/admin-similarity-dendrogram.png" alt="Dendrogram showing hierarchical exercise clustering with adjustable similarity threshold" loading="lazy" />
+<figcaption>The dendrogram visualises internal clusters within a grammar section. The threshold slider controls cluster granularity.</figcaption>
+</figure>
+
 <h3>The heatmap</h3>
 
 <p>Makes local structure visible at a glance. A red block near the diagonal means the learner is likely to hit repetition in sequence. Isolated warm cells far from the diagonal mean similarity exists but is distributed safely. Ordering snapshots are essential here \u2014 without them, historical heatmaps would render in the latest order and lose most of their value.</p>
+
+<figure>
+<img src="/images/articles/admin-similarity-heatmap-grid.png" alt="Similarity heatmap showing pairwise exercise similarity with colour-coded cells" loading="lazy" />
+<figcaption>The similarity heatmap reveals local structure and sequencing patterns. Diagonal red blocks indicate repetition risk.</figcaption>
+</figure>
 
 <h3>The neighbour strip</h3>
 
 <p>Answers the question: how similar is each exercise to the next one, the one after that, and the one after that? This is the visual counterpart of the WNS metric.</p>
 
+<figure>
+<img src="/images/articles/admin-similarity-neighbor-strip.png" alt="Neighbour strip showing sequential similarity scores between consecutive exercises" loading="lazy" />
+<figcaption>The neighbour strip displays similarity scores between each exercise and subsequent items in sequence.</figcaption>
+</figure>
+
 <h3>The pair detail view</h3>
 
 <p>Shows the full exercise text, answers, distractors, metadata, and similarity score side by side. The dashboard should not end at "the metric says these are similar." It has to end at "do I keep both, rewrite one, move one, or remove one?" That is the real editorial decision point.</p>
+
+<figure>
+<img src="/images/articles/admin-similarity-pair-detail.png" alt="Pair detail view showing two exercises side by side with full text, answers, and similarity score" loading="lazy" />
+<figcaption>The pair detail view shows full exercise text, answers, distractors, and similarity score side by side for editorial decisions.</figcaption>
+</figure>
 
 <h2>How metrics changed content planning</h2>
 
@@ -1474,6 +1514,11 @@ DO UPDATE SET
 <h2>The campaign views belong to the same system</h2>
 
 <p>The campaign funnel and learner statistics views answer the same operational question from another angle: what gets used, where learners return, where they drop, and whether the product is creating repeated practice around the right grammar areas.</p>
+
+<figure>
+<img src="/images/articles/admin-campaign-funnel.png" alt="Campaign funnel chart showing email delivery, click, start, and completion metrics" loading="lazy" />
+<figcaption>The campaign funnel tracks the full learner journey from email delivery through to exercise completion.</figcaption>
+</figure>
 
 <p>That is why the dashboard combines coverage, demand, similarity, and campaign views instead of splitting them into unrelated admin screens. The product is one system. The dashboard reflects that.</p>
 `
