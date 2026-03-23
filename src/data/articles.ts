@@ -725,7 +725,7 @@ for iteration in range(max_iterations):
 </figure>
 
 <figure class="article-figure">
-<img src="/images/articles/admin-similarity-heatmap.png" alt="Dendrogram showing hierarchical clustering of exercises by cosine similarity, with colored branches indicating cluster families" />
+<img src="/images/articles/admin-similarity-dendrogram-b1.png" alt="Dendrogram showing hierarchical clustering of exercises by cosine similarity, with colored branches indicating cluster families" />
 <figcaption>The dendrogram groups exercises into families by similarity. Exercises that merge at high thresholds form tight clusters — the ones most likely to feel repetitive to a learner.</figcaption>
 </figure>
 

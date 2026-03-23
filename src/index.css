@@ -187,11 +187,20 @@ All colors MUST be HSL.
 }
 
 .article-content .article-figure {
-  @apply my-8;
+  @apply my-8 -mx-4;
+}
+
+@media (min-width: 768px) {
+  .article-content .article-figure {
+    margin-left: -4rem;
+    margin-right: -4rem;
+  }
 }
 
 .article-content .article-figure img {
-  @apply w-full rounded-lg border shadow-sm;
+  @apply rounded-lg border shadow-sm block mx-auto;
+  max-width: 100%;
+  height: auto;
 }
 
 .article-content .article-figure figcaption {
