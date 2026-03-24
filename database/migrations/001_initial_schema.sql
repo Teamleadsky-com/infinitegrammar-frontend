@@ -57,6 +57,8 @@ CREATE TABLE exercises (
   content_topic TEXT,
   model TEXT,
   is_active BOOLEAN DEFAULT true,
+  report_text TEXT,
+  reported_at TIMESTAMP,
   created_at TIMESTAMP DEFAULT NOW(),
 
   -- Ensure unique order within each grammar section

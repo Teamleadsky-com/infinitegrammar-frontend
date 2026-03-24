@@ -31,6 +31,7 @@ import {
   ShieldCheck,
   Flag,
   RotateCcw,
+  Eye,
 } from "lucide-react";
 import {
   BarChart,
@@ -45,6 +46,41 @@ import {
 import { SimilarityDashboard } from "@/components/admin/SimilarityDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
+
+/** Replace [1], [2] etc. with correct answers as highlighted spans */
+const renderTextWithGaps = (text: string, gaps: Array<{ gapNumber: number; correctAnswer: string }>) => {
+  if (!gaps || gaps.length === 0) return text;
+
+  const gapMap: Record<number, string> = {};
+  for (const g of gaps) gapMap[g.gapNumber] = g.correctAnswer;
+
+  const parts: Array<string | { answer: string; num: number }> = [];
+  let lastIndex = 0;
+  const regex = /\[(\d+)\]/g;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    const num = parseInt(match[1], 10);
+    parts.push({ answer: gapMap[num] || `[${num}]`, num });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts.map((part, i) =>
+    typeof part === "string" ? (
+      <span key={i}>{part}</span>
+    ) : (
+      <span key={i} className="font-semibold text-primary bg-primary/10 px-1 rounded" title={`Gap ${part.num}`}>
+        {part.answer}
+      </span>
+    )
+  );
+};
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -73,6 +109,7 @@ const Admin = () => {
   // Flagged exercises state
   const [flaggedExercises, setFlaggedExercises] = useState<any[]>([]);
   const [reactivatingId, setReactivatingId] = useState<string | null>(null);
+  const [previewExercise, setPreviewExercise] = useState<any>(null);
 
   // Exercise stats state
   type DemandSort = 'popularity' | 'remaining';
@@ -761,27 +798,44 @@ const Admin = () => {
                         <div className="flex items-center gap-2 mb-2">
                           <Badge>{ex.level}</Badge>
                           <Badge variant="outline">{ex.section_name}</Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(ex.reported_at).toLocaleDateString()}
-                          </span>
+                          {ex.reported_at && (
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(ex.reported_at).toLocaleDateString()}
+                            </span>
+                          )}
                         </div>
                         <p className="text-sm mb-3 line-clamp-3">{ex.text}</p>
-                        <div className="bg-muted/50 rounded-md p-3">
-                          <p className="text-xs font-medium text-muted-foreground mb-1">Report</p>
-                          <p className="text-sm">{ex.report_text}</p>
-                        </div>
+                        {ex.report_text ? (
+                          <div className="bg-muted/50 rounded-md p-3">
+                            <p className="text-xs font-medium text-muted-foreground mb-1">Report</p>
+                            <p className="text-sm">{ex.report_text}</p>
+                          </div>
+                        ) : (
+                          <p className="text-xs text-muted-foreground italic">No report text (legacy)</p>
+                        )}
                         <p className="text-xs text-muted-foreground mt-2 font-mono">{ex.id}</p>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="gap-1 shrink-0"
-                        disabled={reactivatingId === ex.id}
-                        onClick={() => handleReactivate(ex.id)}
-                      >
-                        <RotateCcw className="h-3 w-3" />
-                        {reactivatingId === ex.id ? "..." : "Reactivate"}
-                      </Button>
+                      <div className="flex flex-col gap-2 shrink-0">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1"
+                          onClick={() => setPreviewExercise(ex)}
+                        >
+                          <Eye className="h-3 w-3" />
+                          Preview
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1"
+                          disabled={reactivatingId === ex.id}
+                          onClick={() => handleReactivate(ex.id)}
+                        >
+                          <RotateCcw className="h-3 w-3" />
+                          {reactivatingId === ex.id ? "..." : "Reactivate"}
+                        </Button>
+                      </div>
                     </div>
                   </Card>
                 ))
@@ -789,6 +843,70 @@ const Admin = () => {
             </TabsContent>
           </Tabs>
         )}
+
+        {/* Exercise Preview Dialog */}
+        <Dialog open={!!previewExercise} onOpenChange={(open) => !open && setPreviewExercise(null)}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-3">
+                Exercise Preview
+                {previewExercise && (
+                  <>
+                    <Badge>{previewExercise.level}</Badge>
+                    <Badge variant="outline">{previewExercise.section_name}</Badge>
+                  </>
+                )}
+              </DialogTitle>
+            </DialogHeader>
+
+            {previewExercise && (
+              <div className="space-y-4">
+                <Card className="p-4">
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                    {renderTextWithGaps(previewExercise.text, previewExercise.gaps || [])}
+                  </p>
+                </Card>
+
+                {previewExercise.gaps && previewExercise.gaps.length > 0 && (
+                  <Card className="p-4">
+                    <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                      Answers & Distractors
+                    </h5>
+                    <div className="space-y-2">
+                      {previewExercise.gaps.map((gap: any) => (
+                        <div key={gap.gapNumber} className="text-sm">
+                          <span className="text-xs text-muted-foreground mr-1.5">Gap {gap.gapNumber}:</span>
+                          <span className="font-medium text-green-700 dark:text-green-400">{gap.correctAnswer}</span>
+                          {gap.distractors && gap.distractors.length > 0 && (
+                            <span className="text-muted-foreground">
+                              {" / "}
+                              {gap.distractors.map((d: string, i: number) => (
+                                <span key={i} className="text-red-600/70 dark:text-red-400/70">
+                                  {d}{i < gap.distractors.length - 1 ? ", " : ""}
+                                </span>
+                              ))}
+                            </span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                )}
+
+                {previewExercise.report_text && (
+                  <Card className="p-4 border-destructive/30 bg-destructive/5">
+                    <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">
+                      Report
+                    </h5>
+                    <p className="text-sm">{previewExercise.report_text}</p>
+                  </Card>
+                )}
+
+                <p className="text-xs text-muted-foreground font-mono">{previewExercise.id}</p>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

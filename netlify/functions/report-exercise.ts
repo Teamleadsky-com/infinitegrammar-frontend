@@ -46,16 +46,41 @@ export const handler: Handler = async (event) => {
       });
     }
 
-    // GET: List flagged exercises
+    // GET: List flagged exercises with gaps
     if (event.httpMethod === 'GET') {
-      const flagged = await sql`
-        SELECT e.id, e.level, e.text, e.report_text, e.reported_at,
-               gs.name as section_name
-        FROM exercises e
-        JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-        WHERE e.is_active = false
-        ORDER BY e.reported_at DESC NULLS LAST
-      `;
+      const [exercises, gaps] = await Promise.all([
+        sql`
+          SELECT e.id, e.level, e.text, e.report_text, e.reported_at,
+                 gs.name as section_name
+          FROM exercises e
+          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+          WHERE e.is_active = false
+          ORDER BY e.reported_at DESC NULLS LAST
+        `,
+        sql`
+          SELECT eg.exercise_id, eg.gap_number, eg.correct_answer, eg.distractors
+          FROM exercise_gaps eg
+          JOIN exercises e ON eg.exercise_id = e.id
+          WHERE e.is_active = false
+          ORDER BY eg.exercise_id, eg.gap_number
+        `,
+      ]);
+
+      // Group gaps by exercise_id
+      const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>> = {};
+      for (const g of gaps) {
+        if (!gapsMap[g.exercise_id]) gapsMap[g.exercise_id] = [];
+        gapsMap[g.exercise_id].push({
+          gapNumber: parseInt(g.gap_number, 10),
+          correctAnswer: g.correct_answer,
+          distractors: g.distractors || [],
+        });
+      }
+
+      const flagged = exercises.map((e: any) => ({
+        ...e,
+        gaps: gapsMap[e.id] || [],
+      }));
 
       return createResponse(200, { flagged });
     }
