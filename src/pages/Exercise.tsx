@@ -498,15 +498,6 @@ const Exercise = () => {
       const result = await response.json();
       console.log('✅ Exercise completion submitted successfully:', result);
 
-      // Track email campaign exercise completion
-      if (emailTrackingToken) {
-        fetch(`${API_BASE}/email-track-exercise`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tracking_token: emailTrackingToken, event: 'completed' }),
-        }).catch(() => {});
-      }
-
       // Refresh user data to get updated stats
       console.log('🔄 Refreshing user data...');
       refreshUser();
@@ -544,6 +535,16 @@ const Exercise = () => {
         correctCount,
         exerciseData.gaps.length
       );
+    }
+
+    // Track email campaign exercise completion (outside auth guard — users from emails may not be logged in)
+    if (emailTrackingToken) {
+      const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+      fetch(`${API_BASE}/email-track-exercise`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tracking_token: emailTrackingToken, event: 'completed' }),
+      }).catch(() => {});
     }
 
     // Show celebration only if all answers correct
