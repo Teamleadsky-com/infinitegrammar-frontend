@@ -168,14 +168,24 @@ async function prerender() {
   });
 
   try {
-    const page = await browser.newPage();
-
-    // Set viewport for consistent rendering
+    let page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
 
+    const PAGE_BATCH_SIZE = 20; // Recreate page every N pages to release memory
+
     // Prerender each page
-    for (const pagePath of PAGES) {
-      console.log(`Prerendering ${pagePath}...`);
+    for (let i = 0; i < PAGES.length; i++) {
+      const pagePath = PAGES[i];
+
+      // Recreate page periodically to prevent memory accumulation
+      if (i > 0 && i % PAGE_BATCH_SIZE === 0) {
+        console.log(`Recycling browser page after ${PAGE_BATCH_SIZE} pages...`);
+        await page.close();
+        page = await browser.newPage();
+        await page.setViewport({ width: 1920, height: 1080 });
+      }
+
+      console.log(`Prerendering ${pagePath}... (${i + 1}/${PAGES.length})`);
 
       try {
         const url = `${baseUrl}${pagePath}`;

@@ -1637,7 +1637,62 @@ DO UPDATE SET
 <li>Treat crawlability, canonicals, redirects, sitemap output, and prerendering as one system.</li>
 </ol>
 
+<h3>Hosting platform rules</h3>
+
+<ol start="25">
+<li>Disable Netlify post-processing features (Pretty URLs, asset optimization, snippet injection) when managing meta tags with React Helmet. These features can inject duplicate <code>og:</code> tags derived from <code>index.html</code> that appear before Helmet's tags and override them for social crawlers.</li>
+<li>After every deploy, <code>curl</code> a sample of live URLs and diff the response against local <code>dist/</code> files. If they differ, the hosting platform is modifying the HTML.</li>
+<li>Test social sharing with LinkedIn Post Inspector and Facebook Sharing Debugger after every deploy that touches meta tags or hosting configuration. Browser previews are not sufficient — social crawlers use first-match semantics for <code>og:</code> tags.</li>
+<li>Treat the hosting platform's configuration as part of the SEO system. Netlify settings, Cloudflare rules, Vercel headers — any layer between build output and the crawler can break what the build got right.</li>
+</ol>
+
 <p>The frontend was easy to ship. The search surface was not. For content-heavy products, that distinction matters very early.</p>
+
+<h2>Phase 5: Netlify Post-Processing — The Invisible Tag Injection (March 2026)</h2>
+
+<p>Even after prerendering was working and every page had correct Helmet-managed meta tags, LinkedIn's Post Inspector showed the homepage's Open Graph tags for every URL:</p>
+
+<pre><code>Fetched URL:    /articles/why-infinitegrammar-focuses-on-exam-grammar/
+Canonical URL:  https://www.infinitegrammar.de/       ← Homepage, not the article
+og:title:       "Deutsche Grammatik üben A1-C1..."    ← Homepage title
+Image:          No image found</code></pre>
+
+<p>The prerendered HTML files were correct — <code>curl</code> against the live site revealed the problem. Every served page contained <strong>duplicate Open Graph tags</strong>:</p>
+
+<pre><code>&lt;!-- Injected by Netlify (no data-rh attribute, appears first in &lt;head&gt;) --&gt;
+&lt;meta property="og:title" content="Deutsche Grammatik üben A1-C1..."&gt;
+&lt;meta property="og:url" content="https://www.infinitegrammar.de/"&gt;
+
+&lt;!-- Injected by React Helmet (data-rh="true", appears later in &lt;head&gt;) --&gt;
+&lt;meta property="og:title" content="Why InfiniteGrammar Started..." data-rh="true"&gt;
+&lt;meta property="og:url" content="https://www.infinitegrammar.de/articles/..." data-rh="true"&gt;</code></pre>
+
+<p>Social media crawlers (LinkedIn, Facebook, Twitter) read the <strong>first</strong> <code>og:</code> tag they encounter and ignore duplicates. The homepage tags came first, so every page previewed as the homepage.</p>
+
+<h3>Root cause: Netlify's "Pretty URLs" post-processing</h3>
+
+<p>Netlify has a post-processing feature called <strong>Pretty URLs</strong> (under Site settings → Build & deploy → Post processing) that's enabled by default. Among other things, Netlify's post-processing pipeline can inject Open Graph meta tags derived from the site's primary metadata — the <code>&lt;title&gt;</code> and <code>&lt;meta&gt;</code> tags found in the root <code>index.html</code>.</p>
+
+<p>These injected tags have no <code>data-rh</code> attribute (they're not managed by React Helmet), and they appear <strong>before</strong> Helmet's tags in the <code>&lt;head&gt;</code>. Since social crawlers use first-match semantics for Open Graph tags, the injected homepage tags always win.</p>
+
+<h3>Why this was invisible</h3>
+
+<ul>
+<li><strong>Browsers don't care</strong> about duplicate meta tags — they just use the DOM after JavaScript runs.</li>
+<li><strong>Google's crawler</strong> may handle duplicates differently (it renders JavaScript and reads the final DOM state), so Search Console didn't flag this.</li>
+<li><strong>The prerendered HTML files on disk were correct</strong> — the injection happens at Netlify's CDN edge, after the static file is served but before the response reaches the client.</li>
+<li><strong>curl without headers inspection</strong> showed the correct page title in <code>&lt;title&gt;</code> (Helmet replaces this correctly), masking the og: tag problem.</li>
+</ul>
+
+<h3>The fix</h3>
+
+<p>Disable "Pretty URLs" in Netlify's post-processing settings (Site settings → Build & deploy → Post processing) and redeploy. No code change required.</p>
+
+<h3>The lesson</h3>
+
+<p>Hosting platforms can silently modify your HTML responses. Netlify's post-processing features — Pretty URLs, asset optimization, snippet injection — all run after your build output is deployed but before responses reach users. If you're managing meta tags with a client-side library like React Helmet, any server-side tag injection creates duplicates that break social media previews.</p>
+
+<p><strong>Audit what your hosting platform does to your HTML</strong>, not just what your build outputs. <code>curl</code> the live URL and diff it against your local <code>dist/</code> file. If they differ, your hosting platform is modifying the response.</p>
 `
   }
 ];
