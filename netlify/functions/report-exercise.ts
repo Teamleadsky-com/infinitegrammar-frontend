@@ -2,7 +2,8 @@
  * /api/report-exercise
  *
  * POST - Report an exercise as having an issue, save report text, mark inactive
- * GET  - List all flagged exercises (admin)
+ * GET  - List flagged exercises: from checker runs (with ?source=checker&run_id=...)
+ *        or from user reports (default, is_active=false exercises)
  * PATCH - Reactivate a flagged exercise (admin)
  */
 
@@ -46,8 +47,65 @@ export const handler: Handler = async (event) => {
       });
     }
 
-    // GET: List flagged exercises with gaps
+    // GET: List flagged exercises
     if (event.httpMethod === 'GET') {
+      const params = event.queryStringParameters || {};
+      const source = params.source || 'user';
+
+      if (source === 'checker') {
+        // Return checker runs list + exercises for a specific run
+        const runs = await sql`
+          SELECT run_id, checker_name, levels, grammar_sections, created_at,
+                 COUNT(*) as exercise_count
+          FROM exercise_checker_runs
+          GROUP BY run_id, checker_name, levels, grammar_sections, created_at
+          ORDER BY created_at DESC
+        `;
+
+        let flagged: any[] = [];
+        const runId = params.run_id;
+
+        if (runId) {
+          const [checkerRows, gaps] = await Promise.all([
+            sql`
+              SELECT cr.exercise_id as id, cr.report_text, cr.created_at as reported_at,
+                     cr.checker_name,
+                     e.level, e.text, gs.name as section_name
+              FROM exercise_checker_runs cr
+              JOIN exercises e ON cr.exercise_id = e.id
+              JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+              WHERE cr.run_id = ${runId}::uuid
+              ORDER BY e.level, gs.name
+            `,
+            sql`
+              SELECT eg.exercise_id, eg.gap_number, eg.correct_answer, eg.distractors
+              FROM exercise_gaps eg
+              JOIN exercise_checker_runs cr ON eg.exercise_id = cr.exercise_id
+              WHERE cr.run_id = ${runId}::uuid
+              ORDER BY eg.exercise_id, eg.gap_number
+            `,
+          ]);
+
+          const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>> = {};
+          for (const g of gaps) {
+            if (!gapsMap[g.exercise_id]) gapsMap[g.exercise_id] = [];
+            gapsMap[g.exercise_id].push({
+              gapNumber: parseInt(g.gap_number, 10),
+              correctAnswer: g.correct_answer,
+              distractors: g.distractors || [],
+            });
+          }
+
+          flagged = checkerRows.map((e: any) => ({
+            ...e,
+            gaps: gapsMap[e.id] || [],
+          }));
+        }
+
+        return createResponse(200, { runs, flagged });
+      }
+
+      // Default: user-reported flagged exercises
       const [exercises, gaps] = await Promise.all([
         sql`
           SELECT e.id, e.level, e.text, e.report_text, e.reported_at,
@@ -66,7 +124,6 @@ export const handler: Handler = async (event) => {
         `,
       ]);
 
-      // Group gaps by exercise_id
       const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>> = {};
       for (const g of gaps) {
         if (!gapsMap[g.exercise_id]) gapsMap[g.exercise_id] = [];

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -107,7 +108,10 @@ const Admin = () => {
   const [winbackDaysInput, setWinbackDaysInput] = useState(14);
 
   // Flagged exercises state
+  const [flaggedSource, setFlaggedSource] = useState<"user" | "checker">("user");
   const [flaggedExercises, setFlaggedExercises] = useState<any[]>([]);
+  const [checkerRuns, setCheckerRuns] = useState<any[]>([]);
+  const [selectedRunId, setSelectedRunId] = useState<string>("");
   const [reactivatingId, setReactivatingId] = useState<string | null>(null);
   const [previewExercise, setPreviewExercise] = useState<any>(null);
 
@@ -161,11 +165,17 @@ const Admin = () => {
         });
         setEditingTemplates(tmplState);
       }
-      // Fetch flagged exercises
+      // Fetch user-reported flagged exercises
       const flaggedRes = await fetch(`${API_BASE}/report-exercise`);
       if (flaggedRes.ok) {
         const flaggedData = await flaggedRes.json();
         setFlaggedExercises(flaggedData.flagged || []);
+      }
+      // Fetch checker runs list
+      const checkerRes = await fetch(`${API_BASE}/report-exercise?source=checker`);
+      if (checkerRes.ok) {
+        const checkerData = await checkerRes.json();
+        setCheckerRuns(checkerData.runs || []);
       }
 
       // Fetch exercise stats for charts
@@ -241,6 +251,33 @@ const Admin = () => {
       toast({ title: "Network Error", description: error.message || "Request failed", variant: "destructive" });
     } finally {
       setSendingWinback(false);
+    }
+  };
+
+  const fetchCheckerRun = async (runId: string) => {
+    setSelectedRunId(runId);
+    try {
+      const res = await fetch(`${API_BASE}/report-exercise?source=checker&run_id=${runId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFlaggedExercises(data.flagged || []);
+      }
+    } catch {
+      console.error("Failed to fetch checker run");
+    }
+  };
+
+  const handleSourceChange = async (source: "user" | "checker") => {
+    setFlaggedSource(source);
+    setSelectedRunId("");
+    if (source === "user") {
+      const res = await fetch(`${API_BASE}/report-exercise`);
+      if (res.ok) {
+        const data = await res.json();
+        setFlaggedExercises(data.flagged || []);
+      }
+    } else {
+      setFlaggedExercises([]);
     }
   };
 
@@ -786,9 +823,54 @@ const Admin = () => {
 
             {/* Flagged Exercises Tab */}
             <TabsContent value="flagged" className="space-y-6">
+              {/* Source toggle */}
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={flaggedSource === "user" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleSourceChange("user")}
+                >
+                  User Reports
+                </Button>
+                <Button
+                  variant={flaggedSource === "checker" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleSourceChange("checker")}
+                >
+                  Checker Runs
+                </Button>
+              </div>
+
+              {/* Run selector for checker source */}
+              {flaggedSource === "checker" && (
+                <Card className="p-4">
+                  <Label className="text-sm font-medium mb-2 block">Select checker run</Label>
+                  <Select value={selectedRunId} onValueChange={fetchCheckerRun}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Choose a run..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {checkerRuns.map((run: any) => (
+                        <SelectItem key={run.run_id} value={run.run_id}>
+                          {run.checker_name} — {new Date(run.created_at).toLocaleDateString()} — {run.exercise_count} exercises
+                          {run.levels && run.levels.length > 0 && ` — ${run.levels.join(", ")}`}
+                          {run.grammar_sections && run.grammar_sections.length > 0 && ` — ${run.grammar_sections.join(", ")}`}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {checkerRuns.length === 0 && (
+                    <p className="text-sm text-muted-foreground mt-2">No checker runs found</p>
+                  )}
+                </Card>
+              )}
+
+              {/* Exercise list */}
               {flaggedExercises.length === 0 ? (
                 <Card className="p-6 text-center text-muted-foreground">
-                  No flagged exercises
+                  {flaggedSource === "checker" && !selectedRunId
+                    ? "Select a checker run to view flagged exercises"
+                    : "No flagged exercises"}
                 </Card>
               ) : (
                 flaggedExercises.map((ex: any) => (
@@ -798,6 +880,9 @@ const Admin = () => {
                         <div className="flex items-center gap-2 mb-2">
                           <Badge>{ex.level}</Badge>
                           <Badge variant="outline">{ex.section_name}</Badge>
+                          {ex.checker_name && (
+                            <Badge variant="secondary">{ex.checker_name}</Badge>
+                          )}
                           {ex.reported_at && (
                             <span className="text-xs text-muted-foreground">
                               {new Date(ex.reported_at).toLocaleDateString()}
@@ -811,7 +896,7 @@ const Admin = () => {
                             <p className="text-sm">{ex.report_text}</p>
                           </div>
                         ) : (
-                          <p className="text-xs text-muted-foreground italic">No report text (legacy)</p>
+                          <p className="text-xs text-muted-foreground italic">No report text</p>
                         )}
                         <p className="text-xs text-muted-foreground mt-2 font-mono">{ex.id}</p>
                       </div>
