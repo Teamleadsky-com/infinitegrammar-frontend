@@ -53,8 +53,8 @@ export const handler: Handler = async (event) => {
                gs.name as section_name
         FROM exercises e
         JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-        WHERE e.is_active = false AND e.reported_at IS NOT NULL
-        ORDER BY e.reported_at DESC
+        WHERE e.is_active = false
+        ORDER BY e.reported_at DESC NULLS LAST
       `;
 
       return createResponse(200, { flagged });
