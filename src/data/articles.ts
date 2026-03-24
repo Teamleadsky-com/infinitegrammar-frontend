@@ -683,7 +683,7 @@ for iteration in range(max_iterations):
 <p>That is why the pipeline stores both pairwise similarities and higher-level aggregates:</p>
 
 <ul>
-<li>section-level mean, median, and max similarity,</li>
+<li>section-level mean and max similarity,</li>
 <li>distribution buckets,</li>
 <li>per-exercise max similarity,</li>
 <li>and clustering structures for visualization.</li>

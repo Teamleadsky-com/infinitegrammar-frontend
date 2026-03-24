@@ -470,14 +470,14 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                   <th colSpan={4} className="text-left py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Grammar Section
                   </th>
-                  <th colSpan={5} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
+                  <th colSpan={4} className="text-center py-1.5 px-2 text-xs font-medium text-muted-foreground uppercase tracking-wider border-l">
                     <Tooltip>
                       <TooltipTrigger className="inline-flex items-center gap-1">
                         Pairwise Similarity
                         <Info className="h-3 w-3" />
                       </TooltipTrigger>
                       <TooltipContent side="top" className="max-w-xs">
-                        <p>Cosine similarity across all exercise pairs in the section. Avg and Median summarize the overall distribution, Max shows the highest single pair.</p>
+                        <p>Cosine similarity across all exercise pairs in the section. Avg summarizes the overall distribution, Max shows the highest single pair.</p>
                       </TooltipContent>
                     </Tooltip>
                   </th>
@@ -517,12 +517,6 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                     <Tooltip>
                       <TooltipTrigger>Avg <SortIcon columnKey="meanSimilarity" /></TooltipTrigger>
                       <TooltipContent>Mean pairwise similarity across all exercise pairs</TooltipContent>
-                    </Tooltip>
-                  </th>
-                  <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("medianAvgSim")}>
-                    <Tooltip>
-                      <TooltipTrigger>Median <SortIcon columnKey="medianAvgSim" /></TooltipTrigger>
-                      <TooltipContent>Median of per-exercise average neighbor similarity</TooltipContent>
                     </Tooltip>
                   </th>
                   <th className="text-right py-2 px-2 cursor-pointer hover:text-primary" onClick={() => handleSort("maxSimilarity")}>
@@ -631,9 +625,6 @@ export const SimilarityDashboard = ({ apiBase }: SimilarityDashboardProps) => {
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums border-l">
                         {hasData && s.meanSimilarity != null ? s.meanSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
-                      </td>
-                      <td className="text-right py-2.5 px-2 tabular-nums">
-                        {hasData && s.medianAvgSim != null ? s.medianAvgSim.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
                       </td>
                       <td className="text-right py-2.5 px-2 tabular-nums">
                         {hasData && s.maxSimilarity != null ? s.maxSimilarity.toFixed(3) : <span className="text-muted-foreground/50">—</span>}
