@@ -23,6 +23,7 @@ const Articles = () => {
         <meta property="og:description" content={pageDescription} />
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

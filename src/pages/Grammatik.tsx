@@ -74,6 +74,7 @@ const Grammatik = () => {
         />
         <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta property="og:type" content="website" />
+        <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
         <meta
