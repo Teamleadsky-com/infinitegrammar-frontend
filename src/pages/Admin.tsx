@@ -29,6 +29,8 @@ import {
   Send,
   Grid3x3,
   ShieldCheck,
+  Flag,
+  RotateCcw,
 } from "lucide-react";
 import {
   BarChart,
@@ -67,6 +69,10 @@ const Admin = () => {
   const [sendingWinback, setSendingWinback] = useState(false);
   const [winbackResult, setWinbackResult] = useState<any>(null);
   const [winbackDaysInput, setWinbackDaysInput] = useState(14);
+
+  // Flagged exercises state
+  const [flaggedExercises, setFlaggedExercises] = useState<any[]>([]);
+  const [reactivatingId, setReactivatingId] = useState<string | null>(null);
 
   // Exercise stats state
   type DemandSort = 'popularity' | 'remaining';
@@ -118,6 +124,13 @@ const Admin = () => {
         });
         setEditingTemplates(tmplState);
       }
+      // Fetch flagged exercises
+      const flaggedRes = await fetch(`${API_BASE}/report-exercise`);
+      if (flaggedRes.ok) {
+        const flaggedData = await flaggedRes.json();
+        setFlaggedExercises(flaggedData.flagged || []);
+      }
+
       // Fetch exercise stats for charts
       const [snapshotRes, coverageRes, demandRes] = await Promise.all([
         fetch(`${API_BASE}/exercise-count-snapshots`),
@@ -194,6 +207,25 @@ const Admin = () => {
     }
   };
 
+  const handleReactivate = async (exerciseId: string) => {
+    setReactivatingId(exerciseId);
+    try {
+      const response = await fetch(`${API_BASE}/report-exercise`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ exerciseId }),
+      });
+      if (response.ok) {
+        setFlaggedExercises((prev) => prev.filter((e) => e.id !== exerciseId));
+        toast({ title: "Exercise reactivated" });
+      }
+    } catch {
+      toast({ title: "Error reactivating", variant: "destructive" });
+    } finally {
+      setReactivatingId(null);
+    }
+  };
+
   if (!isAdmin) return null;
 
   const getFunnelData = () => {
@@ -236,7 +268,7 @@ const Admin = () => {
           </div>
         ) : (
           <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="dashboard" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 {t("admin.dashboard")}
@@ -256,6 +288,15 @@ const Admin = () => {
               <TabsTrigger value="similarity" className="gap-2">
                 <ShieldCheck className="h-4 w-4" />
                 {t("admin.similarity.tabLabel", "Similarity")}
+              </TabsTrigger>
+              <TabsTrigger value="flagged" className="gap-2">
+                <Flag className="h-4 w-4" />
+                Flagged
+                {flaggedExercises.length > 0 && (
+                  <Badge variant="destructive" className="ml-1 h-5 min-w-5 px-1 text-xs">
+                    {flaggedExercises.length}
+                  </Badge>
+                )}
               </TabsTrigger>
             </TabsList>
 
@@ -704,6 +745,47 @@ const Admin = () => {
             {/* Similarity Tab */}
             <TabsContent value="similarity" className="space-y-6">
               <SimilarityDashboard apiBase={API_BASE} />
+            </TabsContent>
+
+            {/* Flagged Exercises Tab */}
+            <TabsContent value="flagged" className="space-y-6">
+              {flaggedExercises.length === 0 ? (
+                <Card className="p-6 text-center text-muted-foreground">
+                  No flagged exercises
+                </Card>
+              ) : (
+                flaggedExercises.map((ex: any) => (
+                  <Card key={ex.id} className="p-6 animate-fade-in">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge>{ex.level}</Badge>
+                          <Badge variant="outline">{ex.section_name}</Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(ex.reported_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p className="text-sm mb-3 line-clamp-3">{ex.text}</p>
+                        <div className="bg-muted/50 rounded-md p-3">
+                          <p className="text-xs font-medium text-muted-foreground mb-1">Report</p>
+                          <p className="text-sm">{ex.report_text}</p>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2 font-mono">{ex.id}</p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="gap-1 shrink-0"
+                        disabled={reactivatingId === ex.id}
+                        onClick={() => handleReactivate(ex.id)}
+                      >
+                        <RotateCcw className="h-3 w-3" />
+                        {reactivatingId === ex.id ? "..." : "Reactivate"}
+                      </Button>
+                    </div>
+                  </Card>
+                ))
+              )}
             </TabsContent>
           </Tabs>
         )}

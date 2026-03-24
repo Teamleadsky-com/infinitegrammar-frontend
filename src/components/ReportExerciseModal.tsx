@@ -25,12 +25,6 @@ interface ReportExerciseModalProps {
   gaps: Gap[];
 }
 
-// Helper to URL-encode form data for Netlify
-const encode = (data: Record<string, string>) =>
-  Object.keys(data)
-    .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&");
-
 export const ReportExerciseModal = ({
   open,
   onOpenChange,
@@ -44,19 +38,6 @@ export const ReportExerciseModal = ({
   const [error, setError] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Format gaps data for submission
-  const formatGapsData = () => {
-    return gaps
-      .map((gap) => {
-        const allOptions = [gap.correct, ...gap.distractors].sort();
-        const optionsText = allOptions
-          .map((opt) => (opt === gap.correct ? `${opt} (correct)` : opt))
-          .join(", ");
-        return `Gap ${gap.no}: ${optionsText}`;
-      })
-      .join(", ");
-  };
 
   const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
@@ -81,25 +62,6 @@ export const ReportExerciseModal = ({
     setIsSubmitting(true);
 
     try {
-      // Send to Netlify Forms
-      await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encode({
-          "form-name": "exercise-report",
-          "bot-field": "",
-          name: "", // Honeypot field
-          email: "", // Honeypot field
-          subject: exerciseId, // Subject line for email notifications
-          exerciseId,
-          exerciseText: exerciseText.substring(0, 200), // Limit text length
-          gaps: formatGapsData(),
-          reportText,
-          timestamp: new Date().toISOString(),
-        }),
-      });
-
-      // Mark exercise as inactive in the database
       const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
       await fetch(`${API_BASE}/report-exercise`, {
         method: 'POST',
@@ -110,7 +72,6 @@ export const ReportExerciseModal = ({
         }),
       });
 
-      // Show success state
       setIsSubmitted(true);
       setError("");
     } catch (err) {
@@ -147,22 +108,10 @@ export const ReportExerciseModal = ({
             </DialogHeader>
 
             <form
-              name="exercise-report"
-              method="POST"
-              data-netlify="true"
-              netlify-honeypot="bot-field"
               onSubmit={handleSubmit}
               className="space-y-4 py-4"
             >
-              {/* Required hidden input for Netlify */}
-              <input type="hidden" name="form-name" value="exercise-report" />
-
               {/* Honeypot fields */}
-              <p className="hidden">
-                <label>
-                  Don't fill this out if you're human: <input name="bot-field" />
-                </label>
-              </p>
               <p className="hidden" aria-hidden="true">
                 <label>
                   Name:{" "}
@@ -188,15 +137,6 @@ export const ReportExerciseModal = ({
                   />
                 </label>
               </p>
-
-              {/* Hidden fields for exercise data */}
-              <input type="hidden" name="exerciseId" value={exerciseId} />
-              <input
-                type="hidden"
-                name="exerciseText"
-                value={exerciseText.substring(0, 200)}
-              />
-              <input type="hidden" name="timestamp" value={new Date().toISOString()} />
 
               <div className="space-y-2">
                 <label htmlFor="reportText" className="text-sm font-medium">
