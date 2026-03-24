@@ -189,7 +189,7 @@ export const articles: Article[] = [
   },
   {
     slug: 'gap-fill-quality-distractor-problem',
-    title: 'Gap-Fill Exercise Quality Is a Distractor Design Problem',
+    title: 'Good Gap-Fill Exercises Need Better Wrong Answers',
     excerpt: 'A grammar gap-fill exercise looks deceptively simple. A short text, a few blanks, four options per blank. But what separates a useful exercise from a weak one is usually the quality of the wrong answers.',
     datePublished: '2026-03-05T10:00:00+01:00',
     dateModified: '2026-03-05T10:00:00+01:00',
@@ -404,7 +404,7 @@ for iteration in range(max_iterations):
   },
   {
     slug: 'batch-processing-exercise-generation',
-    title: 'Batch Processing: Making Exercise Generation Practical',
+    title: 'Generating Exercises in Batches',
     excerpt: 'The interesting part of the generation pipeline is not only the prompt. It is the operating model around the prompt \u2014 throughput, resumability, and cost discipline.',
     datePublished: '2026-03-10T10:00:00+01:00',
     dateModified: '2026-03-10T10:00:00+01:00',
@@ -578,7 +578,7 @@ for iteration in range(max_iterations):
   },
   {
     slug: 'measuring-exercise-diversity',
-    title: 'Measuring Exercise Diversity Needed More Than Sentence Embeddings',
+    title: 'Measuring Exercises Similarity',
     excerpt: 'After a grammar section contains enough material, a new question appears. Are these genuinely different exercises, or just many versions of the same one? Off-the-shelf sentence embeddings were not especially useful here.',
     datePublished: '2026-03-12T10:00:00+01:00',
     dateModified: '2026-03-23T10:00:00+01:00',
@@ -781,7 +781,7 @@ for iteration in range(max_iterations):
   },
   {
     slug: 'similarity-calculation-vast-ai',
-    title: 'Why Similarity Calculation Moved to Vast.ai',
+    title: 'Exercises Similarity Calculation on Vast.ai',
     excerpt: 'Once the similarity pipeline became part of the operating routine, local execution stopped being attractive. A cheap remote CPU instance proved to be a better place for this than a laptop.',
     datePublished: '2026-03-15T10:00:00+01:00',
     dateModified: '2026-03-15T10:00:00+01:00',
@@ -1052,7 +1052,7 @@ vastai destroy instance INSTANCE_ID</code></pre>
   },
   {
     slug: 'reordering-exercises-product-problem',
-    title: 'Why Sequencing Exercises Became a Product Problem, Not Just an Optimization Problem',
+    title: 'Sequencing Exercises for an Optimal Learning Path',
     excerpt: 'Even a reasonably diverse section can feel repetitive if similar exercises appear back to back. A learner does not experience the corpus as a similarity matrix. A learner experiences it as a sequence.',
     datePublished: '2026-03-18T10:00:00+01:00',
     dateModified: '2026-03-23T10:00:00+01:00',
@@ -1200,7 +1200,7 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
   },
   {
     slug: 'email-campaigns-learning-system',
-    title: 'Email Campaigns Worked Better When Treated as a Learning System',
+    title: 'Email Campaign for User Engagement',
     excerpt: 'The product is organised around narrow grammar sections rather than broad lessons. That changes the retention logic. The campaign system is section-based \u2014 every completion event can create or update one schedule for one user and one grammar section.',
     datePublished: '2026-03-20T10:00:00+01:00',
     dateModified: '2026-03-20T10:00:00+01:00',
@@ -1485,7 +1485,7 @@ DO UPDATE SET
   },
   {
     slug: 'react-spa-seo-postmortem',
-    title: 'React SPA SEO Postmortem: What I Learned Shipping a Content-Heavy Product',
+    title: 'SEO Postmortem',
     excerpt: 'SEO is not a content problem first. It is a rendering, routing, and deployment problem. A plain React SPA is not SEO-ready by default \u2014 here is what went wrong and what I would do differently.',
     datePublished: '2026-03-22T10:00:00+01:00',
     dateModified: '2026-03-22T10:00:00+01:00',
