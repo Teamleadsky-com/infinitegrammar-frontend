@@ -52,6 +52,50 @@ export const handler: Handler = async (event) => {
       const params = event.queryStringParameters || {};
       const source = params.source || 'user';
 
+      if (source === 'compare') {
+        // Compare multiple runs: return exercises with which runs flagged them
+        const runIdsParam = params.run_ids || '';
+        const runIds = runIdsParam.split(',').filter(Boolean);
+
+        if (runIds.length < 2) {
+          return createResponse(400, { error: 'At least 2 run_ids required' });
+        }
+
+        // Fetch all flagged exercise_ids grouped by run_id for selected runs
+        const rows = await sql`
+          SELECT cr.run_id, cr.exercise_id, cr.report_text as checker_report,
+                 e.level, e.text, gs.name as section_name
+          FROM exercise_checker_runs cr
+          JOIN exercises e ON cr.exercise_id = e.id
+          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+          WHERE cr.run_id = ANY(${runIds}::uuid[])
+          ORDER BY e.level, gs.name
+        `;
+
+        // Group by exercise, collecting which runs flagged it
+        const exerciseMap: Record<string, any> = {};
+        for (const row of rows) {
+          if (!exerciseMap[row.exercise_id]) {
+            exerciseMap[row.exercise_id] = {
+              id: row.exercise_id,
+              level: row.level,
+              text: row.text,
+              section_name: row.section_name,
+              run_ids: [],
+              reports: {} as Record<string, string>,
+            };
+          }
+          exerciseMap[row.exercise_id].run_ids.push(row.run_id);
+          if (row.checker_report) {
+            exerciseMap[row.exercise_id].reports[row.run_id] = row.checker_report;
+          }
+        }
+
+        const exercises = Object.values(exerciseMap);
+
+        return createResponse(200, { exercises, run_ids: runIds });
+      }
+
       if (source === 'checker') {
         // Return checker runs list + exercises for a specific run
         const runs = await sql`

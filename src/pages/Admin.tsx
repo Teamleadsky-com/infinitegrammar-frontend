@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,6 +31,7 @@ import {
   Send,
   Grid3x3,
   ShieldCheck,
+  Check,
   Flag,
   RotateCcw,
   Eye,
@@ -108,12 +110,18 @@ const Admin = () => {
   const [winbackDaysInput, setWinbackDaysInput] = useState(14);
 
   // Flagged exercises state
-  const [flaggedSource, setFlaggedSource] = useState<"user" | "checker">("user");
+  const [flaggedSource, setFlaggedSource] = useState<"user" | "checker" | "compare">("user");
   const [flaggedExercises, setFlaggedExercises] = useState<any[]>([]);
   const [checkerRuns, setCheckerRuns] = useState<any[]>([]);
   const [selectedRunId, setSelectedRunId] = useState<string>("");
   const [reactivatingId, setReactivatingId] = useState<string | null>(null);
   const [previewExercise, setPreviewExercise] = useState<any>(null);
+
+  // Compare runs state
+  const [compareRunIds, setCompareRunIds] = useState<string[]>([]);
+  const [compareExercises, setCompareExercises] = useState<any[]>([]);
+  const [compareLoading, setCompareLoading] = useState(false);
+  const [compareFilter, setCompareFilter] = useState<"all" | "shared" | "unique">("all");
 
   // Exercise stats state
   type DemandSort = 'popularity' | 'remaining';
@@ -267,7 +275,7 @@ const Admin = () => {
     }
   };
 
-  const handleSourceChange = async (source: "user" | "checker") => {
+  const handleSourceChange = async (source: "user" | "checker" | "compare") => {
     setFlaggedSource(source);
     setSelectedRunId("");
     if (source === "user") {
@@ -276,8 +284,35 @@ const Admin = () => {
         const data = await res.json();
         setFlaggedExercises(data.flagged || []);
       }
+    } else if (source === "checker") {
+      setFlaggedExercises([]);
     } else {
       setFlaggedExercises([]);
+      setCompareExercises([]);
+      setCompareRunIds([]);
+      setCompareFilter("all");
+    }
+  };
+
+  const toggleCompareRun = (runId: string) => {
+    setCompareRunIds((prev) =>
+      prev.includes(runId) ? prev.filter((id) => id !== runId) : [...prev, runId]
+    );
+  };
+
+  const fetchCompareData = async () => {
+    if (compareRunIds.length < 2) return;
+    setCompareLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/report-exercise?source=compare&run_ids=${compareRunIds.join(",")}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCompareExercises(data.exercises || []);
+      }
+    } catch {
+      console.error("Failed to fetch compare data");
+    } finally {
+      setCompareLoading(false);
     }
   };
 
@@ -839,6 +874,13 @@ const Admin = () => {
                 >
                   Checker Runs
                 </Button>
+                <Button
+                  variant={flaggedSource === "compare" ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleSourceChange("compare")}
+                >
+                  Compare Runs
+                </Button>
               </div>
 
               {/* Run selector for checker source */}
@@ -865,65 +907,265 @@ const Admin = () => {
                 </Card>
               )}
 
-              {/* Exercise list */}
-              {flaggedExercises.length === 0 ? (
-                <Card className="p-6 text-center text-muted-foreground">
-                  {flaggedSource === "checker" && !selectedRunId
-                    ? "Select a checker run to view flagged exercises"
-                    : "No flagged exercises"}
-                </Card>
-              ) : (
-                flaggedExercises.map((ex: any) => (
-                  <Card key={ex.id} className="p-6 animate-fade-in">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge>{ex.level}</Badge>
-                          <Badge variant="outline">{ex.section_name}</Badge>
-                          {ex.checker_name && (
-                            <Badge variant="secondary">{ex.checker_name}</Badge>
-                          )}
-                          {ex.reported_at && (
-                            <span className="text-xs text-muted-foreground">
-                              {new Date(ex.reported_at).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-sm mb-3 line-clamp-3">{ex.text}</p>
-                        {ex.report_text ? (
-                          <div className="bg-muted/50 rounded-md p-3">
-                            <p className="text-xs font-medium text-muted-foreground mb-1">Report</p>
-                            <p className="text-sm">{ex.report_text}</p>
-                          </div>
-                        ) : (
-                          <p className="text-xs text-muted-foreground italic">No report text</p>
-                        )}
-                        <p className="text-xs text-muted-foreground mt-2 font-mono">{ex.id}</p>
-                      </div>
-                      <div className="flex flex-col gap-2 shrink-0">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="gap-1"
-                          onClick={() => setPreviewExercise(ex)}
-                        >
-                          <Eye className="h-3 w-3" />
-                          Preview
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="gap-1"
-                          disabled={reactivatingId === ex.id}
-                          onClick={() => handleReactivate(ex.id)}
-                        >
-                          <RotateCcw className="h-3 w-3" />
-                          {reactivatingId === ex.id ? "..." : "Reactivate"}
-                        </Button>
-                      </div>
+              {/* Compare Runs UI */}
+              {flaggedSource === "compare" && (
+                <>
+                  {/* Run multi-select */}
+                  <Card className="p-4">
+                    <Label className="text-sm font-medium mb-3 block">Select runs to compare (2 or more)</Label>
+                    <div className="space-y-2">
+                      {checkerRuns.map((run: any) => (
+                        <label key={run.run_id} className="flex items-center gap-2 cursor-pointer">
+                          <Checkbox
+                            checked={compareRunIds.includes(run.run_id)}
+                            onCheckedChange={() => toggleCompareRun(run.run_id)}
+                          />
+                          <span className="text-sm">
+                            {run.checker_name} — {new Date(run.created_at).toLocaleDateString()} — {run.exercise_count} exercises
+                            {run.levels && run.levels.length > 0 && ` (${run.levels.join(", ")})`}
+                          </span>
+                        </label>
+                      ))}
                     </div>
+                    <Button
+                      className="mt-3"
+                      size="sm"
+                      disabled={compareRunIds.length < 2 || compareLoading}
+                      onClick={fetchCompareData}
+                    >
+                      {compareLoading ? "Loading..." : "Compare"}
+                    </Button>
                   </Card>
-                ))
+
+                  {/* Matrix heatmap */}
+                  {compareExercises.length > 0 && (() => {
+                    const selectedRuns = checkerRuns.filter((r: any) => compareRunIds.includes(r.run_id));
+                    // Build sets of exercise IDs per run
+                    const runSets: Record<string, Set<string>> = {};
+                    for (const rid of compareRunIds) runSets[rid] = new Set();
+                    for (const ex of compareExercises) {
+                      for (const rid of ex.run_ids) {
+                        if (runSets[rid]) runSets[rid].add(ex.id);
+                      }
+                    }
+
+                    return (
+                      <Card className="p-4">
+                        <h4 className="text-sm font-semibold mb-3">Overlap Matrix</h4>
+                        <div className="overflow-x-auto">
+                          <table className="border-collapse text-sm">
+                            <thead>
+                              <tr>
+                                <th className="border border-border p-2 bg-muted/50"></th>
+                                {selectedRuns.map((run: any) => (
+                                  <th key={run.run_id} className="border border-border p-2 bg-muted/50 text-xs font-medium max-w-[120px] truncate">
+                                    {run.checker_name}
+                                  </th>
+                                ))}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedRuns.map((rowRun: any) => (
+                                <tr key={rowRun.run_id}>
+                                  <td className="border border-border p-2 bg-muted/50 text-xs font-medium whitespace-nowrap">
+                                    {rowRun.checker_name}
+                                  </td>
+                                  {selectedRuns.map((colRun: any) => {
+                                    const rowSet = runSets[rowRun.run_id];
+                                    const colSet = runSets[colRun.run_id];
+                                    const overlap = [...rowSet].filter((id) => colSet.has(id)).length;
+                                    const isDiagonal = rowRun.run_id === colRun.run_id;
+                                    const maxSize = Math.max(rowSet.size, colSet.size);
+                                    const pct = maxSize > 0 ? overlap / maxSize : 0;
+
+                                    return (
+                                      <td
+                                        key={colRun.run_id}
+                                        className="border border-border p-2 text-center font-semibold text-sm"
+                                        style={{
+                                          backgroundColor: isDiagonal
+                                            ? "hsl(var(--muted))"
+                                            : `hsl(142, 70%, ${90 - pct * 50}%)`,
+                                        }}
+                                        title={isDiagonal ? `Total: ${overlap}` : `${overlap} shared (${Math.round(pct * 100)}%)`}
+                                      >
+                                        {overlap}
+                                      </td>
+                                    );
+                                  })}
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Diagonal = total per run. Off-diagonal = shared exercises. Hover for percentages.
+                        </p>
+                      </Card>
+                    );
+                  })()}
+
+                  {/* Filter + Exercise comparison table */}
+                  {compareExercises.length > 0 && (() => {
+                    const selectedRuns = checkerRuns.filter((r: any) => compareRunIds.includes(r.run_id));
+                    const filtered = compareExercises.filter((ex) => {
+                      if (compareFilter === "shared") return ex.run_ids.length > 1;
+                      if (compareFilter === "unique") return ex.run_ids.length === 1;
+                      return true;
+                    }).sort((a, b) => b.run_ids.length - a.run_ids.length);
+
+                    return (
+                      <Card className="p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-sm font-semibold">
+                            Exercises ({filtered.length} of {compareExercises.length})
+                          </h4>
+                          <div className="flex gap-1">
+                            {(["all", "shared", "unique"] as const).map((f) => (
+                              <Button
+                                key={f}
+                                variant={compareFilter === f ? "default" : "outline"}
+                                size="sm"
+                                onClick={() => setCompareFilter(f)}
+                              >
+                                {f === "all" ? "All" : f === "shared" ? "Shared (2+)" : "Unique (1)"}
+                              </Button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="overflow-x-auto">
+                          <table className="w-full border-collapse text-sm">
+                            <thead>
+                              <tr>
+                                <th className="border border-border p-2 text-left bg-muted/50 text-xs">Level</th>
+                                <th className="border border-border p-2 text-left bg-muted/50 text-xs">Section</th>
+                                <th className="border border-border p-2 text-left bg-muted/50 text-xs">Exercise</th>
+                                {selectedRuns.map((run: any) => (
+                                  <th key={run.run_id} className="border border-border p-2 text-center bg-muted/50 text-xs max-w-[100px] truncate">
+                                    {run.checker_name}
+                                  </th>
+                                ))}
+                                <th className="border border-border p-2 text-center bg-muted/50 text-xs">Count</th>
+                                <th className="border border-border p-2 text-center bg-muted/50 text-xs"></th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {filtered.map((ex) => (
+                                <tr key={ex.id} className="hover:bg-muted/30">
+                                  <td className="border border-border p-2 text-xs">{ex.level}</td>
+                                  <td className="border border-border p-2 text-xs">{ex.section_name}</td>
+                                  <td className="border border-border p-2 text-xs max-w-[300px] truncate" title={ex.text}>
+                                    {ex.text?.substring(0, 80)}{ex.text?.length > 80 ? "..." : ""}
+                                  </td>
+                                  {selectedRuns.map((run: any) => (
+                                    <td key={run.run_id} className="border border-border p-2 text-center">
+                                      {ex.run_ids.includes(run.run_id) ? (
+                                        <Check className="h-4 w-4 text-green-600 mx-auto" />
+                                      ) : (
+                                        <span className="text-muted-foreground">—</span>
+                                      )}
+                                    </td>
+                                  ))}
+                                  <td className="border border-border p-2 text-center font-semibold text-xs">
+                                    <Badge variant={ex.run_ids.length === compareRunIds.length ? "default" : ex.run_ids.length > 1 ? "secondary" : "outline"}>
+                                      {ex.run_ids.length}
+                                    </Badge>
+                                  </td>
+                                  <td className="border border-border p-2 text-center">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className="h-7 w-7 p-0"
+                                      onClick={() => setPreviewExercise(ex)}
+                                    >
+                                      <Eye className="h-3 w-3" />
+                                    </Button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Card>
+                    );
+                  })()}
+
+                  {compareExercises.length === 0 && compareRunIds.length >= 2 && !compareLoading && (
+                    <Card className="p-6 text-center text-muted-foreground">
+                      Click "Compare" to load comparison data
+                    </Card>
+                  )}
+                  {compareExercises.length === 0 && compareRunIds.length < 2 && (
+                    <Card className="p-6 text-center text-muted-foreground">
+                      Select at least 2 runs to compare
+                    </Card>
+                  )}
+                </>
+              )}
+
+              {/* Exercise list (user reports / single checker run) */}
+              {flaggedSource !== "compare" && (
+                <>
+                  {flaggedExercises.length === 0 ? (
+                    <Card className="p-6 text-center text-muted-foreground">
+                      {flaggedSource === "checker" && !selectedRunId
+                        ? "Select a checker run to view flagged exercises"
+                        : "No flagged exercises"}
+                    </Card>
+                  ) : (
+                    flaggedExercises.map((ex: any) => (
+                      <Card key={ex.id} className="p-6 animate-fade-in">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Badge>{ex.level}</Badge>
+                              <Badge variant="outline">{ex.section_name}</Badge>
+                              {ex.checker_name && (
+                                <Badge variant="secondary">{ex.checker_name}</Badge>
+                              )}
+                              {ex.reported_at && (
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(ex.reported_at).toLocaleDateString()}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-sm mb-3 line-clamp-3">{ex.text}</p>
+                            {ex.report_text ? (
+                              <div className="bg-muted/50 rounded-md p-3">
+                                <p className="text-xs font-medium text-muted-foreground mb-1">Report</p>
+                                <p className="text-sm">{ex.report_text}</p>
+                              </div>
+                            ) : (
+                              <p className="text-xs text-muted-foreground italic">No report text</p>
+                            )}
+                            <p className="text-xs text-muted-foreground mt-2 font-mono">{ex.id}</p>
+                          </div>
+                          <div className="flex flex-col gap-2 shrink-0">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-1"
+                              onClick={() => setPreviewExercise(ex)}
+                            >
+                              <Eye className="h-3 w-3" />
+                              Preview
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="gap-1"
+                              disabled={reactivatingId === ex.id}
+                              onClick={() => handleReactivate(ex.id)}
+                            >
+                              <RotateCcw className="h-3 w-3" />
+                              {reactivatingId === ex.id ? "..." : "Reactivate"}
+                            </Button>
+                          </div>
+                        </div>
+                      </Card>
+                    ))
+                  )}
+                </>
               )}
             </TabsContent>
           </Tabs>
