@@ -62,15 +62,37 @@ export const handler: Handler = async (event) => {
         }
 
         // Fetch all flagged exercise_ids grouped by run_id for selected runs
-        const rows = await sql`
-          SELECT cr.run_id, cr.exercise_id, cr.report_text as checker_report,
-                 e.level, e.text, gs.name as section_name
-          FROM exercise_checker_runs cr
-          JOIN exercises e ON cr.exercise_id = e.id
-          JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE cr.run_id = ANY(${runIds}::uuid[])
-          ORDER BY e.level, gs.name
-        `;
+        const [rows, gaps] = await Promise.all([
+          sql`
+            SELECT cr.run_id, cr.exercise_id, cr.report_text as checker_report,
+                   e.level, e.text, gs.name as section_name
+            FROM exercise_checker_runs cr
+            JOIN exercises e ON cr.exercise_id = e.id
+            JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+            WHERE cr.run_id = ANY(${runIds}::uuid[])
+            ORDER BY e.level, gs.name
+          `,
+          sql`
+            SELECT eg.exercise_id, eg.gap_number, eg.correct_answer, eg.distractors
+            FROM exercise_gaps eg
+            JOIN exercise_checker_runs cr ON eg.exercise_id = cr.exercise_id
+            WHERE cr.run_id = ANY(${runIds}::uuid[])
+            ORDER BY eg.exercise_id, eg.gap_number
+          `,
+        ]);
+
+        const gapsMap: Record<string, Array<{ gapNumber: number; correctAnswer: string; distractors: string[] }>> = {};
+        for (const g of gaps) {
+          if (!gapsMap[g.exercise_id]) gapsMap[g.exercise_id] = [];
+          // Avoid duplicates from multiple runs referencing the same exercise
+          if (!gapsMap[g.exercise_id].some((x) => x.gapNumber === parseInt(g.gap_number, 10))) {
+            gapsMap[g.exercise_id].push({
+              gapNumber: parseInt(g.gap_number, 10),
+              correctAnswer: g.correct_answer,
+              distractors: g.distractors || [],
+            });
+          }
+        }
 
         // Group by exercise, collecting which runs flagged it
         const exerciseMap: Record<string, any> = {};
@@ -83,6 +105,7 @@ export const handler: Handler = async (event) => {
               section_name: row.section_name,
               run_ids: [],
               reports: {} as Record<string, string>,
+              gaps: gapsMap[row.exercise_id] || [],
             };
           }
           exerciseMap[row.exercise_id].run_ids.push(row.run_id);

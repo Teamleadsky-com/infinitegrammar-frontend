@@ -956,10 +956,10 @@ const Admin = () => {
                           <table className="border-collapse text-sm">
                             <thead>
                               <tr>
-                                <th className="border border-border p-2 bg-muted/50"></th>
+                                <th className="border border-border p-3 bg-muted/50"></th>
                                 {selectedRuns.map((run: any) => (
-                                  <th key={run.run_id} className="border border-border p-2 bg-muted/50 text-xs font-medium max-w-[120px] truncate">
-                                    {run.checker_name}
+                                  <th key={run.run_id} className="border border-border p-3 bg-muted/50 text-xs font-medium min-w-[140px]">
+                                    <span className="break-words">{run.checker_name}</span>
                                   </th>
                                 ))}
                               </tr>
@@ -967,8 +967,8 @@ const Admin = () => {
                             <tbody>
                               {selectedRuns.map((rowRun: any) => (
                                 <tr key={rowRun.run_id}>
-                                  <td className="border border-border p-2 bg-muted/50 text-xs font-medium whitespace-nowrap">
-                                    {rowRun.checker_name}
+                                  <td className="border border-border p-3 bg-muted/50 text-xs font-medium min-w-[140px]">
+                                    <span className="break-words">{rowRun.checker_name}</span>
                                   </td>
                                   {selectedRuns.map((colRun: any) => {
                                     const rowSet = runSets[rowRun.run_id];
@@ -981,7 +981,7 @@ const Admin = () => {
                                     return (
                                       <td
                                         key={colRun.run_id}
-                                        className="border border-border p-2 text-center font-semibold text-sm"
+                                        className="border border-border p-3 text-center font-semibold text-sm min-w-[60px]"
                                         style={{
                                           backgroundColor: isDiagonal
                                             ? "hsl(var(--muted))"
@@ -1041,8 +1041,8 @@ const Admin = () => {
                                 <th className="border border-border p-2 text-left bg-muted/50 text-xs">Section</th>
                                 <th className="border border-border p-2 text-left bg-muted/50 text-xs">Exercise</th>
                                 {selectedRuns.map((run: any) => (
-                                  <th key={run.run_id} className="border border-border p-2 text-center bg-muted/50 text-xs max-w-[100px] truncate">
-                                    {run.checker_name}
+                                  <th key={run.run_id} className="border border-border p-2 text-center bg-muted/50 text-xs min-w-[120px]">
+                                    <span className="break-words">{run.checker_name}</span>
                                   </th>
                                 ))}
                                 <th className="border border-border p-2 text-center bg-muted/50 text-xs">Count</th>
