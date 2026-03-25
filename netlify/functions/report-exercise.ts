@@ -65,7 +65,7 @@ export const handler: Handler = async (event) => {
         const [rows, gaps] = await Promise.all([
           sql`
             SELECT cr.run_id, cr.exercise_id, cr.report_text as checker_report,
-                   e.level, e.text, gs.name as section_name
+                   e.level, e.text, e.is_active, gs.name as section_name
             FROM exercise_checker_runs cr
             JOIN exercises e ON cr.exercise_id = e.id
             JOIN grammar_sections gs ON e.grammar_section_id = gs.id
@@ -103,6 +103,7 @@ export const handler: Handler = async (event) => {
               level: row.level,
               text: row.text,
               section_name: row.section_name,
+              is_active: row.is_active,
               run_ids: [],
               reports: {} as Record<string, string>,
               gaps: gapsMap[row.exercise_id] || [],

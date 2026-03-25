@@ -33,6 +33,7 @@ import {
   ShieldCheck,
   Check,
   Flag,
+  Power,
   RotateCcw,
   Eye,
 } from "lucide-react";
@@ -332,6 +333,41 @@ const Admin = () => {
       toast({ title: "Error reactivating", variant: "destructive" });
     } finally {
       setReactivatingId(null);
+    }
+  };
+
+  const [togglingId, setTogglingId] = useState<string | null>(null);
+
+  const toggleExerciseActive = async (exerciseId: string, currentlyActive: boolean) => {
+    setTogglingId(exerciseId);
+    try {
+      if (currentlyActive) {
+        // Deactivate
+        const res = await fetch(`${API_BASE}/report-exercise`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ exerciseId, reportText: 'Deactivated from compare view' }),
+        });
+        if (res.ok) {
+          setCompareExercises((prev) => prev.map((e) => e.id === exerciseId ? { ...e, is_active: false } : e));
+          toast({ title: "Exercise deactivated" });
+        }
+      } else {
+        // Reactivate
+        const res = await fetch(`${API_BASE}/report-exercise`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ exerciseId }),
+        });
+        if (res.ok) {
+          setCompareExercises((prev) => prev.map((e) => e.id === exerciseId ? { ...e, is_active: true } : e));
+          toast({ title: "Exercise reactivated" });
+        }
+      }
+    } catch {
+      toast({ title: "Error toggling exercise", variant: "destructive" });
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -1046,6 +1082,7 @@ const Admin = () => {
                                   </th>
                                 ))}
                                 <th className="border border-border p-2 text-center bg-muted/50 text-xs">Count</th>
+                                <th className="border border-border p-2 text-center bg-muted/50 text-xs">Active</th>
                                 <th className="border border-border p-2 text-center bg-muted/50 text-xs"></th>
                               </tr>
                             </thead>
@@ -1070,6 +1107,18 @@ const Admin = () => {
                                     <Badge variant={ex.run_ids.length === compareRunIds.length ? "default" : ex.run_ids.length > 1 ? "secondary" : "outline"}>
                                       {ex.run_ids.length}
                                     </Badge>
+                                  </td>
+                                  <td className="border border-border p-2 text-center">
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      className={`h-7 w-7 p-0 ${ex.is_active ? "text-green-600" : "text-red-500"}`}
+                                      disabled={togglingId === ex.id}
+                                      onClick={() => toggleExerciseActive(ex.id, ex.is_active)}
+                                      title={ex.is_active ? "Deactivate" : "Activate"}
+                                    >
+                                      <Power className="h-3.5 w-3.5" />
+                                    </Button>
                                   </td>
                                   <td className="border border-border p-2 text-center">
                                     <Button
