@@ -92,11 +92,11 @@ function getCityPageMeta(pathname: string) {
   }
 
   // Main pruefungszentren page
-  if (pathname === '/pruefungszentren') {
+  if (pathname === '/pruefungszentren' || pathname === '/pruefungszentren/') {
     return {
       title: 'telc & TestDaF Prüfungszentren finden (VHS, Unis, Institute)',
       description: 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren, Goethe-Institut & mehr. Mit Links, Tipps zur Anmeldung und Vorbereitung.',
-      url: 'https://www.infinitegrammar.de/pruefungszentren',
+      url: 'https://www.infinitegrammar.de/pruefungszentren/',
     };
   }
 

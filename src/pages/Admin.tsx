@@ -123,6 +123,7 @@ const Admin = () => {
   const [compareExercises, setCompareExercises] = useState<any[]>([]);
   const [compareLoading, setCompareLoading] = useState(false);
   const [compareFilter, setCompareFilter] = useState<"all" | "shared" | "unique">("all");
+  const [matrixMode, setMatrixMode] = useState<"overlap" | "unique">("overlap");
 
   // Exercise stats state
   type DemandSort = 'popularity' | 'remaining';
@@ -987,12 +988,36 @@ const Admin = () => {
 
                     return (
                       <Card className="p-4">
-                        <h4 className="text-sm font-semibold mb-3">Overlap Matrix</h4>
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-sm font-semibold">
+                            {matrixMode === "overlap" ? "Overlap Matrix" : "Difference Matrix"}
+                          </h4>
+                          <div className="flex gap-1">
+                            <Button
+                              variant={matrixMode === "overlap" ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setMatrixMode("overlap")}
+                            >
+                              Overlap
+                            </Button>
+                            <Button
+                              variant={matrixMode === "unique" ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setMatrixMode("unique")}
+                            >
+                              Differences
+                            </Button>
+                          </div>
+                        </div>
                         <div className="overflow-x-auto">
                           <table className="border-collapse text-sm">
                             <thead>
                               <tr>
-                                <th className="border border-border p-3 bg-muted/50"></th>
+                                <th className="border border-border p-3 bg-muted/50">
+                                  {matrixMode === "unique" && (
+                                    <span className="text-xs text-muted-foreground">row \ col</span>
+                                  )}
+                                </th>
                                 {selectedRuns.map((run: any) => (
                                   <th key={run.run_id} className="border border-border p-3 bg-muted/50 text-xs font-medium min-w-[140px]">
                                     <span className="break-words">{run.checker_name}</span>
@@ -1009,23 +1034,53 @@ const Admin = () => {
                                   {selectedRuns.map((colRun: any) => {
                                     const rowSet = runSets[rowRun.run_id];
                                     const colSet = runSets[colRun.run_id];
-                                    const overlap = [...rowSet].filter((id) => colSet.has(id)).length;
                                     const isDiagonal = rowRun.run_id === colRun.run_id;
-                                    const maxSize = Math.max(rowSet.size, colSet.size);
-                                    const pct = maxSize > 0 ? overlap / maxSize : 0;
+
+                                    if (matrixMode === "overlap") {
+                                      const overlap = [...rowSet].filter((id) => colSet.has(id)).length;
+                                      const maxSize = Math.max(rowSet.size, colSet.size);
+                                      const pct = maxSize > 0 ? overlap / maxSize : 0;
+
+                                      return (
+                                        <td
+                                          key={colRun.run_id}
+                                          className="border border-border p-3 text-center font-semibold text-sm min-w-[60px]"
+                                          style={{
+                                            backgroundColor: isDiagonal
+                                              ? "hsl(var(--muted))"
+                                              : `hsl(142, 70%, ${90 - pct * 50}%)`,
+                                          }}
+                                          title={isDiagonal
+                                            ? `Total exercises flagged by ${rowRun.checker_name}: ${overlap}`
+                                            : `${overlap} exercises flagged by BOTH ${rowRun.checker_name} and ${colRun.checker_name} (${Math.round(pct * 100)}% of the larger set)`
+                                          }
+                                        >
+                                          {overlap}
+                                        </td>
+                                      );
+                                    }
+
+                                    // Unique/difference mode
+                                    const rowOnly = [...rowSet].filter((id) => !colSet.has(id)).length;
+                                    const colOnly = [...colSet].filter((id) => !rowSet.has(id)).length;
+                                    const maxUnique = Math.max(rowOnly, colOnly, 1);
+                                    const diffIntensity = isDiagonal ? 0 : (rowOnly + colOnly) / (rowSet.size + colSet.size || 1);
 
                                     return (
                                       <td
                                         key={colRun.run_id}
-                                        className="border border-border p-3 text-center font-semibold text-sm min-w-[60px]"
+                                        className="border border-border p-3 text-center font-semibold text-sm min-w-[80px]"
                                         style={{
                                           backgroundColor: isDiagonal
                                             ? "hsl(var(--muted))"
-                                            : `hsl(142, 70%, ${90 - pct * 50}%)`,
+                                            : `hsl(0, 70%, ${95 - diffIntensity * 40}%)`,
                                         }}
-                                        title={isDiagonal ? `Total: ${overlap}` : `${overlap} shared (${Math.round(pct * 100)}%)`}
+                                        title={isDiagonal
+                                          ? `Total exercises flagged by ${rowRun.checker_name}: ${rowSet.size}`
+                                          : `${rowOnly} flagged only by ${rowRun.checker_name} (row), ${colOnly} flagged only by ${colRun.checker_name} (col). Higher = more disagreement between checkers.`
+                                        }
                                       >
-                                        {overlap}
+                                        {isDiagonal ? rowSet.size : `${rowOnly} / ${colOnly}`}
                                       </td>
                                     );
                                   })}
@@ -1035,7 +1090,10 @@ const Admin = () => {
                           </table>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                          Diagonal = total per run. Off-diagonal = shared exercises. Hover for percentages.
+                          {matrixMode === "overlap"
+                            ? "Diagonal = total flagged per run. Off-diagonal = exercises flagged by both checkers. Greener = more agreement. Hover for details."
+                            : "Diagonal = total flagged per run. Off-diagonal = row-only / col-only counts. Redder = more disagreement. Hover for details."
+                          }
                         </p>
                       </Card>
                     );
