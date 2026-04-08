@@ -107,7 +107,7 @@ const ArticleContent = () => {
               >
                 Alex
               </a>
-              <p className="text-xs text-muted-foreground">Building InfiniteGrammar.de</p>
+              <p className="text-xs text-muted-foreground">Building <a href="https://www.infinitegrammar.de/" className="underline hover:text-foreground transition-colors">InfiniteGrammar.de</a></p>
             </div>
           </div>
         </header>

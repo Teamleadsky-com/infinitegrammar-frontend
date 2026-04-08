@@ -1588,65 +1588,14 @@ DO UPDATE SET
 
 <h2>SEO guidelines I would now give Claude Code for this stack</h2>
 
-<h3>Architecture rules</h3>
-
-<ol>
-<li>Treat SEO as a rendering problem first, not as a metadata problem.</li>
-<li>Assume a plain React SPA is not sufficient for indexable content pages.</li>
-<li>For every public route that should rank, produce prerendered HTML at build time.</li>
-<li>Keep private routes out of the crawl surface: <code>/auth</code>, <code>/profile</code>, <code>/admin</code>, <code>/statistics</code>.</li>
-<li>Pick one canonical URL format and enforce it everywhere.</li>
-</ol>
-
-<h3>Route and URL rules</h3>
-
-<ol start="6">
-<li>Use one route inventory as the single source of truth for sitemap generation, prerender targets, canonical generation, and internal linking.</li>
-<li>Do not change URL structures unless absolutely necessary.</li>
-<li>If URLs must change, use one-hop <code>301</code> redirects only.</li>
-<li>Do not allow internal links to point at redirecting URLs.</li>
-<li>Treat trailing-slash consistency as mandatory, not cosmetic.</li>
-</ol>
-
-<h3>Metadata rules</h3>
-
-<ol start="11">
-<li>Use react-helmet-async for per-route titles, descriptions, and canonical tags.</li>
-<li>Add structured data where appropriate: <code>WebSite</code>, <code>BreadcrumbList</code>, <code>FAQPage</code>, <code>Article</code>, <code>LearningResource</code>.</li>
-<li>Keep canonical URLs aligned with the actual deployed route format.</li>
-<li>Make sure social tags and search tags are consistent, but do not mistake social metadata for SEO completeness.</li>
-</ol>
-
-<h3>Build and deployment rules</h3>
-
-<ol start="15">
-<li>Make Puppeteer prerendering part of the build, not a side script.</li>
-<li>Fail the build if an indexable route is missing prerendered output.</li>
-<li>Fail the build if sitemap URLs do not match the prerender route list.</li>
-<li>Fail the build if canonical URLs and route inventory disagree.</li>
-<li>Add automated checks for <code>200</code> on canonical pages and for accidental <code>301</code> or <code>404</code> responses.</li>
-<li>Keep Netlify redirects minimal and explicit.</li>
-</ol>
-
-<h3>Crawl-surface rules</h3>
-
-<ol start="21">
-<li>Maintain a strict <code>robots.txt</code> for public vs private routes.</li>
-<li>Do not let the sitemap be blocked by headers or robots directives.</li>
-<li>Make sure every public content page is reachable through internal links, not only via the sitemap.</li>
-<li>Treat crawlability, canonicals, redirects, sitemap output, and prerendering as one system.</li>
-</ol>
-
-<h3>Hosting platform rules</h3>
-
-<ol start="25">
-<li>Disable Netlify post-processing features (Pretty URLs, asset optimization, snippet injection) when managing meta tags with React Helmet. These features can inject duplicate <code>og:</code> tags derived from <code>index.html</code> that appear before Helmet's tags and override them for social crawlers.</li>
-<li>After every deploy, <code>curl</code> a sample of live URLs and diff the response against local <code>dist/</code> files. If they differ, the hosting platform is modifying the HTML.</li>
-<li>Test social sharing with LinkedIn Post Inspector and Facebook Sharing Debugger after every deploy that touches meta tags or hosting configuration. Browser previews are not sufficient — social crawlers use first-match semantics for <code>og:</code> tags.</li>
-<li>Treat the hosting platform's configuration as part of the SEO system. Netlify settings, Cloudflare rules, Vercel headers — any layer between build output and the crawler can break what the build got right.</li>
-</ol>
-
-<p>The frontend was easy to ship. The search surface was not. For content-heavy products, that distinction matters very early.</p>
+<ul>
+<li><strong>Architecture.</strong> Treat SEO as a rendering problem first, not as a metadata problem. Assume a plain React SPA is not sufficient for indexable content pages. For every public route that should rank, produce prerendered HTML at build time. Keep private routes out of the crawl surface: <code>/auth</code>, <code>/profile</code>, <code>/admin</code>, <code>/statistics</code>. Pick one canonical URL format and enforce it everywhere.</li>
+<li><strong>Routes and URLs.</strong> Use one route inventory as the single source of truth for sitemap generation, prerender targets, canonical generation, and internal linking. Do not change URL structures unless absolutely necessary. If URLs must change, use one-hop <code>301</code> redirects only. Do not allow internal links to point at redirecting URLs. Treat trailing-slash consistency as mandatory, not cosmetic.</li>
+<li><strong>Metadata.</strong> Use react-helmet-async for per-route titles, descriptions, and canonical tags. Add structured data where appropriate: <code>WebSite</code>, <code>BreadcrumbList</code>, <code>FAQPage</code>, <code>Article</code>, <code>LearningResource</code>. Keep canonical URLs aligned with the actual deployed route format. Make sure social tags and search tags are consistent, but do not mistake social metadata for SEO completeness.</li>
+<li><strong>Build and deployment.</strong> Make Puppeteer prerendering part of the build, not a side script. Fail the build if an indexable route is missing prerendered output. Fail the build if sitemap URLs do not match the prerender route list. Fail the build if canonical URLs and route inventory disagree. Add automated checks for <code>200</code> on canonical pages and for accidental <code>301</code> or <code>404</code> responses. Keep Netlify redirects minimal and explicit.</li>
+<li><strong>Crawl surface.</strong> Maintain a strict <code>robots.txt</code> for public vs private routes. Do not let the sitemap be blocked by headers or robots directives. Make sure every public content page is reachable through internal links, not only via the sitemap. Treat crawlability, canonicals, redirects, sitemap output, and prerendering as one system.</li>
+<li><strong>Hosting platform.</strong> Disable Netlify post-processing features (Pretty URLs, asset optimization, snippet injection) when managing meta tags with React Helmet. These features can inject duplicate <code>og:</code> tags derived from <code>index.html</code> that appear before Helmet's tags and override them for social crawlers. After every deploy, <code>curl</code> a sample of live URLs and diff the response against local <code>dist/</code> files. If they differ, the hosting platform is modifying the HTML. Test social sharing with LinkedIn Post Inspector and Facebook Sharing Debugger after every deploy that touches meta tags or hosting configuration. Browser previews are not sufficient — social crawlers use first-match semantics for <code>og:</code> tags. Treat the hosting platform's configuration as part of the SEO system. Netlify settings, Cloudflare rules, Vercel headers — any layer between build output and the crawler can break what the build got right.</li>
+</ul>
 `
   }
 ];
