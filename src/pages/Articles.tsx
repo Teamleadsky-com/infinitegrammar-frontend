@@ -62,7 +62,7 @@ const Articles = () => {
         </div>
 
         <div className="grid gap-6">
-          {articles.map((article) => (
+          {[...articles].reverse().map((article) => (
             <a
               key={article.slug}
               href={`/articles/${article.slug}/`}
