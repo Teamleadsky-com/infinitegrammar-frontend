@@ -1605,31 +1605,27 @@ DO UPDATE SET
     datePublished: '2026-05-10T10:00:00+02:00',
     dateModified: '2026-05-10T10:00:00+02:00',
     htmlContent: `
-<p>For every 100 exercises generated, only 41 end up usable.</p>
-
-<p>That number emerged from three consecutive generation batches totalling 300 exercises at B1 and B2 level. It includes two filtering stages: 16% dropped during generation (the LLM's own self-assessment) and another 43% removed by the checker. The exercises that survive are good. The process to get there is expensive in content, not in cost.</p>
-
-<p>This article is the first time the full pipeline yield has been measured end-to-end.</p>
+<p>The findings emerged from measuring an end-to-end pipeline of three consecutive generation batches totalling 300 exercises at B1 and B2 level. They include two filtering stages: 16% exercises discarded during generation (the LLM\u2019s own self-assessment) and another 43% removed by the checker. The exercises that survive are good. The process to get there is expensive in content, not in cost.</p>
 
 <h2>The generation pipeline in numbers</h2>
 
-<p>Three batches were generated between April 15 and May 8, 2026. Each batch targeted 100 exercises at either B1 or B2 level.</p>
+<p>Each batch targeted 100 exercises at either B1 or B2 level.</p>
 
 <div class="table-wrapper">
 <table>
-<thead><tr><th>Batch</th><th>Level</th><th>Date</th><th>Generated</th><th>Dropped (gen)</th><th>Finalized</th><th>Cost</th></tr></thead>
+<thead><tr><th>Batch</th><th>Level</th><th>Generated</th><th>Dropped (gen)</th><th>Finalized</th><th>Cost</th></tr></thead>
 <tbody>
-<tr><td><code>86ba20d9</code></td><td>B1</td><td>Apr 15</td><td>100</td><td>16 (16%)</td><td>84</td><td>$2.73</td></tr>
-<tr><td><code>76c28a99</code></td><td>B2</td><td>Apr 22</td><td>100</td><td>16 (16%)</td><td>84</td><td>$1.23</td></tr>
-<tr><td><code>4c74f73d</code></td><td>B2</td><td>May 6\u20138</td><td>100</td><td>17 (17%)</td><td>83</td><td>$3.94</td></tr>
-<tr><td><strong>Total</strong></td><td></td><td></td><td><strong>300</strong></td><td><strong>49 (16%)</strong></td><td><strong>251</strong></td><td><strong>~$7.90</strong></td></tr>
+<tr><td>A</td><td>B1</td><td>100</td><td>16 (16%)</td><td>84</td><td>$2.73</td></tr>
+<tr><td>B</td><td>B2</td><td>100</td><td>16 (16%)</td><td>84</td><td>$1.23</td></tr>
+<tr><td>C</td><td>B2</td><td>100</td><td>17 (17%)</td><td>83</td><td>$3.94</td></tr>
+<tr><td><strong>Total</strong></td><td></td><td><strong>300</strong></td><td><strong>49 (16%)</strong></td><td><strong>251</strong></td><td><strong>~$7.90</strong></td></tr>
 </tbody>
 </table>
 </div>
 
-<p>The generation drop rate is consistent at 16\u201317% across all three batches. These are exercises that failed the LLM's self-assessment during the generate\u2013assess\u2013regenerate loop described in a <a href="/articles/gap-fill-quality-distractor-problem/">previous article</a>. They were not saved to the database.</p>
+<p>The generation drop rate is consistent at 16\u201317% across all three batches. These are exercises that failed the LLM\u2019s self-assessment during the generate\u2013assess\u2013regenerate loop described in a <a href="/articles/gap-fill-quality-distractor-problem/">previous article</a>. They were not saved to the database.</p>
 
-<p>The interesting finding is the consistency. Three batches, two levels, three different dates, and the self-assessment gate removes the same proportion every time. That suggests the 16% floor reflects a real boundary in what the generation prompt can reliably produce rather than random variation.</p>
+<p>The interesting finding is the consistency. Three batches, two levels, and the self-assessment gate removes the same proportion every time. That suggests the 16% floor reflects a real boundary in what the generation prompt can reliably produce rather than random variation.</p>
 
 <h2>The checker finds what generation misses</h2>
 
@@ -1639,18 +1635,16 @@ DO UPDATE SET
 
 <div class="table-wrapper">
 <table>
-<thead><tr><th>Gen batch</th><th>Exercises checked</th><th>Flagged</th><th>OK</th><th>Flag rate</th></tr></thead>
+<thead><tr><th>Batch</th><th>Exercises checked</th><th>Flagged</th><th>OK</th><th>Flag rate</th></tr></thead>
 <tbody>
-<tr><td><code>86ba20d9</code> (B1)</td><td>84</td><td>36</td><td>48</td><td><strong>43%</strong></td></tr>
-<tr><td><code>76c28a99</code> (B2)</td><td>84</td><td>42</td><td>42</td><td><strong>50%</strong></td></tr>
-<tr><td><code>4c74f73d</code> (B2)</td><td>83</td><td>43</td><td>40</td><td><strong>52%</strong></td></tr>
+<tr><td>A (B1)</td><td>84</td><td>36</td><td>48</td><td><strong>43%</strong></td></tr>
+<tr><td>B (B2)</td><td>84</td><td>42</td><td>42</td><td><strong>50%</strong></td></tr>
+<tr><td>C (B2)</td><td>83</td><td>43</td><td>40</td><td><strong>52%</strong></td></tr>
 </tbody>
 </table>
 </div>
 
-<p>Those are high numbers. The checker is flagging roughly half of all exercises that passed the generation pipeline's own quality gate.</p>
-
-<p>That gap between the two stages is important. The generation pipeline's assess step approves 84 out of 100 exercises. Then the checker looks at those 84 and flags 36\u201343 of them. The generator and the checker are measuring different things.</p>
+<p>That gap between the two stages is important. The generation pipeline\u2019s assess step approves 84 out of 100 exercises. Then the checker looks at those 84 and flags 36\u201343 of them. The generator and the checker are measuring different things.</p>
 
 <h2>Multi-pass checking converges quickly</h2>
 
@@ -1715,15 +1709,13 @@ DO UPDATE SET
 
 <p>I categorized all 121 exercises flagged in the initial checker passes across the three batches.</p>
 
-<h3>Pipeline artifacts, not LLM errors</h3>
+<h3>The doubled-word bug</h3>
 
 <p>The most striking category is <strong>doubled words</strong> \u2014 patterns like <em>kurzer kurzer Pr\u00fcfung</em>, <em>alle alle Hemden</em>, <em>eleganten elegant Outfit</em>. These appeared in roughly 30 of the 121 flagged exercises (25%).</p>
 
-<p>These are not hallucinations or grammar mistakes. They are mechanical artifacts from the gap-fill assembly step in the generation pipeline. When the text is reconstructed with the correct answers filled in, something in the assembly logic occasionally duplicates a word at the gap boundary.</p>
-
 <p>A related pattern is <strong>doubled punctuation</strong>: <em>Frau Dr. Neumann,,</em>, <em>Coach,,</em>, <em>Chinas,,</em>. Another 8 exercises had this defect.</p>
 
-<p>Together, doubled words and punctuation account for roughly 31% of all bulk flags. A learner would see these in the exercise text. They are code bugs, not content quality issues.</p>
+<p>Together, doubled words and punctuation account for roughly 31% of all bulk flags. A learner would see these in the exercise text. They are low hanging fruit to fix.</p>
 
 <h3>Systematic grammar blind spots</h3>
 
@@ -1757,7 +1749,7 @@ DO UPDATE SET
 
 <h2>The checker's false positive problem</h2>
 
-<p>Once the obvious errors are removed, the checker's reliability drops. I manually re-analyzed the 7 exercises flagged in the smaller 2nd\u20138th passes (exercises that had already survived the bulk check):</p>
+<p>Once the obvious errors are removed, the checker\u2019s reliability drops. I re-analyzed the exercises flagged in the smaller 2nd\u20138th passes (exercises that had already survived the bulk check):</p>
 
 <div class="table-wrapper">
 <table>
@@ -1778,26 +1770,9 @@ DO UPDATE SET
 <li><strong>"Bis zum Ende des Semesters werden wir ... entwickelt haben" flagged as unidiomatic</strong> \u2014 this is a textbook Futur II construction, exactly the use case it exists for.</li>
 </ol>
 
+<p>The three borderline cases involved valid grammar with arguable semantic or stylistic issues \u2014 the kind of thing a strict editor might flag but a grammar checker should probably leave alone.</p>
+
 <p>That ~50% false positive rate on residual flags means the checker is removing some genuinely good exercises from the corpus. This is the cost of a conservative checking strategy: fewer bad exercises reach learners, but some good exercises are lost.</p>
-
-<h2>Checker consistency across runs</h2>
-
-<p>Three independent checker runs on the same set of exercises showed that the checker is non-deterministic, even at <code>temperature: 0.0</code>.</p>
-
-<p>Selected disagreement cases:</p>
-
-<div class="table-wrapper">
-<table>
-<thead><tr><th>Exercise</th><th>Issue</th><th>Run 1</th><th>Run 2</th><th>Run 3</th></tr></thead>
-<tbody>
-<tr><td>Register switch <em>du</em> to <em>Sie</em></td><td>Stylistic</td><td>Flagged</td><td>OK</td><td>OK</td></tr>
-<tr><td>Word order in comparative clause</td><td>Grammar</td><td>OK</td><td>Flagged</td><td>Flagged</td></tr>
-<tr><td>Unusual compound noun</td><td>Lexical</td><td>OK</td><td>Flagged</td><td>OK</td></tr>
-</tbody>
-</table>
-</div>
-
-<p>Clear grammar errors are caught consistently across all three runs. Borderline cases \u2014 stylistic issues, register questions, unusual but valid vocabulary \u2014 flip between runs. The checker's reliability is highest for structural and grammatical defects and lowest for judgment calls about German usage.</p>
 
 <h2>What this means for the product</h2>
 
@@ -1805,13 +1780,11 @@ DO UPDATE SET
 
 <p>The 124 active exercises across 3 batches have passed generation self-assessment, at least one independent checker pass, and in many cases multiple re-checks. On manual re-analysis of a sample, the surviving exercises are well-formed, level-appropriate, and pedagogically useful.</p>
 
-<p>The quality gate works. The cost is that it throws away more than half of what the generator produces.</p>
+<p>The quality gate works.</p>
 
-<h3>The doubled-word bug is a pipeline problem, not a model problem</h3>
+<h3>The doubled-word bug</h3>
 
-<p>This is the most actionable finding. Roughly 31% of all checker flags could be prevented by fixing the gap-fill assembly code and adding a pre-database validation step. A simple regex \u2014 <code>\\b(\\w+) \\1\\b</code> for repeated words, <code>[,;]{2}</code> for doubled punctuation \u2014 would catch these before any LLM checker is involved.</p>
-
-<p>That would not change the checker's value for grammar and semantic errors. But it would reduce the checker's workload by a third and make the flag distribution more informative.</p>
+<p>This is the most actionable finding. Roughly 31% of all incorrect exercises can be fixed without loosing the generated exercises with a simple regex \u2014 <code>\\b(\\w+) \\1\\b</code> for repeated words, <code>[,;]{2}</code> for doubled punctuation.</p>
 
 <h3>One checker pass is enough</h3>
 
@@ -1825,11 +1798,11 @@ DO UPDATE SET
 
 <p>The end-to-end yield \u2014 41 usable exercises per 100 generated \u2014 is not a sign that the pipeline is broken. It is the actual cost of producing exercises that meet a non-trivial quality bar.</p>
 
-<p>The pipeline does three things well: it generates exercises cheaply (~$0.03 per generated exercise), it checks them cheaply (~$0.0007 per check), and it catches the vast majority of problems before they reach a learner.</p>
+<p>The pipeline does three things well: it generates exercises cheaply (~$0.03 per generated exercise), it checks them cheaply (~$0.0007 per check), and it catches the vast majority of problems reliably.</p>
 
-<p>What it does not do well is produce exercises that pass on the first try. The generator and the checker disagree on nearly half the output. That disagreement is where the quality actually lives \u2014 it is the gap between "the LLM thinks this is correct" and "an independent review confirms it."</p>
+<p>Where it struggles is producing exercises that pass on the first try. The generator and the checker disagree on nearly half the output. That disagreement is where the quality actually lives \u2014 it is the gap between \u201cthe LLM thinks this is correct\u201d and \u201can independent review confirms it.\u201d</p>
 
-<p>For a product that promises targeted, level-specific grammar practice, that gap is not optional. A wrong exercise is worse than no exercise. The 59% rejection rate is the price of that constraint.</p>
+<p>Considering that for an educational product a wrong exercise is worse than no exercise, the 59% rejection rate is the price of that constraint.</p>
 `
   }
 ];
