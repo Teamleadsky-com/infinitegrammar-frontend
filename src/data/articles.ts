@@ -1600,7 +1600,7 @@ DO UPDATE SET
   },
   {
     slug: 'generation-checker-analysis',
-    title: 'Generation & Checker Analysis: What 300 Exercises Revealed About LLM Quality Control',
+    title: 'Exercise Generation AI Pipeline Analysis',
     excerpt: 'For every 100 exercises generated, only 41 end up usable. That number emerged from three consecutive generation batches. The exercises that survive are good. The process to get there is expensive in content, not in cost.',
     datePublished: '2026-05-10T10:00:00+02:00',
     dateModified: '2026-05-10T10:00:00+02:00',
@@ -1684,7 +1684,7 @@ DO UPDATE SET
 </table>
 </div>
 
-<p>That last number matters. It means the entire exercise library can be audited for less than the cost of generating two exercises. Checker cost is 4.5% of total batch cost. Generation dominates.</p>
+<p>That last number matters. It means the entire exercise library can be audited for less than the cost of generating 50 exercises. Checker cost is 4.5% of total batch cost. Generation dominates.</p>
 
 <h2>The end-to-end yield</h2>
 
@@ -1792,7 +1792,7 @@ DO UPDATE SET
 
 <h3>The full corpus should be checked</h3>
 
-<p>At ~$0.0007 per exercise, checking all 2,120 exercises in the database costs $1.50. That is less than the cost of generating three exercises. A single checker pass over the full library would catch the same categories of errors found in these three batches \u2014 especially the doubled-word artifacts, which likely exist in older exercises generated with the same pipeline.</p>
+<p>At ~$0.0007 per exercise, checking all 2,120 exercises in the database costs $1.50. That is less than the cost of generating 50 exercises. A single checker pass over the full library would catch the same categories of errors found in these three batches \u2014 especially the doubled-word artifacts, which likely exist in older exercises generated with the same pipeline.</p>
 
 <h2>The uncomfortable economics</h2>
 
