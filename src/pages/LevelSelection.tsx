@@ -10,7 +10,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { BookOpen, BarChart3, User } from "lucide-react";
+import { BarChart3, User } from "lucide-react";
+import { LogoIcon } from "@/components/LogoIcon";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
@@ -141,7 +142,7 @@ const LevelSelection = () => {
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-primary" />
+            <LogoIcon className="h-7 w-7" />
             <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
               {t('common.appName')}
             </div>
