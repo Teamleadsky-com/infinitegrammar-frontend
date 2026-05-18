@@ -14,7 +14,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "seo:audit": "node scripts/seo-audit.js",
+    "build:audit": "npm run build && npm run seo:audit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
