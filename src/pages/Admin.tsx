@@ -36,6 +36,7 @@ import {
   Power,
   RotateCcw,
   Eye,
+  TrendingUp,
 } from "lucide-react";
 import {
   BarChart,
@@ -48,6 +49,7 @@ import {
   Legend,
 } from "recharts";
 import { SimilarityDashboard } from "@/components/admin/SimilarityDashboard";
+import { ProductMetrics } from "@/components/admin/ProductMetrics";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
@@ -414,7 +416,7 @@ const Admin = () => {
           </div>
         ) : (
           <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="dashboard" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 {t("admin.dashboard")}
@@ -434,6 +436,10 @@ const Admin = () => {
               <TabsTrigger value="similarity" className="gap-2">
                 <ShieldCheck className="h-4 w-4" />
                 {t("admin.similarity.tabLabel", "Similarity")}
+              </TabsTrigger>
+              <TabsTrigger value="metrics" className="gap-2">
+                <TrendingUp className="h-4 w-4" />
+                Metrics
               </TabsTrigger>
               <TabsTrigger value="flagged" className="gap-2">
                 <Flag className="h-4 w-4" />
@@ -891,6 +897,11 @@ const Admin = () => {
             {/* Similarity Tab */}
             <TabsContent value="similarity" className="space-y-6">
               <SimilarityDashboard apiBase={API_BASE} />
+            </TabsContent>
+
+            {/* Product Metrics Tab */}
+            <TabsContent value="metrics" className="space-y-6">
+              <ProductMetrics apiBase={API_BASE} />
             </TabsContent>
 
             {/* Flagged Exercises Tab */}
