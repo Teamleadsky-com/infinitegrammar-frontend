@@ -45,7 +45,7 @@ const Profile = () => {
   useEffect(() => {
     // Check if user is logged in
     if (!isAuthenticated) {
-      navigate("/auth");
+      navigate("/auth/");
       return;
     }
 

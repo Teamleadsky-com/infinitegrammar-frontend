@@ -136,7 +136,7 @@ const CityExamPage = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/pruefungszentren")}>
+              <Button variant="ghost" size="icon" onClick={() => navigate("/pruefungszentren/")}>
                 <ArrowLeft className="h-5 w-5" />
               </Button>
               <div className="text-base md:text-xl font-bold">{examDisplay} {content.city}</div>

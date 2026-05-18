@@ -56,7 +56,7 @@ const LevelSelection = () => {
       setShowWaitlistModal(true);
     } else {
       // Normal behavior: navigate to auth page
-      navigate("/auth");
+      navigate("/auth/");
     }
   };
 
@@ -152,7 +152,7 @@ const LevelSelection = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => navigate("/statistics")}
+              onClick={() => navigate("/statistics/")}
               className="gap-2"
             >
               <BarChart3 className="h-4 w-4" />
@@ -162,7 +162,7 @@ const LevelSelection = () => {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/profile/")}
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
@@ -267,7 +267,7 @@ const LevelSelection = () => {
             </Button>
             <div className="mt-3 flex items-center justify-center gap-4">
               <button
-                onClick={() => navigate("/exercise-stats")}
+                onClick={() => navigate("/exercise-stats/")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
               >
                 {t('levelSelection.exerciseStats')}
