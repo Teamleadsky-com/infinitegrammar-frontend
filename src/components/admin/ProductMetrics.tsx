@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { Button } from "@/components/ui/button";
 import { Users, Activity, Loader2 } from "lucide-react";
 
 interface ProductMetricsProps {
@@ -39,6 +40,18 @@ interface MonthlyRow {
   sessions_per_user: number;
 }
 
+/** Given a cohort like "2026-W10", return the ISO week string offset by N weeks */
+const offsetWeek = (cohort: string, weeks: number): string => {
+  const match = cohort.match(/(\d{4})-W(\d{2})/);
+  if (!match) return "";
+  let year = parseInt(match[1], 10);
+  let week = parseInt(match[2], 10) + weeks;
+  // ISO weeks: most years have 52, some have 53
+  const maxWeek = 52; // simplified; close enough for display
+  while (week > maxWeek) { week -= maxWeek; year++; }
+  return `${year}-W${String(week).padStart(2, "0")}`;
+};
+
 const retentionCellColor = (pct: number) => {
   if (pct >= 50) return "bg-green-500/20 text-green-700 dark:text-green-400";
   if (pct >= 20) return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400";
@@ -56,6 +69,8 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
   const [retention, setRetention] = useState<RetentionRow[]>([]);
   const [weekly, setWeekly] = useState<WeeklyRow[]>([]);
   const [monthly, setMonthly] = useState<MonthlyRow[]>([]);
+  const [weeklyWindow, setWeeklyWindow] = useState(12);
+  const [monthlyWindow, setMonthlyWindow] = useState(6);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -126,14 +141,17 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
                       <td className={`border border-border p-2 md:p-3 text-center font-semibold ${retentionCellColor(row.week1_pct)}`}>
                         {row.week1_pct}%
                         <span className="text-xs font-normal ml-1">({row.week1})</span>
+                        <div className="text-[10px] font-normal text-muted-foreground">{offsetWeek(row.cohort, 1)}</div>
                       </td>
                       <td className={`border border-border p-2 md:p-3 text-center font-semibold ${retentionCellColor(row.week4_pct)}`}>
                         {row.week4_pct}%
                         <span className="text-xs font-normal ml-1">({row.week4})</span>
+                        <div className="text-[10px] font-normal text-muted-foreground">{offsetWeek(row.cohort, 4)}</div>
                       </td>
                       <td className={`border border-border p-2 md:p-3 text-center font-semibold ${retentionCellColor(row.week8_pct)}`}>
                         {row.week8_pct}%
                         <span className="text-xs font-normal ml-1">({row.week8})</span>
+                        <div className="text-[10px] font-normal text-muted-foreground">{offsetWeek(row.cohort, 8)}</div>
                       </td>
                     </tr>
                   ))}
@@ -146,9 +164,18 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
 
       {/* Weekly Engagement */}
       <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">Weekly Engagement</h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-semibold">Weekly Engagement</h3>
+          </div>
+          <div className="flex gap-1">
+            {[8, 12, 26, 52].map((w) => (
+              <Button key={w} variant={weeklyWindow === w ? "default" : "outline"} size="sm" onClick={() => setWeeklyWindow(w)}>
+                {w}w
+              </Button>
+            ))}
+          </div>
         </div>
         <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.1s" }}>
           {weekly.length === 0 ? (
@@ -166,7 +193,7 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={weekly}>
+                <LineChart data={weekly.slice(-weeklyWindow)}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis
                     dataKey="week"
@@ -218,9 +245,18 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
 
       {/* Monthly Engagement */}
       <div className="space-y-3">
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-semibold">Monthly Engagement</h3>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Activity className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-semibold">Monthly Engagement</h3>
+          </div>
+          <div className="flex gap-1">
+            {[3, 6, 12, 24].map((m) => (
+              <Button key={m} variant={monthlyWindow === m ? "default" : "outline"} size="sm" onClick={() => setMonthlyWindow(m)}>
+                {m}m
+              </Button>
+            ))}
+          </div>
         </div>
         <Card className="p-4 md:p-6 animate-fade-in" style={{ animationDelay: "0.2s" }}>
           {monthly.length === 0 ? (
@@ -238,7 +274,7 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={monthly}>
+                <LineChart data={monthly.slice(-monthlyWindow)}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis
                     dataKey="month"

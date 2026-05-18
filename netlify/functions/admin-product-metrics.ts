@@ -94,7 +94,7 @@ async function getWeeklyEngagement(adminId: string | undefined) {
         date_trunc('week', ec.completed_at) AS week_start,
         LAG(ec.completed_at) OVER (PARTITION BY ec.user_id ORDER BY ec.completed_at) AS prev_completed_at
       FROM exercise_completions ec
-      WHERE ec.completed_at >= NOW() - INTERVAL '12 weeks'
+      WHERE ec.completed_at >= NOW() - INTERVAL '52 weeks'
         AND (${adminId}::uuid IS NULL OR ec.user_id != ${adminId}::uuid)
     ),
     sessions AS (
@@ -137,7 +137,7 @@ async function getMonthlyEngagement(adminId: string | undefined) {
         date_trunc('month', ec.completed_at) AS month_start,
         LAG(ec.completed_at) OVER (PARTITION BY ec.user_id ORDER BY ec.completed_at) AS prev_completed_at
       FROM exercise_completions ec
-      WHERE ec.completed_at >= NOW() - INTERVAL '6 months'
+      WHERE ec.completed_at >= NOW() - INTERVAL '24 months'
         AND (${adminId}::uuid IS NULL OR ec.user_id != ${adminId}::uuid)
     ),
     sessions AS (
