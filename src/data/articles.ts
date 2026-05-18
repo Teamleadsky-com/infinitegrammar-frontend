@@ -1794,7 +1794,7 @@ DO UPDATE SET
 
 <p>At ~$0.0007 per exercise, checking all 2,120 exercises in the database costs $1.50. That is less than the cost of generating 50 exercises. A single checker pass over the full library would catch the same categories of errors found in these three batches \u2014 especially the doubled-word artifacts, which likely exist in older exercises generated with the same pipeline.</p>
 
-<h2>The uncomfortable economics</h2>
+<h2>Conclusion</h2>
 
 <p>The end-to-end yield \u2014 41 usable exercises per 100 generated \u2014 is not a sign that the pipeline is broken. It is the actual cost of producing exercises that meet a non-trivial quality bar.</p>
 
