@@ -65,6 +65,99 @@ const tooltipStyle = {
   borderRadius: "8px",
 };
 
+function WeeklyChart({ data, window: w }: { data: WeeklyRow[]; window: number }) {
+  const windowData = data.slice(-w);
+  const avgWau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.wau, 0) / windowData.length) : 0;
+  const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="text-center">
+          <p className="text-2xl font-bold">{avgWau}</p>
+          <p className="text-xs text-muted-foreground">Avg WAU ({w}w)</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold">{avgSessions}</p>
+          <p className="text-xs text-muted-foreground">Avg sessions/user ({w}w)</p>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={windowData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis
+            dataKey="week"
+            stroke="hsl(var(--muted-foreground))"
+            style={{ fontSize: "11px" }}
+            angle={-45}
+            textAnchor="end"
+            height={60}
+          />
+          <YAxis
+            yAxisId="left"
+            stroke="hsl(var(--primary))"
+            style={{ fontSize: "12px" }}
+            label={{ value: "WAU", angle: -90, position: "insideLeft", style: { fontSize: "11px", fill: "hsl(var(--primary))" } }}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            stroke="hsl(142, 70%, 45%)"
+            style={{ fontSize: "12px" }}
+            label={{ value: "Sessions/user", angle: 90, position: "insideRight", style: { fontSize: "11px", fill: "hsl(142, 70%, 45%)" } }}
+          />
+          <Tooltip contentStyle={tooltipStyle} />
+          <Legend />
+          <Line yAxisId="left" type="monotone" dataKey="wau" name="Weekly Active Users" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4 }} />
+          <Line yAxisId="right" type="monotone" dataKey="sessions_per_user" name="Sessions / User" stroke="hsl(142, 70%, 45%)" strokeWidth={2} dot={{ r: 4 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+  );
+}
+
+function MonthlyChart({ data, window: w }: { data: MonthlyRow[]; window: number }) {
+  const windowData = data.slice(-w);
+  const avgMau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.mau, 0) / windowData.length) : 0;
+  const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="text-center">
+          <p className="text-2xl font-bold">{avgMau}</p>
+          <p className="text-xs text-muted-foreground">Avg MAU ({w}m)</p>
+        </div>
+        <div className="text-center">
+          <p className="text-2xl font-bold">{avgSessions}</p>
+          <p className="text-xs text-muted-foreground">Avg sessions/user ({w}m)</p>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={windowData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+          <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" style={{ fontSize: "12px" }} />
+          <YAxis
+            yAxisId="left"
+            stroke="hsl(var(--primary))"
+            style={{ fontSize: "12px" }}
+            label={{ value: "MAU", angle: -90, position: "insideLeft", style: { fontSize: "11px", fill: "hsl(var(--primary))" } }}
+          />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            stroke="hsl(142, 70%, 45%)"
+            style={{ fontSize: "12px" }}
+            label={{ value: "Sessions/user", angle: 90, position: "insideRight", style: { fontSize: "11px", fill: "hsl(142, 70%, 45%)" } }}
+          />
+          <Tooltip contentStyle={tooltipStyle} />
+          <Legend />
+          <Line yAxisId="left" type="monotone" dataKey="mau" name="Monthly Active Users" stroke="hsl(var(--primary))" strokeWidth={2} dot={{ r: 4 }} />
+          <Line yAxisId="right" type="monotone" dataKey="sessions_per_user" name="Sessions / User" stroke="hsl(142, 70%, 45%)" strokeWidth={2} dot={{ r: 4 }} />
+        </LineChart>
+      </ResponsiveContainer>
+    </>
+  );
+}
+
 export function ProductMetrics({ apiBase }: ProductMetricsProps) {
   const [retention, setRetention] = useState<RetentionRow[]>([]);
   const [weekly, setWeekly] = useState<WeeklyRow[]>([]);
@@ -181,69 +274,7 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
           {weekly.length === 0 ? (
             <p className="text-muted-foreground text-sm">No weekly data yet.</p>
           ) : (
-            {(() => {
-              const windowData = weekly.slice(-weeklyWindow);
-              const avgWau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.wau, 0) / windowData.length) : 0;
-              const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
-              return <>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{avgWau}</p>
-                  <p className="text-xs text-muted-foreground">Avg WAU ({weeklyWindow}w)</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{avgSessions}</p>
-                  <p className="text-xs text-muted-foreground">Avg sessions/user ({weeklyWindow}w)</p>
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={windowData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis
-                    dataKey="week"
-                    stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: "11px" }}
-                    angle={-45}
-                    textAnchor="end"
-                    height={60}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    stroke="hsl(var(--primary))"
-                    style={{ fontSize: "12px" }}
-                    label={{ value: "WAU", angle: -90, position: "insideLeft", style: { fontSize: "11px", fill: "hsl(var(--primary))" } }}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="hsl(142, 70%, 45%)"
-                    style={{ fontSize: "12px" }}
-                    label={{ value: "Sessions/user", angle: 90, position: "insideRight", style: { fontSize: "11px", fill: "hsl(142, 70%, 45%)" } }}
-                  />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="wau"
-                    name="Weekly Active Users"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="sessions_per_user"
-                    name="Sessions / User"
-                    stroke="hsl(142, 70%, 45%)"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </>;
-            })()}
+            <WeeklyChart data={weekly} window={weeklyWindow} />
           )}
         </Card>
       </div>
@@ -267,66 +298,7 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
           {monthly.length === 0 ? (
             <p className="text-muted-foreground text-sm">No monthly data yet.</p>
           ) : (
-            {(() => {
-              const windowData = monthly.slice(-monthlyWindow);
-              const avgMau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.mau, 0) / windowData.length) : 0;
-              const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
-              return <>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{avgMau}</p>
-                  <p className="text-xs text-muted-foreground">Avg MAU ({monthlyWindow}m)</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-2xl font-bold">{avgSessions}</p>
-                  <p className="text-xs text-muted-foreground">Avg sessions/user ({monthlyWindow}m)</p>
-                </div>
-              </div>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={windowData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis
-                    dataKey="month"
-                    stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: "12px" }}
-                  />
-                  <YAxis
-                    yAxisId="left"
-                    stroke="hsl(var(--primary))"
-                    style={{ fontSize: "12px" }}
-                    label={{ value: "MAU", angle: -90, position: "insideLeft", style: { fontSize: "11px", fill: "hsl(var(--primary))" } }}
-                  />
-                  <YAxis
-                    yAxisId="right"
-                    orientation="right"
-                    stroke="hsl(142, 70%, 45%)"
-                    style={{ fontSize: "12px" }}
-                    label={{ value: "Sessions/user", angle: 90, position: "insideRight", style: { fontSize: "11px", fill: "hsl(142, 70%, 45%)" } }}
-                  />
-                  <Tooltip contentStyle={tooltipStyle} />
-                  <Legend />
-                  <Line
-                    yAxisId="left"
-                    type="monotone"
-                    dataKey="mau"
-                    name="Monthly Active Users"
-                    stroke="hsl(var(--primary))"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                  <Line
-                    yAxisId="right"
-                    type="monotone"
-                    dataKey="sessions_per_user"
-                    name="Sessions / User"
-                    stroke="hsl(142, 70%, 45%)"
-                    strokeWidth={2}
-                    dot={{ r: 4 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </>;
-            })()}
+            <MonthlyChart data={monthly} window={monthlyWindow} />
           )}
         </Card>
       </div>
