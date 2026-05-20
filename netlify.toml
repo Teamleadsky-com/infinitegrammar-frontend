@@ -37,19 +37,8 @@
   status = 301
   force = true
 
-# NO TRAILING SLASH REDIRECTS - Let React Router handle all /deutsche-grammatik/* URLs
-# Sitemap lists canonical URLs with trailing slashes, but both work the same
-
-# Redirect main pages without slash to with slash (matches sitemap canonical)
-[[redirects]]
-  from = "/pruefungszentren"
-  to = "/pruefungszentren/"
-  status = 301
-
-[[redirects]]
-  from = "/deutsche-grammatik"
-  to = "/deutsche-grammatik/"
-  status = 301
+# Trailing-slash canonicalization is handled by the trailing-slash edge function
+# (netlify/edge-functions/trailing-slash.ts) which runs before redirect rules.
 
 # Redirect /grammatik structure to /deutsche-grammatik structure with niveau-lernen
 # IMPORTANT: Specific redirects MUST come before wildcard redirects (first match wins)
@@ -388,14 +377,6 @@
   from = "/robots.txt"
   to = "/robots.txt"
   status = 200
-  force = true
-
-# Test: single forced trailing-slash redirect to verify Netlify behavior
-# If /pruefungszentren/testdaf-muenchen returns 301 and /pruefungszentren/testdaf-muenchen/ returns 200, this works
-[[redirects]]
-  from = "/pruefungszentren/testdaf-muenchen"
-  to = "/pruefungszentren/testdaf-muenchen/"
-  status = 301
   force = true
 
 # SPA fallback: redirect all other routes to index.html
