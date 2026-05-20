@@ -181,19 +181,23 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
           {weekly.length === 0 ? (
             <p className="text-muted-foreground text-sm">No weekly data yet.</p>
           ) : (
-            <>
+            {(() => {
+              const windowData = weekly.slice(-weeklyWindow);
+              const avgWau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.wau, 0) / windowData.length) : 0;
+              const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
+              return <>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold">{weekly[weekly.length - 1]?.wau ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">WAU (latest week)</p>
+                  <p className="text-2xl font-bold">{avgWau}</p>
+                  <p className="text-xs text-muted-foreground">Avg WAU ({weeklyWindow}w)</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold">{weekly[weekly.length - 1]?.sessions_per_user ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">Sessions/user (latest week)</p>
+                  <p className="text-2xl font-bold">{avgSessions}</p>
+                  <p className="text-xs text-muted-foreground">Avg sessions/user ({weeklyWindow}w)</p>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={weekly.slice(-weeklyWindow)}>
+                <LineChart data={windowData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis
                     dataKey="week"
@@ -238,7 +242,8 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
                   />
                 </LineChart>
               </ResponsiveContainer>
-            </>
+            </>;
+            })()}
           )}
         </Card>
       </div>
@@ -262,19 +267,23 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
           {monthly.length === 0 ? (
             <p className="text-muted-foreground text-sm">No monthly data yet.</p>
           ) : (
-            <>
+            {(() => {
+              const windowData = monthly.slice(-monthlyWindow);
+              const avgMau = windowData.length ? Math.round(windowData.reduce((s, r) => s + r.mau, 0) / windowData.length) : 0;
+              const avgSessions = windowData.length ? (windowData.reduce((s, r) => s + r.sessions_per_user, 0) / windowData.length).toFixed(1) : "0";
+              return <>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div className="text-center">
-                  <p className="text-2xl font-bold">{monthly[monthly.length - 1]?.mau ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">MAU (latest month)</p>
+                  <p className="text-2xl font-bold">{avgMau}</p>
+                  <p className="text-xs text-muted-foreground">Avg MAU ({monthlyWindow}m)</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold">{monthly[monthly.length - 1]?.sessions_per_user ?? 0}</p>
-                  <p className="text-xs text-muted-foreground">Sessions/user (latest month)</p>
+                  <p className="text-2xl font-bold">{avgSessions}</p>
+                  <p className="text-xs text-muted-foreground">Avg sessions/user ({monthlyWindow}m)</p>
                 </div>
               </div>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={monthly.slice(-monthlyWindow)}>
+                <LineChart data={windowData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                   <XAxis
                     dataKey="month"
@@ -316,7 +325,8 @@ export function ProductMetrics({ apiBase }: ProductMetricsProps) {
                   />
                 </LineChart>
               </ResponsiveContainer>
-            </>
+            </>;
+            })()}
           )}
         </Card>
       </div>
