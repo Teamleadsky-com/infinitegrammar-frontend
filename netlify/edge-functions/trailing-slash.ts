@@ -113,3 +113,8 @@ export default async (request: Request, context: Context) => {
   // Not a canonical route — pass through (assets, API, app routes, etc.)
   return context.next();
 };
+
+export const config = {
+  path: "/*",
+  excludedPath: ["/api/*", "/.netlify/*"],
+};
