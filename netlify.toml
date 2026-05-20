@@ -390,6 +390,14 @@
   status = 200
   force = true
 
+# Test: single forced trailing-slash redirect to verify Netlify behavior
+# If /pruefungszentren/testdaf-muenchen returns 301 and /pruefungszentren/testdaf-muenchen/ returns 200, this works
+[[redirects]]
+  from = "/pruefungszentren/testdaf-muenchen"
+  to = "/pruefungszentren/testdaf-muenchen/"
+  status = 301
+  force = true
+
 # SPA fallback: redirect all other routes to index.html
 # This allows React Router to handle client-side routing
 # Prerendered pages in directories will be served automatically before this fallback
