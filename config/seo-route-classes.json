@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "classes": ["SEO_DRIVER", "APP_FUNCTIONAL", "SYSTEM"],
+  "fallbackClass": "UNKNOWN",
+  "precedence": [
+    "1. The input is normalized: full URLs are reduced to their pathname, query strings and hash fragments are stripped, duplicate slashes are collapsed, and a trailing slash is removed (the root path '/' is kept as-is).",
+    "2. exactRules are evaluated in array order against the normalized path. The first entry whose 'path' equals the normalized path wins.",
+    "3. If no exactRule matches, wildcardRules are evaluated in array order against the normalized path. The first entry whose 'pattern' matches wins. '*' in a pattern matches any sequence of characters (including none). Because the first match wins, more specific wildcard patterns must be listed before more general ones.",
+    "4. If neither an exactRule nor a wildcardRule matches, the route class is the fallbackClass, 'UNKNOWN'. UNKNOWN is a fail-safe result, not an assumption about indexability -- it means this route requires explicit classification before any SEO treatment is applied."
+  ],
+  "exactRules": [
+    { "path": "/", "class": "SEO_DRIVER", "description": "Homepage / level selection" },
+    { "path": "/pruefungszentren", "class": "SEO_DRIVER", "description": "Testing-centre hub page" },
+    { "path": "/deutsche-grammatik", "class": "SEO_DRIVER", "description": "Grammar reference hub page" },
+    { "path": "/articles", "class": "SEO_DRIVER", "description": "Article listing page" },
+    { "path": "/exercise", "class": "APP_FUNCTIONAL", "description": "Interactive cloze-test exercise" },
+    { "path": "/exercise-stats", "class": "APP_FUNCTIONAL", "description": "Exercise statistics for the current session" },
+    { "path": "/statistics", "class": "APP_FUNCTIONAL", "description": "User statistics and progress" },
+    { "path": "/auth", "class": "APP_FUNCTIONAL", "description": "Login / registration" },
+    { "path": "/profile", "class": "APP_FUNCTIONAL", "description": "User profile management" },
+    { "path": "/verify-magic-link", "class": "APP_FUNCTIONAL", "description": "Magic-link verification callback" },
+    { "path": "/admin", "class": "APP_FUNCTIONAL", "description": "Administration dashboard" },
+    { "path": "/email-preferences", "class": "APP_FUNCTIONAL", "description": "Email preference management" },
+    { "path": "/robots.txt", "class": "SYSTEM", "description": "Robots exclusion file" },
+    { "path": "/sitemap.xml", "class": "SYSTEM", "description": "XML sitemap" },
+    { "path": "/grammatik", "class": "SYSTEM", "description": "Legacy grammar path, 301 redirected via netlify.toml" }
+  ],
+  "wildcardRules": [
+    { "pattern": "/deutsche-grammatik/thema/*", "class": "SEO_DRIVER", "description": "Grammar topic overview pages (more specific than the general grammar wildcard below)" },
+    { "pattern": "/deutsche-grammatik/*", "class": "SEO_DRIVER", "description": "Grammar level and grammar content pages" },
+    { "pattern": "/pruefungszentren/*", "class": "SEO_DRIVER", "description": "City-specific testing-centre pages" },
+    { "pattern": "/articles/*", "class": "SEO_DRIVER", "description": "Individual article pages" },
+    { "pattern": "/admin/*", "class": "APP_FUNCTIONAL", "description": "Administration sub-routes" },
+    { "pattern": "/api/*", "class": "SYSTEM", "description": "Netlify Functions proxied via /api/* redirect" },
+    { "pattern": "/.netlify/functions/*", "class": "SYSTEM", "description": "Direct Netlify Functions invocation path" },
+    { "pattern": "/grammatik/*", "class": "SYSTEM", "description": "Legacy grammar paths, 301 redirected via netlify.toml" }
+  ]
+}
