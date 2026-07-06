@@ -34,6 +34,7 @@ jobs:
       issues: write
       id-token: write
       actions: read
+      checks: read
 
     steps:
       - name: Checkout repository
@@ -47,5 +48,11 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
-          claude_args: |
-            --max-turns 20
+          additional_permissions: |
+            actions: read
+            checks: read
+            workflows: write
+
+          claude_args: >-
+            --max-turns 40
+            --allowedTools "Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git ls-files:*)"
