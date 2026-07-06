@@ -53,6 +53,6 @@ jobs:
             checks: read
             workflows: write
 
-          claude_args: >-
+          claude_args: |
             --max-turns 40
-            --allowedTools "Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git status:*),Bash(git diff:*),Bash(git log:*),Bash(git ls-files:*)"
+            --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*)"
