@@ -1,0 +1,164 @@
+{
+  "version": 1,
+  "description": "Small, version-controlled golden-route sample set used by scripts/seo/goldenRouteChecker.js to validate that real repository routes resolve to the correct deterministic route class (config/seo-route-classes.json) and satisfy only the checks appropriate for that class. Samples reference real repository routes; none are invented production URLs.",
+  "requiredCategories": [
+    "homepage",
+    "grammar",
+    "article",
+    "testing-centre",
+    "exercise",
+    "exercise-statistics",
+    "auth-account",
+    "robots-txt",
+    "sitemap",
+    "redirect",
+    "api-system",
+    "nonexistent"
+  ],
+  "samples": [
+    {
+      "id": "homepage",
+      "category": "homepage",
+      "path": "/",
+      "expectedClass": "SEO_DRIVER",
+      "expectations": {
+        "status": 200,
+        "indexable": true,
+        "canonical": "https://www.infinitegrammar.de/",
+        "title": true,
+        "metaDescription": true,
+        "h1Count": 1,
+        "minVisibleTextLength": 200,
+        "sitemapIncluded": true,
+        "internalLinkPresent": true
+      }
+    },
+    {
+      "id": "grammar-level-page",
+      "category": "grammar",
+      "path": "/deutsche-grammatik/b1-niveau-lernen",
+      "expectedClass": "SEO_DRIVER",
+      "expectations": {
+        "status": 200,
+        "indexable": true,
+        "canonical": "https://www.infinitegrammar.de/deutsche-grammatik/b1-niveau-lernen/",
+        "title": true,
+        "metaDescription": true,
+        "h1Count": 1,
+        "minVisibleTextLength": 200,
+        "sitemapIncluded": true
+      }
+    },
+    {
+      "id": "article-page",
+      "category": "article",
+      "path": "/articles/why-infinitegrammar-focuses-on-exam-grammar",
+      "expectedClass": "SEO_DRIVER",
+      "expectations": {
+        "status": 200,
+        "indexable": true,
+        "canonical": "https://www.infinitegrammar.de/articles/why-infinitegrammar-focuses-on-exam-grammar/",
+        "title": true,
+        "metaDescription": true,
+        "h1Count": 1,
+        "minVisibleTextLength": 200,
+        "sitemapIncluded": true
+      }
+    },
+    {
+      "id": "testing-centre-page",
+      "category": "testing-centre",
+      "path": "/pruefungszentren/telc-berlin",
+      "expectedClass": "SEO_DRIVER",
+      "expectations": {
+        "status": 200,
+        "indexable": true,
+        "canonical": "https://www.infinitegrammar.de/pruefungszentren/telc-berlin/",
+        "title": true,
+        "metaDescription": true,
+        "h1Count": 1,
+        "minVisibleTextLength": 200,
+        "sitemapIncluded": true
+      }
+    },
+    {
+      "id": "exercise-route",
+      "category": "exercise",
+      "path": "/exercise",
+      "expectedClass": "APP_FUNCTIONAL",
+      "expectations": {
+        "status": 200,
+        "sitemapIncluded": false
+      }
+    },
+    {
+      "id": "exercise-stats-route",
+      "category": "exercise-statistics",
+      "path": "/exercise-stats",
+      "expectedClass": "APP_FUNCTIONAL",
+      "expectations": {
+        "status": 200,
+        "sitemapIncluded": false
+      }
+    },
+    {
+      "id": "auth-route",
+      "category": "auth-account",
+      "path": "/auth",
+      "expectedClass": "APP_FUNCTIONAL",
+      "expectations": {
+        "status": 200,
+        "sitemapIncluded": false,
+        "robotsDisallowed": true
+      }
+    },
+    {
+      "id": "robots-txt",
+      "category": "robots-txt",
+      "path": "/robots.txt",
+      "expectedClass": "SYSTEM",
+      "expectations": {
+        "status": 200,
+        "contentType": "text/plain"
+      }
+    },
+    {
+      "id": "sitemap-xml",
+      "category": "sitemap",
+      "path": "/sitemap.xml",
+      "expectedClass": "SYSTEM",
+      "expectations": {
+        "status": 200,
+        "contentType": "application/xml"
+      }
+    },
+    {
+      "id": "legacy-grammatik-redirect",
+      "category": "redirect",
+      "path": "/grammatik",
+      "expectedClass": "SYSTEM",
+      "expectations": {
+        "status": 301,
+        "redirectTo": "/deutsche-grammatik/"
+      }
+    },
+    {
+      "id": "api-exercises",
+      "category": "api-system",
+      "path": "/api/exercises",
+      "expectedClass": "SYSTEM",
+      "expectations": {
+        "status": 200,
+        "contentType": "application/json"
+      }
+    },
+    {
+      "id": "nonexistent-route",
+      "category": "nonexistent",
+      "path": "/this-route-does-not-exist-in-the-app",
+      "expectedClass": "UNKNOWN",
+      "expectations": {},
+      "note": "Intentionally unmapped by config/seo-route-classes.json. Demonstrates fail-closed behavior: the golden-route checker must reject this sample rather than infer any SEO treatment for it."
+    }
+  ]
+}
