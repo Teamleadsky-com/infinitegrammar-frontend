@@ -151,5 +151,11 @@ describe('routeClassifier', () => {
         expect(validClasses.has(rule.class)).toBe(true);
       }
     });
+
+    it('declares the fallback class UNKNOWN explicitly, not just as a fallback reference', () => {
+      const config = loadRouteConfig();
+      expect(config.classes).toContain(config.fallbackClass);
+      expect(config.classes).toContain('UNKNOWN');
+    });
   });
 });

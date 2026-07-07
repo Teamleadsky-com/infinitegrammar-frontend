@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "classes": ["SEO_DRIVER", "APP_FUNCTIONAL", "SYSTEM"],
+  "classes": ["SEO_DRIVER", "APP_FUNCTIONAL", "SYSTEM", "UNKNOWN"],
   "fallbackClass": "UNKNOWN",
   "precedence": [
     "1. The input is normalized: full URLs are reduced to their pathname, query strings and hash fragments are stripped, duplicate slashes are collapsed, and a trailing slash is removed (the root path '/' is kept as-is).",
