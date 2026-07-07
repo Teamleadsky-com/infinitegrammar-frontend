@@ -32,6 +32,10 @@ dist-ssr
 # Local Netlify folder
 .netlify
 
+# Playwright
+/test-results/
+/playwright-report/
+
 SEO_ANALYSIS_REPORT.md
 German_Language_Exam_Centers_Directory.csv
 docs/analytics-dashboard-summary.md
