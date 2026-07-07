@@ -18,7 +18,8 @@
     "seo:audit": "node scripts/seo-audit.js",
     "build:audit": "npm run build && npm run seo:audit",
     "test:seo-routes": "vitest run scripts/seo",
-    "test:browser-harness": "playwright test --config=playwright.config.ts"
+    "test:browser-harness": "playwright test --config=playwright.config.ts",
+    "test:functional-smoke": "playwright test --config=playwright.config.ts e2e/functional-smoke.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
