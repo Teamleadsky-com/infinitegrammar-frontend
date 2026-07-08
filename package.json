@@ -17,10 +17,12 @@
     "test:coverage": "vitest --coverage",
     "seo:audit": "node scripts/seo-audit.js",
     "build:audit": "npm run build && npm run seo:audit",
-    "test:seo-routes": "vitest run scripts/seo",
-    "test:browser-harness": "playwright test --config=playwright.config.ts",
+    "test:route-classifier": "vitest run scripts/seo/routeClassifier.test.ts",
+    "test:seo-routes": "vitest run scripts/seo/routeClassifier.test.ts scripts/seo/goldenRouteChecker.test.ts",
+    "test:browser-harness": "playwright test --config=playwright.config.ts e2e/browser-harness.spec.ts",
     "test:functional-smoke": "playwright test --config=playwright.config.ts e2e/functional-smoke.spec.ts",
-    "test:functional-data": "playwright test --config=playwright.config.ts e2e/functional-data.spec.ts"
+    "test:functional-data": "playwright test --config=playwright.config.ts e2e/functional-data.spec.ts",
+    "test:seo-foundation": "npm run test:seo-routes && npm run test:browser-harness && npm run test:functional-smoke && npm run test:functional-data"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
