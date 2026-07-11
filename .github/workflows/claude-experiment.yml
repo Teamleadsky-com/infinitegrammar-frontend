@@ -1,0 +1,274 @@
+name: Claude Experiment
+
+on:
+  workflow_dispatch:
+    inputs:
+      experiment_id:
+        description: "Experiment ID, for example PILOT-003"
+        required: true
+        type: string
+      issue_number:
+        description: "GitHub issue number used as the audit record"
+        required: true
+        type: string
+      role:
+        description: "Claude role to run"
+        required: true
+        type: choice
+        options:
+          - proposal
+          - gatekeeper
+          - implementation
+      prompt:
+        description: "Role-specific prompt supplied by n8n or a manual operator"
+        required: true
+        type: string
+      max_turns:
+        description: "Maximum Claude Code turns"
+        required: false
+        default: "10"
+        type: string
+      model:
+        description: "Optional Claude model override. Leave empty to use the repository/action default."
+        required: false
+        default: ""
+        type: string
+      permission_profile:
+        description: "Optional permission profile"
+        required: false
+        default: "default"
+        type: choice
+        options:
+          - default
+          - conservative
+          - implementation
+      dry_run:
+        description: "Validate workflow inputs without calling Claude"
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: claude-experiment-${{ inputs.experiment_id }}-${{ inputs.role }}
+  cancel-in-progress: false
+
+jobs:
+  validate-inputs:
+    name: Validate inputs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
+      model_arg: ${{ steps.prepare.outputs.model_arg }}
+    steps:
+      - name: Validate role and prepare Claude arguments
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          case "${{ inputs.role }}" in
+            proposal|gatekeeper|implementation)
+              ;;
+            *)
+              echo "Invalid role: ${{ inputs.role }}" >&2
+              exit 1
+              ;;
+          esac
+
+          if ! [[ "${{ inputs.max_turns }}" =~ ^[0-9]+$ ]]; then
+            echo "max_turns must be a positive integer" >&2
+            exit 1
+          fi
+
+          if [ "${{ inputs.max_turns }}" -lt 1 ]; then
+            echo "max_turns must be >= 1" >&2
+            exit 1
+          fi
+
+          echo "max_turns_arg=--max-turns ${{ inputs.max_turns }}" >> "$GITHUB_OUTPUT"
+
+          if [ -n "${{ inputs.model }}" ]; then
+            echo "model_arg=--model ${{ inputs.model }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "model_arg=" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Print dispatch summary
+        shell: bash
+        run: |
+          cat <<'EOF'
+          Claude experiment dispatch accepted.
+
+          experiment_id:      ${{ inputs.experiment_id }}
+          issue_number:       ${{ inputs.issue_number }}
+          role:               ${{ inputs.role }}
+          max_turns:          ${{ inputs.max_turns }}
+          model:              ${{ inputs.model }}
+          permission_profile: ${{ inputs.permission_profile }}
+          dry_run:            ${{ inputs.dry_run }}
+
+          The role-specific Claude jobs are skipped when dry_run=true.
+          EOF
+
+  dry-run:
+    name: Dry run
+    needs: validate-inputs
+    if: ${{ inputs.dry_run == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Confirm dry run
+        shell: bash
+        run: |
+          echo "Dry run complete. Claude was not called."
+
+  proposal:
+    name: Claude proposal role
+    needs: validate-inputs
+    if: ${{ inputs.dry_run != true && inputs.role == 'proposal' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+      actions: read
+      checks: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude proposal
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          additional_permissions: |
+            actions: read
+            checks: read
+
+          prompt: |
+            REPOSITORY: ${{ github.repository }}
+            EXPERIMENT_ID: ${{ inputs.experiment_id }}
+            ISSUE_NUMBER: ${{ inputs.issue_number }}
+            ROLE: proposal
+            PERMISSION_PROFILE: ${{ inputs.permission_profile }}
+
+            You are running the proposal role for the SEO autopilot system.
+
+            This role must analyze and propose only.
+            Do not modify files.
+            Do not create branches.
+            Do not create pull requests.
+            Do not merge anything.
+
+            User/n8n prompt:
+            ${{ inputs.prompt }}
+
+          claude_args: |
+            ${{ needs.validate-inputs.outputs.max_turns_arg }}
+            ${{ needs.validate-inputs.outputs.model_arg }}
+            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(npm:*),Bash(node:*)"
+
+  gatekeeper:
+    name: Claude gatekeeper role
+    needs: validate-inputs
+    if: ${{ inputs.dry_run != true && inputs.role == 'gatekeeper' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+      actions: read
+      checks: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude gatekeeper
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          additional_permissions: |
+            actions: read
+            checks: read
+
+          prompt: |
+            REPOSITORY: ${{ github.repository }}
+            EXPERIMENT_ID: ${{ inputs.experiment_id }}
+            ISSUE_NUMBER: ${{ inputs.issue_number }}
+            ROLE: gatekeeper
+            PERMISSION_PROFILE: ${{ inputs.permission_profile }}
+
+            You are running the gatekeeper role for the SEO autopilot system.
+
+            This role must independently review a proposal.
+            Do not modify files.
+            Do not create branches.
+            Do not create pull requests.
+            Do not merge anything.
+
+            User/n8n prompt:
+            ${{ inputs.prompt }}
+
+          claude_args: |
+            ${{ needs.validate-inputs.outputs.max_turns_arg }}
+            ${{ needs.validate-inputs.outputs.model_arg }}
+            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(npm:*),Bash(node:*)"
+
+  implementation:
+    name: Claude implementation role
+    needs: validate-inputs
+    if: ${{ inputs.dry_run != true && inputs.role == 'implementation' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+      actions: read
+      checks: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude implementation
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
+          additional_permissions: |
+            actions: read
+            checks: read
+
+          prompt: |
+            REPOSITORY: ${{ github.repository }}
+            EXPERIMENT_ID: ${{ inputs.experiment_id }}
+            ISSUE_NUMBER: ${{ inputs.issue_number }}
+            ROLE: implementation
+            PERMISSION_PROFILE: ${{ inputs.permission_profile }}
+
+            You are running the implementation role for the SEO autopilot system.
+
+            Implement only the approved proposal supplied in the prompt.
+            Create one focused branch and one pull request when implementation is required.
+            Do not merge the pull request.
+
+            User/n8n prompt:
+            ${{ inputs.prompt }}
+
+          claude_args: |
+            ${{ needs.validate-inputs.outputs.max_turns_arg }}
+            ${{ needs.validate-inputs.outputs.model_arg }}
+            --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*)"
