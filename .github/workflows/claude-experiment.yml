@@ -173,7 +173,7 @@ jobs:
           claude_args: |
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
-            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(npm:*),Bash(node:*)"
+            --allowedTools "Read,Glob,Grep"
 
   gatekeeper:
     name: Claude gatekeeper role
@@ -223,7 +223,7 @@ jobs:
           claude_args: |
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
-            --allowedTools "Read,Glob,Grep,Bash(git:*),Bash(npm:*),Bash(node:*)"
+            --allowedTools "Read,Glob,Grep"
 
   implementation:
     name: Claude implementation role
