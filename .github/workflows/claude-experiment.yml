@@ -24,9 +24,9 @@ on:
         required: true
         type: string
       max_turns:
-        description: "Maximum Claude Code turns"
+        description: "Maximum Claude Code turns. Implementation should normally use 40 or more."
         required: false
-        default: "10"
+        default: "40"
         type: string
       model:
         description: "Optional Claude model override. Leave empty for proposal/gatekeeper so they use the current default configuration."
@@ -91,6 +91,12 @@ jobs:
             exit 1
           fi
 
+          if [ "$ROLE" = "implementation" ] && [ "$MAX_TURNS" -lt 20 ]; then
+            echo "implementation role requires max_turns >= 20" >&2
+            echo "Use 40 for normal implementation work." >&2
+            exit 1
+          fi
+
           echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
 
           if [ -n "$MODEL" ]; then
@@ -136,6 +142,7 @@ jobs:
           - proposal and gatekeeper must leave model empty and use the current default configuration
           - implementation may use an explicit Claude model override
           - gatekeeper is never allowed to use an explicit weaker override
+          - implementation requires max_turns >= 20
 
           The role-specific Claude jobs are skipped when dry_run=true.
           EOF
@@ -172,10 +179,10 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude proposal
+        id: claude_proposal
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
 
           additional_permissions: |
             actions: read
@@ -204,6 +211,78 @@ jobs:
             ${{ needs.validate-inputs.outputs.model_arg }}
             --allowedTools "Read,Glob,Grep"
 
+      - name: Post Claude proposal result to issue
+        if: ${{ always() && steps.claude_proposal.outputs.execution_file != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          ROLE_NAME: proposal
+          EXECUTION_FILE: ${{ steps.claude_proposal.outputs.execution_file }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          COMMENT_FILE="$(mktemp)"
+
+          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          execution_file = pathlib.Path(sys.argv[1])
+          comment_file = pathlib.Path(sys.argv[2])
+
+          raw = execution_file.read_text(encoding="utf-8", errors="replace")
+          result = ""
+
+          try:
+              data = json.loads(raw)
+              if isinstance(data, dict):
+                  result = str(data.get("result") or "")
+              elif isinstance(data, list):
+                  for item in reversed(data):
+                      if isinstance(item, dict) and item.get("type") == "result":
+                          result = str(item.get("result") or "")
+                          break
+          except json.JSONDecodeError:
+              for line in reversed(raw.splitlines()):
+                  try:
+                      item = json.loads(line)
+                  except json.JSONDecodeError:
+                      continue
+                  if isinstance(item, dict) and item.get("type") == "result":
+                      result = str(item.get("result") or "")
+                      break
+
+          if not result.strip():
+              result = "[No final Claude result text found in execution file.]"
+
+          comment_file.write_text(result, encoding="utf-8")
+          PY
+
+          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+
+          BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_RESULT
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+
+          ### Result
+
+          $RESULT_TEXT
+          EOF
+          )"
+
+          gh api \
+            -X POST \
+            "repos/$REPO/issues/$ISSUE_NUMBER/comments" \
+            -f body="$BODY"
+
   gatekeeper:
     name: Claude gatekeeper role
     needs: validate-inputs
@@ -223,10 +302,10 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude gatekeeper
+        id: claude_gatekeeper
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
 
           additional_permissions: |
             actions: read
@@ -255,6 +334,78 @@ jobs:
             ${{ needs.validate-inputs.outputs.model_arg }}
             --allowedTools "Read,Glob,Grep"
 
+      - name: Post Claude gatekeeper result to issue
+        if: ${{ always() && steps.claude_gatekeeper.outputs.execution_file != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          ROLE_NAME: gatekeeper
+          EXECUTION_FILE: ${{ steps.claude_gatekeeper.outputs.execution_file }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          COMMENT_FILE="$(mktemp)"
+
+          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          execution_file = pathlib.Path(sys.argv[1])
+          comment_file = pathlib.Path(sys.argv[2])
+
+          raw = execution_file.read_text(encoding="utf-8", errors="replace")
+          result = ""
+
+          try:
+              data = json.loads(raw)
+              if isinstance(data, dict):
+                  result = str(data.get("result") or "")
+              elif isinstance(data, list):
+                  for item in reversed(data):
+                      if isinstance(item, dict) and item.get("type") == "result":
+                          result = str(item.get("result") or "")
+                          break
+          except json.JSONDecodeError:
+              for line in reversed(raw.splitlines()):
+                  try:
+                      item = json.loads(line)
+                  except json.JSONDecodeError:
+                      continue
+                  if isinstance(item, dict) and item.get("type") == "result":
+                      result = str(item.get("result") or "")
+                      break
+
+          if not result.strip():
+              result = "[No final Claude result text found in execution file.]"
+
+          comment_file.write_text(result, encoding="utf-8")
+          PY
+
+          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+
+          BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_RESULT
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+
+          ### Result
+
+          $RESULT_TEXT
+          EOF
+          )"
+
+          gh api \
+            -X POST \
+            "repos/$REPO/issues/$ISSUE_NUMBER/comments" \
+            -f body="$BODY"
+
   implementation:
     name: Claude implementation role
     needs: validate-inputs
@@ -274,12 +425,12 @@ jobs:
           fetch-depth: 1
 
       - name: Run Claude implementation
+        id: claude_implementation
         uses: anthropics/claude-code-action@v1
         env:
           GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
 
           additional_permissions: |
             actions: read
@@ -305,3 +456,75 @@ jobs:
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
             --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*),Bash(gh:*)"
+
+      - name: Post Claude implementation result to issue
+        if: ${{ always() && steps.claude_implementation.outputs.execution_file != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          EXPERIMENT_ID: ${{ inputs.experiment_id }}
+          ROLE_NAME: implementation
+          EXECUTION_FILE: ${{ steps.claude_implementation.outputs.execution_file }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          COMMENT_FILE="$(mktemp)"
+
+          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          execution_file = pathlib.Path(sys.argv[1])
+          comment_file = pathlib.Path(sys.argv[2])
+
+          raw = execution_file.read_text(encoding="utf-8", errors="replace")
+          result = ""
+
+          try:
+              data = json.loads(raw)
+              if isinstance(data, dict):
+                  result = str(data.get("result") or "")
+              elif isinstance(data, list):
+                  for item in reversed(data):
+                      if isinstance(item, dict) and item.get("type") == "result":
+                          result = str(item.get("result") or "")
+                          break
+          except json.JSONDecodeError:
+              for line in reversed(raw.splitlines()):
+                  try:
+                      item = json.loads(line)
+                  except json.JSONDecodeError:
+                      continue
+                  if isinstance(item, dict) and item.get("type") == "result":
+                      result = str(item.get("result") or "")
+                      break
+
+          if not result.strip():
+              result = "[No final Claude result text found in execution file.]"
+
+          comment_file.write_text(result, encoding="utf-8")
+          PY
+
+          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+
+          BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_RESULT
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+
+          ### Result
+
+          $RESULT_TEXT
+          EOF
+          )"
+
+          gh api \
+            -X POST \
+            "repos/$REPO/issues/$ISSUE_NUMBER/comments" \
+            -f body="$BODY"
