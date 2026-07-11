@@ -275,6 +275,8 @@ jobs:
 
       - name: Run Claude implementation
         uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           show_full_output: true
@@ -302,4 +304,4 @@ jobs:
           claude_args: |
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
-            --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*)"
+            --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*),Bash(gh:*)"
