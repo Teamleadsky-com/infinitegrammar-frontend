@@ -29,7 +29,7 @@ on:
         default: "10"
         type: string
       model:
-        description: "Optional Claude model override. Leave empty to use the repository/action default."
+        description: "Optional Claude model override. Leave empty for proposal/gatekeeper so they use the current default configuration."
         required: false
         default: ""
         type: string
@@ -62,35 +62,58 @@ jobs:
       max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
       model_arg: ${{ steps.prepare.outputs.model_arg }}
     steps:
-      - name: Validate role and prepare Claude arguments
+      - name: Validate role, model rule, and prepare Claude arguments
         id: prepare
         shell: bash
+        env:
+          ROLE: ${{ inputs.role }}
+          MAX_TURNS: ${{ inputs.max_turns }}
+          MODEL: ${{ inputs.model }}
         run: |
           set -euo pipefail
 
-          case "${{ inputs.role }}" in
+          case "$ROLE" in
             proposal|gatekeeper|implementation)
               ;;
             *)
-              echo "Invalid role: ${{ inputs.role }}" >&2
+              echo "Invalid role: $ROLE" >&2
               exit 1
               ;;
           esac
 
-          if ! [[ "${{ inputs.max_turns }}" =~ ^[0-9]+$ ]]; then
+          if ! [[ "$MAX_TURNS" =~ ^[0-9]+$ ]]; then
             echo "max_turns must be a positive integer" >&2
             exit 1
           fi
 
-          if [ "${{ inputs.max_turns }}" -lt 1 ]; then
+          if [ "$MAX_TURNS" -lt 1 ]; then
             echo "max_turns must be >= 1" >&2
             exit 1
           fi
 
-          echo "max_turns_arg=--max-turns ${{ inputs.max_turns }}" >> "$GITHUB_OUTPUT"
+          echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
 
-          if [ -n "${{ inputs.model }}" ]; then
-            echo "model_arg=--model ${{ inputs.model }}" >> "$GITHUB_OUTPUT"
+          if [ -n "$MODEL" ]; then
+            case "$ROLE" in
+              proposal|gatekeeper)
+                echo "Model override is disabled for proposal and gatekeeper roles." >&2
+                echo "Leave model empty so both roles use the current default Claude model configuration." >&2
+                echo "This prevents the gatekeeper from being weaker than the proposal role." >&2
+                exit 1
+                ;;
+              implementation)
+                case "$MODEL" in
+                  claude-*)
+                    echo "model_arg=--model $MODEL" >> "$GITHUB_OUTPUT"
+                    ;;
+                  *)
+                    echo "Unsupported model override: $MODEL" >&2
+                    echo "Model override must look like a Claude model name, for example claude-..." >&2
+                    exit 1
+                    ;;
+                esac
+                ;;
+            esac
           else
             echo "model_arg=" >> "$GITHUB_OUTPUT"
           fi
@@ -108,6 +131,11 @@ jobs:
           model:              ${{ inputs.model }}
           permission_profile: ${{ inputs.permission_profile }}
           dry_run:            ${{ inputs.dry_run }}
+
+          Model rule:
+          - proposal and gatekeeper must leave model empty and use the current default configuration
+          - implementation may use an explicit Claude model override
+          - gatekeeper is never allowed to use an explicit weaker override
 
           The role-specific Claude jobs are skipped when dry_run=true.
           EOF
