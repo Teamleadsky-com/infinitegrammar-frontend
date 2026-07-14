@@ -7,10 +7,12 @@ on:
         description: "Experiment ID, for example PILOT-003"
         required: true
         type: string
+
       issue_number:
         description: "GitHub issue number used as the audit record"
         required: true
         type: string
+
       role:
         description: "Claude role to run"
         required: true
@@ -19,20 +21,24 @@ on:
           - proposal
           - gatekeeper
           - implementation
+
       prompt:
         description: "Role-specific prompt supplied by n8n or a manual operator"
         required: true
         type: string
+
       max_turns:
         description: "Maximum Claude Code turns. Implementation should normally use 40 or more."
         required: false
         default: "40"
         type: string
+
       model:
-        description: "Optional Claude model override. Leave empty for proposal/gatekeeper so they use the current default configuration."
+        description: "Claude model override. Defaults to opus for all SEO autopilot roles."
         required: false
-        default: ""
+        default: "opus"
         type: string
+
       permission_profile:
         description: "Optional permission profile"
         required: false
@@ -42,6 +48,7 @@ on:
           - default
           - conservative
           - implementation
+
       dry_run:
         description: "Validate workflow inputs without calling Claude"
         required: false
@@ -56,11 +63,15 @@ jobs:
   validate-inputs:
     name: Validate inputs
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     outputs:
       max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
       model_arg: ${{ steps.prepare.outputs.model_arg }}
+      effective_model: ${{ steps.prepare.outputs.effective_model }}
+
     steps:
       - name: Validate role, model rule, and prepare Claude arguments
         id: prepare
@@ -97,32 +108,21 @@ jobs:
             exit 1
           fi
 
-          echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
+          EFFECTIVE_MODEL="${MODEL:-opus}"
 
-          if [ -n "$MODEL" ]; then
-            case "$ROLE" in
-              proposal|gatekeeper)
-                echo "Model override is disabled for proposal and gatekeeper roles." >&2
-                echo "Leave model empty so both roles use the current default Claude model configuration." >&2
-                echo "This prevents the gatekeeper from being weaker than the proposal role." >&2
-                exit 1
-                ;;
-              implementation)
-                case "$MODEL" in
-                  claude-*)
-                    echo "model_arg=--model $MODEL" >> "$GITHUB_OUTPUT"
-                    ;;
-                  *)
-                    echo "Unsupported model override: $MODEL" >&2
-                    echo "Model override must look like a Claude model name, for example claude-..." >&2
-                    exit 1
-                    ;;
-                esac
-                ;;
-            esac
-          else
-            echo "model_arg=" >> "$GITHUB_OUTPUT"
-          fi
+          case "$EFFECTIVE_MODEL" in
+            opus|sonnet|haiku|fable|claude-*)
+              ;;
+            *)
+              echo "Unsupported model override: $EFFECTIVE_MODEL" >&2
+              echo "Use a Claude Code model alias such as opus, sonnet, haiku, fable, or a full model ID beginning with claude-." >&2
+              exit 1
+              ;;
+          esac
+
+          echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
+          echo "model_arg=--model $EFFECTIVE_MODEL" >> "$GITHUB_OUTPUT"
+          echo "effective_model=$EFFECTIVE_MODEL" >> "$GITHUB_OUTPUT"
 
       - name: Print dispatch summary
         shell: bash
@@ -134,14 +134,14 @@ jobs:
           issue_number:       ${{ inputs.issue_number }}
           role:               ${{ inputs.role }}
           max_turns:          ${{ inputs.max_turns }}
-          model:              ${{ inputs.model }}
+          model input:        ${{ inputs.model }}
+          effective model:    ${{ needs.validate-inputs.outputs.effective_model }}
           permission_profile: ${{ inputs.permission_profile }}
           dry_run:            ${{ inputs.dry_run }}
 
           Model rule:
-          - proposal and gatekeeper must leave model empty and use the current default configuration
-          - implementation may use an explicit Claude model override
-          - gatekeeper is never allowed to use an explicit weaker override
+          - proposal, gatekeeper, and implementation default to opus
+          - all roles may use the same explicit model override
           - implementation requires max_turns >= 20
 
           The role-specific Claude jobs are skipped when dry_run=true.
@@ -152,8 +152,10 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run == true }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
       - name: Confirm dry run
         shell: bash
@@ -165,6 +167,7 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run != true && inputs.role == 'proposal' }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       issues: write
@@ -172,6 +175,7 @@ jobs:
       id-token: write
       actions: read
       checks: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -220,6 +224,7 @@ jobs:
           ISSUE_NUMBER: ${{ inputs.issue_number }}
           EXPERIMENT_ID: ${{ inputs.experiment_id }}
           ROLE_NAME: proposal
+          STEP_OUTCOME: ${{ steps.claude_proposal.outcome }}
           EXECUTION_FILE: ${{ steps.claude_proposal.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
@@ -240,32 +245,49 @@ jobs:
 
           try:
               data = json.loads(raw)
+
               if isinstance(data, dict):
                   result = str(data.get("result") or "")
+
               elif isinstance(data, list):
                   for item in reversed(data):
                       if isinstance(item, dict) and item.get("type") == "result":
                           result = str(item.get("result") or "")
                           break
+
           except json.JSONDecodeError:
               for line in reversed(raw.splitlines()):
                   try:
                       item = json.loads(line)
                   except json.JSONDecodeError:
                       continue
+
                   if isinstance(item, dict) and item.get("type") == "result":
                       result = str(item.get("result") or "")
                       break
-
-          if not result.strip():
-              result = "[No final Claude result text found in execution file.]"
 
           comment_file.write_text(result, encoding="utf-8")
           PY
 
           RESULT_TEXT="$(cat "$COMMENT_FILE")"
 
-          BODY="$(cat <<EOF
+          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
+
+          EOF
+          )"
+          else
+            BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
           experiment_id: $EXPERIMENT_ID
@@ -277,6 +299,7 @@ jobs:
           $RESULT_TEXT
           EOF
           )"
+          fi
 
           gh api \
             -X POST \
@@ -288,6 +311,7 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run != true && inputs.role == 'gatekeeper' }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       issues: write
@@ -295,6 +319,7 @@ jobs:
       id-token: write
       actions: read
       checks: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -343,6 +368,7 @@ jobs:
           ISSUE_NUMBER: ${{ inputs.issue_number }}
           EXPERIMENT_ID: ${{ inputs.experiment_id }}
           ROLE_NAME: gatekeeper
+          STEP_OUTCOME: ${{ steps.claude_gatekeeper.outcome }}
           EXECUTION_FILE: ${{ steps.claude_gatekeeper.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
@@ -363,32 +389,49 @@ jobs:
 
           try:
               data = json.loads(raw)
+
               if isinstance(data, dict):
                   result = str(data.get("result") or "")
+
               elif isinstance(data, list):
                   for item in reversed(data):
                       if isinstance(item, dict) and item.get("type") == "result":
                           result = str(item.get("result") or "")
                           break
+
           except json.JSONDecodeError:
               for line in reversed(raw.splitlines()):
                   try:
                       item = json.loads(line)
                   except json.JSONDecodeError:
                       continue
+
                   if isinstance(item, dict) and item.get("type") == "result":
                       result = str(item.get("result") or "")
                       break
-
-          if not result.strip():
-              result = "[No final Claude result text found in execution file.]"
 
           comment_file.write_text(result, encoding="utf-8")
           PY
 
           RESULT_TEXT="$(cat "$COMMENT_FILE")"
 
-          BODY="$(cat <<EOF
+          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
+
+          EOF
+          )"
+          else
+            BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
           experiment_id: $EXPERIMENT_ID
@@ -400,6 +443,7 @@ jobs:
           $RESULT_TEXT
           EOF
           )"
+          fi
 
           gh api \
             -X POST \
@@ -411,6 +455,7 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run != true && inputs.role == 'implementation' }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
       issues: write
@@ -418,6 +463,7 @@ jobs:
       id-token: write
       actions: read
       checks: read
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -466,6 +512,7 @@ jobs:
           ISSUE_NUMBER: ${{ inputs.issue_number }}
           EXPERIMENT_ID: ${{ inputs.experiment_id }}
           ROLE_NAME: implementation
+          STEP_OUTCOME: ${{ steps.claude_implementation.outcome }}
           EXECUTION_FILE: ${{ steps.claude_implementation.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
@@ -486,32 +533,49 @@ jobs:
 
           try:
               data = json.loads(raw)
+
               if isinstance(data, dict):
                   result = str(data.get("result") or "")
+
               elif isinstance(data, list):
                   for item in reversed(data):
                       if isinstance(item, dict) and item.get("type") == "result":
                           result = str(item.get("result") or "")
                           break
+
           except json.JSONDecodeError:
               for line in reversed(raw.splitlines()):
                   try:
                       item = json.loads(line)
                   except json.JSONDecodeError:
                       continue
+
                   if isinstance(item, dict) and item.get("type") == "result":
                       result = str(item.get("result") or "")
                       break
-
-          if not result.strip():
-              result = "[No final Claude result text found in execution file.]"
 
           comment_file.write_text(result, encoding="utf-8")
           PY
 
           RESULT_TEXT="$(cat "$COMMENT_FILE")"
 
-          BODY="$(cat <<EOF
+          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
+
+          EOF
+          )"
+          else
+            BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
           experiment_id: $EXPERIMENT_ID
@@ -523,6 +587,7 @@ jobs:
           $RESULT_TEXT
           EOF
           )"
+          fi
 
           gh api \
             -X POST \
