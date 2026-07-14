@@ -1,11 +1,13 @@
 # Major Search Engines
 User-agent: Googlebot
+Disallow: /admin
 Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
 
 User-agent: Bingbot
+Disallow: /admin
 Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
@@ -35,6 +37,7 @@ Allow: /
 
 # All Other Bots
 User-agent: *
+Disallow: /admin
 Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
