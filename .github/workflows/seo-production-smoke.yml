@@ -1,0 +1,46 @@
+name: SEO Production Smoke
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-production-smoke-main
+  cancel-in-progress: true
+
+jobs:
+  seo-production-smoke:
+    name: seo-production-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      PRODUCTION_URL: https://www.infinitegrammar.de
+      EXPECTED_SITEMAP_URL: https://www.infinitegrammar.de/sitemap.xml
+
+    steps:
+      - name: Check production robots, sitemap, and homepage
+        run: |
+          set -euo pipefail
+
+          echo "Checking ${PRODUCTION_URL}"
+
+          curl --fail --silent --show-error --location --max-time 30             "${PRODUCTION_URL}/robots.txt"             --output /tmp/robots.txt
+
+          grep -qi "Sitemap: ${EXPECTED_SITEMAP_URL}" /tmp/robots.txt
+          grep -qi "Disallow: /admin" /tmp/robots.txt
+
+          curl --fail --silent --show-error --location --max-time 30             "${EXPECTED_SITEMAP_URL}"             --output /tmp/sitemap.xml
+
+          grep -Eqi "<(urlset|sitemapindex)[^>]*>" /tmp/sitemap.xml
+
+          curl --fail --silent --show-error --location --max-time 30             "${PRODUCTION_URL}/"             --output /tmp/home.html
+
+          grep -qi "<html" /tmp/home.html
+
+          echo "Production smoke check passed."
