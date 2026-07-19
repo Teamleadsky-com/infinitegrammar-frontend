@@ -1,0 +1,155 @@
+name: SEO PR Validation
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seo-pr-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  seo-pr-build:
+    name: seo-pr-build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run build
+        run: |
+          set -euo pipefail
+          node -e "const s=require('./package.json').scripts||{}; if(!s.build){console.error('Missing required npm script: build'); process.exit(1)}"
+          npm run build
+
+  seo-pr-seo-audit:
+    name: seo-pr-seo-audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run SEO audit scripts
+        run: |
+          set -euo pipefail
+
+          mapfile -t scripts < <(node - <<'NODE'
+          const scripts = require('./package.json').scripts || {};
+          const candidates = [
+            'test:route-classifier',
+            'test:seo-routes',
+            'test:seo-foundation'
+          ];
+          for (const name of candidates) {
+            if (scripts[name]) {
+              console.log(name);
+            }
+          }
+          NODE
+          )
+
+          if [ "${#scripts[@]}" -eq 0 ]; then
+            echo "Missing SEO validation scripts. Expected at least one of: test:route-classifier, test:seo-routes, test:seo-foundation" >&2
+            exit 1
+          fi
+
+          for script in "${scripts[@]}"; do
+            echo "Running npm run ${script}"
+            npm run "${script}"
+          done
+
+  seo-pr-functional-regression:
+    name: seo-pr-functional-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browser if project uses Playwright
+        run: |
+          set -euo pipefail
+
+          if node - <<'NODE'
+          const pkg = require('./package.json');
+          const text = JSON.stringify({
+            scripts: pkg.scripts || {},
+            dependencies: pkg.dependencies || {},
+            devDependencies: pkg.devDependencies || {}
+          });
+          const usesPlaywright = /playwright/i.test(text);
+          process.exit(usesPlaywright ? 0 : 1);
+          NODE
+          then
+            npx playwright install --with-deps chromium
+          else
+            echo "No Playwright dependency/script detected; skipping browser install."
+          fi
+        shell: bash
+        continue-on-error: false
+
+      - name: Run functional regression scripts
+        run: |
+          set -euo pipefail
+
+          mapfile -t scripts < <(node - <<'NODE'
+          const scripts = require('./package.json').scripts || {};
+          const candidates = [
+            'test:browser-harness',
+            'test:functional-smoke',
+            'test:functional-data'
+          ];
+          for (const name of candidates) {
+            if (scripts[name]) {
+              console.log(name);
+            }
+          }
+          NODE
+          )
+
+          if [ "${#scripts[@]}" -eq 0 ]; then
+            echo "Missing functional regression scripts. Expected at least one of: test:browser-harness, test:functional-smoke, test:functional-data" >&2
+            exit 1
+          fi
+
+          for script in "${scripts[@]}"; do
+            echo "Running npm run ${script}"
+            npm run "${script}"
+          done
