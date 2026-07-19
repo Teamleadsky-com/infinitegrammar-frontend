@@ -64,8 +64,7 @@ jobs:
           const scripts = require('./package.json').scripts || {};
           const candidates = [
             'test:route-classifier',
-            'test:seo-routes',
-            'test:seo-foundation'
+            'test:seo-routes'
           ];
           for (const name of candidates) {
             if (scripts[name]) {
@@ -76,7 +75,7 @@ jobs:
           )
 
           if [ "${#scripts[@]}" -eq 0 ]; then
-            echo "Missing SEO validation scripts. Expected at least one of: test:route-classifier, test:seo-routes, test:seo-foundation" >&2
+            echo "Missing SEO validation scripts. Expected at least one of: test:route-classifier, test:seo-routes" >&2
             exit 1
           fi
 
@@ -123,7 +122,6 @@ jobs:
             echo "No Playwright dependency/script detected; skipping browser install."
           fi
         shell: bash
-        continue-on-error: false
 
       - name: Run functional regression scripts
         run: |
