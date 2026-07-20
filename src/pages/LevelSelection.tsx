@@ -103,9 +103,16 @@ const LevelSelection = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:alt" content={pageTitle} />
+        <meta property="og:site_name" content="InfiniteGrammar" />
+        <meta property="og:locale" content={currentLanguage.startsWith('en') ? 'en_US' : 'de_DE'} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta name="twitter:image:alt" content={pageTitle} />
       </Helmet>
 
       {/* Schema Markup for SEO */}
