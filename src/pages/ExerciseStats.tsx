@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowLeft, TrendingUp, BarChart3 } from "lucide-react";
@@ -38,9 +39,28 @@ const COLORS = {
 
 type PeriodType = 'daily' | 'weekly' | 'monthly';
 
+// SEO meta data. Kept local to this page rather than in the i18n bundles so the
+// change stays inside this one file; the visible page body still comes from i18n.
+// Both languages are provided because i18n defaults to 'en' with an empty
+// localStorage (src/i18n/config.ts) — a crawler's state — so the head tags must
+// match the language the page actually renders in.
+const PAGE_META = {
+  de: {
+    title: 'Übungsstatistiken A1–C1 | InfiniteGrammar',
+    description: 'Statistiken zur Übungsdatenbank von InfiniteGrammar: Anzahl der Lückentext-Übungen nach Niveau (A1–C1), nach Grammatikbereich und die Entwicklung im Zeitverlauf.',
+  },
+  en: {
+    title: 'Exercise Statistics A1–C1 | InfiniteGrammar',
+    description: 'Statistics for the InfiniteGrammar exercise database: number of gap-fill exercises by level (A1–C1), by grammar section, and growth over time.',
+  },
+};
+
+const PAGE_URL = 'https://www.infinitegrammar.de/exercise-stats/';
+const OG_IMAGE = 'https://www.infinitegrammar.de/og-image.png';
+
 const ExerciseStats = () => {
   const navigate = useNavigate();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [period, setPeriod] = useState<PeriodType>('daily');
   const [loading, setLoading] = useState(true);
 
@@ -206,8 +226,35 @@ const ExerciseStats = () => {
     return acc;
   }, {} as Record<string, string>);
 
+  const currentLanguage = i18n.language || 'de';
+  const isEnglish = currentLanguage.startsWith('en');
+  const pageTitle = isEnglish ? PAGE_META.en.title : PAGE_META.de.title;
+  const pageDescription = isEnglish ? PAGE_META.en.description : PAGE_META.de.description;
+
   return (
     <div className="min-h-screen bg-background relative">
+      <Helmet>
+        <html lang={currentLanguage} />
+        <title>{pageTitle}</title>
+        <link rel="canonical" href={PAGE_URL} />
+        <meta name="description" content={pageDescription} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:url" content={PAGE_URL} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={OG_IMAGE} />
+        <meta property="og:image:width" content="1536" />
+        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:alt" content={pageTitle} />
+        <meta property="og:site_name" content="InfiniteGrammar" />
+        <meta property="og:locale" content={isEnglish ? 'en_US' : 'de_DE'} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={pageDescription} />
+        <meta name="twitter:image" content={OG_IMAGE} />
+        <meta name="twitter:image:alt" content={pageTitle} />
+      </Helmet>
+
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
