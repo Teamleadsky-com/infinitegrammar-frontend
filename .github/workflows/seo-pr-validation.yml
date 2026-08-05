@@ -8,6 +8,9 @@ on:
 
 permissions:
   contents: read
+  checks: read
+  statuses: read
+  pull-requests: read
 
 concurrency:
   group: seo-pr-validation-${{ github.event.pull_request.number || github.ref }}
@@ -103,6 +106,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browser if project uses Playwright
+        shell: bash
         run: |
           set -euo pipefail
 
@@ -121,7 +125,6 @@ jobs:
           else
             echo "No Playwright dependency/script detected; skipping browser install."
           fi
-        shell: bash
 
       - name: Run functional regression scripts
         run: |
@@ -151,3 +154,272 @@ jobs:
             echo "Running npm run ${script}"
             npm run "${script}"
           done
+
+  notify-seo03:
+    name: notify-seo03
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    needs:
+      - seo-pr-build
+      - seo-pr-seo-audit
+      - seo-pr-functional-regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEO03_CALLBACK_URL: ${{ secrets.SEO03_CALLBACK_URL }}
+      SEO03_CALLBACK_TOKEN: ${{ secrets.SEO03_CALLBACK_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+      BUILD_STATE: ${{ needs.seo-pr-build.result }}
+      SEO_STATE: ${{ needs.seo-pr-seo-audit.result }}
+      FUNCTIONAL_STATE: ${{ needs.seo-pr-functional-regression.result }}
+
+    steps:
+      - name: Wait for terminal Netlify Deploy Preview state
+        id: netlify
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SEO03_CALLBACK_URL:-}" ] || [ -z "${SEO03_CALLBACK_TOKEN:-}" ]; then
+            echo "::warning::SEO03 callback secrets are not configured; callback will be skipped."
+            echo "state=not_configured" >> "$GITHUB_OUTPUT"
+            echo "preview_url=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          ALL_REQUIRED_SUCCESS=true
+
+          for state in "$BUILD_STATE" "$SEO_STATE" "$FUNCTIONAL_STATE"; do
+            if [ "$state" != "success" ]; then
+              ALL_REQUIRED_SUCCESS=false
+            fi
+          done
+
+          MAX_ATTEMPTS=90
+          SLEEP_SECONDS=10
+
+          if [ "$ALL_REQUIRED_SUCCESS" != "true" ]; then
+            MAX_ATTEMPTS=1
+          fi
+
+          NETLIFY_STATE="missing"
+          PREVIEW_URL=""
+
+          for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
+            gh api \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/commits/${HEAD_SHA}/check-runs?per_page=100" \
+              > /tmp/check-runs.json
+
+            gh api \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/commits/${HEAD_SHA}/status" \
+              > /tmp/statuses.json
+
+            readarray -t RESULT < <(
+              python - /tmp/check-runs.json /tmp/statuses.json <<'PY'
+          import json
+          import pathlib
+          import re
+          import sys
+
+          checks = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          statuses = json.loads(pathlib.Path(sys.argv[2]).read_text())
+
+          candidates = []
+
+          for run in checks.get("check_runs", []):
+              text = " ".join(
+                  str(value or "")
+                  for value in [
+                      run.get("name"),
+                      run.get("details_url"),
+                      run.get("html_url"),
+                      (run.get("output") or {}).get("title"),
+                      (run.get("output") or {}).get("summary"),
+                  ]
+              )
+              lowered = text.lower()
+              app_slug = ((run.get("app") or {}).get("slug") or "").lower()
+
+              is_preview = (
+                  "deploy preview" in lowered
+                  or "deploy-preview-" in lowered
+              )
+
+              if app_slug == "netlify" and is_preview:
+                  status = str(run.get("status") or "").lower()
+                  conclusion = str(run.get("conclusion") or "").lower()
+
+                  if status == "completed" and conclusion == "success":
+                      state = "success"
+                  elif status == "completed" and conclusion in {
+                      "failure",
+                      "cancelled",
+                      "timed_out",
+                      "action_required",
+                      "startup_failure",
+                      "stale",
+                  }:
+                      state = "failure"
+                  else:
+                      state = "pending"
+
+                  candidates.append((state, text))
+
+          for status in statuses.get("statuses", []):
+              context = str(status.get("context") or "")
+              target_url = str(status.get("target_url") or "")
+              description = str(status.get("description") or "")
+              text = " ".join([context, target_url, description])
+              lowered = text.lower()
+
+              is_preview = (
+                  "netlify" in lowered
+                  and (
+                      "deploy-preview" in lowered
+                      or "deploy preview" in lowered
+                  )
+              )
+
+              if is_preview:
+                  raw_state = str(status.get("state") or "").lower()
+
+                  if raw_state == "success":
+                      state = "success"
+                  elif raw_state in {"failure", "error"}:
+                      state = "failure"
+                  else:
+                      state = "pending"
+
+                  candidates.append((state, text))
+
+          serialized = json.dumps(
+              {"checks": checks, "statuses": statuses}
+          )
+          match = re.search(
+              r"https://deploy-preview-\d+--[^\"'\\\s]+\.netlify\.app(?:/[^\"'\\\s]*)?",
+              serialized,
+              flags=re.IGNORECASE,
+          )
+          preview_url = match.group(0) if match else ""
+
+          states = [state for state, _ in candidates]
+
+          if "failure" in states:
+              final_state = "failure"
+          elif "success" in states:
+              final_state = "success"
+          elif "pending" in states:
+              final_state = "pending"
+          else:
+              final_state = "missing"
+
+          print(final_state)
+          print(preview_url)
+          PY
+            )
+
+            NETLIFY_STATE="${RESULT[0]:-missing}"
+            PREVIEW_URL="${RESULT[1]:-}"
+
+            echo "Netlify attempt ${attempt}/${MAX_ATTEMPTS}: ${NETLIFY_STATE}"
+
+            if [ "$NETLIFY_STATE" = "success" ] || [ "$NETLIFY_STATE" = "failure" ]; then
+              break
+            fi
+
+            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
+              sleep "$SLEEP_SECONDS"
+            fi
+          done
+
+          if [ "$ALL_REQUIRED_SUCCESS" = "true" ] \
+            && [ "$NETLIFY_STATE" != "success" ] \
+            && [ "$NETLIFY_STATE" != "failure" ]; then
+            NETLIFY_STATE="timeout"
+          fi
+
+          echo "state=${NETLIFY_STATE}" >> "$GITHUB_OUTPUT"
+          echo "preview_url=${PREVIEW_URL}" >> "$GITHUB_OUTPUT"
+
+      - name: Send one SEO-03 callback
+        if: ${{ always() }}
+        shell: bash
+        env:
+          NETLIFY_STATE: ${{ steps.netlify.outputs.state }}
+          NETLIFY_PREVIEW_URL: ${{ steps.netlify.outputs.preview_url }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SEO03_CALLBACK_URL:-}" ] || [ -z "${SEO03_CALLBACK_TOKEN:-}" ]; then
+            echo "::warning::SEO03 callback secrets are not configured; callback skipped."
+            exit 0
+          fi
+
+          VALIDATION_STATE="success"
+
+          for state in "$BUILD_STATE" "$SEO_STATE" "$FUNCTIONAL_STATE"; do
+            if [ "$state" != "success" ]; then
+              VALIDATION_STATE="failure"
+            fi
+          done
+
+          CALLBACK_ID="pr-validation:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}"
+
+          PAYLOAD="$(
+            jq -n \
+              --arg callback_type "pr_validation_complete" \
+              --arg callback_id "$CALLBACK_ID" \
+              --arg repository "$GITHUB_REPOSITORY" \
+              --argjson pr_number "$PR_NUMBER" \
+              --arg head_sha "$HEAD_SHA" \
+              --arg workflow_run_id "$GITHUB_RUN_ID" \
+              --arg workflow_run_url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+              --arg validation_state "$VALIDATION_STATE" \
+              --arg build "$BUILD_STATE" \
+              --arg seo "$SEO_STATE" \
+              --arg functional "$FUNCTIONAL_STATE" \
+              --arg netlify_state "${NETLIFY_STATE:-unknown}" \
+              --arg netlify_preview_url "${NETLIFY_PREVIEW_URL:-}" \
+              '{
+                callback_type: $callback_type,
+                callback_id: $callback_id,
+                repository: $repository,
+                pr_number: $pr_number,
+                head_sha: $head_sha,
+                workflow_run_id: $workflow_run_id,
+                workflow_run_url: $workflow_run_url,
+                validation_state: $validation_state,
+                checks: {
+                  build: $build,
+                  seo: $seo,
+                  functional: $functional
+                },
+                netlify_state: $netlify_state,
+                netlify_preview_url: (
+                  if $netlify_preview_url == ""
+                  then null
+                  else $netlify_preview_url
+                  end
+                )
+              }'
+          )"
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 3 \
+            --retry-all-errors \
+            --connect-timeout 15 \
+            --max-time 120 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-SEO03-Callback-Token: ${SEO03_CALLBACK_TOKEN}" \
+            --data "$PAYLOAD" \
+            "$SEO03_CALLBACK_URL"
+
+          echo "SEO-03 PR validation callback sent."
