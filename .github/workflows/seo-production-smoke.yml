@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: read
+  checks: read
+  pull-requests: read
 
 concurrency:
   group: seo-production-smoke-main
@@ -30,17 +32,145 @@ jobs:
 
           echo "Checking ${PRODUCTION_URL}"
 
-          curl --fail --silent --show-error --location --max-time 30             "${PRODUCTION_URL}/robots.txt"             --output /tmp/robots.txt
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            "${PRODUCTION_URL}/robots.txt" \
+            --output /tmp/robots.txt
 
           grep -qi "Sitemap: ${EXPECTED_SITEMAP_URL}" /tmp/robots.txt
           grep -qi "Disallow: /admin" /tmp/robots.txt
 
-          curl --fail --silent --show-error --location --max-time 30             "${EXPECTED_SITEMAP_URL}"             --output /tmp/sitemap.xml
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            "${EXPECTED_SITEMAP_URL}" \
+            --output /tmp/sitemap.xml
 
           grep -Eqi "<(urlset|sitemapindex)[^>]*>" /tmp/sitemap.xml
 
-          curl --fail --silent --show-error --location --max-time 30             "${PRODUCTION_URL}/"             --output /tmp/home.html
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            "${PRODUCTION_URL}/" \
+            --output /tmp/home.html
 
           grep -qi "<html" /tmp/home.html
 
           echo "Production smoke check passed."
+
+  notify-seo03:
+    name: notify-seo03-production
+    if: ${{ always() && github.event_name == 'push' }}
+    needs:
+      - seo-production-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SEO03_CALLBACK_URL: ${{ secrets.SEO03_CALLBACK_URL }}
+      SEO03_CALLBACK_TOKEN: ${{ secrets.SEO03_CALLBACK_TOKEN }}
+      PRODUCTION_COMMIT_SHA: ${{ github.sha }}
+      SMOKE_STATE: ${{ needs.seo-production-smoke.result }}
+
+    steps:
+      - name: Resolve merged pull request number
+        id: pr
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          PR_NUMBER="$(
+            gh api \
+              -H "Accept: application/vnd.github+json" \
+              "repos/${GITHUB_REPOSITORY}/commits/${PRODUCTION_COMMIT_SHA}/pulls" \
+              --jq '
+                [
+                  .[]
+                  | select(.merged_at != null)
+                  | select(.base.ref == "main")
+                ]
+                | sort_by(.merged_at)
+                | last
+                | .number // empty
+              ' \
+              2>/dev/null || true
+          )"
+
+          echo "number=${PR_NUMBER}" >> "$GITHUB_OUTPUT"
+
+          if [ -n "$PR_NUMBER" ]; then
+            echo "Resolved PR #${PR_NUMBER} for ${PRODUCTION_COMMIT_SHA}."
+          else
+            echo "No merged PR associated with ${PRODUCTION_COMMIT_SHA}; callback will use SHA matching."
+          fi
+
+      - name: Send one SEO-03 production callback
+        shell: bash
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${SEO03_CALLBACK_URL:-}" ] || [ -z "${SEO03_CALLBACK_TOKEN:-}" ]; then
+            echo "::warning::SEO03 callback secrets are not configured; callback skipped."
+            exit 0
+          fi
+
+          CALLBACK_ID="production-smoke:${GITHUB_RUN_ID}:${GITHUB_RUN_ATTEMPT}"
+
+          if [ -n "${PR_NUMBER:-}" ]; then
+            PR_NUMBER_JSON="$PR_NUMBER"
+          else
+            PR_NUMBER_JSON="null"
+          fi
+
+          PAYLOAD="$(
+            jq -n \
+              --arg callback_type "production_smoke_complete" \
+              --arg callback_id "$CALLBACK_ID" \
+              --arg repository "$GITHUB_REPOSITORY" \
+              --argjson pr_number "$PR_NUMBER_JSON" \
+              --arg head_sha "$PRODUCTION_COMMIT_SHA" \
+              --arg merge_commit_sha "$PRODUCTION_COMMIT_SHA" \
+              --arg workflow_run_id "$GITHUB_RUN_ID" \
+              --arg workflow_run_url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+              --arg smoke_state "$SMOKE_STATE" \
+              '{
+                callback_type: $callback_type,
+                callback_id: $callback_id,
+                repository: $repository,
+                pr_number: $pr_number,
+                head_sha: $head_sha,
+                merge_commit_sha: $merge_commit_sha,
+                workflow_run_id: $workflow_run_id,
+                workflow_run_url: $workflow_run_url,
+                smoke_state: $smoke_state
+              }'
+          )"
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 3 \
+            --retry-all-errors \
+            --connect-timeout 15 \
+            --max-time 120 \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -H "X-SEO03-Callback-Token: ${SEO03_CALLBACK_TOKEN}" \
+            --data "$PAYLOAD" \
+            "$SEO03_CALLBACK_URL"
+
+          echo "SEO-03 production callback sent."
