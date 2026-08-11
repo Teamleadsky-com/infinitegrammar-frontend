@@ -1,0 +1,178 @@
+name: Claude SEO Assessment
+
+on:
+  workflow_dispatch:
+    inputs:
+      subject_id:
+        description: "Assessment subject ID (batch or assessment item)"
+        required: true
+        type: string
+      issue_number:
+        description: "GitHub issue number used as the audit/result channel"
+        required: true
+        type: string
+      mode:
+        description: "Read-only assessment mode"
+        required: true
+        type: choice
+        options:
+          - applicability
+          - investigation
+      prompt:
+        description: "Assessment prompt supplied by n8n"
+        required: true
+        type: string
+      max_turns:
+        description: "Maximum Claude Code turns"
+        required: false
+        default: "20"
+        type: string
+      model:
+        description: "Claude model override"
+        required: false
+        default: "opus"
+        type: string
+      dry_run:
+        description: "Validate inputs without calling Claude"
+        required: false
+        default: true
+        type: boolean
+
+concurrency:
+  group: claude-seo-assessment-${{ inputs.subject_id }}-${{ inputs.mode }}
+  cancel-in-progress: false
+
+jobs:
+  validate-inputs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
+      model_arg: ${{ steps.prepare.outputs.model_arg }}
+    steps:
+      - id: prepare
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          MAX_TURNS: ${{ inputs.max_turns }}
+          MODEL: ${{ inputs.model }}
+        run: |
+          set -euo pipefail
+          case "$MODE" in applicability|investigation) ;; *) echo "Invalid mode: $MODE" >&2; exit 1;; esac
+          if ! [[ "$MAX_TURNS" =~ ^[0-9]+$ ]] || [ "$MAX_TURNS" -lt 1 ]; then
+            echo "max_turns must be a positive integer" >&2
+            exit 1
+          fi
+          EFFECTIVE_MODEL="${MODEL:-opus}"
+          case "$EFFECTIVE_MODEL" in opus|sonnet|haiku|fable|claude-*) ;; *) echo "Unsupported model: $EFFECTIVE_MODEL" >&2; exit 1;; esac
+          echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
+          echo "model_arg=--model $EFFECTIVE_MODEL" >> "$GITHUB_OUTPUT"
+
+  dry-run:
+    needs: validate-inputs
+    if: ${{ inputs.dry_run == true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - run: echo "Read-only SEO assessment dry run accepted."
+
+  assessment:
+    needs: validate-inputs
+    if: ${{ inputs.dry_run != true }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+      id-token: write
+      actions: read
+      checks: read
+    steps:
+      - name: Checkout repository read-only
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude read-only SEO assessment
+        id: claude_assessment
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          additional_permissions: |
+            actions: read
+            checks: read
+          prompt: |
+            REPOSITORY: ${{ github.repository }}
+            SUBJECT_ID: ${{ inputs.subject_id }}
+            ISSUE_NUMBER: ${{ inputs.issue_number }}
+            MODE: ${{ inputs.mode }}
+
+            You are running a READ-ONLY SEO Assessment / Discovery task.
+
+            NON-NEGOTIABLE SAFETY RULES:
+            - Do not modify files.
+            - Do not create or switch branches.
+            - Do not create pull requests.
+            - Do not commit or push.
+            - Do not merge anything.
+            - Do not run implementation commands.
+            - Use repository evidence only to analyze the supplied assessment prompt.
+            - Return only the structured result requested by the supplied contract.
+
+            Assessment prompt:
+            ${{ inputs.prompt }}
+          claude_args: |
+            ${{ needs.validate-inputs.outputs.max_turns_arg }}
+            ${{ needs.validate-inputs.outputs.model_arg }}
+            --allowedTools "Read,Glob,Grep"
+
+      - name: Post Claude assessment result to audit issue
+        if: ${{ always() && steps.claude_assessment.outputs.execution_file != '' }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: ${{ inputs.issue_number }}
+          SUBJECT_ID: ${{ inputs.subject_id }}
+          MODE: ${{ inputs.mode }}
+          EXECUTION_FILE: ${{ steps.claude_assessment.outputs.execution_file }}
+          STEP_OUTCOME: ${{ steps.claude_assessment.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          RESULT_FILE="$(mktemp)"
+          python - "$EXECUTION_FILE" "$RESULT_FILE" <<'PY'
+          import json, pathlib, sys
+          src = pathlib.Path(sys.argv[1])
+          out = pathlib.Path(sys.argv[2])
+          raw = src.read_text(encoding='utf-8', errors='replace')
+          result = ''
+          try:
+              data = json.loads(raw)
+              if isinstance(data, dict):
+                  result = str(data.get('result') or '')
+              elif isinstance(data, list):
+                  for item in reversed(data):
+                      if isinstance(item, dict) and item.get('type') == 'result':
+                          result = str(item.get('result') or '')
+                          break
+          except json.JSONDecodeError:
+              pass
+          if not result:
+              result = raw[-60000:]
+          out.write_text(result, encoding='utf-8')
+          PY
+          COMMENT_FILE="$(mktemp)"
+          {
+            echo "SEO_ASSESSMENT_CLAUDE_RESULT"
+            echo
+            echo "subject_id: $SUBJECT_ID"
+            echo "mode: $MODE"
+            echo "outcome: $STEP_OUTCOME"
+            echo "run: $RUN_URL"
+            echo
+            cat "$RESULT_FILE"
+          } > "$COMMENT_FILE"
+          gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$COMMENT_FILE"
