@@ -2678,68 +2678,243 @@ export const grammarContentData: Record<string, GrammarContent> = {
   'b2-nominalisierung': {
     topicId: 'b2-nominalisierung',
     shortExplanation:
-      'Bei der <strong>Nominalisierung</strong> machst du aus Verben/Adjektiven <strong>Nomen</strong> („entscheiden“ → „die Entscheidung“, „wichtig“ → „die Wichtigkeit“). Das ist typisch für formelle Texte und verdichtet Information.',
+      'Bei der <strong>Nominalisierung</strong> machst du aus Verben und Adjektiven <strong>Nomen</strong>. Dafür gibt es drei Wege: den substantivierten Infinitiv („rauchen“ → „<strong>das Rauchen</strong>“), die Ableitung mit einer Endung („entscheiden“ → „<strong>die Entscheidung</strong>“) und das nominalisierte Adjektiv („wichtig“ → „<strong>das Wichtige</strong>“). So schreibst du formeller und verdichtest Information.',
     whenToUse: `
       <p class="mb-3">Du nutzt Nominalisierung besonders …</p>
       <ul class="list-disc list-inside space-y-2 ml-4">
-        <li>in formellen Texten (E-Mail, Bericht, Bewerbung)</li>
-        <li>für kompakte, „sachliche“ Formulierungen</li>
-        <li>um Sätze zu verkürzen: weniger Verben, mehr Nomen</li>
+        <li>in formellen Texten: E-Mail, Bericht, Bewerbung, Leserbrief</li>
+        <li>in der <strong>B2-Prüfung</strong>, vor allem im Schreiben Teil 1 (Forumsbeitrag/Leserbrief), wenn du sachlich argumentieren sollst</li>
+        <li>um einen Nebensatz zu verkürzen: aus einem ganzen Satz wird eine kompakte Nominalphrase</li>
+        <li>um Wiederholungen zu vermeiden: ein Nomen fasst zusammen, was vorher als Verb stand</li>
       </ul>
+      <p class="mt-3"><strong>Wann besser nicht:</strong> Im Gespräch, in privaten Nachrichten und überall dort, wo du lebendig klingen willst, ist der Verb-Stil klarer. Auch in der Prüfung gilt: Eine gute Nominalphrase pro Absatz wirkt souverän – fünf hintereinander wirken schwerfällig.</p>
     `,
     rules: `
       <div class="mb-6 p-4 bg-primary/10 rounded-lg border-l-4 border-primary">
-        <p class="font-bold text-lg">Typische Umformungen:</p>
+        <p class="font-bold text-lg">Die drei Wege zur Nominalisierung:</p>
         <ul class="mt-2 space-y-1 text-sm ml-4">
-          <li>Verb → Nomen: entscheiden → <strong>die Entscheidung</strong></li>
-          <li>Adjektiv → Nomen: wichtig → <strong>die Wichtigkeit</strong></li>
-          <li>Satz → Phrase: „Wir diskutieren“ → „die Diskussion“</li>
+          <li>Infinitiv als Nomen: rauchen → <strong>das Rauchen</strong></li>
+          <li>Verb mit Endung: entscheiden → <strong>die Entscheidung</strong></li>
+          <li>Adjektiv als Nomen: wichtig → <strong>das Wichtige</strong></li>
         </ul>
       </div>
 
-      <div class="space-y-6 text-sm">
+      <div class="space-y-8 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (vergleich):</h4>
-          <ul class="space-y-2 ml-4">
-            <li>Verb-Stil: Wir <strong>entscheiden</strong> morgen.</li>
-            <li>Nominalstil: Die <strong>Entscheidung</strong> fällt morgen.</li>
-            <li>Verb-Stil: Wir <strong>analysieren</strong> die Daten.</li>
-            <li>Nominalstil: Die <strong>Analyse</strong> der Daten erfolgt morgen.</li>
+          <h4 class="font-semibold text-lg mb-3">A. Verben als Nomen</h4>
+          <p class="mb-3"><strong>1. Der substantivierte Infinitiv.</strong> Du nimmst den Infinitiv, schreibst ihn groß und setzt <strong>das</strong> davor. Diese Nomen sind <strong>immer neutrum</strong>:</p>
+          <ul class="space-y-1 ml-4 mb-3">
+            <li>rauchen → <strong>das Rauchen</strong> – „Das Rauchen ist hier verboten.“</li>
+            <li>lernen → <strong>das Lernen</strong> – „Das Lernen fällt mir abends leichter.“</li>
+            <li>arbeiten → <strong>das Arbeiten</strong> – „Das Arbeiten im Team gefällt mir.“</li>
+            <li>Auch bei trennbaren Verben, dann zusammengeschrieben: einkaufen → <strong>das Einkaufen</strong></li>
+          </ul>
+          <p class="mb-3">Sehr häufig steht dieser Infinitiv nach einer Präposition mit Artikel: <strong>beim Lesen</strong> (= bei dem Lesen), <strong>zum Lernen</strong> (= zu dem Lernen), <strong>vor dem Schlafen</strong>.</p>
+          <p class="mb-3"><strong>2. Die Ableitung mit einer Endung.</strong> Hier verändert sich das Wort, und das Genus hängt von der Endung ab:</p>
+          <ul class="space-y-1 ml-4">
+            <li>-ung: einführen → <strong>die Einführung</strong>, entscheiden → <strong>die Entscheidung</strong></li>
+            <li>-tion / -ation: organisieren → <strong>die Organisation</strong>, informieren → <strong>die Information</strong></li>
+            <li>-nis: ergeben → <strong>das Ergebnis</strong>, erleben → <strong>das Erlebnis</strong></li>
+            <li>-er (die handelnde Person): lehren → <strong>der Lehrer</strong>, sprechen → <strong>der Sprecher</strong></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">B. Adjektive als Nomen</h4>
+          <p class="mb-3">Auch Adjektive kannst du großschreiben und als Nomen verwenden. Entscheidend ist, <em>worüber</em> du sprichst:</p>
+          <ul class="space-y-1 ml-4 mb-3">
+            <li><strong>Sache/Abstraktes → neutrum:</strong> <strong>das Wichtige</strong>, <strong>das Neue</strong>, <strong>das Beste</strong> – „Das Wichtige kommt zum Schluss.“</li>
+            <li><strong>Person → maskulin/feminin:</strong> <strong>der Neue</strong>, <strong>die Neue</strong>, <strong>die Kranken</strong> – „Der Neue arbeitet seit Montag hier.“</li>
+          </ul>
+          <p class="mb-3"><strong>Die typische B2-Falle ist die Endung.</strong> Nach <em>etwas, nichts, viel, wenig</em> bekommt das Nomen ein <strong>-es</strong>, nach <em>alles</em> dagegen ein <strong>-e</strong>:</p>
+          <ul class="space-y-1 ml-4 mb-3">
+            <li>etwas Neu<strong>es</strong>, nichts Wichtig<strong>es</strong>, viel Interessant<strong>es</strong></li>
+            <li>aber: alles Gut<strong>e</strong>, alles Lieb<strong>e</strong></li>
+          </ul>
+          <p>Daneben gibt es die Ableitung mit <strong>-heit</strong> und <strong>-keit</strong>, immer feminin: frei → <strong>die Freiheit</strong>, möglich → <strong>die Möglichkeit</strong>, schön → <strong>die Schönheit</strong>.</p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">C. Welcher Artikel? Die Genus-Regel</h4>
+          <p class="mb-3">An der Form erkennst du fast immer den Artikel:</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Form / Endung</th>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Artikel</th>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Beispiele</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-border px-3 py-2">Infinitiv als Nomen</td>
+                  <td class="border border-border px-3 py-2"><strong>das</strong></td>
+                  <td class="border border-border px-3 py-2">das Rauchen, das Lernen, das Arbeiten</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">-ung</td>
+                  <td class="border border-border px-3 py-2"><strong>die</strong></td>
+                  <td class="border border-border px-3 py-2">die Entscheidung, die Einführung</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">-tion / -ation</td>
+                  <td class="border border-border px-3 py-2"><strong>die</strong></td>
+                  <td class="border border-border px-3 py-2">die Organisation, die Information</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">-heit / -keit</td>
+                  <td class="border border-border px-3 py-2"><strong>die</strong></td>
+                  <td class="border border-border px-3 py-2">die Freiheit, die Möglichkeit</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">-nis</td>
+                  <td class="border border-border px-3 py-2"><strong>meist das</strong></td>
+                  <td class="border border-border px-3 py-2">das Ergebnis, das Erlebnis – aber: die Erlaubnis, die Kenntnis</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">-er (Person)</td>
+                  <td class="border border-border px-3 py-2"><strong>der</strong></td>
+                  <td class="border border-border px-3 py-2">der Lehrer, der Sprecher</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-semibold text-lg mb-3">D. Vom Nebensatz zur Nominalphrase</h4>
+          <p class="mb-3">Das ist der eigentliche Nutzen auf B2: Du ersetzt einen Nebensatz durch eine Präposition mit Nomen. Achte dabei genau auf den <strong>Kasus</strong>, den die neue Präposition verlangt:</p>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Nebensatz</th>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Nominalphrase</th>
+                  <th class="border border-border px-3 py-2 text-left font-semibold bg-muted">Kasus</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="border border-border px-3 py-2">weil es stark regnete</td>
+                  <td class="border border-border px-3 py-2">wegen des starken Regens</td>
+                  <td class="border border-border px-3 py-2">Genitiv</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">nachdem er angekommen war</td>
+                  <td class="border border-border px-3 py-2">nach seiner Ankunft</td>
+                  <td class="border border-border px-3 py-2">Dativ</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">damit die Regel eingeführt wird</td>
+                  <td class="border border-border px-3 py-2">zur Einführung der Regel</td>
+                  <td class="border border-border px-3 py-2">Dativ</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">wenn die Nachfrage steigt</td>
+                  <td class="border border-border px-3 py-2">bei steigender Nachfrage</td>
+                  <td class="border border-border px-3 py-2">Dativ</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">obwohl es regnete</td>
+                  <td class="border border-border px-3 py-2">trotz des Regens</td>
+                  <td class="border border-border px-3 py-2">Genitiv</td>
+                </tr>
+                <tr>
+                  <td class="border border-border px-3 py-2">indem man regelmäßig übt</td>
+                  <td class="border border-border px-3 py-2">durch regelmäßiges Üben</td>
+                  <td class="border border-border px-3 py-2">Akkusativ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3">Im ganzen Satz sieht das so aus:</p>
+          <ul class="space-y-2 ml-4 mt-2">
+            <li><strong>Zur Einführung der Regel</strong> wurden alle Mitarbeiter geschult.</li>
+            <li><strong>Bei steigender Nachfrage</strong> erhöht das Unternehmen die Produktion.</li>
+            <li><strong>Nach seiner Ankunft</strong> begann die Sitzung.</li>
           </ul>
         </div>
 
         <div class="p-4 bg-muted/50 rounded-lg">
-          <p class="text-sm font-semibold mb-2">Warnung (B2 realistisch):</p>
-          <p class="text-sm">Nominalstil kann schnell schwer lesbar werden. Nutze ihn gezielt – nicht in jedem Satz.</p>
+          <p class="text-sm font-semibold mb-2">Abgrenzung: Nominalisierung (B2) und Nominalstil (C1)</p>
+          <p class="text-sm mb-2">Auf B2 geht es um die <strong>Bildung</strong>: Wie mache ich aus einem Verb oder Adjektiv ein Nomen, welchen Artikel bekommt es, und wie wird aus einem Nebensatz eine korrekte Nominalphrase? Das sind Einzelentscheidungen auf Wort- und Satzebene.</p>
+          <p class="text-sm">Auf C1 geht es dagegen um die <strong>Stilebene</strong>: Wie verdichte ich einen ganzen Text, wie kombiniere ich Attribute, und wann kippt Verdichtung in Unverständlichkeit? Wenn du die Bildung hier sicher beherrschst, ist <a href="/deutsche-grammatik/c1-niveau-lernen/nominalstil-informationsverdichtung/" class="text-primary underline">Nominalstil und Informationsverdichtung (C1)</a> der nächste Schritt.</p>
         </div>
       </div>
     `,
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: zu viele Nomen hintereinander</h4>
+          <h4 class="font-semibold mb-2">Fehler 1: Kleinschreibung des substantivierten Infinitivs</h4>
           <div class="space-y-2 text-sm">
-            <p>✗ Die Durchführung der Implementierung der Optimierung …</p>
-            <p>✓ Wir optimieren und implementieren … (oder: klare, kurze Nominalgruppen)</p>
+            <p>✗ Das rauchen ist hier verboten.</p>
+            <p>✓ Das <strong>Rauchen</strong> ist hier verboten.</p>
+            <p class="text-muted-foreground">Sobald ein Artikel oder eine Präposition davorsteht (das, beim, zum), ist der Infinitiv ein Nomen – und Nomen schreibt man groß.</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 2: falscher Artikel</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ der Entscheidung, der Möglichkeit, die Lernen</p>
+            <p>✓ <strong>die</strong> Entscheidung, <strong>die</strong> Möglichkeit, <strong>das</strong> Lernen</p>
+            <p class="text-muted-foreground">Nutze die Endung als Signal: -ung, -tion, -heit, -keit sind feminin, der Infinitiv ist immer neutrum.</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 3: falsche Endung beim nominalisierten Adjektiv</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ Ich habe etwas Neue gehört. / Ich wünsche dir alles Gutes.</p>
+            <p>✓ Ich habe etwas <strong>Neues</strong> gehört. / Ich wünsche dir alles <strong>Gute</strong>.</p>
+            <p class="text-muted-foreground">Nach etwas, nichts, viel, wenig steht -es. Nur nach alles steht -e.</p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
+          <h4 class="font-semibold mb-2">Fehler 4: falscher Kasus nach der neuen Präposition</h4>
+          <div class="space-y-2 text-sm">
+            <p>✗ wegen dem Regen, trotz dem Stau, nach seine Ankunft</p>
+            <p>✓ wegen <strong>des Regens</strong>, trotz <strong>des Staus</strong>, nach <strong>seiner Ankunft</strong></p>
+            <p class="text-muted-foreground">Wenn du einen Nebensatz umformst, entscheidet die neue Präposition über den Kasus: wegen und trotz verlangen den Genitiv, nach und bei den Dativ.</p>
           </div>
         </div>
       </div>
     `,
     checklist: [
-      'Nominalisierung nur dort einsetzen, wo sie wirklich verdichtet',
-      'Nominalgruppen nicht zu lang werden lassen',
-      'Artikel/Kasus der neuen Nomen korrekt setzen',
+      'Steht ein Artikel oder eine Präposition davor? Dann schreibe den Infinitiv groß (das Lernen, beim Lesen).',
+      'Passt der Artikel zur Endung? -ung/-tion/-heit/-keit = die, Infinitiv = das, -er = der.',
+      'Bei nominalisierten Adjektiven: etwas/nichts/viel + -es, aber alles + -e.',
+      'Meinst du eine Sache (das Neue) oder eine Person (der Neue)?',
+      'Stimmt der Kasus nach der neuen Präposition (wegen des Regens, bei steigender Nachfrage)?',
+      'Verdichtet die Nominalphrase wirklich – oder wäre ein Nebensatz hier klarer?',
     ],
     faq: [
       {
-        question: 'Ist Nominalisierung immer „besser“?',
+        question: 'Wann sage ich „das Rauchen“ und wann „die Entscheidung“?',
         answer:
-          '<p>Nein. Sie wirkt formeller, aber oft auch schwerer. Gute Texte mischen Verb-Stil und Nominalstil.</p>',
+          '<p>Der substantivierte Infinitiv (das Rauchen) beschreibt die <strong>Tätigkeit selbst</strong> und ist immer neutrum. Die Ableitung mit einer Endung (die Entscheidung) beschreibt eher das <strong>Ergebnis</strong> oder den abgeschlossenen Vorgang und ist formeller. Zu vielen Verben gibt es nur eine der beiden Formen: von „arbeiten“ kommt „das Arbeiten“, von „entscheiden“ kommt „die Entscheidung“.</p>',
       },
       {
-        question: 'Woran erkenne ich Nominalstil?',
+        question: 'Warum heißt es „etwas Neues“ und nicht „etwas Neue“?',
         answer:
-          '<p>An vielen Nomen, häufigen Endungen wie -ung/-tion/-heit/-keit und weniger Verben.</p>',
+          '<p>Weil nach <em>etwas, nichts, viel</em> und <em>wenig</em> kein Artikel steht. Das nominalisierte Adjektiv muss die Information dann selbst tragen und bekommt die starke neutrale Endung <strong>-es</strong>: etwas Neues, nichts Wichtiges. Nach <em>alles</em> steht dagegen die schwache Endung <strong>-e</strong>: alles Gute.</p>',
+      },
+      {
+        question: 'Welchen Artikel bekommt ein nominalisiertes Wort?',
+        answer:
+          '<p>Meist verrät ihn die Endung: Infinitive sind neutrum (das Lernen), Wörter auf -ung, -tion, -heit und -keit sind feminin (die Einführung, die Möglichkeit), Personenbezeichnungen auf -er sind maskulin (der Lehrer). Nur -nis schwankt: meist neutrum (das Ergebnis), aber die Erlaubnis und die Kenntnis sind feminin.</p>',
+      },
+      {
+        question: 'Wie mache ich aus einem Nebensatz eine Nominalphrase?',
+        answer:
+          '<p>Du ersetzt die Konjunktion durch eine Präposition und das Verb durch ein Nomen: weil wird zu wegen + Genitiv, nachdem zu nach + Dativ, wenn zu bei + Dativ, obwohl zu trotz + Genitiv. Aus „Wenn die Nachfrage steigt, …“ wird so „<strong>Bei steigender Nachfrage</strong> …“. Prüfe danach immer den Kasus.</p>',
+      },
+      {
+        question: 'Was ist der Unterschied zu Nominalstil auf C1?',
+        answer:
+          '<p>Auf B2 lernst du die <strong>Bildung</strong>: Wie entsteht das Nomen, welchen Artikel hat es, welcher Kasus folgt? Auf C1 geht es um die <strong>Stilebene</strong> – wie du einen ganzen Text verdichtest, Attribute kombinierst und dabei verständlich bleibst. B2 ist also die Grundlage, C1 die bewusste Anwendung über längere Texte hinweg.</p>',
       },
     ],
     exerciseSection: 'Nominalstil',
