@@ -161,7 +161,7 @@ const Grammatik = () => {
                 <Zap className="h-6 w-6 text-primary" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Teste dein Wissen</h3>
+                <h2 className="text-xl font-bold">Teste dein Wissen</h2>
                 <p className="text-sm text-muted-foreground">
                   Mach einen Schnelltest (5 Übungen) zu beliebten Grammatikthemen
                 </p>
@@ -201,7 +201,7 @@ const Grammatik = () => {
                             {option.level}
                           </span>
                         </div>
-                        <h4 className="font-semibold text-sm">{option.sectionName}</h4>
+                        <h3 className="font-semibold text-sm">{option.sectionName}</h3>
                         <p className="text-xs text-muted-foreground">5 Übungen • ca. 3 Min.</p>
                       </div>
                     </div>
@@ -271,7 +271,7 @@ const Grammatik = () => {
               <BookOpen className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold mb-2">Warum diese Seiten?</h3>
+              <h2 className="text-lg font-semibold mb-2">Warum diese Seiten?</h2>
               <p className="text-muted-foreground">
                 Viele Grammatikfehler bleiben, weil man Regeln nur liest. Hier kombinierst du Theorie + Beispiele +
                 Üben – damit es im Kopf bleibt.

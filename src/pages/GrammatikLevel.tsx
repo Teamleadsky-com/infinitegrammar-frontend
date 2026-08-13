@@ -184,7 +184,7 @@ const GrammatikLevel = () => {
                       <BookOpen className="h-5 w-5 text-primary" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold mb-1">{category.name}</h3>
+                      <h2 className="text-lg font-bold mb-1">{category.name}</h2>
                       <p className="text-sm text-muted-foreground">{category.description}</p>
                     </div>
                   </div>
@@ -203,7 +203,7 @@ const GrammatikLevel = () => {
                           }}
                         >
                           <Card className="p-4 hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary/20 hover:border-l-primary">
-                            <h4 className="font-semibold mb-1 text-sm">{topic.title}</h4>
+                            <h3 className="font-semibold mb-1 text-sm">{topic.title}</h3>
                             <p className="text-xs text-muted-foreground">{topic.shortDescription}</p>
                           </Card>
                         </a>

@@ -237,7 +237,7 @@ const PruefungsZentren = () => {
                   <Zap className="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Teste dein Wissen vor der Prüfung</h3>
+                  <h2 className="text-xl font-bold">Teste dein Wissen vor der Prüfung</h2>
                   <p className="text-sm text-muted-foreground">
                     Mach einen Schnelltest (5 Übungen) zu beliebten Grammatikthemen
                   </p>
@@ -277,7 +277,7 @@ const PruefungsZentren = () => {
                               {option.level}
                             </span>
                           </div>
-                          <h4 className="font-semibold text-sm">{option.sectionName}</h4>
+                          <h3 className="font-semibold text-sm">{option.sectionName}</h3>
                           <p className="text-xs text-muted-foreground">5 Übungen • ca. 3 Min.</p>
                         </div>
                       </div>

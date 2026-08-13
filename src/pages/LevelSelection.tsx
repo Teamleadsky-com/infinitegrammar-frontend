@@ -219,7 +219,7 @@ const LevelSelection = () => {
 
           {/* Level Selection */}
           <div className="mb-12 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h3>
+            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {levels.map((level) => (
                 <Card
@@ -246,7 +246,7 @@ const LevelSelection = () => {
 
           {/* Section Selection */}
           <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
-            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h3>
+            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sections.map((section) => (
                 <Button

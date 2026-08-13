@@ -42,9 +42,9 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
             Dativ (Ort, keine Bewegung):
-          </h4>
+          </h3>
           <ul class="space-y-2 ml-4">
             <li class="flex items-start gap-2">
               <span class="text-primary">•</span>
@@ -62,9 +62,9 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3 flex items-center gap-2">
+          <h3 class="font-semibold text-lg mb-3 flex items-center gap-2">
             Akkusativ (Richtung, Bewegung/Veränderung):
-          </h4>
+          </h3>
           <ul class="space-y-2 ml-4">
             <li class="flex items-start gap-2">
               <span class="text-primary">•</span>
@@ -85,7 +85,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: „Bewegung" mit „wohin" verwechseln</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: „Bewegung" mit „wohin" verwechseln</h3>
           <p class="text-sm mb-3">
             Nicht jede Bewegung ist automatisch „wohin". Entscheidend ist: ändert sich der Ort/Zustand?
           </p>
@@ -96,7 +96,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: falsches Fragewort</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: falsches Fragewort</h3>
           <p class="text-sm">Wenn du unsicher bist: stelle die Frage.</p>
           <ul class="mt-2 space-y-1 text-sm ml-4">
             <li><strong>Wo?</strong> → Dativ</li>
@@ -155,7 +155,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Normale Wortstellung (Subjekt zuerst):</h4>
+          <h3 class="font-semibold text-lg mb-3">Normale Wortstellung (Subjekt zuerst):</h3>
           <ul class="space-y-2 ml-4">
             <li><span class="text-primary">•</span> <strong>Ich</strong> gehe heute ins Kino.</li>
             <li><span class="text-primary">•</span> <strong>Maria</strong> lernt jeden Tag Deutsch.</li>
@@ -164,7 +164,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Inversion (etwas anderes an Position 1):</h4>
+          <h3 class="font-semibold text-lg mb-3">Inversion (etwas anderes an Position 1):</h3>
           <ul class="space-y-2 ml-4">
             <li><span class="text-primary">•</span> <strong>Heute</strong> gehe ich ins Kino.</li>
             <li><span class="text-primary">•</span> <strong>Jeden Tag</strong> lernt Maria Deutsch.</li>
@@ -176,7 +176,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: Verb an falscher Position</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: Verb an falscher Position</h3>
           <p class="text-sm mb-3">Das Verb MUSS an Position 2 stehen.</p>
           <div class="space-y-2 text-sm">
             <p>✗ Ich heute gehe ins Kino.</p>
@@ -185,7 +185,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: Subjekt vergessen nach Inversion</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: Subjekt vergessen nach Inversion</h3>
           <p class="text-sm mb-3">Nach dem Verb an Position 2 muss das Subjekt folgen (wenn es nicht schon an Position 1 steht).</p>
           <div class="space-y-2 text-sm">
             <p>✗ Heute gehe ins Kino.</p>
@@ -241,7 +241,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Regelmäßige Verben (z.B. "lernen"):</h4>
+          <h3 class="font-semibold text-lg mb-3">Regelmäßige Verben (z.B. "lernen"):</h3>
           <ul class="space-y-2 ml-4">
             <li>ich lern<strong>e</strong></li>
             <li>du lern<strong>st</strong></li>
@@ -253,7 +253,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Unregelmäßige Verben (z.B. "sein"):</h4>
+          <h3 class="font-semibold text-lg mb-3">Unregelmäßige Verben (z.B. "sein"):</h3>
           <ul class="space-y-2 ml-4">
             <li>ich <strong>bin</strong></li>
             <li>du <strong>bist</strong></li>
@@ -306,7 +306,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufige Formen (stark):</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufige Formen (stark):</h3>
           <ul class="space-y-2 ml-4">
             <li>ich <strong>wäre</strong> (sein), du <strong>wärst</strong>, er <strong>wäre</strong></li>
             <li>ich <strong>hätte</strong> (haben), du <strong>hättest</strong>, er <strong>hätte</strong></li>
@@ -317,7 +317,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">würde + Infinitiv (bei schwachen Verben):</h4>
+          <h3 class="font-semibold text-lg mb-3">würde + Infinitiv (bei schwachen Verben):</h3>
           <ul class="space-y-2 ml-4">
             <li>ich <strong>würde lernen</strong>, du <strong>würdest lernen</strong></li>
             <li>ich <strong>würde kaufen</strong>, du <strong>würdest kaufen</strong></li>
@@ -328,7 +328,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: "würde" bei Modalverben</h4>
+          <h3 class="font-semibold mb-2">Fehler: "würde" bei Modalverben</h3>
           <p class="text-sm mb-3">Bei Modalverben und "sein/haben" nicht "würde" verwenden!</p>
           <div class="space-y-2 text-sm">
             <p>✗ Ich würde können...</p>
@@ -378,7 +378,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Imperativ für <strong>du</strong>:</h4>
+          <h3 class="font-semibold text-lg mb-3">Imperativ für <strong>du</strong>:</h3>
           <p class="text-sm mb-2">Stammform (meist ohne <em>-st</em>). Oft ohne Pronomen.</p>
           <ul class="space-y-2 ml-4">
             <li>gehen → <strong>Geh!</strong></li>
@@ -388,7 +388,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Imperativ für <strong>ihr</strong>:</h4>
+          <h3 class="font-semibold text-lg mb-3">Imperativ für <strong>ihr</strong>:</h3>
           <p class="text-sm mb-2">Wie Präsens „ihr“ (Endung <em>-t</em>), Pronomen meist weglassen.</p>
           <ul class="space-y-2 ml-4">
             <li>gehen → <strong>Geht!</strong></li>
@@ -397,7 +397,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Höflich (Sie):</h4>
+          <h3 class="font-semibold text-lg mb-3">Höflich (Sie):</h3>
           <p class="text-sm mb-2"><strong>Sie</strong> + Infinitiv.</p>
           <ul class="space-y-2 ml-4">
             <li><strong>Kommen Sie</strong> bitte herein.</li>
@@ -409,14 +409,14 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: Pronomen „du“ mitsagen</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: Pronomen „du“ mitsagen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ <strong>Du</strong> geh nach Hause!</p>
             <p>✓ <strong>Geh</strong> nach Hause!</p>
           </div>
         </div>
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: Verb nicht an Position 1</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: Verb nicht an Position 1</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Bitte du kommst.</p>
             <p>✓ <strong>Komm</strong> bitte.</p>
@@ -468,20 +468,20 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Bestimmter Artikel:</h4>
+          <h3 class="font-semibold text-lg mb-3">Bestimmter Artikel:</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>der</strong> Tisch · <strong>die</strong> Lampe · <strong>das</strong> Buch · <strong>die</strong> Bücher</li>
           </ul>
         </div>
         <div>
-          <h4 class="font-semibold text-lg mb-3">Unbestimmter Artikel:</h4>
+          <h3 class="font-semibold text-lg mb-3">Unbestimmter Artikel:</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>ein</strong> Tisch · <strong>eine</strong> Lampe · <strong>ein</strong> Buch</li>
             <li class="text-sm text-muted-foreground">Im Plural gibt es kein „ein“ → „(keine)“ oder „—“</li>
           </ul>
         </div>
         <div>
-          <h4 class="font-semibold text-lg mb-3">Negation mit „kein“:</h4>
+          <h3 class="font-semibold text-lg mb-3">Negation mit „kein“:</h3>
           <ul class="space-y-2 ml-4">
             <li>Das ist <strong>kein</strong> Tisch. / Das ist <strong>keine</strong> Lampe.</li>
           </ul>
@@ -491,7 +491,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Akkusativ-Formen im Nominativ verwenden</h4>
+          <h3 class="font-semibold mb-2">Fehler: Akkusativ-Formen im Nominativ verwenden</h3>
           <div class="space-y-2 text-sm">
             <p>✗ <strong>Den</strong> Mann kommt.</p>
             <p>✓ <strong>Der</strong> Mann kommt.</p>
@@ -549,7 +549,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: „sie“ vs. „Sie“ verwechseln</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: „sie“ vs. „Sie“ verwechseln</h3>
           <p class="text-sm mb-2">„Sie“ (Höflichkeitsform) wird immer großgeschrieben.</p>
           <div class="space-y-2 text-sm">
             <p>✓ <strong>Sie</strong> sind Frau Müller. (höflich)</p>
@@ -598,7 +598,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufige Muster (Beispiele):</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufige Muster (Beispiele):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>-(e)n</strong>: die Frau → die Frau<strong>en</strong>, die Sprache → die Sprache<strong>n</strong></li>
             <li><strong>-e</strong>: der Tag → die Tag<strong>e</strong>, der Hund → die Hund<strong>e</strong></li>
@@ -617,7 +617,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „-s“ überall anhängen</h4>
+          <h3 class="font-semibold mb-2">Fehler: „-s“ überall anhängen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ die Frau<strong>s</strong></p>
             <p>✓ die Frau<strong>en</strong></p>
@@ -666,7 +666,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Typische Präpositionen (Ort):</h4>
+          <h3 class="font-semibold text-lg mb-3">Typische Präpositionen (Ort):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>in</strong>: Ich bin <strong>in der</strong> Schule.</li>
             <li><strong>an</strong>: Das Bild hängt <strong>an der</strong> Wand.</li>
@@ -686,7 +686,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „nach“ mit Artikel</h4>
+          <h3 class="font-semibold mb-2">Fehler: „nach“ mit Artikel</h3>
           <div class="space-y-2 text-sm">
             <p>✗ nach <strong>der</strong> Schweiz</p>
             <p>✓ <strong>in die</strong> Schweiz</p>
@@ -749,14 +749,14 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „im Montag“</h4>
+          <h3 class="font-semibold mb-2">Fehler: „im Montag“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ im Montag</p>
             <p>✓ <strong>am</strong> Montag</p>
           </div>
         </div>
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „am 8 Uhr“</h4>
+          <h3 class="font-semibold mb-2">Fehler: „am 8 Uhr“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ am 8 Uhr</p>
             <p>✓ <strong>um</strong> 8 Uhr</p>
@@ -815,7 +815,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Endung nach „sein“</h4>
+          <h3 class="font-semibold mb-2">Fehler: Endung nach „sein“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Der Kaffee ist heiß<strong>er</strong>.</p>
             <p>✓ Der Kaffee ist <strong>heiß</strong>.</p>
@@ -864,7 +864,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Hauptsatz + Nebensatz:</h4>
+          <h3 class="font-semibold text-lg mb-3">Hauptsatz + Nebensatz:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich bleibe zu Hause, <strong>weil</strong> ich keine Zeit <strong>habe</strong>.</li>
             <li>Er sagt, <strong>dass</strong> er morgen <strong>kommt</strong>.</li>
@@ -873,7 +873,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Nebenordnende Konjunktionen (kein Verb-Ende!):</h4>
+          <h3 class="font-semibold text-lg mb-3">Nebenordnende Konjunktionen (kein Verb-Ende!):</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich komme, <strong>aber</strong> ich bin müde.</li>
             <li>Wir lernen, <strong>und</strong> wir üben.</li>
@@ -885,14 +885,14 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: Verb nicht am Ende im Nebensatz</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: Verb nicht am Ende im Nebensatz</h3>
           <div class="space-y-2 text-sm">
             <p>✗ … weil ich <strong>habe</strong> keine Zeit.</p>
             <p>✓ … weil ich keine Zeit <strong>habe</strong>.</p>
           </div>
         </div>
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: Komma vergessen</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: Komma vergessen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich bleibe zu Hause weil ich keine Zeit habe.</p>
             <p>✓ Ich bleibe zu Hause, weil ich keine Zeit habe.</p>
@@ -941,7 +941,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Perfekt-Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Perfekt-Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich <strong>habe</strong> einen Film <strong>gesehen</strong>.</li>
             <li>Wir <strong>sind</strong> nach Berlin <strong>gefahren</strong>.</li>
@@ -957,14 +957,14 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: falsches Hilfsverb</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: falsches Hilfsverb</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich <strong>habe</strong> nach Hause <strong>gegangen</strong>.</p>
             <p>✓ Ich <strong>bin</strong> nach Hause <strong>gegangen</strong>.</p>
           </div>
         </div>
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: Partizip nicht am Ende</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: Partizip nicht am Ende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich habe <strong>gesehen</strong> einen Film.</p>
             <p>✓ Ich habe einen Film <strong>gesehen</strong>.</p>
@@ -1026,7 +1026,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h4>
+          <h3 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich kann <strong>kommen</strong> heute nicht.</p>
             <p>✓ Ich kann heute nicht <strong>kommen</strong>.</p>
@@ -1074,7 +1074,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Hauptsatz (trennbar):</h4>
+          <h3 class="font-semibold text-lg mb-3">Hauptsatz (trennbar):</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich <strong>rufe</strong> dich heute <strong>an</strong>.</li>
             <li>Wir <strong>stehen</strong> früh <strong>auf</strong>.</li>
@@ -1083,7 +1083,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Nebensatz / Infinitiv (nicht trennen):</h4>
+          <h3 class="font-semibold text-lg mb-3">Nebensatz / Infinitiv (nicht trennen):</h3>
           <ul class="space-y-2 ml-4">
             <li>…, weil ich dich später <strong>anrufe</strong>.</li>
             <li>Ich will dich später <strong>anrufen</strong>.</li>
@@ -1099,7 +1099,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Präfix nicht ans Satzende</h4>
+          <h3 class="font-semibold mb-2">Fehler: Präfix nicht ans Satzende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich rufe <strong>an</strong> dich.</p>
             <p>✓ Ich rufe dich <strong>an</strong>.</p>
@@ -1150,7 +1150,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele Akkusativ (wen/was?):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele Akkusativ (wen/was?):</h3>
           <ul class="space-y-2 ml-4">
             <li>Kannst du <strong>mich</strong> hören?</li>
             <li>Ich treffe <strong>dich</strong> morgen.</li>
@@ -1158,7 +1158,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
           </ul>
         </div>
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele Dativ (wem?):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele Dativ (wem?):</h3>
           <ul class="space-y-2 ml-4">
             <li>Kannst du <strong>mir</strong> helfen?</li>
             <li>Ich gebe <strong>dir</strong> das Buch.</li>
@@ -1170,7 +1170,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „ihn“ und „ihm“ verwechseln</h4>
+          <h3 class="font-semibold mb-2">Fehler: „ihn“ und „ihm“ verwechseln</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich helfe <strong>ihn</strong>.</p>
             <p>✓ Ich helfe <strong>ihm</strong>. (helfen = Dativ)</p>
@@ -1223,7 +1223,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>Der</strong> Mann kommt. (Nominativ)</li>
             <li>Ich sehe <strong>den</strong> Mann. (Akkusativ)</li>
@@ -1240,7 +1240,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Dativ und Akkusativ verwechseln</h4>
+          <h3 class="font-semibold mb-2">Fehler: Dativ und Akkusativ verwechseln</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich helfe <strong>den</strong> Mann.</p>
             <p>✓ Ich helfe <strong>dem</strong> Mann. (helfen = Dativ)</p>
@@ -1290,7 +1290,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">in / auf / an (Ort vs. Richtung):</h4>
+          <h3 class="font-semibold text-lg mb-3">in / auf / an (Ort vs. Richtung):</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich bin <strong>in der</strong> Schule. (wo?)</li>
             <li>Ich gehe <strong>in die</strong> Schule. (wohin?)</li>
@@ -1311,7 +1311,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „nach“ bei Ländern mit Artikel</h4>
+          <h3 class="font-semibold mb-2">Fehler: „nach“ bei Ländern mit Artikel</h3>
           <div class="space-y-2 text-sm">
             <p>✗ nach der Schweiz</p>
             <p>✓ <strong>in die</strong> Schweiz</p>
@@ -1360,7 +1360,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel (Nominativ):</h4>
+          <h3 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel (Nominativ):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>der</strong> alt<strong>e</strong> Mann</li>
             <li><strong>die</strong> alt<strong>e</strong> Frau</li>
@@ -1370,7 +1370,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel (Nominativ):</h4>
+          <h3 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel (Nominativ):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>ein</strong> gut<strong>er</strong> Film</li>
             <li><strong>eine</strong> gut<strong>e</strong> Idee</li>
@@ -1387,7 +1387,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Adjektiv ohne Endung vor Nomen</h4>
+          <h3 class="font-semibold mb-2">Fehler: Adjektiv ohne Endung vor Nomen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ ein gut Film</p>
             <p>✓ ein gut<strong>er</strong> Film</p>
@@ -1435,7 +1435,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Regelmäßige Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Regelmäßige Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>schnell → schnell<strong>er</strong> → am schnell<strong>sten</strong></li>
             <li>klein → klein<strong>er</strong> → am klein<strong>sten</strong></li>
@@ -1443,7 +1443,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufig unregelmäßig:</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufig unregelmäßig:</h3>
           <ul class="space-y-2 ml-4">
             <li>gut → <strong>besser</strong> → <strong>am besten</strong></li>
             <li>viel → <strong>mehr</strong> → <strong>am meisten</strong></li>
@@ -1461,7 +1461,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „mehr besser“</h4>
+          <h3 class="font-semibold mb-2">Fehler: „mehr besser“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ mehr besser</p>
             <p>✓ <strong>besser</strong></p>
@@ -1512,7 +1512,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich gehe nicht mit, <strong>weil</strong> ich keine Zeit <strong>habe</strong>.</li>
             <li>Er sagt, <strong>dass</strong> er morgen <strong>kommt</strong>.</li>
@@ -1530,7 +1530,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Verb nicht am Ende</h4>
+          <h3 class="font-semibold mb-2">Fehler: Verb nicht am Ende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ … weil ich <strong>habe</strong> keine Zeit.</p>
             <p>✓ … weil ich keine Zeit <strong>habe</strong>.</p>
@@ -1578,7 +1578,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Nominativ (wer/was?):</h4>
+          <h3 class="font-semibold text-lg mb-3">Nominativ (wer/was?):</h3>
           <ul class="space-y-2 ml-4">
             <li>Das ist der Mann, <strong>der</strong> hier <strong>wohnt</strong>.</li>
             <li>Das ist die Frau, <strong>die</strong> Deutsch <strong>lernt</strong>.</li>
@@ -1587,7 +1587,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Akkusativ (wen/was?) – Basisidee:</h4>
+          <h3 class="font-semibold text-lg mb-3">Akkusativ (wen/was?) – Basisidee:</h3>
           <ul class="space-y-2 ml-4">
             <li>Das ist der Mann, <strong>den</strong> ich gut <strong>kenne</strong>.</li>
             <li>Das ist die Tasche, <strong>die</strong> ich <strong>kaufe</strong>.</li>
@@ -1598,7 +1598,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Komma vergessen</h4>
+          <h3 class="font-semibold mb-2">Fehler: Komma vergessen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Das ist der Mann der hier wohnt.</p>
             <p>✓ Das ist der Mann, der hier wohnt.</p>
@@ -1646,7 +1646,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele mit „ob“:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele mit „ob“:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich weiß nicht, <strong>ob</strong> er morgen <strong>kommt</strong>.</li>
             <li>Kannst du mir sagen, <strong>ob</strong> das Restaurant offen <strong>ist</strong>?</li>
@@ -1654,7 +1654,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele mit Fragewort:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele mit Fragewort:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich weiß nicht, <strong>wo</strong> sie <strong>wohnt</strong>.</li>
             <li>Er fragt, <strong>wann</strong> der Kurs <strong>beginnt</strong>.</li>
@@ -1670,7 +1670,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Wortstellung wie direkte Frage</h4>
+          <h3 class="font-semibold mb-2">Fehler: Wortstellung wie direkte Frage</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich weiß nicht, wann <strong>kommt</strong> er.</p>
             <p>✓ Ich weiß nicht, wann er <strong>kommt</strong>.</p>
@@ -1731,7 +1731,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h4>
+          <h3 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich werde <strong>lernen</strong> morgen.</p>
             <p>✓ Ich werde morgen <strong>lernen</strong>.</p>
@@ -1780,7 +1780,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufige Formen:</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufige Formen:</h3>
           <ul class="space-y-2 ml-4">
             <li>können → ich <strong>konnte</strong>, du <strong>konntest</strong>, er <strong>konnte</strong></li>
             <li>müssen → ich <strong>musste</strong>, du <strong>musstest</strong>, er <strong>musste</strong></li>
@@ -1791,7 +1791,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich <strong>konnte</strong> gestern nicht <strong>kommen</strong>.</li>
             <li>Wir <strong>mussten</strong> viel <strong>lernen</strong>.</li>
@@ -1803,7 +1803,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h4>
+          <h3 class="font-semibold mb-2">Fehler: Infinitiv nicht am Ende</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich konnte <strong>kommen</strong> gestern nicht.</p>
             <p>✓ Ich konnte gestern nicht <strong>kommen</strong>.</p>
@@ -1852,7 +1852,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Typisch Akkusativ:</h4>
+          <h3 class="font-semibold text-lg mb-3">Typisch Akkusativ:</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich <strong>wasche mich</strong>.</li>
             <li>Du <strong>ziehst dich</strong> an.</li>
@@ -1869,7 +1869,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: falsches Reflexivpronomen</h4>
+          <h3 class="font-semibold mb-2">Fehler: falsches Reflexivpronomen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich wasche <strong>mich</strong> die Hände.</p>
             <p>✓ Ich wasche <strong>mir</strong> die Hände.</p>
@@ -1919,7 +1919,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufige Muster:</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufige Muster:</h3>
           <ul class="space-y-2 ml-4">
             <li>warten <strong>auf</strong> + Akk: Ich warte <strong>auf den</strong> Bus.</li>
             <li>denken <strong>an</strong> + Akk: Ich denke <strong>an meine</strong> Familie.</li>
@@ -1937,7 +1937,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: falsche Präposition</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: falsche Präposition</h3>
           <div class="space-y-2 text-sm">
             <p>✗ warten <strong>für</strong> den Bus</p>
             <p>✓ warten <strong>auf</strong> den Bus</p>
@@ -1945,7 +1945,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: falscher Kasus</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: falscher Kasus</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich interessiere mich für <strong>dem</strong> Kurs.</p>
             <p>✓ Ich interessiere mich für <strong>den</strong> Kurs. (für + Akk)</p>
@@ -2000,7 +2000,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (Zeit):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele (Zeit):</h3>
           <ul class="space-y-2 ml-4">
             <li>Ich wohne <strong>seit</strong> 2021 in Berlin.</li>
             <li>Wir haben uns <strong>vor</strong> zwei Tagen gesehen.</li>
@@ -2018,7 +2018,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „seit“ für Zukunft</h4>
+          <h3 class="font-semibold mb-2">Fehler: „seit“ für Zukunft</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Der Kurs beginnt <strong>seit</strong> zwei Wochen.</p>
             <p>✓ Der Kurs beginnt <strong>in</strong> zwei Wochen.</p>
@@ -2068,7 +2068,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel:</h4>
+          <h3 class="font-semibold text-lg mb-3">Mit bestimmtem Artikel:</h3>
           <ul class="space-y-2 ml-4">
             <li>Nominativ: <strong>der</strong> gut<strong>e</strong> Mann / <strong>die</strong> gut<strong>e</strong> Frau / <strong>das</strong> gut<strong>e</strong> Kind</li>
             <li>Akkusativ: <strong>den</strong> gut<strong>en</strong> Mann / <strong>die</strong> gut<strong>e</strong> Frau / <strong>das</strong> gut<strong>e</strong> Kind</li>
@@ -2076,7 +2076,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel:</h4>
+          <h3 class="font-semibold text-lg mb-3">Mit unbestimmtem Artikel:</h3>
           <ul class="space-y-2 ml-4">
             <li>Nominativ: <strong>ein</strong> gut<strong>er</strong> Mann / <strong>eine</strong> gut<strong>e</strong> Frau / <strong>ein</strong> gut<strong>es</strong> Kind</li>
             <li>Akkusativ: <strong>einen</strong> gut<strong>en</strong> Mann / <strong>eine</strong> gut<strong>e</strong> Frau / <strong>ein</strong> gut<strong>es</strong> Kind</li>
@@ -2087,7 +2087,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „den gute Mann“</h4>
+          <h3 class="font-semibold mb-2">Fehler: „den gute Mann“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ den gut<strong>e</strong> Mann</p>
             <p>✓ den gut<strong>en</strong> Mann</p>
@@ -2136,7 +2136,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Aktiv → Passiv:</h4>
+          <h3 class="font-semibold text-lg mb-3">Aktiv → Passiv:</h3>
           <ul class="space-y-2 ml-4">
             <li>Aktiv: Der Chef schreibt <strong>den Brief</strong>.</li>
             <li>Passiv: <strong>Der Brief</strong> <strong>wird</strong> (vom Chef) <strong>geschrieben</strong>.</li>
@@ -2149,7 +2149,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Vergangenheit (Mini-Vorschau):</h4>
+          <h3 class="font-semibold text-lg mb-3">Vergangenheit (Mini-Vorschau):</h3>
           <ul class="space-y-2 ml-4">
             <li>Der Brief <strong>wurde</strong> geschrieben.</li>
           </ul>
@@ -2159,7 +2159,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „sein“-Passiv statt „werden“-Passiv</h4>
+          <h3 class="font-semibold mb-2">Fehler: „sein“-Passiv statt „werden“-Passiv</h3>
           <p class="text-sm mb-2">B1-Einstieg: Fokus auf <strong>Vorgangspassiv</strong> mit „werden“.</p>
           <div class="space-y-2 text-sm">
             <p>✗ Der Brief <strong>ist</strong> geschrieben. (Zustand)</p>
@@ -2209,12 +2209,12 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Typische Auslöser:</h4>
+          <h3 class="font-semibold text-lg mb-3">Typische Auslöser:</h3>
           <p class="text-sm">versuchen, planen, vergessen, hoffen, anfangen, aufhören, bitten, erlauben, empfehlen …</p>
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Komma-Regel (praktisch):</h4>
+          <h3 class="font-semibold text-lg mb-3">Komma-Regel (praktisch):</h3>
           <ul class="space-y-2 ml-4">
             <li>Meist Komma bei <strong>um/ohne/statt</strong> und bei längeren Konstruktionen.</li>
             <li>Bei sehr kurzen „zu“-Ergänzungen ist das Komma teils optional (stilabhängig).</li>
@@ -2230,7 +2230,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „zu“ vergessen oder falsch platzieren</h4>
+          <h3 class="font-semibold mb-2">Fehler: „zu“ vergessen oder falsch platzieren</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich versuche, dich morgen anzurufen. (ohne „zu“ bei „zu“-Verb verlangt)</p>
             <p>✓ Ich versuche, dich morgen <strong>anzurufen</strong>.</p>
@@ -2278,7 +2278,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>Wenn</strong> ich mehr Zeit <strong>hätte</strong>, <strong>würde</strong> ich öfter <strong>kochen</strong>.</li>
             <li><strong>Wenn</strong> er schneller <strong>wäre</strong>, <strong>würde</strong> er den Bus <strong>kriegen</strong>.</li>
@@ -2294,7 +2294,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Indikativ statt Konjunktiv II</h4>
+          <h3 class="font-semibold mb-2">Fehler: Indikativ statt Konjunktiv II</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Wenn ich Zeit <strong>habe</strong>, würde ich kommen. (oft nicht „irreal“)</p>
             <p>✓ Wenn ich Zeit <strong>hätte</strong>, würde ich kommen. (irreal/hypothetisch)</p>
@@ -2343,7 +2343,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Konjunktiv I (Beispiele):</h4>
+          <h3 class="font-semibold text-lg mb-3">Konjunktiv I (Beispiele):</h3>
           <ul class="space-y-2 ml-4">
             <li>Er sagt, er <strong>sei</strong> krank.</li>
             <li>Sie sagt, sie <strong>komme</strong> später.</li>
@@ -2360,7 +2360,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Indikativ ohne Distanz</h4>
+          <h3 class="font-semibold mb-2">Fehler: Indikativ ohne Distanz</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Er sagt, er <strong>ist</strong> krank. (klingt wie direkte Übernahme)</p>
             <p>✓ Er sagt, er <strong>sei</strong> krank. (indirekte Rede)</p>
@@ -2409,7 +2409,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Häufige Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Häufige Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>eine Entscheidung <strong>treffen</strong> (= entscheiden)</li>
             <li>einen Antrag <strong>stellen</strong> (= beantragen)</li>
@@ -2428,7 +2428,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: falscher Artikel/Kasus oder falsches „leichtes“ Verb</h4>
+          <h3 class="font-semibold mb-2">Fehler: falscher Artikel/Kasus oder falsches „leichtes“ Verb</h3>
           <div class="space-y-2 text-sm">
             <p>✗ eine Entscheidung <strong>machen</strong></p>
             <p>✓ eine Entscheidung <strong>treffen</strong></p>
@@ -2477,7 +2477,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Typische Rektion (Auswahl):</h4>
+          <h3 class="font-semibold text-lg mb-3">Typische Rektion (Auswahl):</h3>
           <ul class="space-y-2 ml-4">
             <li>abhängen <strong>von</strong> + Dat: Das hängt <strong>von dem</strong> Termin ab.</li>
             <li>bestehen <strong>aus</strong> + Dat: Die Prüfung besteht <strong>aus drei</strong> Teilen.</li>
@@ -2496,14 +2496,14 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: falsche Präposition</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: falsche Präposition</h3>
           <div class="space-y-2 text-sm">
             <p>✗ abhängen <strong>auf</strong></p>
             <p>✓ abhängen <strong>von</strong></p>
           </div>
         </div>
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: falscher Kasus</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: falscher Kasus</h3>
           <div class="space-y-2 text-sm">
             <p>✗ teilnehmen an <strong>den</strong> Kurs</p>
             <p>✓ teilnehmen an <strong>dem</strong> Kurs (an + Dativ)</p>
@@ -2553,7 +2553,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Schnell-Orientierung (sehr praxisnah):</h4>
+          <h3 class="font-semibold text-lg mb-3">Schnell-Orientierung (sehr praxisnah):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>der/die/das</strong> → meistens <strong>-e/-en</strong>: der gut<strong>e</strong>, den gut<strong>en</strong>, dem gut<strong>en</strong> …</li>
             <li><strong>ein-/kein-/mein-</strong> → Mischung: ein gut<strong>er</strong> (Nom m.), einen gut<strong>en</strong> (Akk m.), einem gut<strong>en</strong> (Dat m.)</li>
@@ -2570,7 +2570,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Endungen „raten“ statt System anwenden</h4>
+          <h3 class="font-semibold mb-2">Fehler: Endungen „raten“ statt System anwenden</h3>
           <div class="space-y-2 text-sm">
             <p>✗ mit ein neu<strong>es</strong> Auto</p>
             <p>✓ mit ein<strong>em</strong> neu<strong>en</strong> Auto (Dativ)</p>
@@ -2620,7 +2620,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Zeitformen im Passiv (Beispiele):</h4>
+          <h3 class="font-semibold text-lg mb-3">Zeitformen im Passiv (Beispiele):</h3>
           <ul class="space-y-2 ml-4">
             <li>Präsens: Der Vertrag <strong>wird</strong> unterschrieben.</li>
             <li>Präteritum: Der Vertrag <strong>wurde</strong> unterschrieben.</li>
@@ -2634,7 +2634,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Mit Modalverben:</h4>
+          <h3 class="font-semibold text-lg mb-3">Mit Modalverben:</h3>
           <ul class="space-y-2 ml-4">
             <li>Die Aufgabe <strong>muss</strong> gemacht <strong>werden</strong>.</li>
             <li>Das Formular <strong>kann</strong> online ausgefüllt <strong>werden</strong>.</li>
@@ -2645,7 +2645,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „worden“ im Perfekt vergessen</h4>
+          <h3 class="font-semibold mb-2">Fehler: „worden“ im Perfekt vergessen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Der Antrag ist abgeschickt.</p>
             <p>✓ Der Antrag ist abgeschickt <strong>worden</strong>. (Vorgang/Passiv)</p>
@@ -2701,7 +2701,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-8 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">A. Verben als Nomen</h4>
+          <h3 class="font-semibold text-lg mb-3">A. Verben als Nomen</h3>
           <p class="mb-3"><strong>1. Der substantivierte Infinitiv.</strong> Du nimmst den Infinitiv, schreibst ihn groß und setzt <strong>das</strong> davor. Diese Nomen sind <strong>immer neutrum</strong>:</p>
           <ul class="space-y-1 ml-4 mb-3">
             <li>rauchen → <strong>das Rauchen</strong> – „Das Rauchen ist hier verboten.“</li>
@@ -2720,7 +2720,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">B. Adjektive als Nomen</h4>
+          <h3 class="font-semibold text-lg mb-3">B. Adjektive als Nomen</h3>
           <p class="mb-3">Auch Adjektive kannst du großschreiben und als Nomen verwenden. Entscheidend ist, <em>worüber</em> du sprichst:</p>
           <ul class="space-y-1 ml-4 mb-3">
             <li><strong>Sache/Abstraktes → neutrum:</strong> <strong>das Wichtige</strong>, <strong>das Neue</strong>, <strong>das Beste</strong> – „Das Wichtige kommt zum Schluss.“</li>
@@ -2735,7 +2735,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">C. Welcher Artikel? Die Genus-Regel</h4>
+          <h3 class="font-semibold text-lg mb-3">C. Welcher Artikel? Die Genus-Regel</h3>
           <p class="mb-3">An der Form erkennst du fast immer den Artikel:</p>
           <div class="overflow-x-auto">
             <table class="w-full text-sm border-collapse">
@@ -2783,7 +2783,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">D. Vom Nebensatz zur Nominalphrase</h4>
+          <h3 class="font-semibold text-lg mb-3">D. Vom Nebensatz zur Nominalphrase</h3>
           <p class="mb-3">Das ist der eigentliche Nutzen auf B2: Du ersetzt einen Nebensatz durch eine Präposition mit Nomen. Achte dabei genau auf den <strong>Kasus</strong>, den die neue Präposition verlangt:</p>
           <div class="overflow-x-auto">
             <table class="w-full text-sm border-collapse">
@@ -2846,7 +2846,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: Kleinschreibung des substantivierten Infinitivs</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: Kleinschreibung des substantivierten Infinitivs</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Das rauchen ist hier verboten.</p>
             <p>✓ Das <strong>Rauchen</strong> ist hier verboten.</p>
@@ -2855,7 +2855,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: falscher Artikel</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: falscher Artikel</h3>
           <div class="space-y-2 text-sm">
             <p>✗ der Entscheidung, der Möglichkeit, die Lernen</p>
             <p>✓ <strong>die</strong> Entscheidung, <strong>die</strong> Möglichkeit, <strong>das</strong> Lernen</p>
@@ -2864,7 +2864,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 3: falsche Endung beim nominalisierten Adjektiv</h4>
+          <h3 class="font-semibold mb-2">Fehler 3: falsche Endung beim nominalisierten Adjektiv</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Ich habe etwas Neue gehört. / Ich wünsche dir alles Gutes.</p>
             <p>✓ Ich habe etwas <strong>Neues</strong> gehört. / Ich wünsche dir alles <strong>Gute</strong>.</p>
@@ -2873,7 +2873,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 4: falscher Kasus nach der neuen Präposition</h4>
+          <h3 class="font-semibold mb-2">Fehler 4: falscher Kasus nach der neuen Präposition</h3>
           <div class="space-y-2 text-sm">
             <p>✗ wegen dem Regen, trotz dem Stau, nach seine Ankunft</p>
             <p>✓ wegen <strong>des Regens</strong>, trotz <strong>des Staus</strong>, nach <strong>seiner Ankunft</strong></p>
@@ -2941,7 +2941,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>während</strong> <strong>des</strong> Unterrichts</li>
             <li><strong>trotz</strong> <strong>der</strong> Probleme</li>
@@ -2959,7 +2959,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Genitiv-Artikel falsch</h4>
+          <h3 class="font-semibold mb-2">Fehler: Genitiv-Artikel falsch</h3>
           <div class="space-y-2 text-sm">
             <p>✗ während <strong>den</strong> Kurses</p>
             <p>✓ während <strong>des</strong> Kurses</p>
@@ -3008,7 +3008,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiel mit mehreren Ebenen:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiel mit mehreren Ebenen:</h3>
           <ul class="space-y-2 ml-4">
             <li>
               Viele unterschätzen, <strong>dass</strong> man, <strong>wenn</strong> man unter Zeitdruck <strong>steht</strong>,
@@ -3026,7 +3026,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: zu viele Einschübe ohne Struktur</h4>
+          <h3 class="font-semibold mb-2">Fehler: zu viele Einschübe ohne Struktur</h3>
           <p class="text-sm">Wenn du den Satz beim Vorlesen nicht mehr kontrollierst, ist er zu lang – lieber teilen oder umstellen.</p>
         </div>
       </div>
@@ -3077,7 +3077,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele:</h3>
           <ul class="space-y-2 ml-4">
             <li>Er sagt, er <strong>sei</strong> krank.</li>
             <li>Die Expertin erklärt, die Lage <strong>habe</strong> sich verbessert.</li>
@@ -3094,7 +3094,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Indikativ statt Berichtsdistanz</h4>
+          <h3 class="font-semibold mb-2">Fehler: Indikativ statt Berichtsdistanz</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Er sagt, er <strong>ist</strong> krank.</p>
             <p>✓ Er sagt, er <strong>sei</strong> krank.</p>
@@ -3148,7 +3148,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele im Satz:</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele im Satz:</h3>
           <ul class="space-y-2 ml-4">
             <li>Wir ziehen mehrere Optionen <strong>in Betracht</strong>.</li>
             <li>Die Unterlagen werden Ihnen <strong>zur Verfügung gestellt</strong>.</li>
@@ -3165,7 +3165,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: freie Kombination statt feste Wendung</h4>
+          <h3 class="font-semibold mb-2">Fehler: freie Kombination statt feste Wendung</h3>
           <div class="space-y-2 text-sm">
             <p>✗ eine Entscheidung <strong>machen</strong></p>
             <p>✓ eine Entscheidung <strong>treffen</strong></p>
@@ -3214,7 +3214,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (Auswahl):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele (Auswahl):</h3>
           <ul class="space-y-2 ml-4">
             <li>eine Entscheidung <strong>treffen</strong></li>
             <li>eine Maßnahme <strong>ergreifen</strong></li>
@@ -3233,7 +3233,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: „wörtliche Übersetzung“</h4>
+          <h3 class="font-semibold mb-2">Fehler: „wörtliche Übersetzung“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ starken Wert <strong>machen</strong> auf</p>
             <p>✓ großen Wert <strong>legen</strong> auf</p>
@@ -3282,7 +3282,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Typische Advanced-Kombinationen:</h4>
+          <h3 class="font-semibold text-lg mb-3">Typische Advanced-Kombinationen:</h3>
           <ul class="space-y-2 ml-4">
             <li>absehen <strong>von</strong> + Dat: Wir sehen <strong>von dem</strong> Plan ab.</li>
             <li>sich befassen <strong>mit</strong> + Dat: Ich befasse mich <strong>mit der</strong> Frage.</li>
@@ -3301,7 +3301,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Präposition oder Kasus „nach Gefühl“</h4>
+          <h3 class="font-semibold mb-2">Fehler: Präposition oder Kasus „nach Gefühl“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ sich berufen <strong>an</strong> …</p>
             <p>✓ sich berufen <strong>auf</strong> …</p>
@@ -3351,7 +3351,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Sehr typische Muster (mit Beispielen):</h4>
+          <h3 class="font-semibold text-lg mb-3">Sehr typische Muster (mit Beispielen):</h3>
           <ul class="space-y-2 ml-4">
             <li><strong>in Bezug auf</strong> + Akk: In Bezug auf <strong>die</strong> Kosten gibt es Fragen.</li>
             <li><strong>im Hinblick auf</strong> + Akk: Im Hinblick auf <strong>die</strong> Prüfung ist das wichtig.</li>
@@ -3370,7 +3370,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 1: Kasus „nach Gefühl“</h4>
+          <h3 class="font-semibold mb-2">Fehler 1: Kasus „nach Gefühl“</h3>
           <div class="space-y-2 text-sm">
             <p>✗ in Bezug auf <strong>dem</strong> Thema</p>
             <p>✓ in Bezug auf <strong>das</strong> Thema (Akk)</p>
@@ -3378,7 +3378,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler 2: Ausdruck zerlegen</h4>
+          <h3 class="font-semibold mb-2">Fehler 2: Ausdruck zerlegen</h3>
           <p class="text-sm">Komplexe Präpositionen sind feste Einheiten – nicht frei umstellbar.</p>
         </div>
       </div>
@@ -3424,7 +3424,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (mit bestimmtem Artikel):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele (mit bestimmtem Artikel):</h3>
           <ul class="space-y-2 ml-4">
             <li>Nominativ: <strong>der</strong> gut<strong>e</strong> alt<strong>e</strong> Freund</li>
             <li>Akkusativ: Ich sehe <strong>den</strong> gut<strong>en</strong> alt<strong>en</strong> Freund.</li>
@@ -3433,7 +3433,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (gemischt, „ein-“):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele (gemischt, „ein-“):</h3>
           <ul class="space-y-2 ml-4">
             <li>ein interessant<strong>er</strong> neu<strong>er</strong> Kurs</li>
             <li>einen interessant<strong>en</strong> neu<strong>en</strong> Kurs</li>
@@ -3450,7 +3450,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Endungen mischen</h4>
+          <h3 class="font-semibold mb-2">Fehler: Endungen mischen</h3>
           <div class="space-y-2 text-sm">
             <p>✗ den neu<strong>e</strong> interessant<strong>en</strong> Kurs</p>
             <p>✓ den neu<strong>en</strong> interessant<strong>en</strong> Kurs</p>
@@ -3500,7 +3500,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Unpersönliches Passiv:</h4>
+          <h3 class="font-semibold text-lg mb-3">Unpersönliches Passiv:</h3>
           <ul class="space-y-2 ml-4">
             <li>Es <strong>wird</strong> viel <strong>diskutiert</strong>.</li>
             <li>Hier <strong>wird</strong> nicht <strong>geraucht</strong>.</li>
@@ -3508,7 +3508,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
         </div>
 
         <div>
-          <h4 class="font-semibold text-lg mb-3">Passiv mit Modalverben (sehr wichtig):</h4>
+          <h3 class="font-semibold text-lg mb-3">Passiv mit Modalverben (sehr wichtig):</h3>
           <ul class="space-y-2 ml-4">
             <li>Die Daten <strong>müssen</strong> gespeichert <strong>werden</strong>.</li>
             <li>Die Unterlagen <strong>sollen</strong> heute verschickt <strong>werden</strong>.</li>
@@ -3524,7 +3524,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Verbteile in falscher Reihenfolge</h4>
+          <h3 class="font-semibold mb-2">Fehler: Verbteile in falscher Reihenfolge</h3>
           <div class="space-y-2 text-sm">
             <p>✗ … weil die Daten gespeichert <strong>sollen werden</strong>.</p>
             <p>✓ … weil die Daten gespeichert <strong>werden sollen</strong>.</p>
@@ -3578,7 +3578,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiel (Verb-Stil → Nominalstil):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiel (Verb-Stil → Nominalstil):</h3>
           <ul class="space-y-2 ml-4">
             <li>Verb-Stil: Wir <strong>analysieren</strong> die Daten und <strong>bewerten</strong> die Ergebnisse.</li>
             <li>Nominalstil: Die <strong>Analyse</strong> der Daten und die <strong>Bewertung</strong> der Ergebnisse <strong>erfolgen</strong> im nächsten Schritt.</li>
@@ -3594,7 +3594,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Nominalketten ohne Struktur</h4>
+          <h3 class="font-semibold mb-2">Fehler: Nominalketten ohne Struktur</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Die Durchführung der Optimierung der Implementierung der …</p>
             <p>✓ Wir optimieren und implementieren … / oder: klare, kurze Nominalgruppen</p>
@@ -3647,7 +3647,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Als Attribut (mit Endungen):</h4>
+          <h3 class="font-semibold text-lg mb-3">Als Attribut (mit Endungen):</h3>
           <ul class="space-y-2 ml-4">
             <li>die <strong>steigend<strong>en</strong></strong> Preise</li>
             <li>mit den <strong>bereits erhoben<strong>en</strong></strong> Daten</li>
@@ -3664,7 +3664,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: unklare „Bezugsperson“</h4>
+          <h3 class="font-semibold mb-2">Fehler: unklare „Bezugsperson“</h3>
           <p class="text-sm mb-2">Partizipialkonstruktionen müssen klar zeigen, <strong>wer</strong> die Handlung ausführt.</p>
           <div class="space-y-2 text-sm">
             <p>✗ In Berlin angekommen, wurde das Hotel gebucht. (Wer ist angekommen?)</p>
@@ -3720,7 +3720,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
 
       <div class="space-y-6 text-sm">
         <div>
-          <h4 class="font-semibold text-lg mb-3">Beispiele (gehobener Stil):</h4>
+          <h3 class="font-semibold text-lg mb-3">Beispiele (gehobener Stil):</h3>
           <ul class="space-y-2 ml-4">
             <li>Angesichts <strong>der</strong> aktuellen Situation ist Vorsicht geboten.</li>
             <li>Der Plan bedarf <strong>einer</strong> Überarbeitung.</li>
@@ -3737,7 +3737,7 @@ export const grammarContentData: Record<string, GrammarContent> = {
     commonMistakes: `
       <div class="space-y-4">
         <div class="p-4 bg-destructive/10 rounded-lg border-l-4 border-destructive">
-          <h4 class="font-semibold mb-2">Fehler: Dativ statt Genitiv bei festen Mustern</h4>
+          <h3 class="font-semibold mb-2">Fehler: Dativ statt Genitiv bei festen Mustern</h3>
           <div class="space-y-2 text-sm">
             <p>✗ Wir gedenken <strong>den</strong> Opfern.</p>
             <p>✓ Wir gedenken <strong>der</strong> Opfer.</p>
