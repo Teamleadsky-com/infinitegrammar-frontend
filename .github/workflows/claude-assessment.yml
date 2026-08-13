@@ -169,7 +169,7 @@ jobs:
             --allowedTools "Read,Glob,Grep"
 
       - name: Post Claude assessment result to audit issue
-        if: ${{ always() && steps.claude_assessment.outputs.execution_file != '' }}
+        if: ${{ always() }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -191,72 +191,96 @@ jobs:
           import pathlib
           import sys
 
-          execution_file = pathlib.Path(sys.argv[1])
+          execution_file_value = str(sys.argv[1] or "").strip()
           result_file = pathlib.Path(sys.argv[2])
-
-          raw = execution_file.read_text(
-              encoding="utf-8",
-              errors="replace",
-          )
 
           result = ""
           turns = 0
+          last_subtype = ""
+          terminal_subtype = ""
 
-          def values(item):
-              if not isinstance(item, dict):
-                  return "", 0
+          if execution_file_value:
+              execution_file = pathlib.Path(execution_file_value)
 
-              value = str(item.get("result") or "")
+              if execution_file.exists():
+                  raw = execution_file.read_text(
+                      encoding="utf-8",
+                      errors="replace",
+                  )
 
-              try:
-                  count = int(item.get("num_turns") or 0)
-              except (TypeError, ValueError):
-                  count = 0
+                  events = []
 
-              return value, count
-
-          try:
-              data = json.loads(raw)
-
-              if isinstance(data, dict):
-                  result, turns = values(data)
-
-              elif isinstance(data, list):
-                  for item in reversed(data):
-                      if isinstance(item, dict) and item.get("type") == "result":
-                          result, turns = values(item)
-                          break
-
-          except json.JSONDecodeError:
-              parsed = []
-
-              for line in raw.splitlines():
                   try:
-                      item = json.loads(line)
+                      data = json.loads(raw)
+
+                      if isinstance(data, list):
+                          events = data
+
+                      elif isinstance(data, dict):
+                          events = [data]
+
                   except json.JSONDecodeError:
-                      continue
+                      for line in raw.splitlines():
+                          try:
+                              item = json.loads(line)
+                          except json.JSONDecodeError:
+                              continue
 
-                  if isinstance(item, dict):
-                      parsed.append(item)
+                          if isinstance(item, dict):
+                              events.append(item)
 
-              for item in reversed(parsed):
-                  if item.get("type") == "result":
-                      result, turns = values(item)
-                      break
+                  for item in events:
+                      if not isinstance(item, dict):
+                          continue
 
-              if turns == 0:
-                  for item in reversed(parsed):
-                      _, candidate_turns = values(item)
+                      subtype = str(item.get("subtype") or "").strip()
 
-                      if candidate_turns:
+                      if subtype:
+                          last_subtype = subtype
+
+                      if subtype == "error_max_turns":
+                          terminal_subtype = subtype
+
+                      try:
+                          candidate_turns = int(
+                              item.get("num_turns") or 0
+                          )
+                      except (TypeError, ValueError):
+                          candidate_turns = 0
+
+                      if candidate_turns > turns:
                           turns = candidate_turns
-                          break
+
+                      is_result_event = (
+                          item.get("type") == "result"
+                          or len(events) == 1
+                      )
+
+                      if not is_result_event:
+                          continue
+
+                      candidate_result = str(
+                          item.get("result") or ""
+                      )
+
+                      is_error_result = subtype.startswith("error_")
+
+                      if (
+                          candidate_result.strip()
+                          and not is_error_result
+                      ):
+                          # Keep the latest usable non-error final result.
+                          # A later error_max_turns event must not erase it.
+                          result = candidate_result
 
           result_file.write_text(
-              json.dumps({
-                  "result": result,
-                  "turns": turns,
-              }),
+              json.dumps(
+                  {
+                      "result": result,
+                      "turns": turns,
+                      "subtype": terminal_subtype or last_subtype,
+                  }
+              ),
               encoding="utf-8",
           )
           PY
@@ -267,7 +291,9 @@ jobs:
           import sys
 
           data = json.loads(
-              pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
           )
 
           print(str(data.get("result") or ""))
@@ -280,10 +306,27 @@ jobs:
           import sys
 
           data = json.loads(
-              pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
           )
 
           print(int(data.get("turns") or 0))
+          PY
+          )"
+
+          SUBTYPE="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(str(data.get("subtype") or ""))
           PY
           )"
 
@@ -298,10 +341,14 @@ jobs:
             echo "run: $RUN_URL"
 
             if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
+              # A usable result takes precedence over the action outcome
+              # and over any later max-turn termination signal.
               echo
               printf '%s\n' "$RESULT_TEXT"
 
-            elif [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+            elif [ "$SUBTYPE" = "error_max_turns" ] \
+              || [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+
               echo "error_type: turn_limit_exhausted"
               echo "turns: $TURNS"
               echo "max_turns: $MAX_TURNS"
