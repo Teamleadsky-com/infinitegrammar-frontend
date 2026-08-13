@@ -7,10 +7,12 @@ on:
         description: "Assessment subject ID (batch or assessment item)"
         required: true
         type: string
+
       issue_number:
         description: "GitHub issue number used as the audit/result channel"
         required: true
         type: string
+
       mode:
         description: "Read-only assessment mode"
         required: true
@@ -18,20 +20,24 @@ on:
         options:
           - applicability
           - investigation
+
       prompt:
         description: "Assessment prompt supplied by n8n"
         required: true
         type: string
+
       max_turns:
-        description: "Maximum Claude Code turns"
+        description: "Maximum Claude Code turns. Policy value: 50."
         required: false
-        default: "20"
+        default: "50"
         type: string
+
       model:
         description: "Claude model override"
         required: false
         default: "opus"
         type: string
+
       dry_run:
         description: "Validate inputs without calling Claude"
         required: false
@@ -45,11 +51,14 @@ concurrency:
 jobs:
   validate-inputs:
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     outputs:
       max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
       model_arg: ${{ steps.prepare.outputs.model_arg }}
+
     steps:
       - id: prepare
         shell: bash
@@ -59,13 +68,37 @@ jobs:
           MODEL: ${{ inputs.model }}
         run: |
           set -euo pipefail
-          case "$MODE" in applicability|investigation) ;; *) echo "Invalid mode: $MODE" >&2; exit 1;; esac
-          if ! [[ "$MAX_TURNS" =~ ^[0-9]+$ ]] || [ "$MAX_TURNS" -lt 1 ]; then
+
+          case "$MODE" in
+            applicability|investigation)
+              ;;
+            *)
+              echo "Invalid mode: $MODE" >&2
+              exit 1
+              ;;
+          esac
+
+          if ! [[ "$MAX_TURNS" =~ ^[0-9]+$ ]]; then
             echo "max_turns must be a positive integer" >&2
             exit 1
           fi
+
+          if [ "$MAX_TURNS" -ne 50 ]; then
+            echo "max_turns must be exactly 50 for all Claude assessment modes" >&2
+            exit 1
+          fi
+
           EFFECTIVE_MODEL="${MODEL:-opus}"
-          case "$EFFECTIVE_MODEL" in opus|sonnet|haiku|fable|claude-*) ;; *) echo "Unsupported model: $EFFECTIVE_MODEL" >&2; exit 1;; esac
+
+          case "$EFFECTIVE_MODEL" in
+            opus|sonnet|haiku|fable|claude-*)
+              ;;
+            *)
+              echo "Unsupported model: $EFFECTIVE_MODEL" >&2
+              exit 1
+              ;;
+          esac
+
           echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
           echo "model_arg=--model $EFFECTIVE_MODEL" >> "$GITHUB_OUTPUT"
 
@@ -73,8 +106,10 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run == true }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
+
     steps:
       - run: echo "Read-only SEO assessment dry run accepted."
 
@@ -82,6 +117,7 @@ jobs:
     needs: validate-inputs
     if: ${{ inputs.dry_run != true }}
     runs-on: ubuntu-latest
+
     permissions:
       contents: read
       issues: write
@@ -89,6 +125,7 @@ jobs:
       id-token: write
       actions: read
       checks: read
+
     steps:
       - name: Checkout repository read-only
         uses: actions/checkout@v6
@@ -100,9 +137,11 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+
           additional_permissions: |
             actions: read
             checks: read
+
           prompt: |
             REPOSITORY: ${{ github.repository }}
             SUBJECT_ID: ${{ inputs.subject_id }}
@@ -123,6 +162,7 @@ jobs:
 
             Assessment prompt:
             ${{ inputs.prompt }}
+
           claude_args: |
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
@@ -140,31 +180,115 @@ jobs:
           EXECUTION_FILE: ${{ steps.claude_assessment.outputs.execution_file }}
           STEP_OUTCOME: ${{ steps.claude_assessment.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MAX_TURNS: ${{ inputs.max_turns }}
         run: |
           set -euo pipefail
+
           RESULT_FILE="$(mktemp)"
+
           python - "$EXECUTION_FILE" "$RESULT_FILE" <<'PY'
-          import json, pathlib, sys
-          src = pathlib.Path(sys.argv[1])
-          out = pathlib.Path(sys.argv[2])
-          raw = src.read_text(encoding='utf-8', errors='replace')
-          result = ''
+          import json
+          import pathlib
+          import sys
+
+          execution_file = pathlib.Path(sys.argv[1])
+          result_file = pathlib.Path(sys.argv[2])
+
+          raw = execution_file.read_text(
+              encoding="utf-8",
+              errors="replace",
+          )
+
+          result = ""
+          turns = 0
+
+          def values(item):
+              if not isinstance(item, dict):
+                  return "", 0
+
+              value = str(item.get("result") or "")
+
+              try:
+                  count = int(item.get("num_turns") or 0)
+              except (TypeError, ValueError):
+                  count = 0
+
+              return value, count
+
           try:
               data = json.loads(raw)
+
               if isinstance(data, dict):
-                  result = str(data.get('result') or '')
+                  result, turns = values(data)
+
               elif isinstance(data, list):
                   for item in reversed(data):
-                      if isinstance(item, dict) and item.get('type') == 'result':
-                          result = str(item.get('result') or '')
+                      if isinstance(item, dict) and item.get("type") == "result":
+                          result, turns = values(item)
                           break
+
           except json.JSONDecodeError:
-              pass
-          if not result:
-              result = raw[-60000:]
-          out.write_text(result, encoding='utf-8')
+              parsed = []
+
+              for line in raw.splitlines():
+                  try:
+                      item = json.loads(line)
+                  except json.JSONDecodeError:
+                      continue
+
+                  if isinstance(item, dict):
+                      parsed.append(item)
+
+              for item in reversed(parsed):
+                  if item.get("type") == "result":
+                      result, turns = values(item)
+                      break
+
+              if turns == 0:
+                  for item in reversed(parsed):
+                      _, candidate_turns = values(item)
+
+                      if candidate_turns:
+                          turns = candidate_turns
+                          break
+
+          result_file.write_text(
+              json.dumps({
+                  "result": result,
+                  "turns": turns,
+              }),
+              encoding="utf-8",
+          )
           PY
+
+          RESULT_TEXT="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
+          )
+
+          print(str(data.get("result") or ""))
+          PY
+          )"
+
+          TURNS="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(encoding="utf-8")
+          )
+
+          print(int(data.get("turns") or 0))
+          PY
+          )"
+
           COMMENT_FILE="$(mktemp)"
+
           {
             echo "SEO_ASSESSMENT_CLAUDE_RESULT"
             echo
@@ -172,7 +296,28 @@ jobs:
             echo "mode: $MODE"
             echo "outcome: $STEP_OUTCOME"
             echo "run: $RUN_URL"
-            echo
-            cat "$RESULT_FILE"
+
+            if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
+              echo
+              printf '%s\n' "$RESULT_TEXT"
+
+            elif [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+              echo "error_type: turn_limit_exhausted"
+              echo "turns: $TURNS"
+              echo "max_turns: $MAX_TURNS"
+              echo
+              echo "Claude reached the configured max_turns without producing a valid final assessment result."
+
+            else
+              echo "error_type: claude_execution_error"
+              echo "turns: $TURNS"
+              echo "max_turns: $MAX_TURNS"
+              echo
+              echo "Claude did not produce a usable final assessment result."
+            fi
           } > "$COMMENT_FILE"
-          gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$COMMENT_FILE"
+
+          gh issue comment \
+            "$ISSUE_NUMBER" \
+            --repo "$REPO" \
+            --body-file "$COMMENT_FILE"
