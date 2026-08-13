@@ -28,9 +28,9 @@ on:
         type: string
 
       max_turns:
-        description: "Maximum Claude Code turns. Implementation should normally use 40 or more."
+        description: "Maximum Claude Code turns. Policy value: 50."
         required: false
-        default: "40"
+        default: "50"
         type: string
 
       model:
@@ -97,14 +97,8 @@ jobs:
             exit 1
           fi
 
-          if [ "$MAX_TURNS" -lt 1 ]; then
-            echo "max_turns must be >= 1" >&2
-            exit 1
-          fi
-
-          if [ "$ROLE" = "implementation" ] && [ "$MAX_TURNS" -lt 20 ]; then
-            echo "implementation role requires max_turns >= 20" >&2
-            echo "Use 40 for normal implementation work." >&2
+          if [ "$MAX_TURNS" -ne 50 ]; then
+            echo "max_turns must be exactly 50 for all Claude experiment roles" >&2
             exit 1
           fi
 
@@ -142,7 +136,7 @@ jobs:
           Model rule:
           - proposal, gatekeeper, and implementation default to opus
           - all roles may use the same explicit model override
-          - implementation requires max_turns >= 20
+          - all roles use max_turns = 50
 
           The role-specific Claude jobs are skipped when dry_run=true.
           EOF
@@ -216,7 +210,7 @@ jobs:
             --allowedTools "Read,Glob,Grep"
 
       - name: Post Claude proposal result to issue
-        if: ${{ always() && steps.claude_proposal.outputs.execution_file != '' }}
+        if: ${{ always() }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -227,66 +221,155 @@ jobs:
           STEP_OUTCOME: ${{ steps.claude_proposal.outcome }}
           EXECUTION_FILE: ${{ steps.claude_proposal.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MAX_TURNS: ${{ inputs.max_turns }}
         run: |
           set -euo pipefail
 
-          COMMENT_FILE="$(mktemp)"
+          RESULT_FILE="$(mktemp)"
 
-          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          python - "$EXECUTION_FILE" "$RESULT_FILE" <<'PY'
           import json
           import pathlib
           import sys
 
-          execution_file = pathlib.Path(sys.argv[1])
-          comment_file = pathlib.Path(sys.argv[2])
+          execution_file_value = str(sys.argv[1] or "").strip()
+          result_file = pathlib.Path(sys.argv[2])
 
-          raw = execution_file.read_text(encoding="utf-8", errors="replace")
           result = ""
+          turns = 0
+          last_subtype = ""
+          terminal_subtype = ""
 
-          try:
-              data = json.loads(raw)
+          if execution_file_value:
+              execution_file = pathlib.Path(execution_file_value)
 
-              if isinstance(data, dict):
-                  result = str(data.get("result") or "")
+              if execution_file.exists():
+                  raw = execution_file.read_text(
+                      encoding="utf-8",
+                      errors="replace",
+                  )
 
-              elif isinstance(data, list):
-                  for item in reversed(data):
-                      if isinstance(item, dict) and item.get("type") == "result":
-                          result = str(item.get("result") or "")
-                          break
+                  events = []
 
-          except json.JSONDecodeError:
-              for line in reversed(raw.splitlines()):
                   try:
-                      item = json.loads(line)
+                      data = json.loads(raw)
+
+                      if isinstance(data, list):
+                          events = data
+
+                      elif isinstance(data, dict):
+                          events = [data]
+
                   except json.JSONDecodeError:
-                      continue
+                      for line in raw.splitlines():
+                          try:
+                              item = json.loads(line)
+                          except json.JSONDecodeError:
+                              continue
 
-                  if isinstance(item, dict) and item.get("type") == "result":
-                      result = str(item.get("result") or "")
-                      break
+                          if isinstance(item, dict):
+                              events.append(item)
 
-          comment_file.write_text(result, encoding="utf-8")
+                  for item in events:
+                      if not isinstance(item, dict):
+                          continue
+
+                      subtype = str(item.get("subtype") or "").strip()
+
+                      if subtype:
+                          last_subtype = subtype
+
+                      if subtype == "error_max_turns":
+                          terminal_subtype = subtype
+
+                      try:
+                          candidate_turns = int(
+                              item.get("num_turns") or 0
+                          )
+                      except (TypeError, ValueError):
+                          candidate_turns = 0
+
+                      if candidate_turns > turns:
+                          turns = candidate_turns
+
+                      is_result_event = (
+                          item.get("type") == "result"
+                          or len(events) == 1
+                      )
+
+                      if not is_result_event:
+                          continue
+
+                      candidate_result = str(
+                          item.get("result") or ""
+                      )
+
+                      is_error_result = subtype.startswith("error_")
+
+                      if (
+                          candidate_result.strip()
+                          and not is_error_result
+                      ):
+                          result = candidate_result
+
+          result_file.write_text(
+              json.dumps(
+                  {
+                      "result": result,
+                      "turns": turns,
+                      "subtype": terminal_subtype or last_subtype,
+                  }
+              ),
+              encoding="utf-8",
+          )
           PY
 
-          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+          RESULT_TEXT="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
 
-          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
-            BODY="$(cat <<EOF
-          ## CLAUDE_EXPERIMENT_ERROR
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
 
-          experiment_id: $EXPERIMENT_ID
-          role: $ROLE_NAME
-          workflow_run: $RUN_URL
-          step_outcome: $STEP_OUTCOME
-
-          ### Error
-
-          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
-
-          EOF
+          print(str(data.get("result") or ""))
+          PY
           )"
-          else
+
+          TURNS="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(int(data.get("turns") or 0))
+          PY
+          )"
+
+          SUBTYPE="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(str(data.get("subtype") or ""))
+          PY
+          )"
+
+          if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
             BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
@@ -297,6 +380,44 @@ jobs:
           ### Result
 
           $RESULT_TEXT
+          EOF
+          )"
+
+          elif [ "$SUBTYPE" = "error_max_turns" ] \
+            || [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: turn_limit_exhausted
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude reached the configured max_turns without producing a valid final result.
+          EOF
+          )"
+
+          else
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: claude_execution_error
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
           EOF
           )"
           fi
@@ -360,7 +481,7 @@ jobs:
             --allowedTools "Read,Glob,Grep"
 
       - name: Post Claude gatekeeper result to issue
-        if: ${{ always() && steps.claude_gatekeeper.outputs.execution_file != '' }}
+        if: ${{ always() }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -371,66 +492,155 @@ jobs:
           STEP_OUTCOME: ${{ steps.claude_gatekeeper.outcome }}
           EXECUTION_FILE: ${{ steps.claude_gatekeeper.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MAX_TURNS: ${{ inputs.max_turns }}
         run: |
           set -euo pipefail
 
-          COMMENT_FILE="$(mktemp)"
+          RESULT_FILE="$(mktemp)"
 
-          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          python - "$EXECUTION_FILE" "$RESULT_FILE" <<'PY'
           import json
           import pathlib
           import sys
 
-          execution_file = pathlib.Path(sys.argv[1])
-          comment_file = pathlib.Path(sys.argv[2])
+          execution_file_value = str(sys.argv[1] or "").strip()
+          result_file = pathlib.Path(sys.argv[2])
 
-          raw = execution_file.read_text(encoding="utf-8", errors="replace")
           result = ""
+          turns = 0
+          last_subtype = ""
+          terminal_subtype = ""
 
-          try:
-              data = json.loads(raw)
+          if execution_file_value:
+              execution_file = pathlib.Path(execution_file_value)
 
-              if isinstance(data, dict):
-                  result = str(data.get("result") or "")
+              if execution_file.exists():
+                  raw = execution_file.read_text(
+                      encoding="utf-8",
+                      errors="replace",
+                  )
 
-              elif isinstance(data, list):
-                  for item in reversed(data):
-                      if isinstance(item, dict) and item.get("type") == "result":
-                          result = str(item.get("result") or "")
-                          break
+                  events = []
 
-          except json.JSONDecodeError:
-              for line in reversed(raw.splitlines()):
                   try:
-                      item = json.loads(line)
+                      data = json.loads(raw)
+
+                      if isinstance(data, list):
+                          events = data
+
+                      elif isinstance(data, dict):
+                          events = [data]
+
                   except json.JSONDecodeError:
-                      continue
+                      for line in raw.splitlines():
+                          try:
+                              item = json.loads(line)
+                          except json.JSONDecodeError:
+                              continue
 
-                  if isinstance(item, dict) and item.get("type") == "result":
-                      result = str(item.get("result") or "")
-                      break
+                          if isinstance(item, dict):
+                              events.append(item)
 
-          comment_file.write_text(result, encoding="utf-8")
+                  for item in events:
+                      if not isinstance(item, dict):
+                          continue
+
+                      subtype = str(item.get("subtype") or "").strip()
+
+                      if subtype:
+                          last_subtype = subtype
+
+                      if subtype == "error_max_turns":
+                          terminal_subtype = subtype
+
+                      try:
+                          candidate_turns = int(
+                              item.get("num_turns") or 0
+                          )
+                      except (TypeError, ValueError):
+                          candidate_turns = 0
+
+                      if candidate_turns > turns:
+                          turns = candidate_turns
+
+                      is_result_event = (
+                          item.get("type") == "result"
+                          or len(events) == 1
+                      )
+
+                      if not is_result_event:
+                          continue
+
+                      candidate_result = str(
+                          item.get("result") or ""
+                      )
+
+                      is_error_result = subtype.startswith("error_")
+
+                      if (
+                          candidate_result.strip()
+                          and not is_error_result
+                      ):
+                          result = candidate_result
+
+          result_file.write_text(
+              json.dumps(
+                  {
+                      "result": result,
+                      "turns": turns,
+                      "subtype": terminal_subtype or last_subtype,
+                  }
+              ),
+              encoding="utf-8",
+          )
           PY
 
-          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+          RESULT_TEXT="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
 
-          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
-            BODY="$(cat <<EOF
-          ## CLAUDE_EXPERIMENT_ERROR
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
 
-          experiment_id: $EXPERIMENT_ID
-          role: $ROLE_NAME
-          workflow_run: $RUN_URL
-          step_outcome: $STEP_OUTCOME
-
-          ### Error
-
-          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
-
-          EOF
+          print(str(data.get("result") or ""))
+          PY
           )"
-          else
+
+          TURNS="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(int(data.get("turns") or 0))
+          PY
+          )"
+
+          SUBTYPE="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(str(data.get("subtype") or ""))
+          PY
+          )"
+
+          if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
             BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
@@ -441,6 +651,44 @@ jobs:
           ### Result
 
           $RESULT_TEXT
+          EOF
+          )"
+
+          elif [ "$SUBTYPE" = "error_max_turns" ] \
+            || [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: turn_limit_exhausted
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude reached the configured max_turns without producing a valid final result.
+          EOF
+          )"
+
+          else
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: claude_execution_error
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
           EOF
           )"
           fi
@@ -504,7 +752,7 @@ jobs:
             --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*),Bash(gh:*)"
 
       - name: Post Claude implementation result to issue
-        if: ${{ always() && steps.claude_implementation.outputs.execution_file != '' }}
+        if: ${{ always() }}
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -515,66 +763,155 @@ jobs:
           STEP_OUTCOME: ${{ steps.claude_implementation.outcome }}
           EXECUTION_FILE: ${{ steps.claude_implementation.outputs.execution_file }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          MAX_TURNS: ${{ inputs.max_turns }}
         run: |
           set -euo pipefail
 
-          COMMENT_FILE="$(mktemp)"
+          RESULT_FILE="$(mktemp)"
 
-          python - "$EXECUTION_FILE" "$COMMENT_FILE" <<'PY'
+          python - "$EXECUTION_FILE" "$RESULT_FILE" <<'PY'
           import json
           import pathlib
           import sys
 
-          execution_file = pathlib.Path(sys.argv[1])
-          comment_file = pathlib.Path(sys.argv[2])
+          execution_file_value = str(sys.argv[1] or "").strip()
+          result_file = pathlib.Path(sys.argv[2])
 
-          raw = execution_file.read_text(encoding="utf-8", errors="replace")
           result = ""
+          turns = 0
+          last_subtype = ""
+          terminal_subtype = ""
 
-          try:
-              data = json.loads(raw)
+          if execution_file_value:
+              execution_file = pathlib.Path(execution_file_value)
 
-              if isinstance(data, dict):
-                  result = str(data.get("result") or "")
+              if execution_file.exists():
+                  raw = execution_file.read_text(
+                      encoding="utf-8",
+                      errors="replace",
+                  )
 
-              elif isinstance(data, list):
-                  for item in reversed(data):
-                      if isinstance(item, dict) and item.get("type") == "result":
-                          result = str(item.get("result") or "")
-                          break
+                  events = []
 
-          except json.JSONDecodeError:
-              for line in reversed(raw.splitlines()):
                   try:
-                      item = json.loads(line)
+                      data = json.loads(raw)
+
+                      if isinstance(data, list):
+                          events = data
+
+                      elif isinstance(data, dict):
+                          events = [data]
+
                   except json.JSONDecodeError:
-                      continue
+                      for line in raw.splitlines():
+                          try:
+                              item = json.loads(line)
+                          except json.JSONDecodeError:
+                              continue
 
-                  if isinstance(item, dict) and item.get("type") == "result":
-                      result = str(item.get("result") or "")
-                      break
+                          if isinstance(item, dict):
+                              events.append(item)
 
-          comment_file.write_text(result, encoding="utf-8")
+                  for item in events:
+                      if not isinstance(item, dict):
+                          continue
+
+                      subtype = str(item.get("subtype") or "").strip()
+
+                      if subtype:
+                          last_subtype = subtype
+
+                      if subtype == "error_max_turns":
+                          terminal_subtype = subtype
+
+                      try:
+                          candidate_turns = int(
+                              item.get("num_turns") or 0
+                          )
+                      except (TypeError, ValueError):
+                          candidate_turns = 0
+
+                      if candidate_turns > turns:
+                          turns = candidate_turns
+
+                      is_result_event = (
+                          item.get("type") == "result"
+                          or len(events) == 1
+                      )
+
+                      if not is_result_event:
+                          continue
+
+                      candidate_result = str(
+                          item.get("result") or ""
+                      )
+
+                      is_error_result = subtype.startswith("error_")
+
+                      if (
+                          candidate_result.strip()
+                          and not is_error_result
+                      ):
+                          result = candidate_result
+
+          result_file.write_text(
+              json.dumps(
+                  {
+                      "result": result,
+                      "turns": turns,
+                      "subtype": terminal_subtype or last_subtype,
+                  }
+              ),
+              encoding="utf-8",
+          )
           PY
 
-          RESULT_TEXT="$(cat "$COMMENT_FILE")"
+          RESULT_TEXT="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
 
-          if [ "$STEP_OUTCOME" != "success" ] || [ -z "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
-            BODY="$(cat <<EOF
-          ## CLAUDE_EXPERIMENT_ERROR
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
 
-          experiment_id: $EXPERIMENT_ID
-          role: $ROLE_NAME
-          workflow_run: $RUN_URL
-          step_outcome: $STEP_OUTCOME
-
-          ### Error
-
-          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
-
-          EOF
+          print(str(data.get("result") or ""))
+          PY
           )"
-          else
+
+          TURNS="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(int(data.get("turns") or 0))
+          PY
+          )"
+
+          SUBTYPE="$(python - "$RESULT_FILE" <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          data = json.loads(
+              pathlib.Path(sys.argv[1]).read_text(
+                  encoding="utf-8"
+              )
+          )
+
+          print(str(data.get("subtype") or ""))
+          PY
+          )"
+
+          if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
             BODY="$(cat <<EOF
           ## CLAUDE_EXPERIMENT_RESULT
 
@@ -585,6 +922,44 @@ jobs:
           ### Result
 
           $RESULT_TEXT
+          EOF
+          )"
+
+          elif [ "$SUBTYPE" = "error_max_turns" ] \
+            || [ "${TURNS:-0}" -ge "$MAX_TURNS" ]; then
+
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: turn_limit_exhausted
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude reached the configured max_turns without producing a valid final result.
+          EOF
+          )"
+
+          else
+            BODY="$(cat <<EOF
+          ## CLAUDE_EXPERIMENT_ERROR
+
+          experiment_id: $EXPERIMENT_ID
+          role: $ROLE_NAME
+          workflow_run: $RUN_URL
+          step_outcome: $STEP_OUTCOME
+          error_type: claude_execution_error
+          turns: $TURNS
+          max_turns: $MAX_TURNS
+
+          ### Error
+
+          Claude did not produce a usable final result text. Do not treat this as a valid proposal, gatekeeper review, or implementation result.
           EOF
           )"
           fi

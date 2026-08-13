@@ -48,5 +48,5 @@ jobs:
             workflows: write
 
           claude_args: |
-            --max-turns 40
+            --max-turns 50
             --allowedTools "Edit,Read,Write,Glob,Grep,Bash(npm:*),Bash(npx:*),Bash(node:*),Bash(git:*)"
