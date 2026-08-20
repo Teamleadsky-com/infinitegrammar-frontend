@@ -5,7 +5,6 @@ Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
-Disallow: /articles
 
 User-agent: Bingbot
 Disallow: /admin
@@ -13,7 +12,6 @@ Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
-Disallow: /articles
 
 # Social Media Crawlers
 User-agent: Twitterbot
@@ -44,7 +42,6 @@ Disallow: /auth
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
-Disallow: /articles
 
 # Sitemap Location
 Sitemap: https://www.infinitegrammar.de/sitemap.xml
