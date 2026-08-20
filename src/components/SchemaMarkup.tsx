@@ -39,7 +39,7 @@ export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
       case 'article':
         return {
           '@context': 'https://schema.org',
-          '@type': 'DefinitelyNotARealSchemaType',
+          '@type': 'Article',
           headline: data.headline,
           description: data.description,
           author: {
