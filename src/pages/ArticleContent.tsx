@@ -28,7 +28,7 @@ const ArticleContent = () => {
   }
 
   const pageTitle = `${article.title} | InfiniteGrammar`;
-  const pageUrl = `https://www.infinitegrammar.de/articles/${article.slug}/`;
+  const pageUrl = `https://infinitegrammar.de/articles/${article.slug}/`;
 
   return (
     <div className="min-h-screen bg-gradient-subtle flex flex-col">
