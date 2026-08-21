@@ -189,6 +189,33 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Prepare pinned Claude SEO marketplace
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MARKETPLACE_DIR="${RUNNER_TEMP}/claude-seo-marketplace"
+
+          git clone \
+            --quiet \
+            --branch "${SEO_SKILLS_VERSION}" \
+            --depth 1 \
+            "https://github.com/${SEO_SKILLS_SOURCE}.git" \
+            "${MARKETPLACE_DIR}"
+
+          ACTUAL_COMMIT="$(git -C "${MARKETPLACE_DIR}" rev-parse HEAD)"
+
+          if [ "${ACTUAL_COMMIT}" != "${SEO_SKILLS_RELEASE_COMMIT}" ]; then
+            echo "Pinned Claude SEO release commit mismatch." >&2
+            echo "Expected: ${SEO_SKILLS_RELEASE_COMMIT}" >&2
+            echo "Actual:   ${ACTUAL_COMMIT}" >&2
+            exit 1
+          fi
+
+          echo "Claude SEO marketplace verified:"
+          echo "  version: ${SEO_SKILLS_VERSION}"
+          echo "  commit:  ${ACTUAL_COMMIT}"
+
       - name: Run Claude proposal
         id: claude_proposal
         uses: anthropics/claude-code-action@v1
@@ -196,7 +223,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
           plugin_marketplaces: |
-            https://github.com/AgriciDaniel/claude-seo.git#v2.2.4
+            ${{ runner.temp }}/claude-seo-marketplace
 
           plugins: |
             claude-seo@agricidaniel-claude-seo
@@ -789,6 +816,33 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Prepare pinned Claude SEO marketplace
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          MARKETPLACE_DIR="${RUNNER_TEMP}/claude-seo-marketplace"
+
+          git clone \
+            --quiet \
+            --branch "${SEO_SKILLS_VERSION}" \
+            --depth 1 \
+            "https://github.com/${SEO_SKILLS_SOURCE}.git" \
+            "${MARKETPLACE_DIR}"
+
+          ACTUAL_COMMIT="$(git -C "${MARKETPLACE_DIR}" rev-parse HEAD)"
+
+          if [ "${ACTUAL_COMMIT}" != "${SEO_SKILLS_RELEASE_COMMIT}" ]; then
+            echo "Pinned Claude SEO release commit mismatch." >&2
+            echo "Expected: ${SEO_SKILLS_RELEASE_COMMIT}" >&2
+            echo "Actual:   ${ACTUAL_COMMIT}" >&2
+            exit 1
+          fi
+
+          echo "Claude SEO marketplace verified:"
+          echo "  version: ${SEO_SKILLS_VERSION}"
+          echo "  commit:  ${ACTUAL_COMMIT}"
+
       - name: Run Claude implementation
         id: claude_implementation
         uses: anthropics/claude-code-action@v1
@@ -799,7 +853,7 @@ jobs:
           show_full_output: ${{ vars.CLAUDE_VERBOSE_LOGGING == 'true' }}
 
           plugin_marketplaces: |
-            https://github.com/AgriciDaniel/claude-seo.git#v2.2.4
+            ${{ runner.temp }}/claude-seo-marketplace
 
           plugins: |
             claude-seo@agricidaniel-claude-seo
