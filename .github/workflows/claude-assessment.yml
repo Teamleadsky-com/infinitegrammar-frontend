@@ -48,6 +48,12 @@ concurrency:
   group: claude-seo-assessment-${{ inputs.subject_id }}-${{ inputs.mode }}
   cancel-in-progress: false
 
+env:
+  SEO_AGENT_PROFILE_ID: "v1b-seo-skilled-p1"
+  SEO_SKILLS_VERSION: "v2.2.4"
+  SEO_SKILLS_SOURCE: "AgriciDaniel/claude-seo"
+  SEO_SKILLS_RELEASE_COMMIT: "6b63c8bb7b2e8e4480060604555e3af629b54c2c"
+
 jobs:
   validate-inputs:
     runs-on: ubuntu-latest
@@ -138,6 +144,12 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
+          plugin_marketplaces: |
+            https://github.com/AgriciDaniel/claude-seo.git#v2.2.4
+
+          plugins: |
+            claude-seo@agricidaniel-claude-seo
+
           additional_permissions: |
             actions: read
             checks: read
@@ -147,8 +159,21 @@ jobs:
             SUBJECT_ID: ${{ inputs.subject_id }}
             ISSUE_NUMBER: ${{ inputs.issue_number }}
             MODE: ${{ inputs.mode }}
+            AGENT_PROFILE_ID: ${{ env.SEO_AGENT_PROFILE_ID }}
+            SEO_SKILLS_ENABLED: true
+            SEO_SKILLS_VERSION: ${{ env.SEO_SKILLS_VERSION }}
+            SEO_SKILLS_SOURCE: ${{ env.SEO_SKILLS_SOURCE }}
+            SEO_SKILLS_RELEASE_COMMIT: ${{ env.SEO_SKILLS_RELEASE_COMMIT }}
 
             You are running a READ-ONLY SEO Assessment / Discovery task.
+
+            SEO SKILL POLICY:
+            - Use the installed Claude SEO skills as specialist domain reference when relevant.
+            - Repository evidence and the supplied immutable validation plan remain authoritative.
+            - Do not broaden the supplied catalogue check into a whole-site SEO audit.
+            - Do not rewrite, broaden, replace, or bypass the immutable validation/observation plan.
+            - Do not invoke optional external SEO integrations, MCP services, network tools, plugin subagents, or plugin runtime/setup commands.
+            - Do not run /seo setup or any claude-seo runtime command.
 
             NON-NEGOTIABLE SAFETY RULES:
             - Do not modify files.
@@ -339,6 +364,11 @@ jobs:
             echo "mode: $MODE"
             echo "outcome: $STEP_OUTCOME"
             echo "run: $RUN_URL"
+            echo "agent_profile_id: $SEO_AGENT_PROFILE_ID"
+            echo "seo_skills_enabled: true"
+            echo "seo_skills_version: $SEO_SKILLS_VERSION"
+            echo "seo_skills_source: $SEO_SKILLS_SOURCE"
+            echo "seo_skills_release_commit: $SEO_SKILLS_RELEASE_COMMIT"
 
             if [ -n "$(printf '%s' "$RESULT_TEXT" | tr -d '[:space:]')" ]; then
               # A usable result takes precedence over the action outcome
