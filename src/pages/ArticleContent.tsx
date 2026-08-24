@@ -33,6 +33,7 @@ const ArticleContent = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
+        <html lang="en" />
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
         <meta name="description" content={article.excerpt} />
