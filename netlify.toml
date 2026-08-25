@@ -310,7 +310,24 @@
   status = 301
 
 # Generic wildcard redirects (MUST come AFTER specific redirects above)
-# Note: No trailing slash on :splat to prevent double slashes
+
+# Legacy topic hub URLs -> canonical trailing-slash destination in ONE hop.
+# A path placeholder (:slug) is used rather than a splat: a placeholder is
+# segment-scoped and cannot capture a "/", so appending the trailing slash in
+# the destination can never produce a double slash. A splat would capture
+# "satzbau/" for a slash-terminated request and yield "//" -- that is the case
+# the old ":splat"-without-slash form was avoiding, at the cost of a second hop
+# via netlify/edge-functions/trailing-slash.ts (all eight thema routes are in
+# its CANONICAL_ROUTES, so a non-slash destination is immediately 301'd again).
+[[redirects]]
+  from = "/grammatik/thema/:slug"
+  to = "/deutsche-grammatik/thema/:slug/"
+  status = 301
+
+# Retained unchanged as the fallback for anything the single-segment rule does
+# not match (multi-segment legacy paths, "/grammatik/thema" itself, and -- if
+# Netlify does not normalise trailing slashes before matching -- slash-terminated
+# requests, where :splat already ends in "/" so no double slash is produced).
 [[redirects]]
   from = "/grammatik/thema/*"
   to = "/deutsche-grammatik/thema/:splat"
