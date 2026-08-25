@@ -520,8 +520,8 @@ export const grammarContentData: Record<string, GrammarContent> = {
   },
 
   // A1 - Personalpronomen Nominativ
-  'a1-personalpronomen-nominativ': {
-    topicId: 'a1-personalpronomen-nominativ',
+  'a1-personalpronomen': {
+    topicId: 'a1-personalpronomen',
     shortExplanation:
       'Personalpronomen im <strong>Nominativ</strong> stehen als <strong>Subjekt</strong>: <strong>ich, du, er/sie/es, wir, ihr, sie/Sie</strong>.',
     whenToUse: `
@@ -2532,8 +2532,8 @@ export const grammarContentData: Record<string, GrammarContent> = {
   },
 
   // B2 - Adjektivdeklination: das System (vollständig)
-  'b2-adjektivdeklination-system-komplett': {
-    topicId: 'b2-adjektivdeklination-system-komplett',
+  'b2-adjektivdeklination-system': {
+    topicId: 'b2-adjektivdeklination-system',
     shortExplanation:
       'Die Adjektivdeklination folgt drei Mustern: <strong>stark</strong> (ohne Artikel), <strong>schwach</strong> (mit der/die/das) und <strong>gemischt</strong> (mit ein-). Entscheidend ist: <strong>Wer „zeigt“ Kasus/Genus?</strong>',
     whenToUse: `

@@ -65,28 +65,32 @@ const GrammatikContent = () => {
       </Helmet>
 
       {/* Schema Markup for SEO */}
-      <SchemaMarkup
-        type="article"
-        data={{
-          headline: `${topic.title}: Regeln einfach erklärt`,
-          description: pageDescription,
-          url: pageUrl,
-          datePublished: '2025-12-15T10:00:00+01:00',
-          dateModified: '2026-01-06T14:00:00+01:00',
-          keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Deutsch lernen', 'Grammatik Regeln']
-        }}
-      />
-      <SchemaMarkup
-        type="educational"
-        data={{
-          headline: topic.title,
-          description: pageDescription,
-          url: pageUrl,
-          educationalLevel: topic.level,
-          learningResourceType: 'Grammar Guide',
-          keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Grammatikregeln']
-        }}
-      />
+      {content && (
+        <>
+          <SchemaMarkup
+            type="article"
+            data={{
+              headline: `${topic.title}: Regeln einfach erklärt`,
+              description: pageDescription,
+              url: pageUrl,
+              datePublished: '2025-12-15T10:00:00+01:00',
+              dateModified: '2026-01-06T14:00:00+01:00',
+              keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Deutsch lernen', 'Grammatik Regeln']
+            }}
+          />
+          <SchemaMarkup
+            type="educational"
+            data={{
+              headline: topic.title,
+              description: pageDescription,
+              url: pageUrl,
+              educationalLevel: topic.level,
+              learningResourceType: 'Grammar Guide',
+              keywords: ['Deutsche Grammatik', topic.title, `${topic.level} Deutsch`, 'Grammatikregeln']
+            }}
+          />
+        </>
+      )}
       <SchemaMarkup
         type="breadcrumb"
         data={{
