@@ -186,6 +186,13 @@ All colors MUST be HSL.
   @apply overflow-x-auto mb-5;
 }
 
+/* Pair with the intrinsic width/height attributes on article images so the
+   browser can reserve the box from the aspect ratio before decode. */
+.article-content img {
+  max-width: 100%;
+  height: auto;
+}
+
 .article-content .article-figure {
   @apply my-8 -mx-4;
 }

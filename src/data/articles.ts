@@ -32,7 +32,7 @@ export const articles: Article[] = [
 <p>That changes the product problem completely.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/level-selection.png" alt="InfiniteGrammar level selection showing CEFR levels A1 through C1" />
+<img src="/images/articles/level-selection.png" alt="InfiniteGrammar level selection showing CEFR levels A1 through C1" width="2560" height="1800" />
 <figcaption>The product is structured around CEFR levels A1 through C1 — the same levels that define exam thresholds.</figcaption>
 </figure>
 
@@ -107,7 +107,7 @@ export const articles: Article[] = [
 <p>The product is not trying to imitate telc or TestDaF directly. But the task design and the scenario design are clearly shaped by the fact that many learners work toward those kinds of exams.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/exercise-gap-fill.png" alt="A B2 gap-fill exercise with blanks embedded in a German text about working from home" />
+<img src="/images/articles/exercise-gap-fill.png" alt="A B2 gap-fill exercise with blanks embedded in a German text about working from home" width="2560" height="1800" />
 <figcaption>A B2 gap-fill exercise. The learner selects the correct verb form from four options for each blank — the same task structure used in telc and TestDaF exams.</figcaption>
 </figure>
 
@@ -130,7 +130,7 @@ export const articles: Article[] = [
 <p>It also supports the exam-oriented use case. Many scenarios sit close to domains that repeatedly matter in preparation and later real life: work, education, housing, bureaucracy, formal communication, applications, and public life.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/grammar-overview.png" alt="Grammar reference overview with quick quizzes across levels and topics" />
+<img src="/images/articles/grammar-overview.png" alt="Grammar reference overview with quick quizzes across levels and topics" width="2560" height="1800" />
 <figcaption>The grammar reference page organises content by level and topic — quick tests let learners target specific grammar areas directly.</figcaption>
 </figure>
 
@@ -160,7 +160,7 @@ export const articles: Article[] = [
 <p>This is one of those cases where product strategy quietly commits you to infrastructure. Once the promise becomes "targeted depth," you need a way to produce depth, measure depth, and keep depth from degenerating into repetition.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar sections showing categories like Satzbau, Zeiten & Modi, and Verben & Ergänzungen with multiple topics each" />
+<img src="/images/articles/grammar-sections-b2.png" alt="B2 grammar sections showing categories like Satzbau, Zeiten & Modi, and Verben & Ergänzungen with multiple topics each" width="2560" height="1800" />
 <figcaption>The B2 grammar reference: 9 sections across categories like sentence structure, tenses, and verb complements. Each section links to explanations and exercises.</figcaption>
 </figure>
 
@@ -207,7 +207,7 @@ export const articles: Article[] = [
 <p>That is exactly why the format is useful. It is also why quality is hard.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/exercise-dropdown-open.png" alt="A gap-fill exercise with a dropdown showing four verb form options: müssten, muss, musste, müsste" />
+<img src="/images/articles/exercise-dropdown-open.png" alt="A gap-fill exercise with a dropdown showing four verb form options: müssten, muss, musste, müsste" width="2560" height="1800" />
 <figcaption>A B2 Konjunktiv II exercise with the dropdown open. The learner chooses between four verb forms — all real German words, but only one fits this exact sentence.</figcaption>
 </figure>
 
@@ -266,7 +266,7 @@ export const articles: Article[] = [
 <p>The distractors define a large part of the learning value.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/exercise-submitted.png" alt="Exercise after submission showing red incorrect answers with correct answers displayed, and one green correct answer, with a score of 1/6" />
+<img src="/images/articles/exercise-submitted.png" alt="Exercise after submission showing red incorrect answers with correct answers displayed, and one green correct answer, with a score of 1/6" width="2560" height="1800" />
 <figcaption>After submission: wrong answers appear in red with the correct form shown below. The score (1/6) and the visual feedback make both the learner's errors and the intended answers immediately visible.</figcaption>
 </figure>
 
@@ -341,7 +341,7 @@ for iteration in range(max_iterations):
 <p>Without that shared context, regeneration is basically just another attempt. With it, the model sees the draft, the critique, and the reasons the exercise failed. That at least makes targeted repair possible.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/exercise-explanations.png" alt="Explanations view showing each gap with its correct answer and a detailed German grammar explanation" />
+<img src="/images/articles/exercise-explanations.png" alt="Explanations view showing each gap with its correct answer and a detailed German grammar explanation" width="2560" height="1800" />
 <figcaption>The explanations view. Each gap shows the correct answer and a detailed explanation of the underlying grammar rule — not just what is correct, but why the alternatives are wrong.</figcaption>
 </figure>
 
@@ -720,17 +720,17 @@ for iteration in range(max_iterations):
 </ul>
 
 <figure class="article-figure">
-<img src="/images/articles/admin-similarity-heatmap-grid.png" alt="Similarity heatmap grid showing pairwise cosine similarity between exercises in a section, with color-coded cells from green (low) to red (high similarity)" />
+<img src="/images/articles/admin-similarity-heatmap-grid.png" alt="Similarity heatmap grid showing pairwise cosine similarity between exercises in a section, with color-coded cells from green (low) to red (high similarity)" width="992" height="550" />
 <figcaption>The heatmap makes local overlap visible at a glance. Each cell shows the cosine similarity between two exercises. A red or orange cell means two exercises are close enough to warrant review.</figcaption>
 </figure>
 
 <figure class="article-figure">
-<img src="/images/articles/admin-similarity-dendrogram-b1.png" alt="Dendrogram showing hierarchical clustering of exercises by cosine similarity, with colored branches indicating cluster families" />
+<img src="/images/articles/admin-similarity-dendrogram-b1.png" alt="Dendrogram showing hierarchical clustering of exercises by cosine similarity, with colored branches indicating cluster families" width="992" height="506" />
 <figcaption>The dendrogram groups exercises into families by similarity. Exercises that merge at high thresholds form tight clusters — the ones most likely to feel repetitive to a learner.</figcaption>
 </figure>
 
 <figure class="article-figure">
-<img src="/images/articles/admin-similarity-pair-detail.png" alt="Pair comparison dialog showing two exercises side by side with highlighted gaps and answers, displaying 32.92% similarity" />
+<img src="/images/articles/admin-similarity-pair-detail.png" alt="Pair comparison dialog showing two exercises side by side with highlighted gaps and answers, displaying 32.92% similarity" width="1400" height="900" />
 <figcaption>The pair detail view shows the two exercises side by side with their gaps highlighted. This is where you decide whether high similarity means genuine redundancy or just topical overlap.</figcaption>
 </figure>
 
@@ -743,7 +743,7 @@ for iteration in range(max_iterations):
 <p>That is what the sequential neighbor strip shows. For each exercise, it displays the cosine similarity to the next 1–5 exercises in order. Orange or red in the +1 column means the learner will encounter two exercises back-to-back that feel repetitive.</p>
 
 <figure class="article-figure">
-<img src="/images/articles/admin-similarity-neighbor-strip.png" alt="Sequential neighbor similarity table showing each exercise's similarity to the next 1-5 exercises, with color-coded cells highlighting high-similarity neighbors" />
+<img src="/images/articles/admin-similarity-neighbor-strip.png" alt="Sequential neighbor similarity table showing each exercise's similarity to the next 1-5 exercises, with color-coded cells highlighting high-similarity neighbors" width="1400" height="552" />
 <figcaption>The sequential neighbor strip. Each row is an exercise; the columns show similarity to the next 1–5 exercises in sequence. Red cells in the +1 or +2 columns signal pairs that a learner would experience as repetitive.</figcaption>
 </figure>
 
@@ -1182,11 +1182,11 @@ free   = [ex for ex in all_exercises if str(ex['id']) not in touched_ids]</code>
 
 <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 2rem 0;">
 <figure style="flex: 1; min-width: 280px;">
-<img src="/images/articles/admin-neighbor-strip-before.png" alt="Sequential Neighbor Similarity before reordering \u2014 higher similarity values in the +1 column indicate consecutive exercises feel repetitive" loading="lazy" />
+<img src="/images/articles/admin-neighbor-strip-before.png" alt="Sequential Neighbor Similarity before reordering \u2014 higher similarity values in the +1 column indicate consecutive exercises feel repetitive" loading="lazy" width="992" height="548" />
 <figcaption>Before reordering: elevated similarity in the +1 column (e.g. 0.57, 0.47) means consecutive exercises overlap noticeably.</figcaption>
 </figure>
 <figure style="flex: 1; min-width: 280px;">
-<img src="/images/articles/admin-neighbor-strip-after.png" alt="Sequential Neighbor Similarity after reordering \u2014 lower similarity values show improved exercise sequencing" loading="lazy" />
+<img src="/images/articles/admin-neighbor-strip-after.png" alt="Sequential Neighbor Similarity after reordering \u2014 lower similarity values show improved exercise sequencing" loading="lazy" width="992" height="548" />
 <figcaption>After reordering: +1 values drop substantially (mostly below 0.20), confirming the sequence now spreads similar exercises apart.</figcaption>
 </figure>
 </div>
