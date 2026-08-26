@@ -143,6 +143,16 @@
       }
     },
     {
+      "id": "legacy-grammatik-thema-redirect",
+      "category": "redirect",
+      "path": "/grammatik/thema/satzbau",
+      "expectedClass": "SYSTEM",
+      "expectations": {
+        "status": 301,
+        "redirectTo": "/deutsche-grammatik/thema/satzbau/"
+      }
+    },
+    {
       "id": "api-exercises",
       "category": "api-system",
       "path": "/api/exercises",
