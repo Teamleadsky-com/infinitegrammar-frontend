@@ -9,6 +9,7 @@ import {
   type GrammarCategory,
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
+import { SchemaMarkup } from '@/components/SchemaMarkup';
 
 const GrammatikTopic = () => {
   const { topic } = useParams<{ topic: string }>();
@@ -59,6 +60,46 @@ const GrammatikTopic = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />
       </Helmet>
+
+      {/* Schema Markup for SEO */}
+      <SchemaMarkup
+        type="breadcrumb"
+        data={{
+          breadcrumbs: [
+            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
+            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik/' },
+            { name: category.name, url: pageUrl }
+          ]
+        }}
+      />
+      <SchemaMarkup
+        type="educational"
+        data={{
+          headline: `${category.name} – Deutsche Grammatik`,
+          description: category.description,
+          url: pageUrl,
+          educationalLevel: 'A1-C1',
+          learningResourceType: 'Grammar Topic Overview',
+          keywords: ['Deutsche Grammatik', category.name, 'Grammatikregeln', 'Deutsch lernen']
+        }}
+      />
+
+      {/* Structured Data - ItemList of topics in this category */}
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          "name": `${category.name} – Grammatikthemen`,
+          "description": category.description,
+          "numberOfItems": topics.length,
+          "itemListElement": topics.map((t, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "name": t.title,
+            "url": `https://www.infinitegrammar.de/deutsche-grammatik/${t.level.toLowerCase()}-niveau-lernen/${t.slug}/`
+          }))
+        })}
+      </script>
 
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
