@@ -69,9 +69,21 @@ const groups = parseRobotsTxt(robotsContents);
 const CRAWLER_AGENTS = ['Googlebot', 'Bingbot', '*'];
 
 // The documented private-route inventory (APP_FUNCTIONAL) that must be kept out
-// of the crawl surface. Mirrors the private routes named in the SEO post-mortem
-// article and classified APP_FUNCTIONAL in config/seo-route-classes.json.
-const PRIVATE_ROUTES = ['/admin', '/auth', '/profile', '/statistics', '/verify-magic-link'];
+// of the crawl surface. Covers both the private routes named in the SEO
+// post-mortem article and the parameterized app surface (`/exercise`, whose
+// level/section/grammar/t query params generate an unbounded set of 200-status
+// URLs). All entries are classified APP_FUNCTIONAL in
+// config/seo-route-classes.json. Prefix-match semantics mean the `/exercise`
+// rule also covers `/exercise-stats`, which is likewise APP_FUNCTIONAL and
+// sitemap-excluded.
+const PRIVATE_ROUTES = [
+  '/admin',
+  '/auth',
+  '/exercise',
+  '/profile',
+  '/statistics',
+  '/verify-magic-link',
+];
 
 // Representative SEO_DRIVER routes that must never be disallowed. Guards against
 // an over-broad Disallow rule silently blocking valid ranking pages.
