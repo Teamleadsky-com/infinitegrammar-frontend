@@ -23,7 +23,6 @@ import { SchemaMarkup } from '@/components/SchemaMarkup';
 const Grammatik = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
-  const [viewMode, setViewMode] = useState<'level' | 'topic'>('level');
   const [activeQuiz, setActiveQuiz] = useState<{ level: string; sectionId: string; sectionName: string } | null>(
     null
   );
@@ -280,90 +279,82 @@ const Grammatik = () => {
           </div>
         </Card>
 
-        {/* View Mode Toggle */}
+        {/* Section Jump Links */}
         <div className="flex justify-center gap-4 mb-8 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-          <Button
-            variant={viewMode === 'level' ? 'default' : 'outline'}
-            onClick={() => setViewMode('level')}
-            className="gap-2"
-          >
-            <Target className="h-4 w-4" />
-            Nach Niveau
+          <Button asChild variant="outline" className="gap-2">
+            <a href="#nach-niveau">
+              <Target className="h-4 w-4" />
+              Nach Niveau
+            </a>
           </Button>
-          <Button
-            variant={viewMode === 'topic' ? 'default' : 'outline'}
-            onClick={() => setViewMode('topic')}
-            className="gap-2"
-          >
-            <Sparkles className="h-4 w-4" />
-            Nach Thema
+          <Button asChild variant="outline" className="gap-2">
+            <a href="#nach-thema">
+              <Sparkles className="h-4 w-4" />
+              Nach Thema
+            </a>
           </Button>
         </div>
 
         {/* Level View */}
-        {viewMode === 'level' && (
-          <div className="space-y-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-center mb-6">Nach Niveau</h2>
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {levels.map((level, idx) => {
-                const topics = getTopicsByLevel(level.level);
-                return (
-                  <a
-                    key={level.level}
-                    href={`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`}
-                    className="block no-underline"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate(`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`);
-                    }}
-                  >
-                    <Card
-                      className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
-                      style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
-                    >
-                      <div className="flex items-center gap-3 mb-3">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-xl font-bold text-primary">{level.level}</span>
-                        </div>
-                        <h3 className="font-bold text-lg">{level.name}</h3>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-4">{level.description}</p>
-                      <p className="text-xs text-muted-foreground">{topics.length} Themen</p>
-                    </Card>
-                  </a>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Topic View */}
-        {viewMode === 'topic' && (
-          <div className="space-y-8 animate-fade-in">
-            <h2 className="text-2xl font-bold text-center mb-6">Nach Thema</h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              {Object.entries(grammarCategories).map(([key, category], idx) => (
+        <div id="nach-niveau" className="space-y-8 animate-fade-in scroll-mt-24">
+          <h2 className="text-2xl font-bold text-center mb-6">Nach Niveau</h2>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {levels.map((level, idx) => {
+              const topics = getTopicsByLevel(level.level);
+              return (
                 <a
-                  key={key}
-                  href={`/deutsche-grammatik/thema/${key}/`}
+                  key={level.level}
+                  href={`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`}
                   className="block no-underline"
                   onClick={(e) => {
                     e.preventDefault();
-                    navigate(`/deutsche-grammatik/thema/${key}/`);
+                    navigate(`/deutsche-grammatik/${level.level.toLowerCase()}-niveau-lernen/`);
                   }}
                 >
                   <Card
                     className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
                     style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
                   >
-                    <h3 className="font-bold text-lg mb-2">{category.name}</h3>
-                    <p className="text-sm text-muted-foreground">{category.description}</p>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span className="text-xl font-bold text-primary">{level.level}</span>
+                      </div>
+                      <h3 className="font-bold text-lg">{level.name}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">{level.description}</p>
+                    <p className="text-xs text-muted-foreground">{topics.length} Themen</p>
                   </Card>
                 </a>
-              ))}
-            </div>
+              );
+            })}
           </div>
-        )}
+        </div>
+
+        {/* Topic View */}
+        <div id="nach-thema" className="space-y-8 mt-16 animate-fade-in scroll-mt-24">
+          <h2 className="text-2xl font-bold text-center mb-6">Nach Thema</h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {Object.entries(grammarCategories).map(([key, category], idx) => (
+              <a
+                key={key}
+                href={`/deutsche-grammatik/thema/${key}/`}
+                className="block no-underline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(`/deutsche-grammatik/thema/${key}/`);
+                }}
+              >
+                <Card
+                  className="p-6 hover:shadow-lg transition-shadow cursor-pointer animate-fade-in"
+                  style={{ animationDelay: `${0.5 + idx * 0.1}s` }}
+                >
+                  <h3 className="font-bold text-lg mb-2">{category.name}</h3>
+                  <p className="text-sm text-muted-foreground">{category.description}</p>
+                </Card>
+              </a>
+            ))}
+          </div>
+        </div>
 
         {/* Popular Topics */}
         <div className="mt-16 animate-fade-in" style={{ animationDelay: '0.8s' }}>
