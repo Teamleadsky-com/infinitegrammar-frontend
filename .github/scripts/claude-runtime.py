@@ -307,7 +307,29 @@ def restore_session(session_id: str, input_dir: str) -> pathlib.Path:
     main = source / "main.jsonl"
     if not main.exists():
         raise SystemExit("Session artifact is missing main.jsonl")
-    target_dir = pathlib.Path.home() / ".claude" / "projects" / _project_key(os.getcwd())
+
+    metadata_path = source / "metadata.json"
+    if not metadata_path.exists():
+        raise SystemExit("Session artifact is missing metadata.json")
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"Session artifact metadata is invalid: {exc}")
+    if str(metadata.get("session_id") or "") != session_id:
+        raise SystemExit("Session artifact session_id does not match requested resume session")
+
+    current_cwd = os.getcwd()
+    source_cwd = str(metadata.get("source_cwd") or "")
+    if source_cwd and source_cwd != current_cwd:
+        raise SystemExit(
+            f"Claude resume cwd mismatch: artifact={source_cwd!r} current={current_cwd!r}"
+        )
+    current_key = _project_key(current_cwd)
+    source_key = str(metadata.get("source_project_key") or "")
+    if source_key and source_key != current_key:
+        raise SystemExit("Claude resume project bucket mismatch")
+
+    target_dir = pathlib.Path.home() / ".claude" / "projects" / current_key
     target_dir.mkdir(parents=True, exist_ok=True)
     target = target_dir / f"{session_id}.jsonl"
     shutil.copy2(main, target)
@@ -319,6 +341,56 @@ def restore_session(session_id: str, input_dir: str) -> pathlib.Path:
             shutil.rmtree(target_sidecars)
         shutil.copytree(sidecars, target_sidecars)
     return target
+
+
+def selftest() -> None:
+    import tempfile
+
+    session = "11111111-2222-3333-4444-555555555555"
+    reset_epoch = 1_900_000_000
+
+    with tempfile.TemporaryDirectory() as td:
+        root = pathlib.Path(td)
+
+        structured = root / "structured.json"
+        structured.write_text(json.dumps([
+            {"type":"rate_limit_event","session_id":session,"rate_limit_info":{"status":"rejected","rateLimitType":"five_hour","resetsAt":reset_epoch}},
+            {"type":"result","subtype":"success","is_error":True,"session_id":session,"result":"You've hit your session limit · resets 5:30pm (UTC)"},
+        ]), encoding="utf-8")
+        got = classify(str(structured), 50)
+        assert got["error_type"] == "claude_rate_limit", got
+        assert got["session_id"] == session, got
+        assert got["reset_at_epoch"] == reset_epoch, got
+        assert got["rate_limit_type"] == "five_hour", got
+
+        human = root / "human.json"
+        human.write_text(json.dumps({"type":"result","subtype":"success","is_error":True,"session_id":session,"result":"You've hit your weekly limit · resets Mon 12:00am (UTC)"}), encoding="utf-8")
+        got = classify(str(human), 50)
+        assert got["error_type"] == "claude_rate_limit", got
+        assert got["session_id"] == session, got
+        assert got["reset_at_epoch"] > 0, got
+
+        ambiguous = root / "ambiguous.json"
+        ambiguous.write_text(json.dumps({"type":"result","subtype":"success","is_error":True,"session_id":session,"result":"You've hit your session limit · resets 5:30pm"}), encoding="utf-8")
+        got = classify(str(ambiguous), 50)
+        assert got["error_type"] == "claude_rate_limit", got
+        assert got["reset_at_epoch"] == 0, got
+
+        success = root / "success.json"
+        success.write_text(json.dumps([
+            {"type":"rate_limit_event","session_id":session,"rate_limit_info":{"status":"rejected","resetsAt":reset_epoch}},
+            {"type":"result","subtype":"success","is_error":False,"session_id":session,"result":"FINAL_RESULT"},
+        ]), encoding="utf-8")
+        got = classify(str(success), 50)
+        assert got["error_type"] == "", got
+        assert got["result"] == "FINAL_RESULT", got
+
+        turns = root / "turns.json"
+        turns.write_text(json.dumps({"type":"result","subtype":"error_max_turns","is_error":True,"session_id":session,"num_turns":50,"result":""}), encoding="utf-8")
+        got = classify(str(turns), 50)
+        assert got["error_type"] == "turn_limit_exhausted", got
+
+    print("PASS: claude-runtime parser selftest")
 
 
 def main() -> int:
@@ -340,6 +412,8 @@ def main() -> int:
     p_restore.add_argument("--session-id", required=True)
     p_restore.add_argument("--input-dir", required=True)
 
+    sub.add_parser("selftest")
+
     args = parser.parse_args()
     if args.command == "classify":
         values = classify(args.execution_file, args.max_turns)
@@ -352,6 +426,9 @@ def main() -> int:
         return 0
     if args.command == "restore":
         print(str(restore_session(args.session_id, args.input_dir)))
+        return 0
+    if args.command == "selftest":
+        selftest()
         return 0
     return 2
 
