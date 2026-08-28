@@ -38,6 +38,36 @@ on:
         default: "opus"
         type: string
 
+      task_id:
+        description: "Persisted seo_claude_tasks task ID (required for autonomous dispatches)"
+        required: false
+        default: ""
+        type: string
+
+      resume_session_id:
+        description: "Claude session ID to resume after a rate-limit pause"
+        required: false
+        default: ""
+        type: string
+
+      resume_source_run_id:
+        description: "GitHub Actions run containing the saved Claude session artifact"
+        required: false
+        default: ""
+        type: string
+
+      resume_artifact_name:
+        description: "Saved Claude session artifact name"
+        required: false
+        default: ""
+        type: string
+
+      resume_generation:
+        description: "Monotonic resume generation used to invalidate stale wake-ups"
+        required: false
+        default: "0"
+        type: string
+
       dry_run:
         description: "Validate inputs without calling Claude"
         required: false
@@ -64,6 +94,7 @@ jobs:
     outputs:
       max_turns_arg: ${{ steps.prepare.outputs.max_turns_arg }}
       model_arg: ${{ steps.prepare.outputs.model_arg }}
+      resume_arg: ${{ steps.prepare.outputs.resume_arg }}
 
     steps:
       - id: prepare
@@ -72,6 +103,10 @@ jobs:
           MODE: ${{ inputs.mode }}
           MAX_TURNS: ${{ inputs.max_turns }}
           MODEL: ${{ inputs.model }}
+          RESUME_SESSION_ID: ${{ inputs.resume_session_id }}
+          RESUME_SOURCE_RUN_ID: ${{ inputs.resume_source_run_id }}
+          RESUME_ARTIFACT_NAME: ${{ inputs.resume_artifact_name }}
+          RESUME_GENERATION: ${{ inputs.resume_generation }}
         run: |
           set -euo pipefail
 
@@ -105,8 +140,33 @@ jobs:
               ;;
           esac
 
+          RESUME_ARG=""
+          if [ -n "$RESUME_SESSION_ID" ]; then
+            if ! [[ "$RESUME_SESSION_ID" =~ ^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}$ ]]; then
+              echo "Invalid resume_session_id" >&2
+              exit 1
+            fi
+            if ! [[ "$RESUME_SOURCE_RUN_ID" =~ ^[0-9]+$ ]]; then
+              echo "resume_source_run_id is required and must be numeric when resuming" >&2
+              exit 1
+            fi
+            if ! [[ "$RESUME_ARTIFACT_NAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
+              echo "resume_artifact_name is required and contains unsupported characters" >&2
+              exit 1
+            fi
+            if ! [[ "$RESUME_GENERATION" =~ ^[0-9]+$ ]]; then
+              echo "resume_generation must be a non-negative integer" >&2
+              exit 1
+            fi
+            RESUME_ARG="--resume $RESUME_SESSION_ID"
+          elif [ -n "$RESUME_SOURCE_RUN_ID$RESUME_ARTIFACT_NAME" ]; then
+            echo "resume_source_run_id/resume_artifact_name require resume_session_id" >&2
+            exit 1
+          fi
+
           echo "max_turns_arg=--max-turns $MAX_TURNS" >> "$GITHUB_OUTPUT"
           echo "model_arg=--model $EFFECTIVE_MODEL" >> "$GITHUB_OUTPUT"
+          echo "resume_arg=$RESUME_ARG" >> "$GITHUB_OUTPUT"
 
   dry-run:
     needs: validate-inputs
@@ -137,6 +197,24 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
+
+      - name: Download interrupted Claude session
+        if: ${{ inputs.resume_session_id != '' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.resume_artifact_name }}
+          path: ${{ runner.temp }}/claude-session-restore
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.resume_source_run_id }}
+
+      - name: Restore interrupted Claude session
+        if: ${{ inputs.resume_session_id != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/scripts/claude-runtime.py restore \
+            --session-id "${{ inputs.resume_session_id }}" \
+            --input-dir "${RUNNER_TEMP}/claude-session-restore"
 
       - name: Prepare pinned Claude SEO marketplace
         shell: bash
@@ -184,6 +262,7 @@ jobs:
           prompt: |
             REPOSITORY: ${{ github.repository }}
             SUBJECT_ID: ${{ inputs.subject_id }}
+            TASK_ID: ${{ inputs.task_id }}
             ISSUE_NUMBER: ${{ inputs.issue_number }}
             MODE: ${{ inputs.mode }}
             AGENT_PROFILE_ID: ${{ env.SEO_AGENT_PROFILE_ID }}
@@ -212,13 +291,53 @@ jobs:
             - Use repository evidence only to analyze the supplied assessment prompt.
             - Return only the structured result requested by the supplied contract.
 
-            Assessment prompt:
-            ${{ inputs.prompt }}
+            Assessment task instruction:
+            ${{ inputs.resume_session_id != '' && 'Continue the interrupted assessment from the restored Claude session. The prior execution stopped only because a Claude usage/session limit was reached. Continue from the existing analysis and produce the originally requested final structured assessment result. Do not restart completed analysis.' || inputs.prompt }}
 
           claude_args: |
             ${{ needs.validate-inputs.outputs.max_turns_arg }}
             ${{ needs.validate-inputs.outputs.model_arg }}
+            ${{ needs.validate-inputs.outputs.resume_arg }}
             --allowedTools "Read,Glob,Grep"
+
+      - name: Classify Claude runtime outcome
+        id: classify_runtime
+        if: ${{ always() }}
+        shell: bash
+        env:
+          EXECUTION_FILE: ${{ steps.claude_assessment.outputs.execution_file }}
+          MAX_TURNS: ${{ inputs.max_turns }}
+        run: |
+          set -euo pipefail
+          python .github/scripts/claude-runtime.py classify \
+            --execution-file "$EXECUTION_FILE" \
+            --max-turns "$MAX_TURNS" \
+            --json-output "${RUNNER_TEMP}/claude-runtime.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Package interrupted Claude session
+        id: package_session
+        if: ${{ always() && steps.classify_runtime.outputs.error_type == 'claude_rate_limit' && steps.classify_runtime.outputs.session_id != '' }}
+        continue-on-error: true
+        shell: bash
+        env:
+          EXECUTION_FILE: ${{ steps.claude_assessment.outputs.execution_file }}
+        run: |
+          set -euo pipefail
+          python .github/scripts/claude-runtime.py package \
+            --session-id "${{ steps.classify_runtime.outputs.session_id }}" \
+            --execution-file "$EXECUTION_FILE" \
+            --output-dir "${RUNNER_TEMP}/claude-session-package"
+
+      - name: Upload interrupted Claude session
+        id: upload_session
+        if: ${{ always() && steps.package_session.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-session-${{ steps.classify_runtime.outputs.session_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/claude-session-package
+          retention-days: 14
+          if-no-files-found: error
 
       - name: Post Claude assessment result to audit issue
         if: ${{ always() }}
@@ -228,13 +347,70 @@ jobs:
           REPO: ${{ github.repository }}
           ISSUE_NUMBER: ${{ inputs.issue_number }}
           SUBJECT_ID: ${{ inputs.subject_id }}
+          TASK_ID: ${{ inputs.task_id }}
           MODE: ${{ inputs.mode }}
           EXECUTION_FILE: ${{ steps.claude_assessment.outputs.execution_file }}
+          RUNTIME_FILE: ${{ runner.temp }}/claude-runtime.json
+          RUNTIME_ERROR_TYPE: ${{ steps.classify_runtime.outputs.error_type }}
+          RATE_LIMIT_STATUS: ${{ steps.classify_runtime.outputs.rate_limit_status }}
+          RATE_LIMIT_TYPE: ${{ steps.classify_runtime.outputs.rate_limit_type }}
+          RESET_AT_EPOCH: ${{ steps.classify_runtime.outputs.reset_at_epoch }}
+          RESET_AT: ${{ steps.classify_runtime.outputs.reset_at }}
+          CLAUDE_SESSION_ID: ${{ steps.classify_runtime.outputs.session_id }}
+          RESUME_GENERATION: ${{ inputs.resume_generation }}
+          SESSION_UPLOAD_OUTCOME: ${{ steps.upload_session.outcome }}
+          SESSION_ARTIFACT_NAME: claude-session-${{ steps.classify_runtime.outputs.session_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          SOURCE_RUN_ID: ${{ github.run_id }}
           STEP_OUTCOME: ${{ steps.claude_assessment.outcome }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           MAX_TURNS: ${{ inputs.max_turns }}
         run: |
           set -euo pipefail
+
+          if [ "$RUNTIME_ERROR_TYPE" = "claude_rate_limit" ]; then
+            COMMENT_FILE="$(mktemp)"
+            RESUME_AVAILABLE="false"
+            if [ "$SESSION_UPLOAD_OUTCOME" = "success" ]; then
+              RESUME_AVAILABLE="true"
+            fi
+            DIAGNOSTIC_TEXT="$(python - "$RUNTIME_FILE" <<'PY'
+          import json, pathlib, sys
+          p=pathlib.Path(sys.argv[1])
+          data=json.loads(p.read_text(encoding='utf-8')) if p.exists() else {}
+          print(str(data.get('diagnostic_text') or 'Claude reported a usage/session limit.'))
+          PY
+            )"
+            {
+              echo "SEO_ASSESSMENT_CLAUDE_RESULT"
+              echo
+              echo "subject_id: $SUBJECT_ID"
+              echo "task_id: $TASK_ID"
+              echo "mode: $MODE"
+              echo "outcome: paused"
+              echo "error_type: claude_rate_limit"
+              echo "rate_limit_status: ${RATE_LIMIT_STATUS:-rejected}"
+              [ -z "${RATE_LIMIT_TYPE:-}" ] || echo "rate_limit_type: $RATE_LIMIT_TYPE"
+              [ -z "${RESET_AT_EPOCH:-}" ] || [ "$RESET_AT_EPOCH" = "0" ] || echo "reset_at_epoch: $RESET_AT_EPOCH"
+              [ -z "${RESET_AT:-}" ] || echo "reset_at: $RESET_AT"
+              echo "session_id: $CLAUDE_SESSION_ID"
+              echo "resume_generation: ${RESUME_GENERATION:-0}"
+              echo "resume_available: $RESUME_AVAILABLE"
+              if [ "$RESUME_AVAILABLE" = "true" ]; then
+                echo "session_artifact: $SESSION_ARTIFACT_NAME"
+              fi
+              echo "source_run_id: $SOURCE_RUN_ID"
+              echo "run: $RUN_URL"
+              echo "agent_profile_id: $SEO_AGENT_PROFILE_ID"
+              echo "seo_skills_enabled: true"
+              echo "seo_skills_version: $SEO_SKILLS_VERSION"
+              echo "seo_skills_source: $SEO_SKILLS_SOURCE"
+              echo "seo_skills_release_commit: $SEO_SKILLS_RELEASE_COMMIT"
+              echo
+              printf '%s\n' "$DIAGNOSTIC_TEXT"
+            } > "$COMMENT_FILE"
+            gh issue comment "$ISSUE_NUMBER" --repo "$REPO" --body-file "$COMMENT_FILE"
+            exit 0
+          fi
 
           RESULT_FILE="$(mktemp)"
 
@@ -315,7 +491,10 @@ jobs:
                           item.get("result") or ""
                       )
 
-                      is_error_result = subtype.startswith("error_")
+                      is_error_result = (
+                          bool(item.get("is_error"))
+                          or subtype.startswith("error_")
+                      )
 
                       if (
                           candidate_result.strip()
@@ -388,6 +567,7 @@ jobs:
             echo "SEO_ASSESSMENT_CLAUDE_RESULT"
             echo
             echo "subject_id: $SUBJECT_ID"
+            echo "task_id: $TASK_ID"
             echo "mode: $MODE"
             echo "outcome: $STEP_OUTCOME"
             echo "run: $RUN_URL"
