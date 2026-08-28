@@ -1,0 +1,48 @@
+name: LINK-015 Gatekeeper Callback Replay
+
+on:
+  push:
+    branches:
+      - recovery/link015-replay
+    paths:
+      - .github/workflows/link015-replay.yml
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Fetch original Gatekeeper result and repost it verbatim
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          ISSUE_NUMBER: "157"
+          ORIGINAL_COMMENT_ID: "5454873897"
+        run: |
+          set -euo pipefail
+
+          body_file="$(mktemp)"
+
+          gh api \
+            "repos/${REPO}/issues/comments/${ORIGINAL_COMMENT_ID}" \
+            --jq '.body' > "${body_file}"
+
+          # Safety guards: refuse to replay anything except the exact
+          # LINK-015 v3 Gatekeeper GO result.
+          grep -q '^## CLAUDE_EXPERIMENT_RESULT' "${body_file}"
+          grep -q '^experiment_id: ASSESS-INFINITEGRAMMAR-LINK-015-3791ee4e$' "${body_file}"
+          grep -q '^task_id: CLAUDE:ASSESS-INFINITEGRAMMAR-LINK-015-3791ee4e:v3:gatekeeper$' "${body_file}"
+          grep -q '^role: gatekeeper$' "${body_file}"
+          grep -q '^FINAL_VERDICT: GO$' "${body_file}"
+
+          gh issue comment \
+            "${ISSUE_NUMBER}" \
+            --repo "${REPO}" \
+            --body-file "${body_file}"
+
+          echo "Replayed LINK-015 Gatekeeper callback from comment ${ORIGINAL_COMMENT_ID}."
