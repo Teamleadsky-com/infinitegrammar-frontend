@@ -87,6 +87,12 @@ jobs:
             npm run "${script}"
           done
 
+      - name: Validate Claude resumable runtime parser
+        run: python3 .github/scripts/claude-runtime.py selftest
+
+      - name: Enforce autonomous Claude queue architecture
+        run: python3 .github/scripts/check-claude-autonomy-architecture.py
+
   seo-pr-functional-regression:
     name: seo-pr-functional-regression
     runs-on: ubuntu-latest
