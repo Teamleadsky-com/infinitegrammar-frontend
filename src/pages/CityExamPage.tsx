@@ -136,13 +136,21 @@ const CityExamPage = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 md:gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate("/pruefungszentren/")}>
-                <ArrowLeft className="h-5 w-5" />
+              <Button variant="ghost" size="icon" asChild>
+                <a
+                  href="/pruefungszentren/"
+                  aria-label="Zurück zur Übersicht der Prüfungszentren"
+                  onClick={(e) => { e.preventDefault(); navigate("/pruefungszentren/"); }}
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </a>
               </Button>
               <div className="text-base md:text-xl font-bold">{examDisplay} {content.city}</div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")} className="shrink-0">
-              Grammatik üben
+            <Button variant="outline" size="sm" asChild className="shrink-0">
+              <a href="/" onClick={(e) => { e.preventDefault(); navigate("/"); }}>
+                Grammatik üben
+              </a>
             </Button>
           </div>
         </div>
@@ -236,13 +244,14 @@ const CityExamPage = () => {
 
           {/* Link to full directory */}
           <div className="mt-6 text-center">
-            <Button
-              variant="outline"
-              onClick={() => navigate('/pruefungszentren/')}
-              className="gap-2"
-            >
-              <BookOpen className="h-4 w-4" />
-              Alle Prüfungszentren durchsuchen
+            <Button variant="outline" asChild className="gap-2">
+              <a
+                href="/pruefungszentren/"
+                onClick={(e) => { e.preventDefault(); navigate('/pruefungszentren/'); }}
+              >
+                <BookOpen className="h-4 w-4" />
+                Alle Prüfungszentren durchsuchen
+              </a>
             </Button>
           </div>
         </div>
