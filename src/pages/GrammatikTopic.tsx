@@ -9,6 +9,7 @@ import {
   type GrammarCategory,
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
+import { Footer } from '@/components/Footer';
 
 const GrammatikTopic = () => {
   const { topic } = useParams<{ topic: string }>();
@@ -45,7 +46,7 @@ const GrammatikTopic = () => {
   const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/thema/${topic}/`;
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
@@ -162,6 +163,8 @@ const GrammatikTopic = () => {
           </Card>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

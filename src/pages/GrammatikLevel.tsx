@@ -10,6 +10,7 @@ import {
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
+import { Footer } from '@/components/Footer';
 
 const GrammatikLevel = () => {
   const { level } = useParams<{ level: string }>();
@@ -70,7 +71,7 @@ const GrammatikLevel = () => {
   const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/`;
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
@@ -228,6 +229,8 @@ const GrammatikLevel = () => {
           </Card>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 };

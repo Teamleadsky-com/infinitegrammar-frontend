@@ -8,6 +8,7 @@ import { examCenters } from "@/data/examCenters";
 import { getCityExamContent } from "@/data/cityExamContent";
 import { ShareButton } from "@/components/ShareButton";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
+import { Footer } from "@/components/Footer";
 
 const CityExamPage = () => {
   const { examCity } = useParams<{ examCity: string }>();
@@ -56,7 +57,7 @@ const CityExamPage = () => {
   const examLinkTestDaF = 'https://www.testdaf.de/de/testzentren/der-testdaf-an-ihrem-testzentrum/die-testzentren-von-gast/';
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
@@ -297,6 +298,8 @@ const CityExamPage = () => {
           </p>
         </Card>
       </main>
+
+      <Footer />
     </div>
   );
 };

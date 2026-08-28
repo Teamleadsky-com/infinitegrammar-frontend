@@ -14,6 +14,7 @@ import { getTopicContent, getRelatedTopics } from '@/data/grammarContent';
 import { ShareButton } from '@/components/ShareButton';
 import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
+import { Footer } from '@/components/Footer';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { useState } from 'react';
 
@@ -49,7 +50,7 @@ const GrammatikContent = () => {
   const exerciseSection = content?.exerciseSection || 'Verben';
 
   return (
-    <div className="min-h-screen bg-gradient-subtle">
+    <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
         <title>{pageTitle}</title>
         <link rel="canonical" href={pageUrl} />
@@ -394,6 +395,8 @@ const GrammatikContent = () => {
         onOpenChange={setShowComingSoonModal}
         language="de"
       />
+
+      <Footer />
     </div>
   );
 };
