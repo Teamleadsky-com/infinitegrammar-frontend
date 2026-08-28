@@ -24,7 +24,11 @@ const GrammatikContent = () => {
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
   // Extract level code from URL parameter (e.g., "a1-niveau-lernen" -> "a1")
-  const levelCode = level?.replace('-niveau-lernen', '') || '';
+  // Lowercased first: React Router matches the segment case-insensitively, so the raw
+  // param must not leak into pageUrl (canonical, og:url, schema, breadcrumbs, links).
+  // `slug` stays raw — getTopicBySlugAndLevel matches it exactly, so a mis-cased slug
+  // falls through to the not-found branch before any canonical is emitted.
+  const levelCode = (level || '').toLowerCase().replace('-niveau-lernen', '');
   const normalizedLevel = levelCode.toUpperCase() as GrammarLevel;
   const topic = getTopicBySlugAndLevel(slug || '', normalizedLevel);
 

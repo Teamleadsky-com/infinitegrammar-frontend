@@ -17,7 +17,9 @@ const GrammatikLevel = () => {
   const navigate = useNavigate();
 
   // Extract level code from URL parameter (e.g., "a1-niveau-lernen" -> "a1")
-  const levelCode = level?.replace('-niveau-lernen', '') || '';
+  // Lowercased first: React Router matches the segment case-insensitively, so the raw
+  // param must not leak into pageUrl (canonical, og:url, schema, breadcrumbs, links).
+  const levelCode = (level || '').toLowerCase().replace('-niveau-lernen', '');
   const normalizedLevel = levelCode.toUpperCase() as GrammarLevel;
 
   if (!['A1', 'A2', 'B1', 'B2', 'C1'].includes(normalizedLevel)) {
