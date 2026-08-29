@@ -9,6 +9,7 @@ import {
   type GrammarCategory,
 } from '@/data/grammarTopics';
 import { ShareButton } from '@/components/ShareButton';
+import { SeoBreadcrumb } from '@/components/SeoBreadcrumb';
 import { Footer } from '@/components/Footer';
 
 const GrammatikTopic = () => {
@@ -68,6 +69,7 @@ const GrammatikTopic = () => {
             <div className="flex items-center gap-2 md:gap-4">
               <a
                 href="/deutsche-grammatik/"
+                aria-label="Zurück zur Grammatik-Übersicht"
                 className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10"
                 onClick={(e) => {
                   e.preventDefault();
@@ -90,6 +92,15 @@ const GrammatikTopic = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8 max-w-5xl">
+        {/* Breadcrumbs */}
+        <SeoBreadcrumb
+          items={[
+            { name: 'Home', path: '/' },
+            { name: 'Grammatik', path: '/deutsche-grammatik/' },
+            { name: category.name, path: `/deutsche-grammatik/thema/${topic}/` },
+          ]}
+        />
+
         {/* Hero */}
         <div className="mb-8 animate-fade-in">
           <div className="flex items-start justify-between gap-2 mb-2">
