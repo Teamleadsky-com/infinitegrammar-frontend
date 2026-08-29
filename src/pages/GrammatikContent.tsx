@@ -14,6 +14,7 @@ import { getTopicContent, getRelatedTopics } from '@/data/grammarContent';
 import { ShareButton } from '@/components/ShareButton';
 import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
+import { SeoBreadcrumb } from '@/components/SeoBreadcrumb';
 import { Footer } from '@/components/Footer';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { useState } from 'react';
@@ -92,17 +93,6 @@ const GrammatikContent = () => {
           />
         </>
       )}
-      <SchemaMarkup
-        type="breadcrumb"
-        data={{
-          breadcrumbs: [
-            { name: 'Home', url: 'https://www.infinitegrammar.de/' },
-            { name: 'Grammatik', url: 'https://www.infinitegrammar.de/deutsche-grammatik/' },
-            { name: topic.level, url: `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/` },
-            { name: topic.title, url: pageUrl }
-          ]
-        }}
-      />
       {content?.faq && content.faq.length > 0 && (
         <SchemaMarkup
           type="faq"
@@ -160,31 +150,14 @@ const GrammatikContent = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-4 md:py-8 max-w-4xl">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-4 md:mb-6 animate-fade-in">
-          <a
-            href="/deutsche-grammatik/"
-            className="hover:text-primary transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate('/deutsche-grammatik/');
-            }}
-          >
-            Grammatik
-          </a>
-          <span>→</span>
-          <a
-            href={`/deutsche-grammatik/${levelCode}-niveau-lernen/`}
-            className="hover:text-primary transition-colors"
-            onClick={(e) => {
-              e.preventDefault();
-              navigate(`/deutsche-grammatik/${levelCode}-niveau-lernen/`);
-            }}
-          >
-            {topic.level}
-          </a>
-          <span>→</span>
-          <span className="text-foreground">{topic.title}</span>
-        </nav>
+        <SeoBreadcrumb
+          items={[
+            { name: 'Home', path: '/' },
+            { name: 'Grammatik', path: '/deutsche-grammatik/' },
+            { name: topic.level, path: `/deutsche-grammatik/${levelCode}-niveau-lernen/` },
+            { name: topic.title, path: `/deutsche-grammatik/${levelCode}-niveau-lernen/${slug}/` },
+          ]}
+        />
 
         {/* Hero */}
         <div className="mb-4 md:mb-8 animate-fade-in">
