@@ -2,7 +2,9 @@
 User-agent: Googlebot
 Disallow: /admin
 Disallow: /auth
+Disallow: /email-preferences
 Disallow: /exercise
+Disallow: /exercise-stats
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
@@ -10,7 +12,9 @@ Disallow: /verify-magic-link
 User-agent: Bingbot
 Disallow: /admin
 Disallow: /auth
+Disallow: /email-preferences
 Disallow: /exercise
+Disallow: /exercise-stats
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
@@ -41,7 +45,9 @@ Allow: /
 User-agent: *
 Disallow: /admin
 Disallow: /auth
+Disallow: /email-preferences
 Disallow: /exercise
+Disallow: /exercise-stats
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
