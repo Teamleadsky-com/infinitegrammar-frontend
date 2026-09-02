@@ -73,13 +73,15 @@ const CRAWLER_AGENTS = ['Googlebot', 'Bingbot', '*'];
 // post-mortem article and the parameterized app surface (`/exercise`, whose
 // level/section/grammar/t query params generate an unbounded set of 200-status
 // URLs). All entries are classified APP_FUNCTIONAL in
-// config/seo-route-classes.json. Prefix-match semantics mean the `/exercise`
-// rule also covers `/exercise-stats`, which is likewise APP_FUNCTIONAL and
-// sitemap-excluded.
+// config/seo-route-classes.json. `/email-preferences` and `/exercise-stats` each
+// carry their own Disallow directive rather than relying on prefix-match spill
+// from another rule, so their crawl treatment is declared rather than incidental.
 const PRIVATE_ROUTES = [
   '/admin',
   '/auth',
+  '/email-preferences',
   '/exercise',
+  '/exercise-stats',
   '/profile',
   '/statistics',
   '/verify-magic-link',
