@@ -93,9 +93,36 @@ const CANONICAL_ROUTES = new Set([
   "/deutsche-grammatik/c1-niveau-lernen/genitiv-gehobene-sprache-genitivketten/",
 ]);
 
+// The grammar level segment is matched case-insensitively by React Router but is
+// canonical only in lowercase (public/sitemap.xml, scripts/prerender.js). Normalize
+// it so mixed-case requests 301 onto the CANONICAL_ROUTES entry instead of rendering
+// a self-referencing mixed-case canonical via the netlify.toml SPA fallback.
+const LEVEL_SEGMENT = /^(\/deutsche-grammatik\/)([^/]+-niveau-lernen)(\/.*)?$/i;
+
+export function lowercaseLevelSegment(pathname: string): string | null {
+  const match = pathname.match(LEVEL_SEGMENT);
+  if (!match) return null;
+  const normalized = `${match[1]}${match[2].toLowerCase()}${match[3] ?? ""}`;
+  return normalized === pathname ? null : normalized;
+}
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
+
+  // Casing normalization first: a mixed-case request that also lacks the trailing
+  // slash is corrected in ONE hop, so no redirect chain is introduced. This must run
+  // before the trailing-slash early return below, which would otherwise skip
+  // mixed-case slash-terminated requests.
+  const lowercased = lowercaseLevelSegment(pathname);
+  if (lowercased) {
+    const target = lowercased.endsWith("/") ? lowercased : lowercased + "/";
+    if (CANONICAL_ROUTES.has(target)) {
+      const redirect = new URL(url);
+      redirect.pathname = target;
+      return Response.redirect(redirect.toString(), 301);
+    }
+  }
 
   // Already has trailing slash — pass through
   if (pathname.endsWith("/")) {
