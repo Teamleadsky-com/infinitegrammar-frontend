@@ -52,7 +52,7 @@ export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
             name: 'InfiniteGrammar',
             logo: {
               '@type': 'ImageObject',
-              url: 'https://www.infinitegrammar.de/logo.png'
+              url: 'https://www.infinitegrammar.de/og-image.png'
             }
           },
           datePublished: data.datePublished,
