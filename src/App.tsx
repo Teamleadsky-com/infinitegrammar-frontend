@@ -7,6 +7,7 @@ import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { HtmlLang } from "@/components/HtmlLang";
+import { SiteIdentitySchema } from "@/components/SiteIdentitySchema";
 import LevelSelection from "./pages/LevelSelection";
 import Exercise from "./pages/Exercise";
 import Statistics from "./pages/Statistics";
@@ -30,6 +31,8 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <HelmetProvider>
+    {/* Canonical Organization/WebSite graph — every route's schema @id refs resolve against it */}
+    <SiteIdentitySchema />
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <TooltipProvider>

@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import { ORGANIZATION_LOGO_URL, ORGANIZATION_NAME, organizationRef } from '@/lib/siteIdentity';
 
 interface BreadcrumbItem {
   name: string;
@@ -33,91 +34,88 @@ interface SchemaMarkupProps {
   };
 }
 
-export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
-  const getSchema = () => {
-    switch (type) {
-      case 'article':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: data.headline,
-          description: data.description,
-          author: {
-            '@type': 'Organization',
-            name: data.author || 'InfiniteGrammar',
-            url: 'https://www.infinitegrammar.de'
-          },
-          publisher: {
-            '@type': 'Organization',
-            name: 'InfiniteGrammar',
-            logo: {
-              '@type': 'ImageObject',
-              url: 'https://www.infinitegrammar.de/og-image.png'
-            }
-          },
-          datePublished: data.datePublished,
-          dateModified: data.dateModified,
-          mainEntityOfPage: {
-            '@type': 'WebPage',
-            '@id': data.url
-          },
-          image: data.image || 'https://www.infinitegrammar.de/og-image.png'
-        };
+/** A named author who is not the brand itself is a Person, not the Organization.
+ *  Everything else resolves to the one canonical org entity by reference. */
+const buildAuthor = (author?: string) => {
+  if (!author || author === ORGANIZATION_NAME) return organizationRef;
 
-      case 'educational':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'LearningResource',
-          name: data.headline,
-          description: data.description,
-          educationalLevel: data.educationalLevel || 'Beginner',
-          learningResourceType: data.learningResourceType || 'Grammar Guide',
-          inLanguage: 'de',
-          about: {
-            '@type': 'Thing',
-            name: 'German Grammar'
-          },
-          teaches: data.keywords?.join(', '),
-          isAccessibleForFree: true,
-          url: data.url,
-          author: {
-            '@type': 'Organization',
-            name: 'InfiniteGrammar'
-          }
-        };
-
-      case 'breadcrumb':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'BreadcrumbList',
-          itemListElement: data.breadcrumbs?.map((item, index) => ({
-            '@type': 'ListItem',
-            position: index + 1,
-            name: item.name,
-            item: item.url
-          }))
-        };
-
-      case 'faq':
-        return {
-          '@context': 'https://schema.org',
-          '@type': 'FAQPage',
-          mainEntity: data.faqs?.map(faq => ({
-            '@type': 'Question',
-            name: faq.question,
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: faq.answer
-            }
-          }))
-        };
-
-      default:
-        return null;
-    }
+  return {
+    '@type': 'Person',
+    name: author
   };
+};
 
-  const schema = getSchema();
+export const buildSchema = (type: SchemaMarkupProps['type'], data: SchemaMarkupProps['data']) => {
+  switch (type) {
+    case 'article':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'Article',
+        headline: data.headline,
+        description: data.description,
+        author: buildAuthor(data.author),
+        publisher: organizationRef,
+        datePublished: data.datePublished,
+        dateModified: data.dateModified,
+        mainEntityOfPage: {
+          '@type': 'WebPage',
+          '@id': data.url
+        },
+        image: data.image || ORGANIZATION_LOGO_URL
+      };
+
+    case 'educational':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'LearningResource',
+        name: data.headline,
+        description: data.description,
+        educationalLevel: data.educationalLevel || 'Beginner',
+        learningResourceType: data.learningResourceType || 'Grammar Guide',
+        inLanguage: 'de',
+        about: {
+          '@type': 'Thing',
+          name: 'German Grammar'
+        },
+        teaches: data.keywords?.join(', '),
+        isAccessibleForFree: true,
+        url: data.url,
+        author: organizationRef
+      };
+
+    case 'breadcrumb':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: data.breadcrumbs?.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          item: item.url
+        }))
+      };
+
+    case 'faq':
+      return {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: data.faqs?.map(faq => ({
+          '@type': 'Question',
+          name: faq.question,
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: faq.answer
+          }
+        }))
+      };
+
+    default:
+      return null;
+  }
+};
+
+export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
+  const schema = buildSchema(type, data);
 
   if (!schema) return null;
 
