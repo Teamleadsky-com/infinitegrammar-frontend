@@ -18,6 +18,7 @@ import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { useAuth } from "@/contexts/AuthContext";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
+import { ORGANIZATION_ID } from "@/lib/siteIdentity";
 import { Footer } from "@/components/Footer";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 
@@ -136,6 +137,7 @@ const LevelSelection = () => {
           "url": pageUrl,
           "applicationCategory": "EducationalApplication",
           "operatingSystem": "Web Browser",
+          "publisher": { "@id": ORGANIZATION_ID },
           "offers": {
             "@type": "Offer",
             "price": "0",
