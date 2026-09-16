@@ -9,6 +9,7 @@ import { getCityExamContent } from "@/data/cityExamContent";
 import { ShareButton } from "@/components/ShareButton";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
 import { Footer } from "@/components/Footer";
+import { BRAND_NAME, buildPageTitle } from "@/lib/seoTitle";
 
 const CityExamPage = () => {
   const { examCity } = useParams<{ examCity: string }>();
@@ -42,7 +43,7 @@ const CityExamPage = () => {
   }, [content, exam]);
 
   // SEO meta data
-  const pageTitle = content ? `${content.title} | InfiniteGrammar` : 'Prüfungszentren';
+  const pageTitle = content ? buildPageTitle(content.title) : 'Prüfungszentren';
   const pageDescription = content ? content.metaDescription : 'Finde Prüfungszentren in Deutschland';
   const pageUrl = `https://www.infinitegrammar.de/pruefungszentren/${exam}-${city}/`;
 
@@ -67,6 +68,7 @@ const CityExamPage = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

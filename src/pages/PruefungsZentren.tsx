@@ -13,6 +13,7 @@ import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { Footer } from "@/components/Footer";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 import { SchemaMarkup } from "@/components/SchemaMarkup";
+import { BRAND_NAME, buildPageTitle } from "@/lib/seoTitle";
 
 const PruefungsZentren = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const PruefungsZentren = () => {
   );
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
-  const pageTitle = "telc & TestDaF Prüfungszentren Deutschland: Finden & Anmelden | InfiniteGrammar";
+  const pageTitle = buildPageTitle("telc & TestDaF Prüfungszentren Deutschland: Finden & Anmelden");
   const pageDescription = 'Finde telc- und TestDaF-Prüfungszentren in Deutschland: VHS, Uni-Sprachzentren & Institute. ✓ Alle Bundesländer ✓ Termine checken ✓ Anmeldungstipps ✓ Kostenlos';
   const pageUrl = 'https://www.infinitegrammar.de/pruefungszentren/';
 
@@ -71,6 +72,7 @@ const PruefungsZentren = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

@@ -5,11 +5,12 @@ import { Card } from '@/components/ui/card';
 import { articles } from '@/data/articles';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { Footer } from '@/components/Footer';
+import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
 
 const Articles = () => {
   const navigate = useNavigate();
 
-  const pageTitle = 'Articles: Building a German Grammar Platform | InfiniteGrammar';
+  const pageTitle = buildPageTitle('Articles: Building a German Grammar Platform');
   const pageDescription = 'Technical articles about building InfiniteGrammar.de \u2014 LLM-powered exercise generation, similarity analysis, batch processing, and EdTech product decisions.';
   const pageUrl = 'https://www.infinitegrammar.de/articles/';
 
@@ -25,6 +26,7 @@ const Articles = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

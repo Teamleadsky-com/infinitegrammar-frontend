@@ -16,6 +16,7 @@ import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { SeoBreadcrumb } from '@/components/SeoBreadcrumb';
 import { Footer } from '@/components/Footer';
+import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { useState } from 'react';
 
@@ -43,7 +44,7 @@ const GrammatikContent = () => {
   const content = getTopicContent(topic.id);
   const relatedTopics = getRelatedTopics(topic.id);
 
-  const pageTitle = `${topic.title}: Regeln & Beispiele einfach erklärt | InfiniteGrammar`;
+  const pageTitle = buildPageTitle(`${topic.title}: Regeln & Beispiele einfach erklärt`);
   const pageDescription = topic.metaDescription;
   const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/${slug}/`;
 
@@ -61,6 +62,7 @@ const GrammatikContent = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { BRAND_NAME, buildPageTitle } from "@/lib/seoTitle";
 
 // Define color palette for charts
 const COLORS = {
@@ -46,11 +47,11 @@ type PeriodType = 'daily' | 'weekly' | 'monthly';
 // match the language the page actually renders in.
 const PAGE_META = {
   de: {
-    title: 'Übungsstatistiken A1–C1 | InfiniteGrammar',
+    title: buildPageTitle('Übungsstatistiken A1–C1'),
     description: 'Statistiken zur Übungsdatenbank von InfiniteGrammar: Anzahl der Lückentext-Übungen nach Niveau (A1–C1), nach Grammatikbereich und die Entwicklung im Zeitverlauf.',
   },
   en: {
-    title: 'Exercise Statistics A1–C1 | InfiniteGrammar',
+    title: buildPageTitle('Exercise Statistics A1–C1'),
     description: 'Statistics for the InfiniteGrammar exercise database: number of gap-fill exercises by level (A1–C1), by grammar section, and growth over time.',
   },
 };
@@ -246,7 +247,7 @@ const ExerciseStats = () => {
         <meta property="og:image:width" content="1536" />
         <meta property="og:image:height" content="1024" />
         <meta property="og:image:alt" content={pageTitle} />
-        <meta property="og:site_name" content="InfiniteGrammar" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta property="og:locale" content={isEnglish ? 'en_US' : 'de_DE'} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />

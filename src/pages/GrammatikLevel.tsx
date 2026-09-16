@@ -11,6 +11,7 @@ import {
 import { ShareButton } from '@/components/ShareButton';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { Footer } from '@/components/Footer';
+import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
 
 const GrammatikLevel = () => {
   const { level } = useParams<{ level: string }>();
@@ -66,7 +67,7 @@ const GrammatikLevel = () => {
     C1: 'Deutsche Grammatik C1: Nominalstil, Partizipialkonstruktionen und Genitivketten. ✓ Gehobene Sprache ✓ Anspruchsvoll ✓ Mit Beispielen ✓ Kostenlos',
   };
 
-  const pageTitle = `Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt | InfiniteGrammar`;
+  const pageTitle = buildPageTitle(`Deutsche Grammatik ${normalizedLevel}: Regeln & Übungen einfach erklärt`);
   const pageDescription = levelMetaDescriptions[normalizedLevel];
   const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/`;
 
@@ -81,6 +82,7 @@ const GrammatikLevel = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={pageDescription} />

@@ -4,6 +4,7 @@ import { ArrowLeft } from 'lucide-react';
 import { articles, getArticleBySlug } from '@/data/articles';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { Footer } from '@/components/Footer';
+import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
 
 const ArticleContent = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -27,7 +28,7 @@ const ArticleContent = () => {
     );
   }
 
-  const pageTitle = `${article.title} | InfiniteGrammar`;
+  const pageTitle = buildPageTitle(article.title);
   const pageUrl = `https://www.infinitegrammar.de/articles/${article.slug}/`;
 
   return (
@@ -42,6 +43,7 @@ const ArticleContent = () => {
         <meta property="og:url" content={pageUrl} />
         <meta property="og:type" content="article" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={article.excerpt} />
