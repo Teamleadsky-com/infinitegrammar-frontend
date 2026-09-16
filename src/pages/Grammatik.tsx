@@ -19,6 +19,7 @@ import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { Footer } from '@/components/Footer';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
+import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
 
 const Grammatik = () => {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ const Grammatik = () => {
     { level: 'B2', name: 'B2 – präzise & formal', description: 'Indirekte Rede, Nominalisierung, Rektion …' },
     { level: 'C1', name: 'C1 – anspruchsvolle Texte', description: 'Nominalstil, Partizipialkonstruktionen …' },
   ];
+
+  const pageTitle = buildPageTitle('Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt');
 
   const popularTopics = getPopularTopics(6);
 
@@ -60,13 +63,13 @@ const Grammatik = () => {
   return (
     <div className="min-h-screen bg-gradient-subtle flex flex-col">
       <Helmet>
-        <title>Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar</title>
+        <title>{pageTitle}</title>
         <link rel="canonical" href="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta
           name="description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
         />
-        <meta property="og:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
+        <meta property="og:title" content={pageTitle} />
         <meta
           property="og:description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
@@ -74,8 +77,9 @@ const Grammatik = () => {
         <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Deutsche Grammatik A1-C1: Regeln & Übungen einfach erklärt | InfiniteGrammar" />
+        <meta name="twitter:title" content={pageTitle} />
         <meta
           name="twitter:description"
           content="Deutsche Grammatik von A1 bis C1: Klare Regeln, praktische Beispiele und interaktive Lückentext-Übungen. ✓ Alle Niveaus ✓ Sofort anwendbar ✓ Kostenlos lernen"
