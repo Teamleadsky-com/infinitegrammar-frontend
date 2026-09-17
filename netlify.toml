@@ -37,6 +37,16 @@
   status = 301
   force = true
 
+# Redirect http://www to https://www. Netlify's automatic HTTPS enforcement
+# already covers this in practice; stating it explicitly puts all four
+# production host variants under version control rather than under a platform
+# default, and lets scripts/seo/netlifyRedirects.test.ts assert the full set.
+[[redirects]]
+  from = "http://www.infinitegrammar.de/*"
+  to = "https://www.infinitegrammar.de/:splat"
+  status = 301
+  force = true
+
 # Trailing-slash canonicalization is handled by the trailing-slash edge function
 # (netlify/edge-functions/trailing-slash.ts) which runs before redirect rules.
 
