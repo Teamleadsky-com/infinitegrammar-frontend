@@ -2,7 +2,10 @@ import type { Context } from "@netlify/edge-functions";
 
 // Canonical routes that must have trailing slashes.
 // Generated from scripts/prerender.js PAGES array (excluding "/" which needs no redirect).
-const CANONICAL_ROUTES = new Set([
+// Exported for scripts/seo/trailingSlashEdge.test.ts, which asserts this set
+// against public/sitemap.xml. Netlify's Deno runtime reads only the `default`
+// and `config` exports; additional named exports are inert.
+export const CANONICAL_ROUTES = new Set([
   "/deutsche-grammatik/",
   "/pruefungszentren/",
   "/articles/",
@@ -93,6 +96,16 @@ const CANONICAL_ROUTES = new Set([
   "/deutsche-grammatik/c1-niveau-lernen/genitiv-gehobene-sprache-genitivketten/",
 ]);
 
+// Production host variants that must consolidate onto the canonical origin.
+// Deploy previews and branch deploys (*.netlify.app) are deliberately absent:
+// a preview must keep redirecting within itself, or preview testing bounces
+// onto production. netlify.toml's apex rules are host-scoped for the same reason.
+export const CANONICAL_HOST = "www.infinitegrammar.de";
+export const CONSOLIDATED_HOSTS = new Set([
+  "infinitegrammar.de",
+  "www.infinitegrammar.de",
+]);
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
   const pathname = url.pathname;
@@ -107,6 +120,15 @@ export default async (request: Request, context: Context) => {
   if (CANONICAL_ROUTES.has(withSlash)) {
     const target = new URL(url);
     target.pathname = withSlash;
+    // Consolidate scheme + host in the SAME hop as the trailing slash. Without
+    // this, an apex request for a slash-less canonical route is 301'd to the
+    // apex slash form here and only then 301'd to www by netlify.toml -- a
+    // two-hop chain between host variants of one canonical.
+    if (CONSOLIDATED_HOSTS.has(target.hostname)) {
+      target.protocol = "https:";
+      target.hostname = CANONICAL_HOST;
+      target.port = "";
+    }
     return Response.redirect(target.toString(), 301);
   }
 

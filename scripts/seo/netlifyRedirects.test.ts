@@ -69,7 +69,16 @@ describe('netlify.toml redirect table', () => {
       expect(hostScoped).toEqual([
         'http://infinitegrammar.de/*',
         'https://infinitegrammar.de/*',
+        'http://www.infinitegrammar.de/*',
       ]);
+    });
+
+    it('consolidates every non-canonical production host onto https://www in one forced hop', () => {
+      for (const rule of rules.filter(isHostScoped)) {
+        expect(rule.to).toBe('https://www.infinitegrammar.de/:splat');
+        expect(rule.status).toBe(301);
+        expect(rule.force).toBe(true);
+      }
     });
 
     it('defaults a block without an explicit status to 301', () => {
