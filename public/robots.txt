@@ -9,6 +9,46 @@ Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
 
+# Parameter crawl policy: calendar, session, and tracking parameter URL
+# spaces are non-canonical. The indexable surface (public/sitemap.xml) is
+# path-only; every indexable page emits a parameter-free canonical.
+
+# Tracking / campaign parameters
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*gbraid=
+Disallow: /*?*wbraid=
+Disallow: /*?*fbclid=
+Disallow: /*?*msclkid=
+Disallow: /*?*igshid=
+Disallow: /*?*mc_cid=
+Disallow: /*?*mc_eid=
+
+# Session / per-recipient tokens (campaign deep links)
+Disallow: /*?*sessionid=
+Disallow: /*?*session=
+Disallow: /*?*token=
+Disallow: /*?sid=
+Disallow: /*&sid=
+Disallow: /*?t=
+Disallow: /*&t=
+
+# Calendar / date-range parameters (preventive; no such route exists today)
+Disallow: /*?*calendar=
+Disallow: /*?date=
+Disallow: /*&date=
+Disallow: /*?month=
+Disallow: /*&month=
+Disallow: /*?year=
+Disallow: /*&year=
+Disallow: /*?week=
+Disallow: /*&week=
+Disallow: /*?view=
+Disallow: /*&view=
+
+# Backstop: no indexable URL carries a query string.
+Disallow: /*?
+
 User-agent: Bingbot
 Disallow: /admin
 Disallow: /auth
@@ -19,7 +59,50 @@ Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
 
+# Parameter crawl policy: calendar, session, and tracking parameter URL
+# spaces are non-canonical. The indexable surface (public/sitemap.xml) is
+# path-only; every indexable page emits a parameter-free canonical.
+
+# Tracking / campaign parameters
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*gbraid=
+Disallow: /*?*wbraid=
+Disallow: /*?*fbclid=
+Disallow: /*?*msclkid=
+Disallow: /*?*igshid=
+Disallow: /*?*mc_cid=
+Disallow: /*?*mc_eid=
+
+# Session / per-recipient tokens (campaign deep links)
+Disallow: /*?*sessionid=
+Disallow: /*?*session=
+Disallow: /*?*token=
+Disallow: /*?sid=
+Disallow: /*&sid=
+Disallow: /*?t=
+Disallow: /*&t=
+
+# Calendar / date-range parameters (preventive; no such route exists today)
+Disallow: /*?*calendar=
+Disallow: /*?date=
+Disallow: /*&date=
+Disallow: /*?month=
+Disallow: /*&month=
+Disallow: /*?year=
+Disallow: /*&year=
+Disallow: /*?week=
+Disallow: /*&week=
+Disallow: /*?view=
+Disallow: /*&view=
+
+# Backstop: no indexable URL carries a query string.
+Disallow: /*?
+
 # Social Media Crawlers
+# Left unrestricted on purpose: shared links routinely carry utm_* parameters,
+# and applying the parameter policy here would break link previews for exactly
+# the URLs people share.
 User-agent: Twitterbot
 Allow: /
 
@@ -51,6 +134,46 @@ Disallow: /exercise-stats
 Disallow: /profile
 Disallow: /statistics
 Disallow: /verify-magic-link
+
+# Parameter crawl policy: calendar, session, and tracking parameter URL
+# spaces are non-canonical. The indexable surface (public/sitemap.xml) is
+# path-only; every indexable page emits a parameter-free canonical.
+
+# Tracking / campaign parameters
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*gbraid=
+Disallow: /*?*wbraid=
+Disallow: /*?*fbclid=
+Disallow: /*?*msclkid=
+Disallow: /*?*igshid=
+Disallow: /*?*mc_cid=
+Disallow: /*?*mc_eid=
+
+# Session / per-recipient tokens (campaign deep links)
+Disallow: /*?*sessionid=
+Disallow: /*?*session=
+Disallow: /*?*token=
+Disallow: /*?sid=
+Disallow: /*&sid=
+Disallow: /*?t=
+Disallow: /*&t=
+
+# Calendar / date-range parameters (preventive; no such route exists today)
+Disallow: /*?*calendar=
+Disallow: /*?date=
+Disallow: /*&date=
+Disallow: /*?month=
+Disallow: /*&month=
+Disallow: /*?year=
+Disallow: /*&year=
+Disallow: /*?week=
+Disallow: /*&week=
+Disallow: /*?view=
+Disallow: /*&view=
+
+# Backstop: no indexable URL carries a query string.
+Disallow: /*?
 
 # Sitemap Location
 Sitemap: https://www.infinitegrammar.de/sitemap.xml
