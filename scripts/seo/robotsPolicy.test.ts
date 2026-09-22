@@ -163,6 +163,50 @@ const PARAMETER_URLS = [
   { family: 'calendar', url: '/?year=2026' },
 ];
 
+// The catch-all. Broken out by name because it matches every URL in
+// PARAMETER_URLS on its own — assertions that rely on it cannot distinguish a
+// declared family from a deleted one.
+const BACKSTOP_DIRECTIVE = '/*?';
+
+// The exact directives that declare each family in public/robots.txt. Asserted
+// literally so that removing a family's rules fails here instead of silently
+// falling through to BACKSTOP_DIRECTIVE.
+const PARAMETER_FAMILY_DIRECTIVES = {
+  tracking: [
+    '/*?*utm_',
+    '/*?*gclid=',
+    '/*?*gbraid=',
+    '/*?*wbraid=',
+    '/*?*fbclid=',
+    '/*?*msclkid=',
+    '/*?*igshid=',
+    '/*?*mc_cid=',
+    '/*?*mc_eid=',
+  ],
+  session: [
+    '/*?*sessionid=',
+    '/*?*session=',
+    '/*?*token=',
+    '/*?sid=',
+    '/*&sid=',
+    '/*?t=',
+    '/*&t=',
+  ],
+  calendar: [
+    '/*?*calendar=',
+    '/*?date=',
+    '/*&date=',
+    '/*?month=',
+    '/*&month=',
+    '/*?year=',
+    '/*&year=',
+    '/*?week=',
+    '/*&week=',
+    '/*?view=',
+    '/*&view=',
+  ],
+};
+
 describe('robots.txt private-route policy', () => {
   it('parses a Disallow group for every gating crawler user-agent', () => {
     for (const agent of CRAWLER_AGENTS) {
@@ -233,12 +277,60 @@ describe('robots.txt wildcard pattern semantics', () => {
 });
 
 describe('robots.txt parameter crawl policy', () => {
-  describe('every declared parameter family is disallowed for each crawler', () => {
+  describe('every declared family directive is present for each crawler', () => {
+    for (const agent of CRAWLER_AGENTS) {
+      for (const [family, directives] of Object.entries(PARAMETER_FAMILY_DIRECTIVES)) {
+        it(`declares every ${family} directive for ${agent}`, () => {
+          const group = groups.get(agent);
+          expect(group).toBeDefined();
+          for (const directive of directives) {
+            expect(group.disallow).toContain(directive);
+          }
+        });
+      }
+    }
+  });
+
+  // The discriminating form of the old assertion: each URL must be matched by a
+  // rule belonging to its OWN family, with the backstop (and the /exercise
+  // private-route rule) excluded from consideration.
+  describe('each family URL is covered by its own family directives', () => {
     for (const agent of CRAWLER_AGENTS) {
       for (const { family, url } of PARAMETER_URLS) {
-        it(`disallows ${family} URL ${url} for ${agent}`, () => {
-          expect(isDisallowed(groups.get(agent), url)).toBe(true);
+        it(`covers ${family} URL ${url} for ${agent} without the backstop`, () => {
+          const familyRules = groups
+            .get(agent)
+            .disallow.filter((rule) => PARAMETER_FAMILY_DIRECTIVES[family].includes(rule));
+          expect(familyRules.length).toBeGreaterThan(0);
+          expect(familyRules.some((rule) => robotsPatternMatches(rule, url))).toBe(true);
         });
+      }
+    }
+  });
+
+  it('keeps the catch-all backstop in place for each crawler', () => {
+    for (const agent of CRAWLER_AGENTS) {
+      expect(groups.get(agent).disallow).toContain(BACKSTOP_DIRECTIVE);
+    }
+  });
+
+  it('replicates an identical parameter block across all gating crawlers', () => {
+    const parameterRules = (agent) =>
+      groups.get(agent).disallow.filter((rule) => rule.startsWith('/*'));
+    const [reference, ...rest] = CRAWLER_AGENTS;
+    expect(parameterRules(reference).length).toBeGreaterThan(0);
+    for (const agent of rest) {
+      expect(parameterRules(agent)).toEqual(parameterRules(reference));
+    }
+  });
+
+  // Ties the `wildcard pattern semantics` reasoning to actual file contents:
+  // `/*?*t=` would also match `?format=1`, so the short names must stay in the
+  // `/*?x=` + `/*&x=` form.
+  it('never declares a short parameter name in the over-broad form', () => {
+    for (const agent of CRAWLER_AGENTS) {
+      for (const overBroad of ['/*?*t=', '/*?*sid=']) {
+        expect(groups.get(agent).disallow).not.toContain(overBroad);
       }
     }
   });
@@ -265,5 +357,21 @@ describe('robots.txt parameter crawl policy', () => {
 
     expect(locations.length).toBeGreaterThan(0);
     expect(locations.filter((loc) => loc.includes('?'))).toEqual([]);
+  });
+
+  // `Disallow: /*?` is safe only because the indexable surface is path-only.
+  // Together with the test above, this bounds the backstop's blast radius
+  // against the real sitemap rather than a handful of hardcoded routes.
+  describe('the `/*?` backstop does not reach the indexable surface', () => {
+    const sitemapPaths = [
+      ...fs.readFileSync(SITEMAP_XML_PATH, 'utf-8').matchAll(/<loc>([^<]*)<\/loc>/g),
+    ].map((m) => new URL(m[1]).pathname);
+
+    for (const agent of CRAWLER_AGENTS) {
+      it(`leaves every sitemap URL crawlable for ${agent}`, () => {
+        expect(sitemapPaths.length).toBeGreaterThan(0);
+        expect(sitemapPaths.filter((p) => isDisallowed(groups.get(agent), p))).toEqual([]);
+      });
+    }
   });
 });
