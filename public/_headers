@@ -2,6 +2,23 @@
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Prerendered document routes (scripts/prerender.js output, = every public/sitemap.xml
+# <loc>). These are static, editorially slow-moving pages; without an explicit rule
+# they fall through to Netlify's platform default (public, max-age=0, must-revalidate)
+# and are re-fetched on every navigation. The prefixes below are deliberately
+# disjoint from /assets/* and from the image rules so that no request path is
+# matched by two Cache-Control rules (see scripts/seo/netlifyHeaders.test.ts).
+# APP_FUNCTIONAL routes (/exercise, /auth, /profile, ...) are intentionally NOT
+# listed: they render per-user state and must stay uncached.
+/
+  Cache-Control: public, max-age=3600
+/deutsche-grammatik/*
+  Cache-Control: public, max-age=3600
+/pruefungszentren/*
+  Cache-Control: public, max-age=3600
+/articles/*
+  Cache-Control: public, max-age=3600
+
 # Cache images
 /*.png
   Cache-Control: public, max-age=31536000, immutable
