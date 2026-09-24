@@ -128,16 +128,18 @@ describe('netlify.toml redirect table', () => {
       ]);
     });
 
-    it.each(APP_FUNCTIONAL_EXACT)('serves %s as a 200 SPA shell with no static files', (route) => {
+    // Not /index.html: after the build that file is the prerendered homepage, so
+    // app URLs would serve the homepage canonical/content and no noindex (INDEX-015).
+    it.each(APP_FUNCTIONAL_EXACT)('serves %s as the 200 noindex app shell with no static files', (route) => {
       const result = resolve(route, { rules, staticFiles: NO_FILES });
-      expect(result).toMatchObject({ status: 200, to: '/index.html', via: 'rule' });
+      expect(result).toMatchObject({ status: 200, to: '/app-shell.html', via: 'rule' });
     });
 
     it.each(APP_FUNCTIONAL_EXACT)(
-      'serves the trailing-slash form of %s as a 200 SPA shell',
+      'serves the trailing-slash form of %s as the 200 noindex app shell',
       (route) => {
         const result = resolve(route + '/', { rules, staticFiles: NO_FILES });
-        expect(result).toMatchObject({ status: 200, to: '/index.html', via: 'rule' });
+        expect(result).toMatchObject({ status: 200, to: '/app-shell.html', via: 'rule' });
       }
     );
 

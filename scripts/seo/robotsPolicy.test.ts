@@ -98,17 +98,15 @@ const groups = parseRobotsTxt(robotsContents);
 
 const SITEMAP_XML_PATH = path.resolve(__dirname, '../../public/sitemap.xml');
 
-// The user-agent groups that are expected to gate private routes.
+// The user-agent groups that carry the parameter crawl policy.
 const CRAWLER_AGENTS = ['Googlebot', 'Bingbot', '*'];
 
-// The documented private-route inventory (APP_FUNCTIONAL) that must be kept out
-// of the crawl surface. Covers both the private routes named in the SEO
-// post-mortem article and the parameterized app surface (`/exercise`, whose
-// level/section/grammar/t query params generate an unbounded set of 200-status
-// URLs). All entries are classified APP_FUNCTIONAL in
-// config/seo-route-classes.json. `/email-preferences` and `/exercise-stats` each
-// carry their own Disallow directive rather than relying on prefix-match spill
-// from another rule, so their crawl treatment is declared rather than incidental.
+// The APP_FUNCTIONAL route inventory. These must stay CRAWLABLE: they are kept
+// out of the index by <meta name="robots" content="noindex"> in the static app
+// shell, and a crawler that is blocked by robots.txt can never see that noindex
+// (the URL can then still surface as a URL-only result — INDEX-015). Their
+// parameterised forms (e.g. /exercise?level=B1) are handled by the parameter
+// crawl policy, not by these route-level rules.
 const PRIVATE_ROUTES = [
   '/admin',
   '/auth',
@@ -214,13 +212,20 @@ describe('robots.txt private-route policy', () => {
     }
   });
 
-  describe('every documented private route is disallowed for each crawler', () => {
+  describe('every app route stays crawlable so its noindex can be seen', () => {
     for (const agent of CRAWLER_AGENTS) {
       for (const route of PRIVATE_ROUTES) {
-        it(`disallows ${route} for ${agent}`, () => {
-          expect(isDisallowed(groups.get(agent), route)).toBe(true);
+        it(`allows ${route} and ${route}/ for ${agent}`, () => {
+          expect(isDisallowed(groups.get(agent), route)).toBe(false);
+          expect(isDisallowed(groups.get(agent), route + '/')).toBe(false);
         });
       }
+    }
+  });
+
+  it('still blocks parameterised app URLs via the parameter policy', () => {
+    for (const agent of CRAWLER_AGENTS) {
+      expect(isDisallowed(groups.get(agent), '/exercise?level=B1&section=Verben')).toBe(true);
     }
   });
 
@@ -292,8 +297,8 @@ describe('robots.txt parameter crawl policy', () => {
   });
 
   // The discriminating form of the old assertion: each URL must be matched by a
-  // rule belonging to its OWN family, with the backstop (and the /exercise
-  // private-route rule) excluded from consideration.
+  // rule belonging to its OWN family, with the backstop excluded from
+  // consideration.
   describe('each family URL is covered by its own family directives', () => {
     for (const agent of CRAWLER_AGENTS) {
       for (const { family, url } of PARAMETER_URLS) {

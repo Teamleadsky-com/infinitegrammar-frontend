@@ -121,10 +121,33 @@ const PAGES = [
   '/deutsche-grammatik/c1-niveau-lernen/genitiv-gehobene-sprache-genitivketten/',
 ];
 
+// APP_FUNCTIONAL routes (/exercise, /auth, ...) are rewritten to this file in
+// netlify.toml. It must be derived from the raw Vite shell before prerendering
+// overwrites dist/index.html with the homepage: otherwise those URLs would serve
+// the homepage's canonical and content. The noindex lives in the static HTML so
+// crawlers see it without executing JavaScript (INDEX-015).
+const APP_SHELL_FILE = 'app-shell.html';
+const NOINDEX_META = '<meta name="robots" content="noindex">';
+
+function writeAppShell(distDir) {
+  const rawShell = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
+  if (!rawShell.includes('<div id="root"></div>')) {
+    throw new Error('dist/index.html is not the raw Vite shell (already prerendered?) - run vite build first');
+  }
+  const charsetTag = '<meta charset="UTF-8" />';
+  if (!rawShell.includes(charsetTag)) {
+    throw new Error(`Cannot inject noindex: "${charsetTag}" not found in dist/index.html`);
+  }
+  const appShell = rawShell.replace(charsetTag, `${charsetTag}\n    ${NOINDEX_META}`);
+  fs.writeFileSync(path.join(distDir, APP_SHELL_FILE), appShell);
+  console.log(`✓ Saved: ${path.join(distDir, APP_SHELL_FILE)} (noindex app shell)`);
+}
+
 async function prerender() {
   console.log('Starting prerender process...');
 
   const distDir = path.resolve(__dirname, '../dist');
+  writeAppShell(distDir);
 
   // Start a simple static file server to serve the production build
   console.log('Starting static file server...');

@@ -88,7 +88,9 @@
       "expectedClass": "APP_FUNCTIONAL",
       "expectations": {
         "status": 200,
-        "sitemapIncluded": false
+        "sitemapIncluded": false,
+        "robotsDisallowed": false,
+        "indexable": false
       }
     },
     {
@@ -98,7 +100,9 @@
       "expectedClass": "APP_FUNCTIONAL",
       "expectations": {
         "status": 200,
-        "sitemapIncluded": false
+        "sitemapIncluded": false,
+        "robotsDisallowed": false,
+        "indexable": false
       }
     },
     {
@@ -109,7 +113,8 @@
       "expectations": {
         "status": 200,
         "sitemapIncluded": false,
-        "robotsDisallowed": true
+        "robotsDisallowed": false,
+        "indexable": false
       }
     },
     {
