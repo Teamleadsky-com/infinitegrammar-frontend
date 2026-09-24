@@ -1,14 +1,12 @@
+# Application routes (/exercise, /exercise-stats, /statistics, /auth, /profile,
+# /verify-magic-link, /admin, /email-preferences) are deliberately NOT disallowed:
+# they serve <meta name="robots" content="noindex">, and crawlers must be able to
+# fetch a URL to see its noindex. A robots.txt block would leave them eligible
+# to appear as URL-only search results (INDEX-015). Their parameterised forms
+# (e.g. /exercise?level=B1) remain covered by the parameter policy below.
+
 # Major Search Engines
 User-agent: Googlebot
-Disallow: /admin
-Disallow: /auth
-Disallow: /email-preferences
-Disallow: /exercise
-Disallow: /exercise-stats
-Disallow: /profile
-Disallow: /statistics
-Disallow: /verify-magic-link
-
 # Parameter crawl policy: calendar, session, and tracking parameter URL
 # spaces are non-canonical. The indexable surface (public/sitemap.xml) is
 # path-only; every indexable page emits a parameter-free canonical.
@@ -50,15 +48,6 @@ Disallow: /*&view=
 Disallow: /*?
 
 User-agent: Bingbot
-Disallow: /admin
-Disallow: /auth
-Disallow: /email-preferences
-Disallow: /exercise
-Disallow: /exercise-stats
-Disallow: /profile
-Disallow: /statistics
-Disallow: /verify-magic-link
-
 # Parameter crawl policy: calendar, session, and tracking parameter URL
 # spaces are non-canonical. The indexable surface (public/sitemap.xml) is
 # path-only; every indexable page emits a parameter-free canonical.
@@ -126,15 +115,6 @@ Allow: /
 
 # All Other Bots
 User-agent: *
-Disallow: /admin
-Disallow: /auth
-Disallow: /email-preferences
-Disallow: /exercise
-Disallow: /exercise-stats
-Disallow: /profile
-Disallow: /statistics
-Disallow: /verify-magic-link
-
 # Parameter crawl policy: calendar, session, and tracking parameter URL
 # spaces are non-canonical. The indexable surface (public/sitemap.xml) is
 # path-only; every indexable page emits a parameter-free canonical.
