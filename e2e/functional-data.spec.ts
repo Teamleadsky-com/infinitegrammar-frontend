@@ -148,7 +148,7 @@ test("exercise route renders content from the intercepted exercises API", async 
 
   // Proves the interactive exercise UI became available.
   await expect(
-    page.getByRole("button", { name: "Check Answer" }),
+    page.getByRole("button", { name: "Antwort prüfen" }),
   ).toBeVisible();
 
   expect(pageErrors).toEqual([]);
@@ -166,7 +166,7 @@ test("exercise-statistics route renders content from the intercepted stats APIs"
   });
   expect(response?.ok()).toBe(true);
 
-  await expect(page.getByText("Loading statistics...")).toBeHidden({
+  await expect(page.getByText("Statistiken werden geladen...")).toBeHidden({
     timeout: 15_000,
   });
 
@@ -182,7 +182,7 @@ test("exercise-statistics route renders content from the intercepted stats APIs"
   expect(consoleErrors).toEqual([]);
 });
 
-test("navigating from exercise-statistics to exercise via the existing 'Continue Learning' button works end to end", async ({
+test("navigating from exercise-statistics to exercise via the existing 'Weiter lernen' (Continue Learning) button works end to end", async ({
   page,
 }) => {
   const { pageErrors, consoleErrors } = trackErrors(page);
@@ -194,16 +194,16 @@ test("navigating from exercise-statistics to exercise via the existing 'Continue
   });
   expect(response?.ok()).toBe(true);
 
-  await expect(page.getByText("Loading statistics...")).toBeHidden({
+  await expect(page.getByText("Statistiken werden geladen...")).toBeHidden({
     timeout: 15_000,
   });
   await expect(
-    page.getByRole("heading", { name: "Exercises Statistics" }),
+    page.getByRole("heading", { name: "Übungsstatistiken" }),
   ).toBeVisible();
 
   // Existing visible internal navigation control (ExerciseStats.tsx ->
   // navigate("/exercise")) — no page.goto() is used to reach the second page.
-  await page.getByRole("button", { name: "Continue Learning" }).click();
+  await page.getByRole("button", { name: "Weiter lernen" }).click();
 
   await expect(page).toHaveURL(
     new RegExp(`${exerciseSample.path.replace(/\//g, "\\/")}$`),
@@ -213,7 +213,7 @@ test("navigating from exercise-statistics to exercise via the existing 'Continue
     timeout: 15_000,
   });
   await expect(
-    page.getByRole("button", { name: "Check Answer" }),
+    page.getByRole("button", { name: "Antwort prüfen" }),
   ).toBeVisible();
   await expect(page.getByText(EXERCISE_TEXT_MARKER)).toBeVisible();
 

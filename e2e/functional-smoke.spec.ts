@@ -86,7 +86,7 @@ test("exercise route renders and hydrates without fatal errors", async ({
   // Hydration reached the interactive exercise UI (proves the SPA shell
   // is not a permanently blank/empty shell for this route).
   await expect(
-    page.getByRole("button", { name: "Check Answer" }),
+    page.getByRole("button", { name: "Antwort prüfen" }),
   ).toBeVisible();
 
   const root = page.locator("#root");
@@ -108,14 +108,14 @@ test("exercise-statistics route renders and hydrates without fatal errors", asyn
   expect(response?.ok()).toBe(true);
 
   // Initial loading state must resolve rather than remain stuck.
-  await expect(page.getByText("Loading statistics...")).toBeHidden({
+  await expect(page.getByText("Statistiken werden geladen...")).toBeHidden({
     timeout: 15_000,
   });
 
   // The page reached its stable view (heading is always rendered once
   // loading completes, whether or not growth data was available).
   await expect(
-    page.getByRole("heading", { name: "Exercises Statistics" }),
+    page.getByRole("heading", { name: "Übungsstatistiken" }),
   ).toBeVisible();
 
   const root = page.locator("#root");

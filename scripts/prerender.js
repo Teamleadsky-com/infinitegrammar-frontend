@@ -190,9 +190,25 @@ async function prerender() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
+  // Prerendered output must deterministically reflect the site's German-only
+  // SEO strategy, independent of any localStorage state that could carry over
+  // between page loads in the same browser context (e.g. from page ordering
+  // or future language-detection code) — so every document load starts with
+  // no saved language preference, forcing the 'de' default in src/i18n/config.ts.
+  const clearLanguagePreference = async (page) => {
+    await page.evaluateOnNewDocument(() => {
+      try {
+        window.localStorage.removeItem('language');
+      } catch {
+        // localStorage inaccessible (e.g. sandboxed) - nothing to clear
+      }
+    });
+  };
+
   try {
     let page = await browser.newPage();
     await page.setViewport({ width: 1920, height: 1080 });
+    await clearLanguagePreference(page);
 
     const PAGE_BATCH_SIZE = 20; // Recreate page every N pages to release memory
 
@@ -206,6 +222,7 @@ async function prerender() {
         await page.close();
         page = await browser.newPage();
         await page.setViewport({ width: 1920, height: 1080 });
+        await clearLanguagePreference(page);
       }
 
       console.log(`Prerendering ${pagePath}... (${i + 1}/${PAGES.length})`);
