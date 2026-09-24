@@ -122,6 +122,14 @@ describe('public/_headers rule table', () => {
         expect(matches[0].value).toBe('public, max-age=31536000, immutable');
       }
     });
+
+    // TECH-016: the retained legacy entry bundle must be cached like any other
+    // hashed asset, never picked up by a document caching rule.
+    it('gives the retained legacy entry bundle the same single immutable rule', () => {
+      const matches = cacheControlMatches('/assets/index-GYNgpxbY.js');
+      expect(matches.map((m) => m.rule.path)).toEqual(['/assets/*']);
+      expect(matches[0].value).toBe('public, max-age=31536000, immutable');
+    });
   });
 
   describe('no-overlap invariant', () => {
