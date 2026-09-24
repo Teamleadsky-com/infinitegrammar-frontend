@@ -42,9 +42,8 @@ type PeriodType = 'daily' | 'weekly' | 'monthly';
 
 // SEO meta data. Kept local to this page rather than in the i18n bundles so the
 // change stays inside this one file; the visible page body still comes from i18n.
-// Both languages are provided because i18n defaults to 'en' with an empty
-// localStorage (src/i18n/config.ts) — a crawler's state — so the head tags must
-// match the language the page actually renders in.
+// Both languages are provided because the page renders in whichever language
+// i18n resolves to (src/i18n/config.ts), so the head tags must match it.
 const PAGE_META = {
   de: {
     title: buildPageTitle('Übungsstatistiken A1–C1'),
