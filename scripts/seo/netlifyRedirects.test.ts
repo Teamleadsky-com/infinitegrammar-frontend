@@ -200,6 +200,18 @@ describe('netlify.toml redirect table', () => {
       });
       expect(result).toMatchObject({ status: 200, via: 'static-file' });
     });
+
+    // TECH-016: the entry bundle of an earlier deploy is kept in public/assets/
+    // so stale HTML still loads it; Vite copies it into dist/assets/ unchanged.
+    it('serves the retained legacy entry bundle as a 200 static file', () => {
+      const legacyBundle = '/assets/index-GYNgpxbY.js';
+      expect(fs.existsSync(path.join(ROOT, 'public', legacyBundle))).toBe(true);
+      const result = resolve(legacyBundle, {
+        rules,
+        staticFiles: new Set([...PRERENDERED_FILES, legacyBundle]),
+      });
+      expect(result).toMatchObject({ status: 200, via: 'static-file' });
+    });
   });
 
   // Check 6 -- the golden "nonexistent" sample.
