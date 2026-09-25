@@ -19,6 +19,7 @@ export const CANONICAL_ROUTES = new Set([
   "/articles/tech-stack-content-heavy-language-product/",
   "/articles/react-spa-seo-postmortem/",
   "/articles/generation-checker-analysis/",
+  "/articles/seo-autopilot-autonomous-technical-seo/",
   "/pruefungszentren/telc-berlin/",
   "/pruefungszentren/testdaf-berlin/",
   "/pruefungszentren/telc-muenchen/",

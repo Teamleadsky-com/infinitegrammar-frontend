@@ -159,8 +159,8 @@ describe('netlify.toml redirect table', () => {
 
   // Check 3 -- no indexed URL may be reached through the 404 rule.
   describe('sitemap URLs', () => {
-    it('lists 89 URLs', () => {
-      expect(SITEMAP_PATHS).toHaveLength(89);
+    it('lists 90 URLs', () => {
+      expect(SITEMAP_PATHS).toHaveLength(90);
     });
 
     it.each(SITEMAP_PATHS)('serves %s as a 200 static file', (sitemapPath) => {

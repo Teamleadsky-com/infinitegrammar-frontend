@@ -97,8 +97,8 @@ describe('trailing-slash edge function', () => {
           .matchAll(/<loc>([^<]+)<\/loc>/g),
       ].map((match) => new URL(match[1]).pathname);
 
-      expect(sitemapPaths).toHaveLength(89);
-      expect(CANONICAL_ROUTES.size).toBe(88);
+      expect(sitemapPaths).toHaveLength(90);
+      expect(CANONICAL_ROUTES.size).toBe(89);
       expect([...CANONICAL_ROUTES].sort()).toEqual(
         sitemapPaths.filter((p) => p !== '/').sort()
       );
