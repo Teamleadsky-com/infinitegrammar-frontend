@@ -213,3 +213,35 @@ All colors MUST be HSL.
 .article-content .article-figure figcaption {
   @apply text-sm text-muted-foreground mt-3 text-center italic;
 }
+
+.article-content .article-callout {
+  @apply border-l-4 border-primary bg-primary/5 rounded-r-lg px-5 py-4 my-6;
+}
+
+.article-content .article-callout p {
+  @apply text-foreground mb-2;
+}
+
+.article-content .article-callout p:last-child {
+  @apply mb-0;
+}
+
+.article-content .article-pullquote {
+  @apply text-xl md:text-2xl font-semibold text-foreground leading-snug my-8 pl-4 border-l-4 border-primary;
+}
+
+.article-content .article-stats {
+  @apply grid grid-cols-2 md:grid-cols-4 gap-3 my-8;
+}
+
+.article-content .article-stat {
+  @apply rounded-lg border bg-card p-4 text-center shadow-sm;
+}
+
+.article-content .article-stat-value {
+  @apply block text-3xl font-bold text-primary leading-none mb-2;
+}
+
+.article-content .article-stat-label {
+  @apply block text-sm text-muted-foreground leading-snug;
+}

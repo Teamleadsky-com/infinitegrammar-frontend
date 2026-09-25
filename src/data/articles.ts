@@ -1822,7 +1822,7 @@ DO UPDATE SET
 
 <p>The problem was simple:</p>
 
-<p>I am not an SEO expert.</p>
+<p class="article-pullquote">I am not an SEO expert.</p>
 
 <p>I can work with product metrics, data, code and experimentation. But technical SEO contains a large number of interacting rules around crawling, rendering, canonicals, structured data, internal links, performance and indexability.</p>
 
@@ -1830,21 +1830,22 @@ DO UPDATE SET
 
 <p>So the goal changed.</p>
 
+<div class="article-callout">
 <p>Instead of using AI to help me do SEO, I wanted to build a system where an AI agent could act as the SEO specialist and developer, continuously inspect the site, fix problems, and prove that the fixes worked.</p>
+</div>
 
-<p>That became SEO-Autopilot.</p>
+<p>That became <strong>SEO-Autopilot</strong>.</p>
 
 <h2>From n8n workflows to an autonomous control loop</h2>
 
 <p>The first architecture was fairly simple.</p>
 
-<p>n8n was the orchestrator. It selected checks from the SEO catalog, tracked state, dispatched work and waited for results.</p>
-
-<p>Claude Code running through GitHub was the developer. It investigated the repository, proposed fixes and implemented approved changes.</p>
-
-<p>GitHub Actions ran tests, verification steps, production checks and callbacks.</p>
-
-<p>Netlify provided Deploy Previews and production deployment.</p>
+<ul>
+<li><strong>n8n</strong> was the orchestrator. It selected checks from the SEO catalog, tracked state, dispatched work and waited for results.</li>
+<li><strong>Claude Code GitHub Agent</strong> was the developer. It investigated the repository, proposed fixes and implemented approved changes.</li>
+<li><strong>GitHub Actions</strong> ran tests, verification steps, production checks and callbacks.</li>
+<li><strong>Netlify</strong> provided Deploy Previews and production deployment.</li>
+</ul>
 
 <p>And GitHub became the workspace where issues, branches, pull requests and execution results were visible.</p>
 
@@ -1856,17 +1857,13 @@ DO UPDATE SET
 
 <p>That worked while the system was small. Then the workflows accumulated retries, callbacks, observation windows, PR detection, deployment checks, rate-limit handling and failure recovery.</p>
 
-<p>Editing nodes by hand became the bottleneck.</p>
+<p><strong>Editing nodes by hand became the bottleneck.</strong></p>
 
 <p>So I gradually moved the control plane into GitHub.</p>
 
 <p>The n8n workflows became version-controlled JSON. ChatGPT became both the developer of those workflows and, effectively, my smart console for the system.</p>
 
 <p>ChatGPT accesses the repository through the GitHub integration, inspects the current implementation, changes workflow definitions and helps debug failures. GitHub Actions then deploy those workflow definitions to n8n through the n8n API, with credentials stored in GitHub secrets.</p>
-
-<p>The loop changed from:</p>
-
-<p>to something much closer to:</p>
 
 <figure class="article-figure">
 <img src="/images/articles/seo-autopilot-github-control-plane.webp" alt="Before: me, open n8n, edit nodes manually, run workflow, inspect failure, explain it to ChatGPT, edit again. After: me and ChatGPT plan, discuss and iterate, GitHub source is proposed, reviewed and merged, automated CI/CD deploys to n8n, n8n orchestrates and executes, and the execution result with logs, metrics and alerts feeds back into debugging" loading="lazy" width="1448" height="1086" />
@@ -1884,7 +1881,7 @@ DO UPDATE SET
 
 <p>Those substitutions often sounded reasonable.</p>
 
-<p>They were still different checks.</p>
+<p class="article-pullquote">They were still different checks.</p>
 
 <p>A common failure mode looked like this:</p>
 
@@ -1892,7 +1889,9 @@ DO UPDATE SET
 <img src="/images/articles/seo-autopilot-verification-drift.webp" alt="Why verification drifted: the original check asks whether production exhibits X, the agent implements a fix, the exact check is inconvenient, the agent runs a related check Y, Y passes, and the issue is reported as fixed. The agent changed the test after seeing its own implementation" loading="lazy" width="1448" height="1086" />
 </figure>
 
+<div class="article-callout">
 <p>The system was effectively allowing the agent to change the test after seeing its own implementation.</p>
+</div>
 
 <p>Some catalog checks explicitly required repository-static verification, while the execution system did not yet support that verifier type. The correct result should have been missing verifier capability. Earlier versions were too willing to substitute another form of evidence and continue.</p>
 
@@ -1922,19 +1921,18 @@ verification contract</code></pre>
 
 <p>The baseline failure is important.</p>
 
-<p>A verifier is only useful if it can first reproduce the defect it claims to test.</p>
+<p><strong>A verifier is only useful if it can first reproduce the defect it claims to test.</strong></p>
 
-<p>So the same artifact has to discriminate between:</p>
+<div class="article-callout">
+<p>The implementation agent can decide how to solve the problem.</p>
+<p>It cannot redefine what “solved” means afterwards.</p>
+</div>
+
+<p>And if the required verifier does not exist yet, the workflow is put on hold and the missing capability becomes an engineering task of its own rather than an excuse to replace the check with something easier.</p>
 
 <figure class="article-figure">
 <img src="/images/articles/seo-autopilot-same-verifier-outcome.webp" alt="Same verifier, different outcome: before, production checked by the same verifier fails; after, preview and production checked by the same verifier pass" loading="lazy" width="1448" height="1086" />
 </figure>
-
-<p>The implementation agent can decide how to solve the problem.</p>
-
-<p>It cannot redefine what “solved” means afterwards.</p>
-
-<p>And if the required verifier does not exist yet, the workflow is put on hold and the missing capability becomes an engineering task of its own rather than an excuse to replace the check with something easier.</p>
 
 <h2>Three types of SEO checks</h2>
 
@@ -1962,7 +1960,7 @@ verification contract</code></pre>
 
 <p>These checks do not need another LLM opinion.</p>
 
-<p>They need a verifier.</p>
+<p><strong>They need a verifier.</strong></p>
 
 <h3>Deterministic with policy</h3>
 
@@ -1974,13 +1972,11 @@ verification contract</code></pre>
 
 <p>There is no universal rule for that route.</p>
 
-<p>But once the site policy says:</p>
+<p>But once the site policy is specified, the check becomes deterministic.</p>
 
 <figure class="article-figure">
 <img src="/images/articles/seo-autopilot-deterministic-with-policy.webp" alt="Deterministic with policy: the APP_FUNCTIONAL route class is not an SEO landing page, is excluded from the sitemap, and requires an explicit crawl strategy. Once policy is explicit, the check becomes deterministic" loading="lazy" width="1448" height="1086" />
 </figure>
-
-<p>the check becomes deterministic.</p>
 
 <p>The same applies to questions such as:</p>
 
@@ -1992,7 +1988,9 @@ verification contract</code></pre>
 <li>which structured-data types are expected on each route class.</li>
 </ul>
 
+<div class="article-callout">
 <p>A large part of technical SEO automation turned out to be about converting implicit product decisions into explicit rules that software can test.</p>
+</div>
 
 <h3>Semantic</h3>
 
@@ -2013,26 +2011,6 @@ verification contract</code></pre>
 
 <p>They need a different evaluation layer: independent LLM judges, SERP context, stronger evidence requirements and likely multiple evaluators rather than letting the implementation agent judge itself.</p>
 
-<p>For now, the production Autopilot focuses on the first two categories:</p>
-
-<pre><code>Deterministic
-        +
-Deterministic with policy
-        │
-        ▼
-frozen verifier
-        │
-        ▼
-autonomous implementation
-        │
-        ▼
-measurable PASS / FAIL
-
-
-Semantic
-        │
-        ▼
-next stage</code></pre>
 
 <h2>What the workflow looks like now</h2>
 
@@ -2044,11 +2022,13 @@ next stage</code></pre>
 
 <p>That is quite different from asking an AI:</p>
 
-<p>“Improve SEO.”</p>
+<blockquote>“Improve SEO.”</blockquote>
 
 <p>The system is instead asking:</p>
 
+<div class="article-callout">
 <p>“Does this specific externally observable property fail, can we prove it, and can the same test prove that it no longer fails after the change?”</p>
+</div>
 
 <h2>Some of the issues were surprisingly ordinary</h2>
 
@@ -2058,9 +2038,9 @@ next stage</code></pre>
 
 <p>The prerendered HTML Google received contained none of them.</p>
 
-<p>For users, the navigation worked.</p>
+<p><strong>For users</strong>, the navigation worked.</p>
 
-<p>For a crawler, an important part of the site's internal link graph did not exist.</p>
+<p><strong>For a crawler</strong>, an important part of the site's internal link graph did not exist.</p>
 
 <p>The fix made both navigation structures part of the rendered document. The frozen verifier checked the actual built HTML and confirmed that every expected category link was present.</p>
 
@@ -2068,9 +2048,9 @@ next stage</code></pre>
 
 <p>The UI used JavaScript navigation handlers instead of real anchors.</p>
 
-<p>To a user they looked like links.</p>
+<p><strong>To a user</strong> they looked like links.</p>
 
-<p>To a crawler they were buttons.</p>
+<p><strong>To a crawler</strong> they were buttons.</p>
 
 <p>Other deterministic checks found:</p>
 
@@ -2090,29 +2070,38 @@ next stage</code></pre>
 
 <p>A site can accumulate many small technical inconsistencies that are individually easy to miss and collectively expensive.</p>
 
-<p>An autopilot can keep looking for them.</p>
+<p class="article-pullquote">An autopilot can keep looking for them.</p>
 
 <h2>Then search traffic started moving</h2>
 
 <p>The first concentrated wave of deterministic production fixes was followed by a clear change in Google Search Console.</p>
 
+<div class="article-stats">
+<div class="article-stat"><span class="article-stat-value">+77%</span><span class="article-stat-label">organic search clicks</span></div>
+<div class="article-stat"><span class="article-stat-value">+223%</span><span class="article-stat-label">impressions vs. earlier baseline</span></div>
+<div class="article-stat"><span class="article-stat-value">+21%</span><span class="article-stat-label">more clicks while impressions fell 44%</span></div>
+<div class="article-stat"><span class="article-stat-value">&gt;2×</span><span class="article-stat-label">click-through rate</span></div>
+</div>
+
 <p>The metric I care about most at the current stage is clicks.</p>
 
 <p>Compared with the period immediately before that remediation wave:</p>
 
-<p>organic search clicks increased by approximately 77%.</p>
+<div class="article-callout">
+<p>organic search clicks increased by approximately <strong>77%</strong>.</p>
+</div>
 
-<p>Search visibility expanded even faster. After the initial spike settled down, impressions were still approximately 223% above the earlier baseline.</p>
+<p>Search visibility expanded even faster. After the initial spike settled down, impressions were still approximately <strong>223%</strong> above the earlier baseline.</p>
 
 <p>The later behaviour was particularly interesting.</p>
 
-<p>At one point impressions fell by roughly 44% as Google reduced a large amount of broad, low-click exposure.</p>
+<p>At one point impressions fell by roughly <strong>44%</strong> as Google reduced a large amount of broad, low-click exposure.</p>
 
 <p>But clicks did not fall with them.</p>
 
-<p>They increased by another 21%.</p>
+<p>They increased by another <strong>21%</strong>.</p>
 
-<p>CTR more than doubled.</p>
+<p><strong>CTR more than doubled.</strong></p>
 
 <figure class="article-figure">
 <img src="/images/articles/seo-autopilot-observed-outcomes.webp" alt="Observed outcomes after the first remediation wave: clicks rose from an index of 100 to 177, plus 77 percent; impressions rose from 100 to 323, plus 223 percent. Later, impressions fell 44 percent while clicks rose another 21 percent and CTR more than doubled. Observed pattern, not experimental proof" loading="lazy" width="1448" height="1086" />
@@ -2127,8 +2116,6 @@ next stage</code></pre>
 <figure class="article-figure">
 <img src="/images/articles/seo-autopilot-fixes-to-search-impact.webp" alt="How technical fixes turn into search impact: technical fixes, Google recrawls, crawl graph and page signals change, more page and query combinations are tested, visibility expands, useful rankings retain clicks" loading="lazy" width="1448" height="1086" />
 </figure>
-
-<p>This is not proof that SEO-Autopilot caused exactly 77% more clicks.</p>
 
 <p>The result is observational rather than experimental.</p>
 
@@ -2160,19 +2147,20 @@ next stage</code></pre>
 <img src="/images/articles/seo-autopilot-what-comes-next.webp" alt="What comes next: deterministic checks, frozen verifiers, safe autonomous fixes, semantic checks, independent judges, search context and evidence, higher-level optimization. From executable contracts to richer evaluation" loading="lazy" width="1448" height="1086" />
 </figure>
 
+<div class="article-callout">
 <p>The goal is not to make the agent more confident.</p>
-
 <p>It is to make the system better at knowing what it actually knows.</p>
+</div>
 
-<p>For deterministic SEO, that means executable contracts.</p>
+<p><strong>For deterministic SEO</strong>, that means executable contracts.</p>
 
-<p>For semantic SEO, it will mean independent evaluation rather than self-judgement.</p>
+<p><strong>For semantic SEO</strong>, it will mean independent evaluation rather than self-judgement.</p>
 
 <p>And eventually, the interesting question is not whether an AI can change a website.</p>
 
 <p>It already can.</p>
 
-<p>The interesting question is whether an autonomous system can build enough evidence around its own changes to know when a change is correct, when it worked, and when it should try something else.</p>
+<p class="article-pullquote">The interesting question is whether an autonomous system can build enough evidence around its own changes to know when a change is correct, when it worked, and when it should try something else.</p>
 `
   }
 ];
