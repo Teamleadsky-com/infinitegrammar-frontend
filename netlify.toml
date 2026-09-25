@@ -506,7 +506,7 @@
   status = 200
 
 # Terminal fallback. Prerendered pages in dist/<path>/index.html are served as
-# static files BEFORE this rule is evaluated, so all 89 sitemap URLs stay 200.
+# static files BEFORE this rule is evaluated, so all 90 sitemap URLs stay 200.
 # Anything else is genuinely unknown: still serve the React shell so react-router
 # renders <NotFound />, but with a real 404 status instead of a soft 404 (TECH-011).
 [[redirects]]

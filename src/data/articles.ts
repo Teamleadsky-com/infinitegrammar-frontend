@@ -1804,6 +1804,376 @@ DO UPDATE SET
 
 <p>Considering that for an educational product a wrong exercise is worse than no exercise, the 59% rejection rate is the price of that constraint.</p>
 `
+  },
+  {
+    slug: 'seo-autopilot-autonomous-technical-seo',
+    title: 'I Built an SEO Autopilot Because I Am Not an SEO Expert',
+    excerpt: 'Instead of using AI to help me do SEO, I wanted to build a system where an AI agent could act as the SEO specialist and developer, continuously inspect the site, fix problems, and prove that the fixes worked.',
+    datePublished: '2026-09-25T10:00:00+02:00',
+    dateModified: '2026-09-25T10:00:00+02:00',
+    htmlContent: `
+<p>I wanted to improve the SEO of InfiniteGrammar.de.</p>
+
+<p>The frontend originally came from a design built with Lovable and was developed further with Claude Code. I added prerendering, metadata, structured data, sitemaps and other SEO improvements along the way.</p>
+
+<p>Still, the website showed poor organic search performance for months.</p>
+
+<p>I tried the obvious next step: ask Claude Code with SEO skills to identify problems and fix them. It found plausible improvements. Some were useful. But the overall result was not satisfactory.</p>
+
+<p>The problem was simple:</p>
+
+<p>I am not an SEO expert.</p>
+
+<p>I can work with product metrics, data, code and experimentation. But technical SEO contains a large number of interacting rules around crawling, rendering, canonicals, structured data, internal links, performance and indexability.</p>
+
+<p>I did not want the quality of the site to depend on me knowing which SEO question to ask next.</p>
+
+<p>So the goal changed.</p>
+
+<p>Instead of using AI to help me do SEO, I wanted to build a system where an AI agent could act as the SEO specialist and developer, continuously inspect the site, fix problems, and prove that the fixes worked.</p>
+
+<p>That became SEO-Autopilot.</p>
+
+<h2>From n8n workflows to an autonomous control loop</h2>
+
+<p>The first architecture was fairly simple.</p>
+
+<p>n8n was the orchestrator. It selected checks from the SEO catalog, tracked state, dispatched work and waited for results.</p>
+
+<p>Claude Code running through GitHub was the developer. It investigated the repository, proposed fixes and implemented approved changes.</p>
+
+<p>GitHub Actions ran tests, verification steps, production checks and callbacks.</p>
+
+<p>Netlify provided Deploy Previews and production deployment.</p>
+
+<p>And GitHub became the workspace where issues, branches, pull requests and execution results were visible.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-orchestration-stack.webp" alt="SEO-Autopilot orchestration stack: SEO check catalog, then n8n for orchestration and state, then GitHub and Claude to investigate, propose and fix, then GitHub Actions to test, verify and observe, then Netlify for preview and production" width="1448" height="1086" />
+</figure>
+
+<p>At first I used to build the n8n workflows manually.</p>
+
+<p>That worked while the system was small. Then the workflows accumulated retries, callbacks, observation windows, PR detection, deployment checks, rate-limit handling and failure recovery.</p>
+
+<p>Editing nodes by hand became the bottleneck.</p>
+
+<p>So I gradually moved the control plane into GitHub.</p>
+
+<p>The n8n workflows became version-controlled JSON. ChatGPT became both the developer of those workflows and, effectively, my smart console for the system.</p>
+
+<p>ChatGPT accesses the repository through the GitHub integration, inspects the current implementation, changes workflow definitions and helps debug failures. GitHub Actions then deploy those workflow definitions to n8n through the n8n API, with credentials stored in GitHub secrets.</p>
+
+<p>The loop changed from:</p>
+
+<p>to something much closer to:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-github-control-plane.webp" alt="Before: me, open n8n, edit nodes manually, run workflow, inspect failure, explain it to ChatGPT, edit again. After: me and ChatGPT plan, discuss and iterate, GitHub source is proposed, reviewed and merged, automated CI/CD deploys to n8n, n8n orchestrates and executes, and the execution result with logs, metrics and alerts feeds back into debugging" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>That was the point where it stopped feeling like a collection of automations and started feeling like a real system.</p>
+
+<h2>The difficult part was verification</h2>
+
+<p>The initial idea was straightforward: take an SEO check from the prdefined catalog, let Claude investigate the repository, implement a fix, and verify the result.</p>
+
+<p>The problem was that the verification itself was not stable.</p>
+
+<p>If a check required evidence from production, the agent might instead prove that the corresponding code existed in the repository. If the check was defined against rendered HTML, it might inspect React source. If a performance check expected a particular Lighthouse signal, it might substitute a related PageSpeed result or infer success from the implementation.</p>
+
+<p>Those substitutions often sounded reasonable.</p>
+
+<p>They were still different checks.</p>
+
+<p>A common failure mode looked like this:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-verification-drift.webp" alt="Why verification drifted: the original check asks whether production exhibits X, the agent implements a fix, the exact check is inconvenient, the agent runs a related check Y, Y passes, and the issue is reported as fixed. The agent changed the test after seeing its own implementation" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>The system was effectively allowing the agent to change the test after seeing its own implementation.</p>
+
+<p>Some catalog checks explicitly required repository-static verification, while the execution system did not yet support that verifier type. The correct result should have been missing verifier capability. Earlier versions were too willing to substitute another form of evidence and continue.</p>
+
+<p>Performance checks exposed the same problem. A PageSpeed collection path already existed, but that did not make it equivalent to every Lighthouse-based check in the catalog. Code inspection, Lighthouse diagnostics and PageSpeed measurements can all be useful evidence, but they are not interchangeable.</p>
+
+<p>Coverage mattered as well. One representative URL could pass while another independently affected template remained broken.</p>
+
+<p>That led to one of the most important architectural changes in the project.</p>
+
+<h2>The frozen verifier</h2>
+
+<p>Each deterministic fix now has to come with a concrete verification contract.</p>
+
+<p>The proposal defines both:</p>
+
+<pre><code>proposed fix
+      +
+verification contract</code></pre>
+
+<p>A separate gatekeeper reviews both.</p>
+
+<p>The verifier is then frozen before implementation starts.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-frozen-verifier.webp" alt="The frozen verifier: catalog check, assessment finds an issue, proposal with fix and verification contract, gatekeeper, freeze verifier where current production must fail, implementation, deploy preview must pass, and production must pass the same verifier" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>The baseline failure is important.</p>
+
+<p>A verifier is only useful if it can first reproduce the defect it claims to test.</p>
+
+<p>So the same artifact has to discriminate between:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-same-verifier-outcome.webp" alt="Same verifier, different outcome: before, production checked by the same verifier fails; after, preview and production checked by the same verifier pass" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>The implementation agent can decide how to solve the problem.</p>
+
+<p>It cannot redefine what “solved” means afterwards.</p>
+
+<p>And if the required verifier does not exist yet, the workflow is put on hold and the missing capability becomes an engineering task of its own rather than an excuse to replace the check with something easier.</p>
+
+<h2>Three types of SEO checks</h2>
+
+<p>The catalog is split according to how objectively a check can be evaluated.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-three-check-types.webp" alt="Three types of SEO checks in the catalog: deterministic with a machine-verifiable answer such as canonical, sitemap and rendered links; deterministic with policy, mechanical once policy is defined, such as crawlability, route classes and schema by route; and semantic, requiring judgement, such as search intent, content quality and whether a page deserves to rank" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<h3>Deterministic</h3>
+
+<p>These have a machine-verifiable answer.</p>
+
+<p>Examples:</p>
+
+<ul>
+<li>Does the canonical match the expected URL?</li>
+<li>Is an indexable URL present in the sitemap?</li>
+<li>Are important links present in the prerendered HTML?</li>
+<li>Does the expected structured data exist?</li>
+<li>Does an unknown URL return the correct HTTP response?</li>
+<li>Do image dimensions match the actual asset?</li>
+<li>Does the breadcrumb expose the expected hierarchy?</li>
+</ul>
+
+<p>These checks do not need another LLM opinion.</p>
+
+<p>They need a verifier.</p>
+
+<h3>Deterministic with policy</h3>
+
+<p>Some checks are technically easy to evaluate, but there is no correct answer until the site defines its own policy.</p>
+
+<p>For example:</p>
+
+<p>Should <code>/exercise</code> be crawlable?</p>
+
+<p>There is no universal rule for that route.</p>
+
+<p>But once the site policy says:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-deterministic-with-policy.webp" alt="Deterministic with policy: the APP_FUNCTIONAL route class is not an SEO landing page, is excluded from the sitemap, and requires an explicit crawl strategy. Once policy is explicit, the check becomes deterministic" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>the check becomes deterministic.</p>
+
+<p>The same applies to questions such as:</p>
+
+<ul>
+<li>which route classes belong in the sitemap;</li>
+<li>which URL variant is canonical;</li>
+<li>which application routes should be crawlable;</li>
+<li>which page types require breadcrumbs;</li>
+<li>which structured-data types are expected on each route class.</li>
+</ul>
+
+<p>A large part of technical SEO automation turned out to be about converting implicit product decisions into explicit rules that software can test.</p>
+
+<h3>Semantic</h3>
+
+<p>The remaining checks require judgement rather than simple verification.</p>
+
+<p>Examples:</p>
+
+<ul>
+<li>Does the page satisfy search intent?</li>
+<li>Is the content sufficiently complete?</li>
+<li>Is it meaningfully different from another page?</li>
+<li>Is the title actually good for the query?</li>
+<li>Is the anchor text useful in context?</li>
+<li>Does the page deserve to rank against competing results?</li>
+</ul>
+
+<p>These cannot be reduced reliably to a simple PASS / FAIL assertion.</p>
+
+<p>They need a different evaluation layer: independent LLM judges, SERP context, stronger evidence requirements and likely multiple evaluators rather than letting the implementation agent judge itself.</p>
+
+<p>For now, the production Autopilot focuses on the first two categories:</p>
+
+<pre><code>Deterministic
+        +
+Deterministic with policy
+        │
+        ▼
+frozen verifier
+        │
+        ▼
+autonomous implementation
+        │
+        ▼
+measurable PASS / FAIL
+
+
+Semantic
+        │
+        ▼
+next stage</code></pre>
+
+<h2>What the workflow looks like now</h2>
+
+<p>At a high level, one catalog check becomes a small engineering experiment.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-workflow-now.webp" alt="What the workflow looks like now: SEO catalog, assess production, issue confirmed, proposal and verifier, gatekeeper, baseline fail, implement fix, preview pass, deploy, production pass, observe search performance" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>That is quite different from asking an AI:</p>
+
+<p>“Improve SEO.”</p>
+
+<p>The system is instead asking:</p>
+
+<p>“Does this specific externally observable property fail, can we prove it, and can the same test prove that it no longer fails after the change?”</p>
+
+<h2>Some of the issues were surprisingly ordinary</h2>
+
+<p>One check inspected the main German grammar hub.</p>
+
+<p>The application appeared to contain links to its topic categories. But those links existed only in a client-side UI state.</p>
+
+<p>The prerendered HTML Google received contained none of them.</p>
+
+<p>For users, the navigation worked.</p>
+
+<p>For a crawler, an important part of the site's internal link graph did not exist.</p>
+
+<p>The fix made both navigation structures part of the rendered document. The frozen verifier checked the actual built HTML and confirmed that every expected category link was present.</p>
+
+<p>Another check found the same class of problem on exam-centre pages.</p>
+
+<p>The UI used JavaScript navigation handlers instead of real anchors.</p>
+
+<p>To a user they looked like links.</p>
+
+<p>To a crawler they were buttons.</p>
+
+<p>Other deterministic checks found:</p>
+
+<ul>
+<li>grammar content that existed in the repository but was unreachable because two identifiers did not match;</li>
+<li>grammar category pages without a proper crawlable breadcrumb hierarchy;</li>
+<li>application and utility routes without an explicit crawl policy;</li>
+<li>article images without intrinsic dimensions, creating avoidable layout movement;</li>
+<li>unknown URLs being served as successful pages instead of genuine not-found responses;</li>
+<li>URL variants that could resolve under inconsistent casing;</li>
+<li>structured data describing content that was not actually rendered.</li>
+</ul>
+
+<p>None of these are spectacular SEO tricks.</p>
+
+<p>That is partly the point.</p>
+
+<p>A site can accumulate many small technical inconsistencies that are individually easy to miss and collectively expensive.</p>
+
+<p>An autopilot can keep looking for them.</p>
+
+<h2>Then search traffic started moving</h2>
+
+<p>The first concentrated wave of deterministic production fixes was followed by a clear change in Google Search Console.</p>
+
+<p>The metric I care about most at the current stage is clicks.</p>
+
+<p>Compared with the period immediately before that remediation wave:</p>
+
+<p>organic search clicks increased by approximately 77%.</p>
+
+<p>Search visibility expanded even faster. After the initial spike settled down, impressions were still approximately 223% above the earlier baseline.</p>
+
+<p>The later behaviour was particularly interesting.</p>
+
+<p>At one point impressions fell by roughly 44% as Google reduced a large amount of broad, low-click exposure.</p>
+
+<p>But clicks did not fall with them.</p>
+
+<p>They increased by another 21%.</p>
+
+<p>CTR more than doubled.</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-observed-outcomes.webp" alt="Observed outcomes after the first remediation wave: clicks rose from an index of 100 to 177, plus 77 percent; impressions rose from 100 to 323, plus 223 percent. Later, impressions fell 44 percent while clicks rose another 21 percent and CTR more than doubled. Observed pattern, not experimental proof" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>The timing was useful too.</p>
+
+<p>The increase did not appear immediately after deployment. The strongest expansion came after enough time had passed for Google to recrawl and reconsider the changed site structure.</p>
+
+<p>A plausible sequence is:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-fixes-to-search-impact.webp" alt="How technical fixes turn into search impact: technical fixes, Google recrawls, crawl graph and page signals change, more page and query combinations are tested, visibility expands, useful rankings retain clicks" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>This is not proof that SEO-Autopilot caused exactly 77% more clicks.</p>
+
+<p>The result is observational rather than experimental.</p>
+
+<p>But the pattern is encouraging: the improvement starts after the first remediation wave, appears with a plausible delay, and click growth survives after part of the impression spike disappears.</p>
+
+<h2>The deterministic part is only the first stage</h2>
+
+<p>The first production phase answered one question:</p>
+
+<p>Can enough technical SEO knowledge be converted into executable checks that an autonomous coding agent can safely work against?</p>
+
+<p>So far, the answer appears to be yes.</p>
+
+<p>The next challenge is harder.</p>
+
+<p>A deterministic verifier can prove that a page now has the correct canonical, that an internal link exists, or that a route returns the right response.</p>
+
+<p>It cannot decide whether a page is genuinely useful.</p>
+
+<p>It cannot judge whether the content is better aligned with search intent.</p>
+
+<p>It cannot tell whether two pages are semantically too similar.</p>
+
+<p>That is where the semantic part of the catalog starts.</p>
+
+<p>The next version of SEO-Autopilot therefore needs another evaluation layer:</p>
+
+<figure class="article-figure">
+<img src="/images/articles/seo-autopilot-what-comes-next.webp" alt="What comes next: deterministic checks, frozen verifiers, safe autonomous fixes, semantic checks, independent judges, search context and evidence, higher-level optimization. From executable contracts to richer evaluation" loading="lazy" width="1448" height="1086" />
+</figure>
+
+<p>The goal is not to make the agent more confident.</p>
+
+<p>It is to make the system better at knowing what it actually knows.</p>
+
+<p>For deterministic SEO, that means executable contracts.</p>
+
+<p>For semantic SEO, it will mean independent evaluation rather than self-judgement.</p>
+
+<p>And eventually, the interesting question is not whether an AI can change a website.</p>
+
+<p>It already can.</p>
+
+<p>The interesting question is whether an autonomous system can build enough evidence around its own changes to know when a change is correct, when it worked, and when it should try something else.</p>
+`
   }
 ];
 

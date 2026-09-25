@@ -28,6 +28,7 @@ const PAGES = [
   '/articles/tech-stack-content-heavy-language-product/',
   '/articles/react-spa-seo-postmortem/',
   '/articles/generation-checker-analysis/',
+  '/articles/seo-autopilot-autonomous-technical-seo/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',
