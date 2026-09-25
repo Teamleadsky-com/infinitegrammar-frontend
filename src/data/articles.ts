@@ -2160,7 +2160,7 @@ verification contract</code></pre>
 
 <p>It already can.</p>
 
-<p class="article-pullquote">The interesting question is whether an autonomous system can build enough evidence around its own changes to know when a change is correct, when it worked, and when it should try something else.</p>
+<p class="article-pullquote">The interesting question is how well an autonomous system can build evidence around its own changes to know when a change is correct, when it worked, and when it should try something else.</p>
 `
   }
 ];
