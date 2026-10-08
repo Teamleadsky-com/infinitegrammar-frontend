@@ -34,16 +34,32 @@ export const SUPPLY_COLORS: Record<string, string> = {
 };
 
 export const SEGMENTS: Array<{ key: string; label: string; color: string }> = [
-  { key: "active_passed", label: "Live · verified", color: "hsl(142, 64%, 38%)" },
-  { key: "active_legacy", label: "Live · not verified (legacy)", color: "hsl(142, 30%, 68%)" },
-  { key: "active_pending", label: "Live · pending", color: "hsl(199, 80%, 55%)" },
-  { key: "active_reactivated", label: "Live · reactivated (failed checks)", color: "hsl(48, 90%, 55%)" },
-  { key: "inactive_learner", label: "Removed · learner report", color: "hsl(0, 72%, 51%)" },
-  { key: "inactive_admin", label: "Removed · by admin", color: "hsl(330, 60%, 55%)" },
-  { key: "inactive_live_audit", label: "Removed · live-audit takedown", color: "hsl(25, 90%, 52%)" },
-  { key: "inactive_generation", label: "Removed · rejected at generation", color: "hsl(270, 50%, 60%)" },
-  { key: "inactive_other", label: "Removed · legacy checker / other", color: "hsl(220, 9%, 62%)" },
+  { key: "active_verified", label: "Live · verified (latest check passed)", color: "hsl(142, 64%, 38%)" },
+  { key: "active_failed", label: "Live · failed latest check", color: "hsl(48, 90%, 50%)" },
+  { key: "active_unchecked", label: "Live · not checked", color: "hsl(142, 30%, 72%)" },
+  { key: "inactive_learner", label: "Deactivated · learner report", color: "hsl(0, 72%, 51%)" },
+  { key: "inactive_admin", label: "Deactivated · by admin", color: "hsl(330, 60%, 55%)" },
+  { key: "inactive_live_audit", label: "Deactivated · live-audit takedown", color: "hsl(25, 90%, 52%)" },
+  { key: "inactive_generation", label: "Deactivated · rejected at generation", color: "hsl(270, 50%, 60%)" },
+  { key: "inactive_other", label: "Deactivated · legacy checker / other", color: "hsl(220, 9%, 62%)" },
 ];
+
+export type VerificationPipeline = {
+  pipeline: string;
+  label: string;
+  kind: "generation" | "live_audit" | "checker";
+  runs: number;
+  lastCheckedAt: string | null;
+  checked: number;
+  passed: number;
+  failed: number;
+  liveChecked: number;
+  livePassed: number;
+  liveFailed: number;
+};
+
+// Query-string value for the selected pipeline(s); "all" means every pipeline
+export const pipelinesParam = (selected: string) => `pipelines=${encodeURIComponent(selected)}`;
 
 export const REPORT_SOURCES: Array<{ key: string; label: string }> = [
   { key: "learner", label: "Learner report" },

@@ -100,7 +100,7 @@ export const CheckerRunsView = ({ apiBase, onOpen, onChanged }: { apiBase: strin
                 <Badge>{ex.level}</Badge>
                 <Badge variant="outline">{ex.section_name}</Badge>
                 <Badge variant="secondary">{ex.checker_name}</Badge>
-                {!ex.is_active && <Badge variant="destructive">Inactive</Badge>}
+                {!ex.is_active && <Badge variant="destructive">Deactivated</Badge>}
                 <span className="text-xs text-muted-foreground">{formatDate(ex.reported_at)}</span>
               </div>
               <p className="text-sm mb-3 line-clamp-3">{ex.text}</p>

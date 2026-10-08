@@ -2,17 +2,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LEVELS, SEGMENTS, fetchJson, formatPct, levelRank } from "../dashboardShared";
+import { LEVELS, SEGMENTS, VerificationPipeline, fetchJson, formatDate, formatPct, levelRank, pipelinesParam } from "../dashboardShared";
 
 export type QualityKpis = {
   live: number;
-  livePassed: number;
-  liveLegacy: number;
-  livePending: number;
-  liveReactivated: number;
+  liveVerified: number;
+  liveFailed: number;
+  liveUnchecked: number;
   openLearnerReports: number;
   auditConfig: string | null;
   auditN: number | null;
@@ -31,37 +31,109 @@ const Tile = ({ title, value, sub }: { title: string; value: React.ReactNode; su
 
 type IssueRow = { code: string; label: string; n: number };
 
-const ISSUE_SOURCES = [
-  { key: "all", label: "All sources" },
-  { key: "generation_verifier", label: "Generation" },
-  { key: "live_audit", label: "Live audit" },
-];
+const KIND_LABELS: Record<string, string> = { generation: "Generation", live_audit: "Live audit", checker: "Legacy checker" };
+
+const PipelineBreakdown = ({
+  pipelines,
+  selected,
+  onSelect,
+}: {
+  pipelines: VerificationPipeline[];
+  selected: string;
+  onSelect: (pipeline: string) => void;
+}) => (
+  <Card className="p-4 md:p-6">
+    <h3 className="text-lg font-semibold">Verification by pipeline</h3>
+    <p className="text-sm text-muted-foreground mb-4">
+      Every pipeline that saved verification results. Counts use each exercise's latest verdict within the pipeline.
+    </p>
+    {pipelines.length === 0 ? (
+      <p className="text-sm text-muted-foreground">No verification data saved yet.</p>
+    ) : (
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b text-left text-xs text-muted-foreground">
+              <th className="py-2 pr-3 font-medium">Pipeline</th>
+              <th className="py-2 pr-3 font-medium">Kind</th>
+              <th className="py-2 pr-3 font-medium text-right">Runs</th>
+              <th className="py-2 pr-3 font-medium">Last check</th>
+              <th className="py-2 pr-3 font-medium text-right">Checked</th>
+              <th className="py-2 pr-3 font-medium text-right">Passed</th>
+              <th className="py-2 pr-3 font-medium text-right">Failed</th>
+              <th className="py-2 pr-3 font-medium text-right">Live passed</th>
+              <th className="py-2 pr-3 font-medium text-right">Live failed</th>
+              <th className="py-2" />
+            </tr>
+          </thead>
+          <tbody>
+            {pipelines.map((p) => (
+              <tr key={p.pipeline} className={`border-b last:border-0 ${selected === p.pipeline ? "bg-muted/60" : ""}`}>
+                <td className="py-2 pr-3">
+                  <span className="font-medium">{p.label}</span>
+                  <span className="block font-mono text-[11px] text-muted-foreground">{p.pipeline}</span>
+                </td>
+                <td className="py-2 pr-3 text-muted-foreground">{KIND_LABELS[p.kind] || p.kind}</td>
+                <td className="py-2 pr-3 text-right">{p.runs}</td>
+                <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">{formatDate(p.lastCheckedAt)}</td>
+                <td className="py-2 pr-3 text-right">{p.checked}</td>
+                <td className="py-2 pr-3 text-right">{p.passed}</td>
+                <td className="py-2 pr-3 text-right">{p.failed}</td>
+                <td className="py-2 pr-3 text-right">{p.livePassed}</td>
+                <td className="py-2 pr-3 text-right">{p.liveFailed}</td>
+                <td className="py-2 text-right">
+                  <Button variant="outline" size="sm" disabled={selected === p.pipeline} onClick={() => onSelect(p.pipeline)}>
+                    Show
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+    <p className="text-xs text-muted-foreground mt-3">
+      Legacy checkers saved only the exercises they flagged unless their full results were loaded; their "passed" count
+      stays 0 until then.
+    </p>
+  </Card>
+);
 
 export const QualityOverview = ({
   apiBase,
   kpis,
+  pipelines,
+  selectedPipeline,
+  onSelectPipeline,
   sections,
   onSegmentClick,
 }: {
   apiBase: string;
   kpis: QualityKpis | null;
+  pipelines: VerificationPipeline[];
+  selectedPipeline: string;
+  onSelectPipeline: (pipeline: string) => void;
   sections: Array<{ id: string; name: string; level: string }>;
   onSegmentClick: (segment: string, level: string) => void;
 }) => {
   const [byLevel, setByLevel] = useState<Array<{ level: string; segment: string; n: number }> | null>(null);
   const [issues, setIssues] = useState<IssueRow[] | null>(null);
   const [runs, setRuns] = useState<string[]>([]);
-  const [filters, setFilters] = useState({ source: "all", level: "all", section: "all", run: "all", active: "all", tolerated: false });
+  const [filters, setFilters] = useState({ level: "all", section: "all", run: "all", active: "all", tolerated: false });
+
+  useEffect(() => setFilters((f) => ({ ...f, run: "all" })), [selectedPipeline]);
 
   useEffect(() => {
-    fetchJson<{ rows: Array<{ level: string; segment: string; n: number }> }>(`${apiBase}/admin-quality-status-by-level`)
+    setByLevel(null);
+    fetchJson<{ rows: Array<{ level: string; segment: string; n: number }> }>(
+      `${apiBase}/admin-quality-status-by-level?${pipelinesParam(selectedPipeline)}`,
+    )
       .then((d) => setByLevel(d.rows))
       .catch(() => setByLevel([]));
-  }, [apiBase]);
+  }, [apiBase, selectedPipeline]);
 
   useEffect(() => {
-    const q = new URLSearchParams();
-    if (filters.source !== "all") q.set("source", filters.source);
+    const q = new URLSearchParams({ pipelines: selectedPipeline });
     if (filters.level !== "all") q.set("level", filters.level);
     if (filters.section !== "all") q.set("section", filters.section);
     if (filters.run !== "all") q.set("run", filters.run);
@@ -73,7 +145,7 @@ export const QualityOverview = ({
         setRuns(d.runs);
       })
       .catch(() => setIssues([]));
-  }, [apiBase, filters]);
+  }, [apiBase, filters, selectedPipeline]);
 
   const levelData = useMemo(() => {
     if (!byLevel) return [];
@@ -88,31 +160,37 @@ export const QualityOverview = ({
 
   const presentSegments = SEGMENTS.filter((s) => byLevel?.some((r) => r.segment === s.key));
   const set = (key: keyof typeof filters, value: string | boolean) => setFilters((f) => ({ ...f, [key]: value }));
+  const scope = selectedPipeline === "all" ? "all pipelines" : pipelines.find((p) => p.pipeline === selectedPipeline)?.label || selectedPipeline;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Tile title="Live exercises" value={kpis ? kpis.live : "—"} />
         <Tile
-          title="Verified by current checks"
-          value={kpis && kpis.live > 0 ? formatPct((100 * kpis.livePassed) / kpis.live) : "—"}
-          sub={kpis ? `${kpis.livePassed} passed · ${kpis.liveLegacy} legacy · ${kpis.livePending} pending · ${kpis.liveReactivated} reactivated` : undefined}
+          title={`Verified · ${scope}`}
+          value={kpis && kpis.live > 0 ? formatPct((100 * kpis.liveVerified) / kpis.live) : "—"}
+          sub={kpis ? `${kpis.liveVerified} latest check passed · ${kpis.liveFailed} failed · ${kpis.liveUnchecked} not checked` : undefined}
         />
         <Tile
           title={`Audit grade of the production config${kpis?.auditConfig ? ` (${kpis.auditConfig})` : ""}`}
           value={kpis?.auditN ? `${kpis.auditCleanPct}% clean` : "—"}
-          sub={kpis?.auditN ? `${kpis.auditMinorPct}% minor · ${kpis.auditFlawedPct}% flawed (n = ${kpis.auditN})` : "No audits for this config"}
+          sub={kpis?.auditN ? `${kpis.auditMinorPct}% minor · ${kpis.auditFlawedPct}% flawed (n = ${kpis.auditN}) · graded samples of new output` : "No audits for this config"}
         />
         <Tile
           title="Open learner reports"
           value={kpis ? kpis.openLearnerReports : "—"}
-          sub="Removed by a learner report and not reactivated"
+          sub="Deactivated by a learner report and not reactivated"
         />
       </div>
 
+      <PipelineBreakdown pipelines={pipelines} selected={selectedPipeline} onSelect={onSelectPipeline} />
+
       <Card className="p-4 md:p-6">
         <h3 className="text-lg font-semibold">Corpus status per level</h3>
-        <p className="text-sm text-muted-foreground mb-4">Live and removed exercises, and why they were removed. Click a segment to list its exercises.</p>
+        <p className="text-sm text-muted-foreground mb-4">
+          Live exercises split by their latest check ({scope}); deactivated exercises by the reason they were deactivated.
+          Click a segment to list its exercises.
+        </p>
         {!byLevel ? (
           <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
         ) : levelData.length === 0 ? (
@@ -146,21 +224,14 @@ export const QualityOverview = ({
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-3 mb-4">
           <div>
             <h3 className="text-lg font-semibold">Why exercises fail checks</h3>
-            <p className="text-sm text-muted-foreground">Exercises per issue type, for exercises rejected or taken down by the pipeline.</p>
+            <p className="text-sm text-muted-foreground">
+              Exercises whose latest check ({scope}) failed, by issue type. Legacy checkers give free-text reasons only.
+            </p>
           </div>
           <div className="flex flex-wrap items-end gap-2">
             <div>
-              <Label className="text-xs">Source</Label>
-              <Select value={filters.source} onValueChange={(v) => set("source", v)}>
-                <SelectTrigger className="w-[140px] h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {ISSUE_SOURCES.map((s) => <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
               <Label className="text-xs">Level</Label>
-              <Select value={filters.level} onValueChange={(v) => set("level", v)}>
+              <Select value={filters.level} onValueChange={(v) => setFilters((f) => ({ ...f, level: v, section: "all" }))}>
                 <SelectTrigger className="w-[100px] h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
@@ -193,15 +264,15 @@ export const QualityOverview = ({
             <div>
               <Label className="text-xs">Exercise</Label>
               <Select value={filters.active} onValueChange={(v) => set("active", v)}>
-                <SelectTrigger className="w-[110px] h-9"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="w-[120px] h-9"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="true">Live</SelectItem>
-                  <SelectItem value="false">Removed</SelectItem>
+                  <SelectItem value="false">Deactivated</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <label className="flex items-center gap-2 text-xs h-9" title="G3_TOL: passing exercises with mixed-grammar gaps within the 30% tolerance">
+            <label className="flex items-center gap-2 text-xs h-9" title="G3_TOL: verified exercises with mixed-grammar gaps within the 30% tolerance">
               <Switch checked={filters.tolerated} onCheckedChange={(v) => set("tolerated", v)} />
               Include tolerated (G3_TOL)
             </label>
@@ -210,13 +281,13 @@ export const QualityOverview = ({
         {!issues ? (
           <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
         ) : issues.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No issues for these filters.</p>
+          <p className="text-sm text-muted-foreground">No failed checks for these filters.</p>
         ) : (
           <ResponsiveContainer width="100%" height={issues.length * 30 + 30}>
             <BarChart data={issues} layout="vertical" margin={{ top: 4, right: 32, bottom: 4, left: 0 }}>
               <XAxis type="number" allowDecimals={false} />
-              <YAxis type="category" dataKey="label" width={250} tick={{ fontSize: 12 }} interval={0}
-                     tickFormatter={(label: string, i: number) => `${issues[i]?.code ?? ""} · ${label}`} />
+              <YAxis type="category" dataKey="label" width={270} tick={{ fontSize: 12 }} interval={0}
+                     tickFormatter={(label: string, i: number) => (issues[i]?.code && issues[i].code !== "UNTYPED" ? `${issues[i].code} · ${label}` : label)} />
               <Tooltip formatter={(v: number) => [v, "Exercises"]} />
               <Bar dataKey="n" fill="hsl(25, 90%, 52%)" isAnimationActive={false} label={{ position: "right", fontSize: 11 }} />
             </BarChart>
