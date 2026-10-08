@@ -5,9 +5,12 @@
  * Returns exercises progressively by order number based on user progress
  *
  * Query parameters:
- * - level: A1, A2, B1, B2, C1 (required)
+ * - level: A1, A2, B1, B2, C1 (required with topic/grammarSection; without any
+ *   filter, omitting it returns random exercises across all levels)
  * - topic: verben, artikel, adjektive, etc. (optional)
  * - grammarSection: grammar section ID (optional)
+ * - afterSection: grammar section ID (optional) - for topic/level queries,
+ *   sections after it in curriculum order come first
  * - userId: user UUID (optional) - for progressive delivery
  */
 
@@ -30,10 +33,24 @@ export const handler: Handler = async (event) => {
     const topic = params.topic?.toLowerCase();
     const grammarSection = params.grammarSection;
     const userId = params.userId;
+    const afterSection = params.afterSection;
     const limit = params.limit ? parseInt(params.limit, 10) : null;
 
-    if (!level) {
-      return createResponse(400, { error: 'Level parameter is required' });
+    if (!level && (grammarSection || topic)) {
+      return createResponse(400, { error: 'Level parameter is required when filtering by topic or grammar section' });
+    }
+
+    // Sections follow curriculum order (grammar_sections.order_in_level). Sections
+    // after `afterSection` come first, then earlier unfinished ones.
+    let afterOrder = 0;
+    if (afterSection && level) {
+      const afterResult = await sql`
+        SELECT order_in_level FROM grammar_sections
+        WHERE id = ${afterSection} AND level = ${level}
+      `;
+      if (afterResult.length > 0 && afterResult[0].order_in_level) {
+        afterOrder = afterResult[0].order_in_level;
+      }
     }
 
     // Get user progress to determine starting order number
@@ -53,7 +70,42 @@ export const handler: Handler = async (event) => {
     // Build query with filters
     let result;
 
-    if (grammarSection) {
+    if (!level) {
+      // Last-resort fallback: random exercises across all levels
+      result = await sql`
+        SELECT
+          e.id,
+          e.grammar_section_id,
+          e.level,
+          e.order_number,
+          e.text,
+          e.content_topic,
+          e.model,
+          gs.name as grammar_section_name,
+          COALESCE(
+            (SELECT json_agg(gut.topic)
+             FROM grammar_ui_topics gut
+             WHERE gut.grammar_section_id = e.grammar_section_id),
+            '[]'::json
+          ) as grammar_ui_topics,
+          json_agg(
+            json_build_object(
+              'no', eg.gap_number,
+              'correct', eg.correct_answer,
+              'distractors', eg.distractors,
+              'explanation', eg.explanation
+            ) ORDER BY eg.gap_number
+          ) as gaps
+        FROM exercises e
+        LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
+        LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+        WHERE e.is_active = true
+        GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
+                 e.text, e.content_topic, e.model, gs.name
+        ORDER BY RANDOM()
+        ${limit ? sql`LIMIT ${limit}` : sql``}
+      `;
+    } else if (grammarSection) {
       // Filter by grammar section (takes priority)
       if (userId) {
         // Progressive delivery for authenticated users
@@ -174,8 +226,11 @@ export const handler: Handler = async (event) => {
             )
             AND e.order_number > COALESCE(up.last_completed_exercise_order, 0)
           GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name, up.last_completed_exercise_order
-          ORDER BY e.grammar_section_id ASC, e.order_number ASC
+                   e.text, e.content_topic, e.model, gs.name, gs.order_in_level,
+                   up.last_completed_exercise_order
+          ORDER BY (gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
+                   gs.order_in_level ASC NULLS LAST,
+                   e.grammar_section_id ASC, e.order_number ASC
           ${limit ? sql`LIMIT ${limit}` : sql``}
         `;
       } else {
@@ -256,8 +311,10 @@ export const handler: Handler = async (event) => {
             AND e.is_active = true
             AND e.order_number > COALESCE(up.last_completed_exercise_order, 0)
           GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name
-          ORDER BY e.grammar_section_id ASC, e.order_number ASC
+                   e.text, e.content_topic, e.model, gs.name, gs.order_in_level
+          ORDER BY (gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
+                   gs.order_in_level ASC NULLS LAST,
+                   e.grammar_section_id ASC, e.order_number ASC
           ${limit ? sql`LIMIT ${limit}` : sql``}
         `;
       } else {
@@ -316,7 +373,7 @@ export const handler: Handler = async (event) => {
     return createResponse(200, {
       exercises: exercises,
       count: exercises.length,
-      filters: { level, topic, grammarSection, limit },
+      filters: { level, topic, grammarSection, afterSection, limit },
     });
 
   } catch (error) {
