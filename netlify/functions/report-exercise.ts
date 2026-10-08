@@ -4,7 +4,8 @@
  * POST - Report an exercise as having an issue, save report text, mark inactive
  * GET  - List flagged exercises: from checker runs (with ?source=checker&run_id=...)
  *        or from user reports (default, is_active=false exercises)
- * PATCH - Reactivate a flagged exercise (admin)
+ * PATCH - Admin: reactivate ({exerciseId}, or {exerciseId, active: true}) or
+ *         deactivate ({exerciseId, active: false, reportText?}) an exercise
  */
 
 import { Handler } from '@netlify/functions';
@@ -29,7 +30,8 @@ export const handler: Handler = async (event) => {
         UPDATE exercises
         SET is_active = false,
             report_text = ${reportText || null},
-            reported_at = NOW()
+            reported_at = NOW(),
+            report_source = 'learner'
         WHERE id = ${exerciseId}
         RETURNING id, is_active
       `;
@@ -138,7 +140,7 @@ export const handler: Handler = async (event) => {
             sql`
               SELECT cr.exercise_id as id, cr.report_text, cr.created_at as reported_at,
                      cr.checker_name,
-                     e.level, e.text, gs.name as section_name
+                     e.level, e.text, e.is_active, gs.name as section_name
               FROM exercise_checker_runs cr
               JOIN exercises e ON cr.exercise_id = e.id
               JOIN grammar_sections gs ON e.grammar_section_id = gs.id
@@ -210,15 +212,38 @@ export const handler: Handler = async (event) => {
       return createResponse(200, { flagged });
     }
 
-    // PATCH: Reactivate a flagged exercise
+    // PATCH: Admin reactivation or deactivation
     if (event.httpMethod === 'PATCH') {
       const body = JSON.parse(event.body || '{}');
-      const { exerciseId } = body;
+      const { exerciseId, active, reportText } = body;
 
       if (!exerciseId) {
         return createResponse(400, { error: 'Exercise ID is required' });
       }
 
+      if (active === false) {
+        const deactivated = await sql`
+          UPDATE exercises
+          SET is_active = false,
+              report_text = ${reportText || 'Deactivated by admin'},
+              reported_at = NOW(),
+              report_source = 'admin'
+          WHERE id = ${exerciseId}
+          RETURNING id, is_active
+        `;
+
+        if (deactivated.length === 0) {
+          return createResponse(404, { error: 'Exercise not found' });
+        }
+
+        return createResponse(200, {
+          success: true,
+          message: 'Exercise deactivated',
+          exerciseId: deactivated[0].id,
+        });
+      }
+
+      // report_source is kept: for a reactivated exercise that failed checks it still names the failing source
       const result = await sql`
         UPDATE exercises
         SET is_active = true,

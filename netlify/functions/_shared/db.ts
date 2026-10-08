@@ -40,6 +40,10 @@ export const createResponse = (statusCode: number, body: any) => {
   };
 };
 
+// NUMERIC columns arrive as strings from the Neon driver
+export const num = (value: unknown): number | null =>
+  value === null || value === undefined ? null : Number(value);
+
 // Helper to handle errors
 export const handleError = (error: any) => {
   console.error('API Error:', error);
