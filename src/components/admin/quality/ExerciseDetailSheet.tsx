@@ -28,6 +28,15 @@ type Detail = {
   gaps: Gap[];
   qualityReport: Record<string, any> | null;
   audits: Array<{ verdict: string; auditor_type: string; auditor: string | null; audit_batch: string; note: string | null; audited_at: string | null }>;
+  verifications: Array<{
+    pipeline: string;
+    label: string | null;
+    runId: string;
+    verdict: "passed" | "failed";
+    issueCodes: string[];
+    reason: string | null;
+    checkedAt: string;
+  }>;
   completions: number;
   avgCorrectPct: number | null;
 };
@@ -136,7 +145,7 @@ export const ExerciseDetailSheet = ({
               <Badge>{e.level}</Badge>
               <Badge variant="outline">{e.sectionName}</Badge>
               <Badge variant="secondary">#{e.orderNumber}</Badge>
-              <Badge variant={e.isActive ? "default" : "destructive"}>{e.isActive ? "Active" : "Inactive"}</Badge>
+              <Badge variant={e.isActive ? "default" : "destructive"}>{e.isActive ? "Live" : "Deactivated"}</Badge>
               <Badge variant="outline">{e.qualityStatus}</Badge>
               {e.reportSourceLabel && <Badge variant="outline">{e.reportSourceLabel}</Badge>}
             </div>
@@ -168,6 +177,28 @@ export const ExerciseDetailSheet = ({
                 <QualityRecord report={detail.qualityReport} labels={issueLabels} />
               ) : (
                 <p className="text-sm text-muted-foreground">Not checked with the current pipeline.</p>
+              )}
+            </Card>
+
+            <Card className="p-4">
+              <h5 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2">Verification history</h5>
+              {(detail.verifications || []).length === 0 ? (
+                <p className="text-sm text-muted-foreground">No pipeline has checked this exercise.</p>
+              ) : (
+                <div className="space-y-2">
+                  {detail.verifications.map((v, i) => (
+                    <div key={i} className="text-sm border-b last:border-0 pb-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant={v.verdict === "passed" ? "outline" : "destructive"}>{v.verdict}</Badge>
+                        <span className="font-medium">{v.label || v.pipeline}</span>
+                        <span className="text-xs text-muted-foreground">{formatDate(v.checkedAt)} · run {v.runId}</span>
+                        {i === 0 && <span className="text-xs text-muted-foreground">(latest)</span>}
+                      </div>
+                      {v.issueCodes.length > 0 && <div className="mt-1"><IssueChips codes={v.issueCodes} labels={issueLabels} /></div>}
+                      {v.reason && <p className="text-xs text-muted-foreground mt-1">{v.reason}</p>}
+                    </div>
+                  ))}
+                </div>
               )}
             </Card>
 

@@ -44,6 +44,12 @@ export const createResponse = (statusCode: number, body: any) => {
 export const num = (value: unknown): number | null =>
   value === null || value === undefined ? null : Number(value);
 
+// Comma-separated query parameter -> list, or null for "all" / missing
+export const parseList = (value: string | undefined): string[] | null => {
+  const items = (value || '').split(',').map((s) => s.trim()).filter(Boolean);
+  return items.length === 0 || items.includes('all') ? null : items;
+};
+
 // Helper to handle errors
 export const handleError = (error: any) => {
   console.error('API Error:', error);

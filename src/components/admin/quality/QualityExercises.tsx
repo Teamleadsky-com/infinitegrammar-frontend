@@ -27,7 +27,22 @@ type Row = {
   reportedAt: string | null;
   verifiedAt: string | null;
   issueCodes: string[];
+  verdict: "passed" | "failed" | null;
+  verdictPipeline: string | null;
+  verdictAt: string | null;
 };
+
+const Verification = ({ row }: { row: Row }) =>
+  row.verdict ? (
+    <span title={`${row.verdictPipeline || ""} · ${formatDate(row.verdictAt)}`}>
+      <span className={row.verdict === "passed" ? "text-green-700 dark:text-green-400" : "text-amber-600"}>
+        {row.verdict === "passed" ? "passed" : "failed"}
+      </span>
+      <span className="block text-[11px] text-muted-foreground">{row.verdictPipeline}</span>
+    </span>
+  ) : (
+    <span className="text-muted-foreground">not checked</span>
+  );
 
 const PAGE = 50;
 const STATUSES = ["passed", "legacy", "pending", "rejected"];
@@ -54,6 +69,7 @@ const ReportText = ({ text }: { text: string | null }) => {
 
 export const QualityExercises = ({
   apiBase,
+  pipeline,
   filters,
   onFiltersChange,
   sections,
@@ -62,6 +78,7 @@ export const QualityExercises = ({
   onChanged,
 }: {
   apiBase: string;
+  pipeline: string;
   filters: ExerciseFilters;
   onFiltersChange: (f: ExerciseFilters) => void;
   sections: Array<{ id: string; name: string; level: string }>;
@@ -76,10 +93,10 @@ export const QualityExercises = ({
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => setOffset(0), [filters]);
+  useEffect(() => setOffset(0), [filters, pipeline]);
 
   useEffect(() => {
-    const q = new URLSearchParams({ limit: String(PAGE), offset: String(offset) });
+    const q = new URLSearchParams({ limit: String(PAGE), offset: String(offset), pipelines: pipeline });
     if (filters.source !== "all") q.set("source", filters.source);
     if (filters.segment !== "all") q.set("segment", filters.segment);
     if (filters.level !== "all") q.set("level", filters.level);
@@ -92,7 +109,7 @@ export const QualityExercises = ({
         setTotal(d.total);
       })
       .catch(() => setRows([]));
-  }, [apiBase, filters, offset, reloadKey]);
+  }, [apiBase, pipeline, filters, offset, reloadKey]);
 
   const toggle = async (row: Row) => {
     setTogglingId(row.id);
@@ -182,6 +199,7 @@ export const QualityExercises = ({
                 <th className="py-2 pr-3 font-medium">#</th>
                 <th className="py-2 pr-3 font-medium">Active</th>
                 <th className="py-2 pr-3 font-medium">Status</th>
+                <th className="py-2 pr-3 font-medium">Latest check</th>
                 <th className="py-2 pr-3 font-medium">Reason / source</th>
                 <th className="py-2 pr-3 font-medium">Issues</th>
                 <th className="py-2 pr-3 font-medium min-w-[220px]">Report / verdict</th>
@@ -199,6 +217,7 @@ export const QualityExercises = ({
                   <td className="py-2 pr-3 text-muted-foreground">{r.orderNumber}</td>
                   <td className="py-2 pr-3">{r.isActive ? "yes" : <span className="text-destructive">no</span>}</td>
                   <td className="py-2 pr-3">{r.qualityStatus}</td>
+                  <td className="py-2 pr-3"><Verification row={r} /></td>
                   <td className="py-2 pr-3">{r.reportSourceLabel || "—"}</td>
                   <td className="py-2 pr-3"><IssueChips codes={r.issueCodes} labels={issueLabels} /></td>
                   <td className="py-2 pr-3"><ReportText text={r.reportText} /></td>
