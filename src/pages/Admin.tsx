@@ -37,6 +37,9 @@ import {
   RotateCcw,
   Eye,
   TrendingUp,
+  Boxes,
+  ClipboardCheck,
+  GitBranch,
 } from "lucide-react";
 import {
   BarChart,
@@ -50,6 +53,9 @@ import {
 } from "recharts";
 import { SimilarityDashboard } from "@/components/admin/SimilarityDashboard";
 import { ProductMetrics } from "@/components/admin/ProductMetrics";
+import { SupplyDashboard } from "@/components/admin/SupplyDashboard";
+import { QualityDashboard } from "@/components/admin/QualityDashboard";
+import { PipelinesDashboard } from "@/components/admin/PipelinesDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
@@ -147,6 +153,8 @@ const Admin = () => {
     ? "http://localhost:8888/api"
     : "/api";
 
+  const [learnerReports, setLearnerReports] = useState<number | null>(null);
+
   useEffect(() => {
     if (authLoading) return;
     if (!isAdmin) {
@@ -189,6 +197,12 @@ const Admin = () => {
         const checkerData = await checkerRes.json();
         setCheckerRuns(checkerData.runs || []);
       }
+
+      // Badge of the Quality tab; stays hidden if the dashboard views are unavailable
+      fetch(`${API_BASE}/admin-quality-kpis`)
+        .then((res) => (res.ok ? res.json() : null))
+        .then((kpi) => kpi && setLearnerReports(kpi.kpis.openLearnerReports))
+        .catch(() => {});
 
       // Fetch exercise stats for charts
       const [snapshotRes, coverageRes, demandRes] = await Promise.all([
@@ -347,9 +361,9 @@ const Admin = () => {
       if (currentlyActive) {
         // Deactivate
         const res = await fetch(`${API_BASE}/report-exercise`, {
-          method: 'POST',
+          method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ exerciseId, reportText: 'Deactivated from compare view' }),
+          body: JSON.stringify({ exerciseId, active: false, reportText: 'Deactivated from compare view' }),
         });
         if (res.ok) {
           setCompareExercises((prev) => prev.map((e) => e.id === exerciseId ? { ...e, is_active: false } : e));
@@ -416,7 +430,7 @@ const Admin = () => {
           </div>
         ) : (
           <Tabs defaultValue="dashboard" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1">
               <TabsTrigger value="dashboard" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
                 {t("admin.dashboard")}
@@ -449,6 +463,23 @@ const Admin = () => {
                     {flaggedExercises.length}
                   </Badge>
                 )}
+              </TabsTrigger>
+              <TabsTrigger value="supply" className="gap-2">
+                <Boxes className="h-4 w-4" />
+                Supply
+              </TabsTrigger>
+              <TabsTrigger value="quality" className="gap-2">
+                <ClipboardCheck className="h-4 w-4" />
+                Quality
+                {!!learnerReports && (
+                  <Badge variant="destructive" className="ml-1 h-5 min-w-5 px-1 text-xs">
+                    {learnerReports}
+                  </Badge>
+                )}
+              </TabsTrigger>
+              <TabsTrigger value="pipelines" className="gap-2">
+                <GitBranch className="h-4 w-4" />
+                Pipelines
               </TabsTrigger>
             </TabsList>
 
@@ -902,6 +933,18 @@ const Admin = () => {
             {/* Product Metrics Tab */}
             <TabsContent value="metrics" className="space-y-6">
               <ProductMetrics apiBase={API_BASE} />
+            </TabsContent>
+
+            <TabsContent value="supply" className="space-y-6">
+              <SupplyDashboard apiBase={API_BASE} />
+            </TabsContent>
+
+            <TabsContent value="quality" className="space-y-6">
+              <QualityDashboard apiBase={API_BASE} onLearnerReportsChange={setLearnerReports} />
+            </TabsContent>
+
+            <TabsContent value="pipelines" className="space-y-6">
+              <PipelinesDashboard apiBase={API_BASE} />
             </TabsContent>
 
             {/* Flagged Exercises Tab */}

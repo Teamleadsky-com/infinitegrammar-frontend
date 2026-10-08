@@ -6,14 +6,12 @@
  * - Weekly engagement (WAU, sessions per user)
  * - Monthly engagement (MAU, sessions per user)
  *
- * Admin user is excluded from all metrics.
+ * Accounts in analytics_excluded_users are excluded from all metrics.
  * A "session" is defined as a group of completions where each is within 30 minutes of the previous.
  */
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
-
-const ADMIN_EMAIL = 'aleksandr.zuravliov1@gmail.com';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -25,13 +23,10 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const adminUser = await sql`SELECT id FROM users WHERE email = ${ADMIN_EMAIL} LIMIT 1`;
-    const adminId = adminUser[0]?.id;
-
     const [retention, weekly, monthly] = await Promise.all([
-      getRetentionCohorts(adminId),
-      getWeeklyEngagement(adminId),
-      getMonthlyEngagement(adminId),
+      getRetentionCohorts(),
+      getWeeklyEngagement(),
+      getMonthlyEngagement(),
     ]);
 
     return createResponse(200, { retention, weekly, monthly });
@@ -40,7 +35,7 @@ export const handler: Handler = async (event) => {
   }
 };
 
-async function getRetentionCohorts(adminId: string | undefined) {
+async function getRetentionCohorts() {
   const rows = await sql`
     WITH cohorts AS (
       SELECT
@@ -48,7 +43,7 @@ async function getRetentionCohorts(adminId: string | undefined) {
         date_trunc('week', u.created_at) AS cohort_week
       FROM users u
       WHERE u.created_at >= NOW() - INTERVAL '14 weeks'
-        AND (${adminId}::uuid IS NULL OR u.id != ${adminId}::uuid)
+        AND u.id NOT IN (SELECT user_id FROM analytics_excluded_users)
     ),
     activity AS (
       SELECT
@@ -84,7 +79,7 @@ async function getRetentionCohorts(adminId: string | undefined) {
   }));
 }
 
-async function getWeeklyEngagement(adminId: string | undefined) {
+async function getWeeklyEngagement() {
   const rows = await sql`
     WITH completions AS (
       SELECT
@@ -95,7 +90,7 @@ async function getWeeklyEngagement(adminId: string | undefined) {
         LAG(ec.completed_at) OVER (PARTITION BY ec.user_id ORDER BY ec.completed_at) AS prev_completed_at
       FROM exercise_completions ec
       WHERE ec.completed_at >= NOW() - INTERVAL '52 weeks'
-        AND (${adminId}::uuid IS NULL OR ec.user_id != ${adminId}::uuid)
+        AND ec.user_id NOT IN (SELECT user_id FROM analytics_excluded_users)
     ),
     sessions AS (
       SELECT
@@ -127,7 +122,7 @@ async function getWeeklyEngagement(adminId: string | undefined) {
   }));
 }
 
-async function getMonthlyEngagement(adminId: string | undefined) {
+async function getMonthlyEngagement() {
   const rows = await sql`
     WITH completions AS (
       SELECT
@@ -138,7 +133,7 @@ async function getMonthlyEngagement(adminId: string | undefined) {
         LAG(ec.completed_at) OVER (PARTITION BY ec.user_id ORDER BY ec.completed_at) AS prev_completed_at
       FROM exercise_completions ec
       WHERE ec.completed_at >= NOW() - INTERVAL '24 months'
-        AND (${adminId}::uuid IS NULL OR ec.user_id != ${adminId}::uuid)
+        AND ec.user_id NOT IN (SELECT user_id FROM analytics_excluded_users)
     ),
     sessions AS (
       SELECT
