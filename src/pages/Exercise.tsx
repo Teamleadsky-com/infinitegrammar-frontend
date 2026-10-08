@@ -242,6 +242,7 @@ const Exercise = () => {
       level: string | null;
       topic: string | null;
       grammarSection: string | null;
+      afterSection?: string | null;
       description: string;
     }> = [];
 
@@ -260,6 +261,7 @@ const Exercise = () => {
       level: level.toUpperCase(),
       topic: section,
       grammarSection: null,
+      afterSection: currentGrammarSectionRef.current,
       description: `topic ${section} at ${level.toUpperCase()}`
     });
 
@@ -268,6 +270,7 @@ const Exercise = () => {
       level: level.toUpperCase(),
       topic: null,
       grammarSection: null,
+      afterSection: currentGrammarSectionRef.current,
       description: `any topic at ${level.toUpperCase()}`
     });
 
@@ -310,6 +313,10 @@ const Exercise = () => {
           url += `&grammarSection=${step.grammarSection}`;
         } else if (step.topic) {
           url += `&topic=${step.topic}`;
+        }
+
+        if (step.afterSection) {
+          url += `&afterSection=${encodeURIComponent(step.afterSection)}`;
         }
 
         console.log(`Trying progression step: ${step.description}`, url);

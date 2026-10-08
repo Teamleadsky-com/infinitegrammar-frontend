@@ -18,9 +18,10 @@ With the redirect in `netlify.toml`, you can also use `/api/` as a shorter path.
 Get exercises filtered by level, topic, or grammar section.
 
 **Query Parameters:**
-- `level` (required): `A1`, `A2`, `B1`, `B2`, or `C1`
+- `level`: `A1`, `A2`, `B1`, `B2`, or `C1`. Required with `topic` or `grammarSection`; without any filter, omitting it returns random exercises across all levels
 - `topic` (optional): `verben`, `artikel`, `adjektive`, `praepositionen`, `satzbau`, `nomen`
 - `grammarSection` (optional): Grammar section ID (takes priority over topic)
+- `afterSection` (optional): Grammar section ID. For logged-in topic/level queries, sections are returned in curriculum order (`order_in_level`) starting after this section, then wrapping to earlier unfinished ones
 - `random` (optional): `true` to return a single random exercise, `false` for all (default)
 
 **Example Request:**
