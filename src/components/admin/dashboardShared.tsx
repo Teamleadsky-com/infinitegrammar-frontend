@@ -58,6 +58,7 @@ export type Verifier = {
 
 export const verifierLabel = (version: string | null | undefined) => {
   if (!version) return "Not checked by the current pipeline";
+  if (version === "legacy") return "Legacy checks";
   if (version.startsWith("audit:")) return `Live audit (${version.slice("audit:".length)})`;
   return `Production pipeline (${version})`;
 };
