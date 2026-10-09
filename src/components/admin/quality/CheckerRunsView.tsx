@@ -71,7 +71,7 @@ export const CheckerRunsView = ({ apiBase, onOpen, onChanged }: { apiBase: strin
   return (
     <div className="space-y-4">
       <Card className="p-4">
-        <Label className="text-sm font-medium mb-2 block">Checker run</Label>
+        <Label className="text-sm font-medium mb-2 block">Checker run (retired checkers, history only)</Label>
         {!runs ? (
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         ) : runs.length === 0 ? (

@@ -6,13 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { LEVELS, SEGMENTS, VerificationPipeline, fetchJson, formatDate, formatPct, levelRank, pipelinesParam } from "../dashboardShared";
+import { LEVELS, SEGMENTS, Verifier, fetchJson, formatDate, formatPct, levelRank, verifierLabel } from "../dashboardShared";
 
+// v_quality_kpis: "verified" = quality_status 'passed'
 export type QualityKpis = {
   live: number;
-  liveVerified: number;
-  liveFailed: number;
-  liveUnchecked: number;
+  livePassed: number;
+  liveLegacy: number;
+  livePending: number;
+  liveReactivated: number;
   openLearnerReports: number;
   auditConfig: string | null;
   auditN: number | null;
@@ -31,58 +33,57 @@ const Tile = ({ title, value, sub }: { title: string; value: React.ReactNode; su
 
 type IssueRow = { code: string; label: string; n: number };
 
-const KIND_LABELS: Record<string, string> = { generation: "Generation", live_audit: "Live audit", checker: "Legacy checker" };
+const ISSUE_SOURCES = [
+  { key: "all", label: "All sources" },
+  { key: "generation_verifier", label: "Generation" },
+  { key: "live_audit", label: "Live audit" },
+];
 
-const PipelineBreakdown = ({
-  pipelines,
+const VerifiedBy = ({
+  verifiers,
+  kpis,
   selected,
   onSelect,
 }: {
-  pipelines: VerificationPipeline[];
+  verifiers: Verifier[];
+  kpis: QualityKpis | null;
   selected: string;
-  onSelect: (pipeline: string) => void;
+  onSelect: (verifier: string) => void;
 }) => (
   <Card className="p-4 md:p-6">
-    <h3 className="text-lg font-semibold">Verification by pipeline</h3>
+    <h3 className="text-lg font-semibold">Verified by</h3>
     <p className="text-sm text-muted-foreground mb-4">
-      Every pipeline that saved verification results. Counts use each exercise's latest verdict within the pipeline.
+      The check that set each exercise's quality status (<code>verifier_version</code>): passed exercises stay live,
+      rejected ones are deactivated.
     </p>
-    {pipelines.length === 0 ? (
-      <p className="text-sm text-muted-foreground">No verification data saved yet.</p>
+    {verifiers.length === 0 ? (
+      <p className="text-sm text-muted-foreground">No exercise has been checked by the current pipeline yet.</p>
     ) : (
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-xs text-muted-foreground">
-              <th className="py-2 pr-3 font-medium">Pipeline</th>
-              <th className="py-2 pr-3 font-medium">Kind</th>
-              <th className="py-2 pr-3 font-medium text-right">Runs</th>
+              <th className="py-2 pr-3 font-medium">Check</th>
+              <th className="py-2 pr-3 font-medium text-right">Live, passed</th>
+              <th className="py-2 pr-3 font-medium text-right">Share of live</th>
+              <th className="py-2 pr-3 font-medium text-right">Rejected (deactivated)</th>
               <th className="py-2 pr-3 font-medium">Last check</th>
-              <th className="py-2 pr-3 font-medium text-right">Checked</th>
-              <th className="py-2 pr-3 font-medium text-right">Passed</th>
-              <th className="py-2 pr-3 font-medium text-right">Failed</th>
-              <th className="py-2 pr-3 font-medium text-right">Live passed</th>
-              <th className="py-2 pr-3 font-medium text-right">Live failed</th>
               <th className="py-2" />
             </tr>
           </thead>
           <tbody>
-            {pipelines.map((p) => (
-              <tr key={p.pipeline} className={`border-b last:border-0 ${selected === p.pipeline ? "bg-muted/60" : ""}`}>
+            {verifiers.map((v) => (
+              <tr key={v.verifierVersion} className={`border-b last:border-0 ${selected === v.verifierVersion ? "bg-muted/60" : ""}`}>
                 <td className="py-2 pr-3">
-                  <span className="font-medium">{p.label}</span>
-                  <span className="block font-mono text-[11px] text-muted-foreground">{p.pipeline}</span>
+                  <span className="font-medium">{verifierLabel(v.verifierVersion)}</span>
+                  <span className="block font-mono text-[11px] text-muted-foreground">{v.verifierVersion}</span>
                 </td>
-                <td className="py-2 pr-3 text-muted-foreground">{KIND_LABELS[p.kind] || p.kind}</td>
-                <td className="py-2 pr-3 text-right">{p.runs}</td>
-                <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">{formatDate(p.lastCheckedAt)}</td>
-                <td className="py-2 pr-3 text-right">{p.checked}</td>
-                <td className="py-2 pr-3 text-right">{p.passed}</td>
-                <td className="py-2 pr-3 text-right">{p.failed}</td>
-                <td className="py-2 pr-3 text-right">{p.livePassed}</td>
-                <td className="py-2 pr-3 text-right">{p.liveFailed}</td>
+                <td className="py-2 pr-3 text-right">{v.livePassed}</td>
+                <td className="py-2 pr-3 text-right">{kpis && kpis.live > 0 ? formatPct((100 * v.livePassed) / kpis.live) : "—"}</td>
+                <td className="py-2 pr-3 text-right">{v.rejected}</td>
+                <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">{formatDate(v.lastVerifiedAt)}</td>
                 <td className="py-2 text-right">
-                  <Button variant="outline" size="sm" disabled={selected === p.pipeline} onClick={() => onSelect(p.pipeline)}>
+                  <Button variant="outline" size="sm" disabled={selected === v.verifierVersion} onClick={() => onSelect(v.verifierVersion)}>
                     Show
                   </Button>
                 </td>
@@ -92,48 +93,44 @@ const PipelineBreakdown = ({
         </table>
       </div>
     )}
-    <p className="text-xs text-muted-foreground mt-3">
-      Legacy checkers saved only the exercises they flagged unless their full results were loaded; their "passed" count
-      stays 0 until then.
-    </p>
   </Card>
 );
 
 export const QualityOverview = ({
   apiBase,
   kpis,
-  pipelines,
-  selectedPipeline,
-  onSelectPipeline,
+  verifiers,
+  selectedVerifier,
+  onSelectVerifier,
   sections,
   onSegmentClick,
 }: {
   apiBase: string;
   kpis: QualityKpis | null;
-  pipelines: VerificationPipeline[];
-  selectedPipeline: string;
-  onSelectPipeline: (pipeline: string) => void;
+  verifiers: Verifier[];
+  selectedVerifier: string;
+  onSelectVerifier: (verifier: string) => void;
   sections: Array<{ id: string; name: string; level: string }>;
   onSegmentClick: (segment: string, level: string) => void;
 }) => {
   const [byLevel, setByLevel] = useState<Array<{ level: string; segment: string; n: number }> | null>(null);
   const [issues, setIssues] = useState<IssueRow[] | null>(null);
   const [runs, setRuns] = useState<string[]>([]);
-  const [filters, setFilters] = useState({ level: "all", section: "all", run: "all", active: "all", tolerated: false });
-
-  useEffect(() => setFilters((f) => ({ ...f, run: "all" })), [selectedPipeline]);
+  const [filters, setFilters] = useState({ source: "all", level: "all", section: "all", run: "all", active: "all", tolerated: false });
+  const verifier = selectedVerifier === "all" ? null : selectedVerifier;
 
   useEffect(() => {
     setByLevel(null);
-    fetchJson<{ rows: Array<{ level: string; segment: string; n: number }> }>(
-      `${apiBase}/admin-quality-status-by-level?${pipelinesParam(selectedPipeline)}`,
-    )
+    const q = verifier ? `?verifier=${encodeURIComponent(verifier)}` : "";
+    fetchJson<{ rows: Array<{ level: string; segment: string; n: number }> }>(`${apiBase}/admin-quality-status-by-level${q}`)
       .then((d) => setByLevel(d.rows))
       .catch(() => setByLevel([]));
-  }, [apiBase, selectedPipeline]);
+  }, [apiBase, verifier]);
 
   useEffect(() => {
-    const q = new URLSearchParams({ pipelines: selectedPipeline });
+    const q = new URLSearchParams();
+    if (verifier) q.set("verifier", verifier);
+    if (filters.source !== "all") q.set("source", filters.source);
     if (filters.level !== "all") q.set("level", filters.level);
     if (filters.section !== "all") q.set("section", filters.section);
     if (filters.run !== "all") q.set("run", filters.run);
@@ -145,7 +142,7 @@ export const QualityOverview = ({
         setRuns(d.runs);
       })
       .catch(() => setIssues([]));
-  }, [apiBase, filters, selectedPipeline]);
+  }, [apiBase, filters, verifier]);
 
   const levelData = useMemo(() => {
     if (!byLevel) return [];
@@ -160,16 +157,21 @@ export const QualityOverview = ({
 
   const presentSegments = SEGMENTS.filter((s) => byLevel?.some((r) => r.segment === s.key));
   const set = (key: keyof typeof filters, value: string | boolean) => setFilters((f) => ({ ...f, [key]: value }));
-  const scope = selectedPipeline === "all" ? "all pipelines" : pipelines.find((p) => p.pipeline === selectedPipeline)?.label || selectedPipeline;
+  const selectedLivePassed = verifier ? verifiers.find((v) => v.verifierVersion === verifier)?.livePassed ?? 0 : null;
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Tile title="Live exercises" value={kpis ? kpis.live : "—"} />
         <Tile
-          title={`Verified · ${scope}`}
-          value={kpis && kpis.live > 0 ? formatPct((100 * kpis.liveVerified) / kpis.live) : "—"}
-          sub={kpis ? `${kpis.liveVerified} latest check passed · ${kpis.liveFailed} failed · ${kpis.liveUnchecked} not checked` : undefined}
+          title="Verified (passed the current checks)"
+          value={kpis && kpis.live > 0 ? formatPct((100 * kpis.livePassed) / kpis.live) : "—"}
+          sub={
+            kpis
+              ? `${kpis.livePassed} passed · ${kpis.liveLegacy} legacy · ${kpis.livePending} pending · ${kpis.liveReactivated} reactivated` +
+                (verifier && selectedLivePassed !== null ? ` · ${selectedLivePassed} by ${verifierLabel(verifier)}` : "")
+              : undefined
+          }
         />
         <Tile
           title={`Audit grade of the production config${kpis?.auditConfig ? ` (${kpis.auditConfig})` : ""}`}
@@ -183,13 +185,14 @@ export const QualityOverview = ({
         />
       </div>
 
-      <PipelineBreakdown pipelines={pipelines} selected={selectedPipeline} onSelect={onSelectPipeline} />
+      <VerifiedBy verifiers={verifiers} kpis={kpis} selected={selectedVerifier} onSelect={onSelectVerifier} />
 
       <Card className="p-4 md:p-6">
         <h3 className="text-lg font-semibold">Corpus status per level</h3>
         <p className="text-sm text-muted-foreground mb-4">
-          Live exercises split by their latest check ({scope}); deactivated exercises by the reason they were deactivated.
-          Click a segment to list its exercises.
+          Live and deactivated exercises, and why they were deactivated
+          {verifier ? `; live verified exercises split into ${verifierLabel(verifier)} and other checks` : ""}. Click a segment
+          to list its exercises.
         </p>
         {!byLevel ? (
           <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
@@ -207,7 +210,7 @@ export const QualityOverview = ({
                 <Bar
                   key={s.key}
                   dataKey={s.key}
-                  name={s.label}
+                  name={s.key === "active_passed" && verifier ? `Live · verified by ${verifierLabel(verifier)}` : s.label}
                   stackId="corpus"
                   fill={s.color}
                   cursor="pointer"
@@ -225,10 +228,20 @@ export const QualityOverview = ({
           <div>
             <h3 className="text-lg font-semibold">Why exercises fail checks</h3>
             <p className="text-sm text-muted-foreground">
-              Exercises whose latest check ({scope}) failed, by issue type. Legacy checkers give free-text reasons only.
+              Exercises per issue type, for exercises rejected or taken down by the pipeline
+              {verifier ? ` (checked by ${verifierLabel(verifier)})` : ""}.
             </p>
           </div>
           <div className="flex flex-wrap items-end gap-2">
+            <div>
+              <Label className="text-xs">Source</Label>
+              <Select value={filters.source} onValueChange={(v) => set("source", v)}>
+                <SelectTrigger className="w-[140px] h-9"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {ISSUE_SOURCES.map((s) => <SelectItem key={s.key} value={s.key}>{s.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
             <div>
               <Label className="text-xs">Level</Label>
               <Select value={filters.level} onValueChange={(v) => setFilters((f) => ({ ...f, level: v, section: "all" }))}>
@@ -272,7 +285,7 @@ export const QualityOverview = ({
                 </SelectContent>
               </Select>
             </div>
-            <label className="flex items-center gap-2 text-xs h-9" title="G3_TOL: verified exercises with mixed-grammar gaps within the 30% tolerance">
+            <label className="flex items-center gap-2 text-xs h-9" title="G3_TOL: passing exercises with mixed-grammar gaps within the 30% tolerance">
               <Switch checked={filters.tolerated} onCheckedChange={(v) => set("tolerated", v)} />
               Include tolerated (G3_TOL)
             </label>
@@ -281,13 +294,13 @@ export const QualityOverview = ({
         {!issues ? (
           <div className="flex justify-center py-12"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
         ) : issues.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No failed checks for these filters.</p>
+          <p className="text-sm text-muted-foreground">No issues for these filters.</p>
         ) : (
           <ResponsiveContainer width="100%" height={issues.length * 30 + 30}>
             <BarChart data={issues} layout="vertical" margin={{ top: 4, right: 32, bottom: 4, left: 0 }}>
               <XAxis type="number" allowDecimals={false} />
               <YAxis type="category" dataKey="label" width={270} tick={{ fontSize: 12 }} interval={0}
-                     tickFormatter={(label: string, i: number) => (issues[i]?.code && issues[i].code !== "UNTYPED" ? `${issues[i].code} · ${label}` : label)} />
+                     tickFormatter={(label: string, i: number) => `${issues[i]?.code ?? ""} · ${label}`} />
               <Tooltip formatter={(v: number) => [v, "Exercises"]} />
               <Bar dataKey="n" fill="hsl(25, 90%, 52%)" isAnimationActive={false} label={{ position: "right", fontSize: 11 }} />
             </BarChart>
