@@ -2,8 +2,7 @@
  * GET /api/admin-quality-exercise-detail?id=<exercise id>
  *
  * One exercise for the Quality detail drawer: text and gaps, its quality row (v_exercise_quality),
- * the normalized quality record, audit grades and learner counts (v_exercise_quality_detail), and every
- * verdict any verification pipeline recorded for it (exercise_verifications), newest first.
+ * the normalized quality record, audit grades and learner counts (v_exercise_quality_detail).
  */
 
 import { Handler } from '@netlify/functions';
@@ -23,7 +22,7 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'id is required' });
     }
 
-    const [exerciseRows, gaps, detailRows, verifications] = await Promise.all([
+    const [exerciseRows, gaps, detailRows] = await Promise.all([
       sql`
         SELECT e.id, e.text, e.content_topic, e.model, gs.name AS section_name,
                q.level, q.order_number, q.is_active, q.quality_status, q.report_source,
@@ -41,13 +40,6 @@ export const handler: Handler = async (event) => {
       sql`
         SELECT quality_report, audits, completions, avg_correct_pct
         FROM v_exercise_quality_detail WHERE exercise_id = ${id}
-      `,
-      sql`
-        SELECT v.pipeline, p.label, v.run_id, v.verdict, v.issue_codes, v.reason, v.verifier_version, v.checked_at
-        FROM exercise_verifications v
-        LEFT JOIN verification_pipelines p ON p.pipeline = v.pipeline
-        WHERE v.exercise_id = ${id}
-        ORDER BY v.checked_at DESC, v.id DESC
       `,
     ]);
 
@@ -86,16 +78,6 @@ export const handler: Handler = async (event) => {
       })),
       qualityReport: d.quality_report ?? null,
       audits: d.audits ?? [],
-      verifications: verifications.map((v: any) => ({
-        pipeline: v.pipeline,
-        label: v.label,
-        runId: v.run_id,
-        verdict: v.verdict,
-        issueCodes: v.issue_codes || [],
-        reason: v.reason,
-        verifierVersion: v.verifier_version,
-        checkedAt: v.checked_at,
-      })),
       completions: d.completions ?? 0,
       avgCorrectPct: num(d.avg_correct_pct),
     });

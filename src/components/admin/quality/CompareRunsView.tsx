@@ -78,7 +78,7 @@ export const CompareRunsView = ({ apiBase, onOpen, onChanged }: { apiBase: strin
   return (
     <div className="space-y-4">
       <Card className="p-4">
-        <Label className="text-sm font-medium mb-3 block">Select checker runs to compare (2 or more)</Label>
+        <Label className="text-sm font-medium mb-3 block">Select checker runs to compare (2 or more) · retired checkers, history only</Label>
         {!runs ? (
           <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         ) : (

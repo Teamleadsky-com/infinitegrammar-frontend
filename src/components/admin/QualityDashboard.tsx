@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { IssueLabel, VerificationPipeline, fetchJson, pipelinesParam } from "./dashboardShared";
+import { IssueLabel, Verifier, fetchJson, verifierLabel } from "./dashboardShared";
 import { QualityKpis, QualityOverview } from "./quality/QualityOverview";
 import { DEFAULT_EXERCISE_FILTERS, ExerciseFilters, QualityExercises } from "./quality/QualityExercises";
 import { LearnerSignal } from "./quality/LearnerSignal";
@@ -12,7 +12,7 @@ import { ExerciseDetailSheet } from "./quality/ExerciseDetailSheet";
 
 type KpiResponse = {
   kpis: QualityKpis;
-  pipelines: VerificationPipeline[];
+  verifiers: Verifier[];
   sections: Array<{ id: string; name: string; level: string }>;
   issueLabels: IssueLabel[];
 };
@@ -25,27 +25,27 @@ export const QualityDashboard = ({
   onLearnerReportsChange?: (count: number) => void;
 }) => {
   const [view, setView] = useState("overview");
-  const [pipeline, setPipeline] = useState("all");
+  const [verifier, setVerifier] = useState("all");
   const [data, setData] = useState<KpiResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<ExerciseFilters>(DEFAULT_EXERCISE_FILTERS);
   const [openId, setOpenId] = useState<string | null>(null);
 
   const loadKpis = useCallback(() => {
-    fetchJson<KpiResponse>(`${apiBase}/admin-quality-kpis?${pipelinesParam(pipeline)}`)
+    fetchJson<KpiResponse>(`${apiBase}/admin-quality-kpis`)
       .then((d) => {
         setData(d);
         setError(null);
         onLearnerReportsChange?.(d.kpis.openLearnerReports);
       })
       .catch((e) => setError(e.message));
-  }, [apiBase, pipeline, onLearnerReportsChange]);
+  }, [apiBase, onLearnerReportsChange]);
 
   useEffect(loadKpis, [loadKpis]);
 
   const labels = Object.fromEntries((data?.issueLabels || []).map((l) => [l.code, l.label]));
   const sections = data?.sections || [];
-  const pipelines = data?.pipelines || [];
+  const verifiers = data?.verifiers || [];
 
   const openSegment = (segment: string, level: string) => {
     setFilters({ ...DEFAULT_EXERCISE_FILTERS, source: "all", segment, level });
@@ -61,17 +61,17 @@ export const QualityDashboard = ({
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="exercises">Exercises</TabsTrigger>
             <TabsTrigger value="signal">Learner signal</TabsTrigger>
-            <TabsTrigger value="checker">Checker runs</TabsTrigger>
-            <TabsTrigger value="compare">Compare runs</TabsTrigger>
+            <TabsTrigger value="checker">Checker runs (history)</TabsTrigger>
+            <TabsTrigger value="compare">Compare runs (history)</TabsTrigger>
           </TabsList>
           <div>
-            <Label className="text-xs">Verification pipeline</Label>
-            <Select value={pipeline} onValueChange={setPipeline}>
+            <Label className="text-xs">Verified by</Label>
+            <Select value={verifier} onValueChange={setVerifier}>
               <SelectTrigger className="w-[280px] h-9"><SelectValue /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All pipelines (latest verdict wins)</SelectItem>
-                {pipelines.map((p) => (
-                  <SelectItem key={p.pipeline} value={p.pipeline}>{p.label}</SelectItem>
+                <SelectItem value="all">All checks</SelectItem>
+                {verifiers.map((v) => (
+                  <SelectItem key={v.verifierVersion} value={v.verifierVersion}>{verifierLabel(v.verifierVersion)}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -82,9 +82,9 @@ export const QualityDashboard = ({
           <QualityOverview
             apiBase={apiBase}
             kpis={data?.kpis || null}
-            pipelines={pipelines}
-            selectedPipeline={pipeline}
-            onSelectPipeline={setPipeline}
+            verifiers={verifiers}
+            selectedVerifier={verifier}
+            onSelectVerifier={setVerifier}
             sections={sections}
             onSegmentClick={openSegment}
           />
@@ -92,7 +92,7 @@ export const QualityDashboard = ({
         <TabsContent value="exercises" className="mt-0">
           <QualityExercises
             apiBase={apiBase}
-            pipeline={pipeline}
+            verifier={verifier}
             filters={filters}
             onFiltersChange={setFilters}
             sections={sections}

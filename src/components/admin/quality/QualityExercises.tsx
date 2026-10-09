@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { IssueChips, LEVELS, REPORT_SOURCES, SEGMENTS, fetchJson, formatDate, setExerciseActive } from "../dashboardShared";
+import { IssueChips, LEVELS, REPORT_SOURCES, SEGMENTS, fetchJson, formatDate, setExerciseActive, verifierLabel } from "../dashboardShared";
 
 export type ExerciseFilters = { source: string; segment: string; level: string; section: string; status: string };
 
@@ -27,22 +27,8 @@ type Row = {
   reportedAt: string | null;
   verifiedAt: string | null;
   issueCodes: string[];
-  verdict: "passed" | "failed" | null;
-  verdictPipeline: string | null;
-  verdictAt: string | null;
+  verifierVersion: string | null;
 };
-
-const Verification = ({ row }: { row: Row }) =>
-  row.verdict ? (
-    <span title={`${row.verdictPipeline || ""} · ${formatDate(row.verdictAt)}`}>
-      <span className={row.verdict === "passed" ? "text-green-700 dark:text-green-400" : "text-amber-600"}>
-        {row.verdict === "passed" ? "passed" : "failed"}
-      </span>
-      <span className="block text-[11px] text-muted-foreground">{row.verdictPipeline}</span>
-    </span>
-  ) : (
-    <span className="text-muted-foreground">not checked</span>
-  );
 
 const PAGE = 50;
 const STATUSES = ["passed", "legacy", "pending", "rejected"];
@@ -69,7 +55,7 @@ const ReportText = ({ text }: { text: string | null }) => {
 
 export const QualityExercises = ({
   apiBase,
-  pipeline,
+  verifier,
   filters,
   onFiltersChange,
   sections,
@@ -78,7 +64,7 @@ export const QualityExercises = ({
   onChanged,
 }: {
   apiBase: string;
-  pipeline: string;
+  verifier: string;
   filters: ExerciseFilters;
   onFiltersChange: (f: ExerciseFilters) => void;
   sections: Array<{ id: string; name: string; level: string }>;
@@ -93,10 +79,11 @@ export const QualityExercises = ({
   const [togglingId, setTogglingId] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => setOffset(0), [filters, pipeline]);
+  useEffect(() => setOffset(0), [filters, verifier]);
 
   useEffect(() => {
-    const q = new URLSearchParams({ limit: String(PAGE), offset: String(offset), pipelines: pipeline });
+    const q = new URLSearchParams({ limit: String(PAGE), offset: String(offset) });
+    if (verifier !== "all") q.set("verifier", verifier);
     if (filters.source !== "all") q.set("source", filters.source);
     if (filters.segment !== "all") q.set("segment", filters.segment);
     if (filters.level !== "all") q.set("level", filters.level);
@@ -109,7 +96,7 @@ export const QualityExercises = ({
         setTotal(d.total);
       })
       .catch(() => setRows([]));
-  }, [apiBase, pipeline, filters, offset, reloadKey]);
+  }, [apiBase, verifier, filters, offset, reloadKey]);
 
   const toggle = async (row: Row) => {
     setTogglingId(row.id);
@@ -199,7 +186,7 @@ export const QualityExercises = ({
                 <th className="py-2 pr-3 font-medium">#</th>
                 <th className="py-2 pr-3 font-medium">Active</th>
                 <th className="py-2 pr-3 font-medium">Status</th>
-                <th className="py-2 pr-3 font-medium">Latest check</th>
+                <th className="py-2 pr-3 font-medium">Verified by</th>
                 <th className="py-2 pr-3 font-medium">Reason / source</th>
                 <th className="py-2 pr-3 font-medium">Issues</th>
                 <th className="py-2 pr-3 font-medium min-w-[220px]">Report / verdict</th>
@@ -217,7 +204,7 @@ export const QualityExercises = ({
                   <td className="py-2 pr-3 text-muted-foreground">{r.orderNumber}</td>
                   <td className="py-2 pr-3">{r.isActive ? "yes" : <span className="text-destructive">no</span>}</td>
                   <td className="py-2 pr-3">{r.qualityStatus}</td>
-                  <td className="py-2 pr-3"><Verification row={r} /></td>
+                  <td className="py-2 pr-3 text-xs">{r.verifierVersion ? verifierLabel(r.verifierVersion) : <span className="text-muted-foreground">—</span>}</td>
                   <td className="py-2 pr-3">{r.reportSourceLabel || "—"}</td>
                   <td className="py-2 pr-3"><IssueChips codes={r.issueCodes} labels={issueLabels} /></td>
                   <td className="py-2 pr-3"><ReportText text={r.reportText} /></td>
