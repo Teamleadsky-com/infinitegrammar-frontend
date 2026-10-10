@@ -52,12 +52,12 @@
     {
       "id": "article-page",
       "category": "article",
-      "path": "/articles/why-infinitegrammar-focuses-on-exam-grammar",
+      "path": "/articles/from-one-in-six-to-three-in-four",
       "expectedClass": "SEO_DRIVER",
       "expectations": {
         "status": 200,
         "indexable": true,
-        "canonical": "https://www.infinitegrammar.de/articles/why-infinitegrammar-focuses-on-exam-grammar/",
+        "canonical": "https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/",
         "title": true,
         "metaDescription": true,
         "h1Count": 1,

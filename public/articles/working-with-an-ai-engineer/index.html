@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My engineer is an AI agent. This is how I manage it · InfiniteGrammar</title>
+<meta name="description" content="Most of InfiniteGrammar’s code, from the generation pipeline to the database migrations, is written by Claude Code. What makes that work isn’t clever prompting. It’s a written decision log, budgets, a test database and a short list of things only I am allowed to do.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/working-with-an-ai-engineer/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/working-with-an-ai-engineer/">
+<meta property="og:title" content="My engineer is an AI agent. This is how I manage it · InfiniteGrammar">
+<meta property="og:description" content="Most of InfiniteGrammar’s code, from the generation pipeline to the database migrations, is written by Claude Code. What makes that work isn’t clever prompting. It’s a written decision log, budgets, a test database and a short list of things only I am allowed to do.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="My engineer is an AI agent. This is how I manage it · InfiniteGrammar">
+<meta name="twitter:description" content="Most of InfiniteGrammar’s code, from the generation pipeline to the database migrations, is written by Claude Code. What makes that work isn’t clever prompting. It’s a written decision log, budgets, a test database and a short list of things only I am allowed to do.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "My engineer is an AI agent. This is how I manage it", "description": "Most of InfiniteGrammar’s code, from the generation pipeline to the database migrations, is written by Claude Code. What makes that work isn’t clever prompting. It’s a written decision log, budgets, a test database and a short list of things only I am allowed to do.", "datePublished": "2026-10-09", "dateModified": "2026-10-09", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/working-with-an-ai-engineer/", "url": "https://www.infinitegrammar.de/articles/working-with-an-ai-engineer/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#agents">Building with AI agents</a></div>
+    <h1>My engineer is an AI agent. This is how I manage it</h1>
+    <p class="dek">Most of InfiniteGrammar’s code, from the generation pipeline to the database migrations, is written by Claude Code. What makes that work isn’t clever prompting. It’s a written decision log, budgets, a test database and a short list of things only I am allowed to do.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-10-09">9 October 2026</time> <span class="sep">·</span> <span>5 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>The agent does the engineering. I own direction and risk: decisions, budgets, anything that touches production data, and the final read of the output.</li><li>A roadmap file with numbered decisions (D1 to D27) is our shared memory. “Already decided, don’t re-discuss” saves more time than any prompt.</li><li>Guardrails do most of the managing: a test database for content-generation sessions, a regression eval before merges, spending caps and undo files.</li><li>It still goes wrong. Three mistakes from the last two weeks, and the rule each one produced.</li></ul></aside>
+  <div class="article-body">
+<p>This week the agent and I designed the database side of the admin dashboards. It wrote the migrations, tested them against a throwaway Postgres loaded with an export of the data, caught a wrong assertion in its own tests, fixed it, and handed me the commands to run against production, with the output I should expect from each. I read them, ran them and pasted the output back. The numbers matched.</p>
+
+<p>That split is the whole operating model. The agent does the engineering. I own the direction and the risk.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/agent-operating-model.svg" alt="Three columns. I decide: goals and quality rules, written decisions D1 to D27, anything touching production data, budgets per session, final audits of output. The agent does: code, tests and migrations, experiments within a budget, reports with numbers, pull requests for review, runbooks for my steps. Guardrails shared between us: the roadmap file as memory, a fixture database instead of production in content-generation sessions, a regression eval before merges, spending caps where quota means stop, and undo files for data changes.">
+  <figcaption><strong>Who does what.</strong> The middle column is most of the hours. The left column is most of the consequences.</figcaption>
+</figure>
+
+<h2>Shared memory: the roadmap file</h2>
+
+<p>An agent forgets everything between sessions, and long sessions get summarised and lose detail. So the project has one file that every session reads first: a roadmap with the goal, the task tables, the results of every run and a table headed “Decisions already made (don’t re-discuss)”. It holds numbered decisions, D1 to D27 so far, each with a one-line rationale. Some are big (which pipeline is in production). Some are small and save a surprising amount of time (no human labelling, OpenAI only for generation, German only).</p>
+
+<p>The rule for the agent is simple: when a task is finished, update its status and append the result to the log in the same pull request. The rule for me is just as simple: if I change my mind, I add a decision rather than arguing in chat. That one heading, “don’t re-discuss”, has saved me more time than any prompt I have written.</p>
+
+<h2>Budgets, in money and in blast radius</h2>
+
+<p>Every working session that spends API money has a budget. Test runs stay small, 50 exercises or fewer unless a task says otherwise, and long batch runs go to my own machine rather than a cloud session. The pipeline enforces its own caps too: a run stops cleanly before crossing its budget and can be resumed.</p>
+
+<p>The other budget is blast radius. Cloud sessions for content generation run against a local copy of the database loaded from a fixture file. Unlike the sessions working on the frontend, they don’t connect to production at this stage. Every write to production data is run by me, from a short runbook the agent writes: the command, a dry run first, the output I should expect, and how to undo it. Once I’m satisfied with the quality of the generation pipeline, I will extend its permissions.</p>
+
+<h2>Gates for code, not just for content</h2>
+
+<p>Changing a prompt or a model setting in this project changes what learners see, so those changes have their own regression test. It runs the production configuration on 20 fixed tasks and on a set of known tricky texts, costs about $2, and fails if the pass rate drops by more than five points or the cost rises by more than 25%. Any change to the generator, the prompts, the pipeline code or the verifier has to pass it before merging. On top of that there are more than 260 unit tests, one feature branch and pull request per task, and nothing pushed straight to main.</p>
+
+<p>API errors get special treatment, because they are easy to misread. A quota error must stop the run, save state and print how to resume. A rate limit must back off and retry. And no API error may ever be recorded as a quality verdict. An exercise that failed because the API was down is not a failed exercise.</p>
+
+<h2>How I review</h2>
+
+<p>I don’t read every line of code. I read the summary in plain language, the numbers, and the full diff of anything that touches data or decides what learners see. I ask for a recommendation, not a menu of options. When I disagree, I say so and the decision goes into the log. Most of my time goes into three things: deciding, reading output (the exercises themselves, not reports about them) and saying no.</p>
+
+<h2>Three mistakes and the rules they produced</h2>
+
+<p><strong>A commit that carried someone else’s draft.</strong> Another session, working on the frontend, had drafted a different definition of “verified” directly into one of the spec files and left it uncommitted for review. A commit in my session edited the same file and swept the draft in with it. The repository then held two documents that contradicted each other on the most important number in the dashboard, which was already showing 0% of exercises verified instead of 100%. The fix took minutes. The rule: when using parallel sessions, have the diffs reviewed before committing, and leave other sessions’ edits out.</p>
+
+<p><strong>A long run tied to the editor.</strong> The four-day refill at first ran as a background process inside the editor session. Closing the editor stopped it in the middle of the run. Nothing was lost, because every run resumes from cached results, but until I noticed, no new batches went out. The rule: long runs either run detached or are cheap to restart, and the restart command is always written down.</p>
+
+<p><strong>Acting on a check before calibrating it.</strong> This one was mine. The agent built a first verifier quickly and I used it at once to take 411 exercises offline. Later calibration showed it raised false alarms 5–8% of the time. The rule: a check earns the right to act only after it has been tested on data with known answers (<a href="/articles/testing-the-llm-judge/">how I do that now</a>).</p>
+
+<h2>What this changes about product work</h2>
+
+<p>Less than people expect. Deciding what to build, specifying it precisely, checking the result against the specification and saying no to the rest is still the job. What changes is the loop. A specification turns into working, tested code in hours, so the bottleneck moves to the quality of the decisions and the reading. That is exactly where a product manager’s time has to go, with a human team or an AI one.</p>
+
+<div class="takeaways">
+  <h2>If you’re working with a coding agent</h2>
+  <ol>
+    <li>Keep one file of decisions and results that every session reads first.</li>
+    <li>Give every session a budget, in money and in what it’s allowed to touch.</li>
+    <li>Keep production writes for yourself, with a runbook, a dry run and an undo.</li>
+    <li>Put a regression test in front of anything that changes user-facing behaviour.</li>
+    <li>Turn every mistake into a written rule the agent reads next time.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/reminders-that-know-what-you-practised/"><span>← Previous</span><strong>Reminders that know what you practised</strong></a><a href="/articles/seo-agent-cannot-grade-itself/" style="text-align:right"><span>Next →</span><strong>My SEO agent isn’t allowed to grade its own homework</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

@@ -43,3 +43,6 @@ docs/content-strategy.md
 docs/blog-content-plan.md
 docs/blog-article-*.md
 docs/onreza-migration-plan.md
+
+# Articles prototype: source for scripts/build-articles.mjs (kept local, not deployed)
+docs/articles_demo/

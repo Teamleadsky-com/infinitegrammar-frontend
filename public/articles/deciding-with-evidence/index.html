@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Writing the rule before the test: how I chose prompts and models · InfiniteGrammar</title>
+<meta name="description" content="Every change to the pipeline had to win a comparison whose pass rule I wrote down before running it. Some of my favourite ideas lost. A short guide to running AI product decisions like experiments, with the results.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/deciding-with-evidence/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/deciding-with-evidence/">
+<meta property="og:title" content="Writing the rule before the test: how I chose prompts and models · InfiniteGrammar">
+<meta property="og:description" content="Every change to the pipeline had to win a comparison whose pass rule I wrote down before running it. Some of my favourite ideas lost. A short guide to running AI product decisions like experiments, with the results.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Writing the rule before the test: how I chose prompts and models · InfiniteGrammar">
+<meta name="twitter:description" content="Every change to the pipeline had to win a comparison whose pass rule I wrote down before running it. Some of my favourite ideas lost. A short guide to running AI product decisions like experiments, with the results.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Writing the rule before the test: how I chose prompts and models", "description": "Every change to the pipeline had to win a comparison whose pass rule I wrote down before running it. Some of my favourite ideas lost. A short guide to running AI product decisions like experiments, with the results.", "datePublished": "2026-10-06", "dateModified": "2026-10-06", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/deciding-with-evidence/", "url": "https://www.infinitegrammar.de/articles/deciding-with-evidence/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#quality">Quality and evals</a></div>
+    <h1>Writing the rule before the test: how I chose prompts and models</h1>
+    <p class="dek">Every change to the pipeline had to win a comparison whose pass rule I wrote down before running it. Some of my favourite ideas lost. A short guide to running AI product decisions like experiments, with the results.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-10-06">6 October 2026</time> <span class="sep">·</span> <span>4 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>Each change had a written pass rule before the run, for example “switch only if cost per clean exercise drops by at least 15%”.</li><li>Tasks were split into training, development and held-out sets with disjoint topics. Confirmation runs used fresh tasks, and audits were blind.</li><li>Pipeline shape and model choice moved the numbers most: 7–20% vs 50% accepted by strategy, 13% to 77% by model. So I postponed prompt optimisation.</li><li>Four ideas lost on the evidence, including a per-distractor gate I liked and the three-option format.</li></ul></aside>
+  <div class="article-body">
+<p>I liked the distractor gate. It was a neat idea: after the gap checks pass, a strong model inspects every wrong option on its own and asks three questions. Is it wrong in one way only? Would a native speaker never say it here? Is it a real form a learner would choose? I wrote the prompt, ran it, and looked at the result.</p>
+
+<p>It accepted 2 of 10 development tasks where the existing pipeline accepted 3, at twice the cost per accepted exercise. The pass rule I had written beforehand said the new version needed at least one more accepted exercise and no higher cost. It failed both conditions. The gate didn’t ship.</p>
+
+<p>This article is about that habit: writing the rule before the test. It is the single practice that made evidence-based product decisions possible.</p>
+
+<h2>The setup</h2>
+
+<p>Three things made the comparisons trustworthy enough to act on.</p>
+
+<p><strong>Separate task sets.</strong> A task is a grammar section, a level and a content topic. I split them into 40 training tasks, 30 development tasks and 60 held-out tasks, with no topic shared between sets. Development tasks were for iterating. The held-out set was touched only for final checks. Confirmation runs used fresh tasks that neither version had ever seen.</p>
+
+<p><strong>Rules written in advance.</strong> Before each comparison I wrote down what would count as a win, in numbers. For the switch to a stronger writer with an editor gate <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V5" aria-label="Pipeline version V5: stronger writer, editor gate">V5</a>)</span>, the rule had three conditions: at least as many clean exercises, a flawed share no higher, and a cost per clean exercise no higher. All three had to hold.</p>
+
+<p><strong>Blind audits.</strong> Where the checks can’t see everything, a grader read the accepted exercises without knowing which version produced them. When both versions produced exactly the same exercise, word for word, it was graded once and the grade counted for both. The key that maps exercises to versions was opened only after every verdict was written down.</p>
+
+<h2>What moved the numbers</h2>
+
+<p>The first comparisons were about the pipeline’s shape. Same model (gpt-5.2), same 30 development tasks, four strategies.</p>
+
+<div class="viz" data-spec='{"type":"bars","title":"Accepted out of 30 tasks, by pipeline strategy","sub":"Same model and tasks. Accepted = passed every check of the verifier.","format":"pct","max":0.6,"labelHead":"Strategy","valueHead":"Accepted","data":[{"label":"Rewrite the whole exercise after a failed review","note":"the old pipeline","value":0.07},{"label":"Plan targets and distractors first, then write","value":0.07},{"label":"Write two drafts, keep the better one","value":0.2},{"label":"Write, verify, repair only failing gaps","value":0.5,"emph":true}]}'></div>
+
+<p>Then the model. Same strategy, six model and reasoning settings, 30 tasks each.</p>
+
+<div class="viz" data-spec='{"type":"bars","title":"Accepted out of 30 tasks, by model and reasoning effort","sub":"Strategy: write, verify, repair. More reasoning did not help the best model.","format":"pct","max":0.9,"labelHead":"Model, effort","valueHead":"Accepted","data":[{"label":"gpt-5.6-terra, low","value":0.77,"emph":true},{"label":"gpt-5.6-terra, medium","value":0.63},{"label":"gpt-5.2, medium","value":0.53},{"label":"gpt-5.2, low","value":0.5},{"label":"gpt-5-mini, medium","value":0.5},{"label":"gpt-5-mini, low","value":0.13}]}'></div>
+
+<p>On the 60 held-out tasks, the winning combination, which became <span class="nowrap"><a class="ver" href="#pipeline-versions" data-ver="V2" aria-label="Pipeline version V2: Generate, verify, repair">V2</a>,</span> beat gpt-5.2 in the same pipeline 65% to 45%. On the tasks where exactly one of the two succeeded, it won 18 to 6, which is unlikely to be chance (two-sided sign test, p = 0.023). It was also cheaper per accepted exercise: $0.11 against $0.20.</p>
+
+<p>Those two comparisons decided something important about what <em>not</em> to work on. I had planned to run an automated prompt optimiser, <a href="https://gepa-ai.github.io/gepa/" rel="noopener">GEPA</a>, over the generation and repair prompts. But strategy and model had moved acceptance by 40 to 60 points. A prompt optimiser could only tune wording, at about $50 a run, and it would only pay off at much larger volumes. I deferred it, and haven’t needed it since.</p>
+
+<h2>Ten days of decisions</h2>
+
+<figure>
+  <img src="/images/articles/diagrams/decision-timeline.svg" alt="Timeline from 27 September to 4 October: measure first; fix the judge and pick the strategy; pick the model by cost per accepted, which became V2; prompt optimiser deferred; coherence as its own stage adopted as V3; per-distractor gate rejected; design rules in the prompt adopted as V4; stronger writer with editor gate adopted as V5; three options not adopted; 30% mixed-grammar tolerance adopted as V6.">
+  <figcaption><strong>Every entry has a written rule and a result.</strong> Decisions get an ID in the project’s decision log (D21–D26 here), with the evidence linked. Each adopted change became a new pipeline version, V2 to V6.</figcaption>
+</figure>
+
+<p>Four of the ten entries are ideas that lost or were put on hold. I count that as the process working. In each case I wanted the idea to win, and without a rule written in advance I would have found a way to read the results generously.</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Idea</th><th>Rule written in advance</th><th>Result</th><th>Decision</th></tr></thead>
+  <tbody>
+    <tr><td>Coherence check inside the repair loop</td><td>No fewer accepted than a separate stage</td><td>7 of 20 vs 8 of 20; it used up repair rounds</td><td>Separate stage: <a class="ver" href="#pipeline-versions" data-ver="V3" aria-label="Pipeline version V3: coherence check">V3</a></td></tr>
+    <tr><td>Per-distractor gate</td><td>At least one more accepted, no higher cost</td><td>2 of 10 vs 3 of 10, twice the cost</td><td>Rejected</td></tr>
+    <tr><td>Design rules in the generation prompt</td><td>Four conditions on yield, flawed share and cost</td><td>36 vs 32 of 60; flawed 12% vs 23% over 100 tasks each</td><td>Adopted as <a class="ver" href="#pipeline-versions" data-ver="V4" aria-label="Pipeline version V4: design rules in the prompt">V4</a> (D24)</td></tr>
+    <tr><td>Stronger writer + editor gate</td><td>Clean ≥ baseline, flawed share ≤ baseline, cost per clean ≤ baseline</td><td>30 vs 25 of 40; clean 21 vs 7; $0.098 vs $0.372 per clean</td><td>Adopted as <a class="ver" href="#pipeline-versions" data-ver="V5" aria-label="Pipeline version V5: stronger writer, editor gate">V5</a> (D25)</td></tr>
+    <tr><td>Three options instead of four</td><td>Cost per clean at least 15% lower</td><td>$0.142 vs $0.137</td><td>Not adopted</td></tr>
+  </tbody>
+</table></div>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<div class="takeaways">
+  <h2>If you make product decisions about AI behaviour</h2>
+  <ol>
+    <li>Write the pass rule before the run, in numbers, and include cost.</li>
+    <li>Keep a held-out set you don’t iterate on, and confirm on fresh tasks.</li>
+    <li>Grade blind wherever humans or models judge quality.</li>
+    <li>Test the big levers first, pipeline shape and model, before polishing prompts.</li>
+    <li>Log what lost. It’s the most reused part of the record.</li>
+  </ol>
+</div>
+
+<div class="callout caveat"><span class="label">About the numbers</span>Samples are small, 10 to 60 tasks per arm, so I treat single comparisons as directional and look for agreement across tests. Prices are OpenAI Batch API prices at the time. Model names are the ones available on my account in September and October 2026.</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/wrong-answers-are-the-product/"><span>← Previous</span><strong>In a gap-fill exercise, the wrong answers are the product</strong></a><a href="/articles/cost-per-clean-exercise/" style="text-align:right"><span>Next →</span><strong>Cost per clean exercise: the number that changed my model choice</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

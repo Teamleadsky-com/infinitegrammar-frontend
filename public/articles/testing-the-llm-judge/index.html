@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Before I trusted my LLM judge, I made it grade the answer key · InfiniteGrammar</title>
+<meta name="description" content="The first version of my verifier failed three of five official exam texts. Making it trustworthy took four kinds of test data, two cheap solvers that must agree, and an adjudicator that only speaks when they don’t.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/testing-the-llm-judge/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/testing-the-llm-judge/">
+<meta property="og:title" content="Before I trusted my LLM judge, I made it grade the answer key · InfiniteGrammar">
+<meta property="og:description" content="The first version of my verifier failed three of five official exam texts. Making it trustworthy took four kinds of test data, two cheap solvers that must agree, and an adjudicator that only speaks when they don’t.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Before I trusted my LLM judge, I made it grade the answer key · InfiniteGrammar">
+<meta name="twitter:description" content="The first version of my verifier failed three of five official exam texts. Making it trustworthy took four kinds of test data, two cheap solvers that must agree, and an adjudicator that only speaks when they don’t.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Before I trusted my LLM judge, I made it grade the answer key", "description": "The first version of my verifier failed three of five official exam texts. Making it trustworthy took four kinds of test data, two cheap solvers that must agree, and an adjudicator that only speaks when they don’t.", "datePublished": "2026-10-05", "dateModified": "2026-10-05", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/testing-the-llm-judge/", "url": "https://www.infinitegrammar.de/articles/testing-the-llm-judge/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#quality">Quality and evals</a></div>
+    <h1>Before I trusted my LLM judge, I made it grade the answer key</h1>
+    <p class="dek">The first version of my verifier failed three of five official exam texts. Making it trustworthy took four kinds of test data, two cheap solvers that must agree, and an adjudicator that only speaks when they don’t.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-10-05">5 October 2026</time> <span class="sep">·</span> <span>5 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>An LLM judge needs its own evaluation. Mine failed 3 of 5 official telc texts and changed its verdict on 10% of gaps between two identical runs.</li><li>I built four test sets: texts that must pass, planted defects that must fail, real production defects, and blind audits.</li><li>For the hardest check (one right answer per gap), two cheap solvers answer like learners and must agree, and a stronger model settles disagreements. Result: 92–93% recall, 80–82% precision, 3% flips.</li><li>I tuned the final gate to be strict on purpose: a wrongly rejected draft costs cents, a wrong exercise costs a learner’s trust.</li></ul></aside>
+  <div class="article-body">
+<p>The most useful hour of the whole quality project was spent watching my verifier fail an exam.</p>
+
+<p>The first version was running within a day. It had free format rules, a cheap model that solved each exercise like a learner, and a judge model that ruled on the German, the topic and the explanations. It looked sensible. Before letting it decide what learners see, I gave it five reading texts from official telc exam material, each with the official answer key. Professionals write and check those texts. A sound verifier should pass all five.</p>
+
+<p>Mine passed two.</p>
+
+<h2>Three ways a judge goes wrong</h2>
+
+<p>The failures fell into three groups. I suspect most LLM-as-judge setups have all three.</p>
+
+<p><strong>It misses the cue that decides the answer.</strong> In a sentence built around <span class="de">„mit dessen Hilfe … war“</span>, only one form fits because of a word several words earlier. The solver and the judge both read past it and agreed that a different form was acceptable. Two models agreeing is not the same as two models being right.</p>
+
+<p><strong>It confuses taste with error.</strong> The first judge failed exercises for German that a native editor would publish without a second look, because a phrase was slightly unusual. When a stronger model reviewed 30 of its “German error” flags, it called 27 of them style. I moved style into a 0–5 score that never blocks publication, and the share of German-error flags that were real errors rose from 43% to 83%.</p>
+
+<p><strong>It isn’t stable.</strong> Run the same check twice on the same exercise and a single solver changed its verdict on one gap in ten. A check that flips that often can’t be allowed to take content offline.</p>
+
+<h2>Four kinds of test data</h2>
+
+<p>I had no labelling team, so I built test data from what already existed. Each set answers a different question about the judge.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/judge-test-sets.svg" alt="Four test sets: exam texts with official keys that should pass (5 telc texts, 50 gaps; every failure is a false alarm); mutations that should fail (288 copies with a planted defect; every pass is a miss); real defects from production (101 exercises, 62 confirmed defects); blind audits where graders don't know which version wrote the exercise (98 items became the gold set).">
+  <figcaption><strong>Four questions, four test sets.</strong> Exam texts measure false alarms, mutations measure misses, real defects measure what actually happens, and blind audits catch what no check measures yet.</figcaption>
+</figure>
+
+<p>The mutations were the cheapest to make and the most revealing. You take a good exercise and change one thing on purpose: replace a distractor with a second correct form, plant a grammar error such as <span class="de">mit die Freundin</span>, or rewrite an explanation so it states a wrong rule. You know exactly what the right verdict is, so you can count misses without arguing about German. The exam texts do the opposite job. Nothing in them should fail, so every flag is a false alarm you can look at and learn from.</p>
+
+<h2>Two solvers and an adjudicator</h2>
+
+<p>The check that matters most is “exactly one right answer”. I tested several designs on 103 exercises with 641 audited gaps. The one that won is cheap at its core. Two independent runs of a small model (gpt-5-mini) solve every gap the way a learner would, with the options shuffled differently each time. If the two runs agree, that’s the verdict. If they disagree, a stronger model (gpt-5.2) adjudicates. Only about a quarter of exercises ever reach it.</p>
+
+<div class="viz" data-spec='{"type":"grouped","title":"Finding a second right answer: old design vs two solvers + adjudicator","sub":"Precision: how often a raised flag is real. Recall: how many real problems get flagged. Audited labels on 641 gaps.","format":"pct","max":1,"series":[{"name":"Precision","key":"p","slot":1},{"name":"Recall","key":"r","slot":2}],"data":[{"label":"One solver + judge + adjudicator","values":{"p":0.75,"r":0.72}},{"label":"Two solvers must agree + adjudicator","values":{"p":0.81,"r":0.925}}],"note":"The new design’s ranges over repeated runs: precision 0.80–0.82, recall 0.92–0.93."}'></div>
+
+<p>On the exam texts, the new version passed three of five. The three gaps it still flags are ones I would happily argue about with a teacher, which is about as good as a check of this kind gets. I wrote them down as known limits rather than tuning the prompt until the test passed.</p>
+
+<div class="stat-row">
+  <div class="tile"><div class="label">Verdicts that flip between identical runs</div><div class="value"><span class="from">10% →</span>3%</div><div class="sub">of gaps</div></div>
+  <div class="tile"><div class="label">Official exam texts passed</div><div class="value"><span class="from">2 →</span>3 of 5</div><div class="sub">every failure here is a false alarm</div></div>
+  <div class="tile"><div class="label">Cost of the full verifier</div><div class="value">≈ $0.02</div><div class="sub">per exercise, at batch prices</div></div>
+</div>
+
+<p>Two other decisions came out of this. I did not build a panel of three judges, because the cheap solver pair already gave most of the benefit at a fraction of the price. And I kept matters of taste in scores. A judge that blocks content for style will block good content, and you won’t notice, because nobody complains about an exercise they never see.</p>
+
+<h2>A deliberately strict last gate</h2>
+
+<p>The last check, added in <span class="nowrap"><a class="ver" href="#pipeline-versions" data-ver="V5" aria-label="Pipeline version V5: stronger writer, editor gate">V5</a>,</span> is a frontier model (gpt-6.1-sol) reading the whole exercise like a senior editor and naming its problems with six issue types. I calibrated it on 98 exercises that had already been graded blind. It caught every exercise graded flawed, 17 of 17. It also rejected more than half of the ones graded clean.</p>
+
+<p>I kept it strict on purpose. A wrongly rejected draft costs a few cents and gets regenerated. A wrong exercise teaches a learner something false and makes them doubt every other exercise they see. When the costs of the two errors are that lopsided, you tune for the expensive one, and you say so. Later I relaxed one specific rule the gate was too picky about, mixed-grammar gaps, rather than lowering the bar everywhere <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V6" aria-label="Pipeline version V6: mixed-grammar tolerance">V6</a>,</span> <a href="/articles/wrong-answers-are-the-product/">that decision is here</a>).</p>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<h2>The mistake I made first</h2>
+
+<p>Before any of this calibration, I ran the first verifier over the live library and took 411 exercises offline because it flagged a second right answer. Later measurements put that early check’s false-alarm rate on real exercises at roughly 5–8%. So probably a few dozen good exercises disappeared for nothing. Nobody complained, which is exactly the problem with false rejections: they are invisible. The rule I work by now is simple. Calibrate a check, then let it act.</p>
+
+<div class="takeaways">
+  <h2>If you’re building an LLM judge</h2>
+  <ol>
+    <li>Give it an exam with an answer key: real examples that must pass. False alarms are the error you won’t see otherwise.</li>
+    <li>Plant known defects to count misses without debating each verdict.</li>
+    <li>Separate taste from error. Gate on errors, score taste.</li>
+    <li>Measure how often verdicts flip. If it’s high, pair or vote before you gate anything.</li>
+    <li>Spend the expensive model only where the cheap ones disagree.</li>
+    <li>Decide which error costs more, tune toward avoiding it, and write that down.</li>
+  </ol>
+</div>
+
+<div class="callout caveat"><span class="label">About the numbers</span>Labels come from my own audits and from a stronger model’s review, not from a panel of native-speaker teachers. Precision and recall were measured on 103 exercises (641 gaps), the exam controls on 5 telc texts with 50 gaps, and the gate calibration on 98 blind-graded exercises.</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/from-one-in-six-to-three-in-four/"><span>← Previous</span><strong>From one in six to three in four: making an LLM content pipeline trustworthy</strong></a><a href="/articles/wrong-answers-are-the-product/" style="text-align:right"><span>Next →</span><strong>In a gap-fill exercise, the wrong answers are the product</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

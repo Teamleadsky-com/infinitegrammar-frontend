@@ -159,8 +159,8 @@ describe('netlify.toml redirect table', () => {
 
   // Check 3 -- no indexed URL may be reached through the 404 rule.
   describe('sitemap URLs', () => {
-    it('lists 90 URLs', () => {
-      expect(SITEMAP_PATHS).toHaveLength(90);
+    it('lists 92 URLs', () => {
+      expect(SITEMAP_PATHS).toHaveLength(92);
     });
 
     it.each(SITEMAP_PATHS)('serves %s as a 200 static file', (sitemapPath) => {
@@ -213,6 +213,40 @@ describe('netlify.toml redirect table', () => {
         staticFiles: new Set([...PRERENDERED_FILES, legacyBundle]),
       });
       expect(result).toMatchObject({ status: 200, via: 'static-file' });
+    });
+  });
+
+  // The articles section was rebuilt on 2026-10-10: every old article URL moves in one hop to a
+  // live (sitemap) article, and the one article without a replacement is gone for good.
+  describe('retired article URLs', () => {
+    const MOVED = [
+      'generation-checker-analysis',
+      'gap-fill-quality-distractor-problem',
+      'batch-processing-exercise-generation',
+      'measuring-exercise-diversity',
+      'reordering-exercises-product-problem',
+      'similarity-calculation-vast-ai',
+      'email-campaigns-learning-system',
+      'seo-autopilot-autonomous-technical-seo',
+      'react-spa-seo-postmortem',
+      'tech-stack-content-heavy-language-product',
+    ];
+
+    it.each(MOVED.flatMap((slug) => [`/articles/${slug}`, `/articles/${slug}/`]))(
+      '301s %s to a sitemap article',
+      (route) => {
+        const result = resolve(route, { rules, staticFiles: PRERENDERED_FILES });
+        expect(result.status).toBe(301);
+        expect(SITEMAP_PATHS).toContain(result.to);
+      }
+    );
+
+    it.each([
+      '/articles/why-infinitegrammar-focuses-on-exam-grammar',
+      '/articles/why-infinitegrammar-focuses-on-exam-grammar/',
+    ])('returns 410 Gone for %s', (route) => {
+      const result = resolve(route, { rules, staticFiles: PRERENDERED_FILES });
+      expect(result.status).toBe(410);
     });
   });
 

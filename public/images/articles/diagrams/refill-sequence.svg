@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 300" width="880" height="300" role="img" aria-label="Order of operations: audit, generate replacements, then swap in minutes">
+<title>Order of operations: audit, generate replacements, then swap in minutes</title>
+<style>
+.t{font:600 15px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614} .tb{font:700 17px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614}
+.s{font:400 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#55544f} .xs{font:400 12px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#6b6a64}
+.k{font:700 11px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#6a3fd6} .big{font:750 30px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614;letter-spacing:-.02em}
+.de{font:italic 400 16px Georgia,'Source Serif 4',serif;fill:#161614}
+.box{fill:#ffffff;stroke:#d9d6ce;stroke-width:1.5} .bb{fill:#f2edfd;stroke:#c7b8f3;stroke-width:1.5}
+.bg{fill:#e9f6ee;stroke:#a7d8b8;stroke-width:1.5} .br{fill:#fdecea;stroke:#f0b3ac;stroke-width:1.5}
+.by{fill:#fff6e3;stroke:#ead19a;stroke-width:1.5} .bn{fill:#f4f3ef;stroke:#dedbd3;stroke-width:1.5}
+.ln{stroke:#9b998f;stroke-width:1.6;fill:none} .lnb{stroke:#6a3fd6;stroke-width:1.8;fill:none}
+.ar{fill:#9b998f} .arb{fill:#6a3fd6} .dot{fill:#6a3fd6} .dotn{fill:#b5b2a9}
+.ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
+.gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
+.s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
+@media (prefers-color-scheme: dark) {
+.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
+.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
+.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
+.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
+.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
+.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
+}
+</style>
+<rect x="20" y="30" width="195" height="128" rx="12" class="bn"/>
+<text x="36" y="56" class="k" text-anchor="start">5 OCT</text>
+<text x="36" y="78" class="t" text-anchor="start">Audit 829 live</text>
+<text x="36" y="100" class="s" text-anchor="start">Verdicts stored.</text>
+<text x="36" y="118" class="s" text-anchor="start">Nothing changes yet.</text>
+<rect x="235" y="30" width="195" height="128" rx="12" class="bb"/>
+<text x="251" y="56" class="k" text-anchor="start">5–9 OCT</text>
+<text x="251" y="78" class="t" text-anchor="start">Generate the refill</text>
+<text x="251" y="100" class="s" text-anchor="start">1,379 attempts, 21 batch</text>
+<text x="251" y="118" class="s" text-anchor="start">rounds. Still no change.</text>
+<rect x="450" y="30" width="195" height="128" rx="12" class="by"/>
+<text x="466" y="56" class="k" text-anchor="start">9 OCT, MINUTES</text>
+<text x="466" y="78" class="t" text-anchor="start">Swap</text>
+<text x="466" y="100" class="s" text-anchor="start">Take down 696, publish</text>
+<text x="466" y="118" class="s" text-anchor="start">974, back to back.</text>
+<rect x="665" y="30" width="195" height="128" rx="12" class="bg"/>
+<text x="681" y="56" class="k" text-anchor="start">RESULT</text>
+<text x="681" y="78" class="t" text-anchor="start">1,107 live</text>
+<text x="681" y="100" class="s" text-anchor="start">Every one passed the</text>
+<text x="681" y="118" class="s" text-anchor="start">current checks.</text>
+<line x1="215" y1="94" x2="235" y2="94" class="ln"/>
+<polygon points="235.0,94.0 226.0,89.0 226.0,99.0" class="ar"/>
+<line x1="430" y1="94" x2="450" y2="94" class="ln"/>
+<polygon points="450.0,94.0 441.0,89.0 441.0,99.0" class="ar"/>
+<line x1="645" y1="94" x2="665" y2="94" class="ln"/>
+<polygon points="665.0,94.0 656.0,89.0 656.0,99.0" class="ar"/>
+<rect x="20" y="190" width="840" height="86" rx="12" class="br"/>
+<text x="40" y="220" class="t" text-anchor="start">Why this order</text>
+<text x="40" y="243" class="s" text-anchor="start">Taking the failures down first would have left 55 sections empty for the four days the refill needed.</text>
+<text x="40" y="263" class="s" text-anchor="start">Learner progress pointers survive: removed exercises keep their order numbers, so nobody repeats or skips.</text>
+</svg>

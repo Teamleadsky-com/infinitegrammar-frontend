@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 640" width="780" height="640" role="img" aria-label="Ten days of decisions: what was adopted and what was rejected">
+<title>Ten days of decisions: what was adopted and what was rejected</title>
+<style>
+.t{font:600 15px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614} .tb{font:700 17px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614}
+.s{font:400 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#55544f} .xs{font:400 12px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#6b6a64}
+.k{font:700 11px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#6a3fd6} .big{font:750 30px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614;letter-spacing:-.02em}
+.de{font:italic 400 16px Georgia,'Source Serif 4',serif;fill:#161614}
+.box{fill:#ffffff;stroke:#d9d6ce;stroke-width:1.5} .bb{fill:#f2edfd;stroke:#c7b8f3;stroke-width:1.5}
+.bg{fill:#e9f6ee;stroke:#a7d8b8;stroke-width:1.5} .br{fill:#fdecea;stroke:#f0b3ac;stroke-width:1.5}
+.by{fill:#fff6e3;stroke:#ead19a;stroke-width:1.5} .bn{fill:#f4f3ef;stroke:#dedbd3;stroke-width:1.5}
+.ln{stroke:#9b998f;stroke-width:1.6;fill:none} .lnb{stroke:#6a3fd6;stroke-width:1.8;fill:none}
+.ar{fill:#9b998f} .arb{fill:#6a3fd6} .dot{fill:#6a3fd6} .dotn{fill:#b5b2a9}
+.ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
+.gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
+.s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
+@media (prefers-color-scheme: dark) {
+.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
+.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
+.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
+.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
+.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
+.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
+}
+</style>
+<line x1="104" y1="22" x2="104" y2="620" class="ln"/>
+<text x="20" y="45" class="s" text-anchor="start">27 Sep</text>
+<circle cx="104" cy="40" r="7" class="dot"/>
+<text x="126" y="45" class="t" text-anchor="start">Measure before changing anything</text>
+<text x="126" y="65" class="s" text-anchor="start">Verifier v1: rules, solver, judge. Baseline from 15,327 old responses.</text>
+<text x="708" y="45" class="okt" text-anchor="end">adopted</text>
+<text x="20" y="104" class="s" text-anchor="start">28 Sep</text>
+<circle cx="104" cy="99" r="7" class="dot"/>
+<text x="126" y="104" class="t" text-anchor="start">Fix the judge, then pick a strategy</text>
+<text x="126" y="124" class="s" text-anchor="start">Verifier v3 (two solvers + adjudicator). Generate, verify, repair: 50% vs 7–20%.</text>
+<text x="708" y="104" class="okt" text-anchor="end">adopted</text>
+<text x="20" y="163" class="s" text-anchor="start">28 Sep</text>
+<circle cx="104" cy="158" r="7" class="dot"/>
+<text x="126" y="163" class="t" text-anchor="start">Pick the model by cost per accepted</text>
+<text x="126" y="183" class="s" text-anchor="start">Held-out test: 17% → 65% accepted, $0.23 → $0.11 each (D21).</text>
+<text x="708" y="163" class="okt" text-anchor="end">adopted</text>
+<rect x="718" y="149" width="40" height="20" rx="6" class="bb"/>
+<text x="738" y="163" class="k" text-anchor="middle">V2</text>
+<text x="20" y="222" class="s" text-anchor="start">28 Sep</text>
+<circle cx="104" cy="217" r="7" class="dotn"/>
+<text x="126" y="222" class="t" text-anchor="start">Prompt optimiser (GEPA): deferred</text>
+<text x="126" y="242" class="s" text-anchor="start">Strategy and model moved the numbers; prompt tuning would cost ~$50 a run.</text>
+<text x="708" y="222" class="xs" text-anchor="end">deferred</text>
+<text x="20" y="281" class="s" text-anchor="start">30 Sep</text>
+<circle cx="104" cy="276" r="7" class="dot"/>
+<text x="126" y="281" class="t" text-anchor="start">Coherence as its own stage (D23)</text>
+<text x="126" y="301" class="s" text-anchor="start">Inside the repair loop it stole repair rounds: 7/20 vs 8/20.</text>
+<text x="708" y="281" class="okt" text-anchor="end">adopted</text>
+<rect x="718" y="267" width="40" height="20" rx="6" class="bb"/>
+<text x="738" y="281" class="k" text-anchor="middle">V3</text>
+<text x="20" y="340" class="s" text-anchor="start">30 Sep</text>
+<circle cx="104" cy="335" r="7" class="dotn"/>
+<text x="126" y="340" class="t" text-anchor="start">Per-distractor gate (G7): rejected</text>
+<text x="126" y="360" class="s" text-anchor="start">Fewer accepted (2/10 vs 3/10) at twice the cost per exercise.</text>
+<text x="708" y="340" class="xs" text-anchor="end">rejected</text>
+<text x="20" y="399" class="s" text-anchor="start">2 Oct</text>
+<circle cx="104" cy="394" r="7" class="dot"/>
+<text x="126" y="399" class="t" text-anchor="start">Design rules in the prompt (D24)</text>
+<text x="126" y="419" class="s" text-anchor="start">36/60 vs 32/60 accepted; flawed share 23% → 12% in a blind audit.</text>
+<text x="708" y="399" class="okt" text-anchor="end">adopted</text>
+<rect x="718" y="385" width="40" height="20" rx="6" class="bb"/>
+<text x="738" y="399" class="k" text-anchor="middle">V4</text>
+<text x="20" y="458" class="s" text-anchor="start">3 Oct</text>
+<circle cx="104" cy="453" r="7" class="dot"/>
+<text x="126" y="458" class="t" text-anchor="start">Stronger writer + editor gate (D25)</text>
+<text x="126" y="478" class="s" text-anchor="start">30/40 vs 25/40; clean 21 vs 7; $0.098 vs $0.372 per clean exercise.</text>
+<text x="708" y="458" class="okt" text-anchor="end">adopted</text>
+<rect x="718" y="444" width="40" height="20" rx="6" class="bb"/>
+<text x="738" y="458" class="k" text-anchor="middle">V5</text>
+<text x="20" y="517" class="s" text-anchor="start">4 Oct</text>
+<circle cx="104" cy="512" r="7" class="dotn"/>
+<text x="126" y="517" class="t" text-anchor="start">Three options instead of four: not adopted</text>
+<text x="126" y="537" class="s" text-anchor="start">Cost per clean exercise $0.142 vs $0.137. The rule asked for 15% lower.</text>
+<text x="708" y="517" class="xs" text-anchor="end">rejected</text>
+<text x="20" y="576" class="s" text-anchor="start">4 Oct</text>
+<circle cx="104" cy="571" r="7" class="dot"/>
+<text x="126" y="576" class="t" text-anchor="start">30% mixed-grammar tolerance (D26)</text>
+<text x="126" y="596" class="s" text-anchor="start">Owner rule. 31 vs 30 accepted, 0 vs 1 flawed, $0.089 per clean.</text>
+<text x="708" y="576" class="okt" text-anchor="end">adopted</text>
+<rect x="718" y="562" width="40" height="20" rx="6" class="bb"/>
+<text x="738" y="576" class="k" text-anchor="middle">V6</text>
+</svg>

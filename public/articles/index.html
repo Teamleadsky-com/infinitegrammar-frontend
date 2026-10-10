@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Articles: Building AI Products That Deliver on Their Promise · InfiniteGrammar</title>
+<meta name="description" content="Notes from building InfiniteGrammar.de: defining quality for LLM output, testing it, paying for it and running it in production.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/">
+<meta property="og:title" content="Articles: Building AI Products That Deliver on Their Promise · InfiniteGrammar">
+<meta property="og:description" content="Notes from building InfiniteGrammar.de: defining quality for LLM output, testing it, paying for it and running it in production.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Articles: Building AI Products That Deliver on Their Promise · InfiniteGrammar">
+<meta name="twitter:description" content="Notes from building InfiniteGrammar.de: defining quality for LLM output, testing it, paying for it and running it in production.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="kicker">Notes from building InfiniteGrammar.de</div>
+      <h1>Building AI Products That Deliver on Their Promise</h1>
+      <p class="lede">I’m a product manager who builds. InfiniteGrammar.de is my German grammar platform: language models write every exercise, AI agents write most of the code, and I own the decisions in between. These articles are about those decisions: defining quality for AI output, testing it, paying for it and running it in production.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="/articles/from-one-in-six-to-three-in-four/">Start with the case study →</a>
+        <a class="btn" href="/articles/about/">About me</a>
+      </div>
+    </div>
+    <aside class="hero-card" aria-label="About the author">
+      <div class="who"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong>AI product manager · product owner · builder</div></div>
+      <ul>
+        <li>Built and runs InfiniteGrammar.de end to end, alone</li>
+        <li>Evals, model choice and unit economics for LLM output</li>
+        <li>Ships with Claude Code, Python, SQL and React</li>
+      </ul>
+    </aside>
+  </div>
+
+  <div class="proof" aria-label="Results">
+    <div class="tile"><div class="label">Drafts that pass every check</div><div class="value"><span class="from">17% →</span>78%</div><div class="sub">held-out tests, old vs current pipeline</div></div>
+    <div class="tile"><div class="label">Accepted exercises graded flawed</div><div class="value">0 of 31</div><div class="sub">blind audit of the current pipeline</div></div>
+    <div class="tile"><div class="label">Cost per accepted exercise</div><div class="value"><span class="from">$0.23 →</span>$0.058</div><div class="sub">all checks and repairs included</div></div>
+    <div class="tile"><div class="label">Organic search clicks</div><div class="value">+77%</div><div class="sub">after the first wave of agent-made SEO fixes</div></div>
+  </div>
+</section>
+
+<div class="section-head" id="start"><h2>Start here</h2><p>The whole quality story in one article, with the numbers and what I’d do differently.</p></div>
+<a class="featured" href="/articles/from-one-in-six-to-three-in-four/">
+  <div class="art"><img class="bare" src="/images/articles/diagrams/hub-featured.svg" alt=""></div>
+  <div class="body">
+    <span class="kicker">Case study · 6 min read</span>
+    <h3>From one in six to three in four: making an LLM content pipeline trustworthy</h3>
+    <p>My generated exercises looked fine and quietly let learners down. I built the checks first, tested the judge, and let cost per clean exercise choose the pipeline. Then I re-checked the whole live library against the new standard.</p>
+    <span class="tag">Evals</span> <span class="tag">Model choice</span> <span class="tag">Unit economics</span> <span class="tag">Production</span>
+  </div>
+</a>
+
+<div id="tracks"></div>
+
+<section class="track" id="quality">
+  <div class="track-head">
+    <div><h3>Quality and evals</h3><p>Defining “good” for LLM output, testing the judge, and deciding with evidence.</p></div>
+    <div class="cards">
+      <a class="card" href="/articles/testing-the-llm-judge/"><span class="num">02</span><span class="t">Before I trusted my LLM judge, I made it grade the answer key</span><span class="d">My first verifier failed 3 of 5 official telc texts. How I tested the judge and rebuilt it.</span><span class="m"><span>5 min read</span><span>5 October 2026</span></span></a>
+      <a class="card" href="/articles/wrong-answers-are-the-product/"><span class="num">03</span><span class="t">In a gap-fill exercise, the wrong answers are the product</span><span class="d">The distractors decide what an exercise teaches. How I turned “good wrong answers” into checks, rules and two product decisions.</span><span class="m"><span>4 min read</span><span>5 March 2026</span></span></a>
+      <a class="card" href="/articles/deciding-with-evidence/"><span class="num">04</span><span class="t">Writing the rule before the test: how I chose prompts and models</span><span class="d">Pass rules written before each test, held-out tasks, blind audits. What I adopted, what I killed, and why.</span><span class="m"><span>4 min read</span><span>6 October 2026</span></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="track" id="ops">
+  <div class="track-head">
+    <div><h3>Running it in production</h3><p>Unit economics, a library-wide re-check, and the dashboards that watch it all.</p></div>
+    <div class="cards">
+      <a class="card" href="/articles/cost-per-clean-exercise/"><span class="num">05</span><span class="t">Cost per clean exercise: the number that changed my model choice</span><span class="d">Price per token is the wrong unit. Where the money goes in an LLM content pipeline, and why checking costs more than writing.</span><span class="m"><span>4 min read</span><span>10 March 2026</span></span></a>
+      <a class="card" href="/articles/taking-down-my-own-content/"><span class="num">06</span><span class="t">Why I took 84% of my live exercises offline</span><span class="d">A re-check passed 133 of 829 live exercises. How I replaced the rest without empty sections or broken learner progress.</span><span class="m"><span>3 min read</span><span>9 October 2026</span></span></a>
+      <a class="card" href="/articles/a-cockpit-for-ai-content/"><span class="num">07</span><span class="t">Three questions, three dashboards: a cockpit for an AI content product</span><span class="d">Will anyone run out? Is it good? What does it cost? How I specified three admin dashboards, and the definition that mattered most.</span><span class="m"><span>3 min read</span><span>10 October 2026</span></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="track" id="product">
+  <div class="track-head">
+    <div><h3>Product and learners</h3><p>Variety that learners feel, and reminders that respect them.</p></div>
+    <div class="cards">
+      <a class="card" href="/articles/variety-is-a-sequencing-problem/"><span class="num">08</span><span class="t">Variety is a sequencing problem, not just a content problem</span><span class="d">Why embeddings measured the wrong similarity, the metric that lied to me, and a reorder that never breaks learner progress.</span><span class="m"><span>4 min read</span><span>18 March 2026</span></span></a>
+      <a class="card" href="/articles/reminders-that-know-what-you-practised/"><span class="num">09</span><span class="t">Reminders that know what you practised</span><span class="d">A section-based reminder schedule with guardrails. Most of its value is in the emails it decides not to send.</span><span class="m"><span>3 min read</span><span>20 March 2026</span></span></a>
+    </div>
+  </div>
+</section>
+
+<section class="track" id="agents">
+  <div class="track-head">
+    <div><h3>Building with AI agents</h3><p>How a coding agent does the engineering while I keep the decisions and the risk.</p></div>
+    <div class="cards">
+      <a class="card" href="/articles/working-with-an-ai-engineer/"><span class="num">10</span><span class="t">My engineer is an AI agent. This is how I manage it</span><span class="d">Claude Code writes most of the code. The operating model that keeps that safe: decisions, budgets, guardrails, and three recent mistakes.</span><span class="m"><span>5 min read</span><span>9 October 2026</span></span></a>
+      <a class="card" href="/articles/seo-agent-cannot-grade-itself/"><span class="num">11</span><span class="t">My SEO agent isn’t allowed to grade its own homework</span><span class="d">An autonomous agent fixes technical SEO, but only against a frozen verifier that must fail first. Organic clicks +77% after the first wave.</span><span class="m"><span>5 min read</span><span>25 September 2026</span></span></a>
+      <a class="card" href="/articles/what-fast-frontends-hide/"><span class="num">12</span><span class="t">What fast AI-built frontends hide: an SEO post-mortem</span><span class="d">AI tools shipped the UI fast and hid an SEO architecture problem. What went wrong, and the rules I now give coding agents.</span><span class="m"><span>4 min read</span><span>22 March 2026</span></span></a>
+    </div>
+  </div>
+</section>
+
+<div class="section-head"><h2>How I work</h2><p>Three habits that run through every article.</p></div>
+<div class="how">
+  <div class="tile"><h4>Evidence before opinions</h4><p>Every change to what users see gets a pass rule written before the test, a decision ID and its evidence linked. Ideas I liked lost, and that’s in the log too.</p></div>
+  <div class="tile"><h4>Quality is a product decision</h4><p>I define “good” as checks and scores first, test the judge on known answers, and let cost per clean output pick the model.</p></div>
+  <div class="tile"><h4>Agents build, I own the risk</h4><p>Claude Code writes most of the code. Decisions, budgets, production data and the final read of the output stay with me.</p></div>
+</div>
+
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

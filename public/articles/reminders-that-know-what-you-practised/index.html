@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reminders that know what you practised · InfiniteGrammar</title>
+<meta name="description" content="One schedule per learner and grammar section, reset whenever they practise, sent at their local hour and cancelled when it’s no longer needed. Most of the value is in the emails it doesn’t send.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/reminders-that-know-what-you-practised/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/reminders-that-know-what-you-practised/">
+<meta property="og:title" content="Reminders that know what you practised · InfiniteGrammar">
+<meta property="og:description" content="One schedule per learner and grammar section, reset whenever they practise, sent at their local hour and cancelled when it’s no longer needed. Most of the value is in the emails it doesn’t send.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Reminders that know what you practised · InfiniteGrammar">
+<meta name="twitter:description" content="One schedule per learner and grammar section, reset whenever they practise, sent at their local hour and cancelled when it’s no longer needed. Most of the value is in the emails it doesn’t send.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Reminders that know what you practised", "description": "One schedule per learner and grammar section, reset whenever they practise, sent at their local hour and cancelled when it’s no longer needed. Most of the value is in the emails it doesn’t send.", "datePublished": "2026-03-20", "dateModified": "2026-03-20", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/reminders-that-know-what-you-practised/", "url": "https://www.infinitegrammar.de/articles/reminders-that-know-what-you-practised/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#product">Product and learners</a></div>
+    <h1>Reminders that know what you practised</h1>
+    <p class="dek">One schedule per learner and grammar section, reset whenever they practise, sent at their local hour and cancelled when it’s no longer needed. Most of the value is in the emails it doesn’t send.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-03-20">20 March 2026</time> <span class="sep">·</span> <span>3 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>Reminders are tied to the grammar section a learner practised, not to generic streaks.</li><li>A fixed +1/+3/+7/+14-day schedule, reset by practice, beat a pretend adaptive model at this stage.</li><li>Guardrails cancel or delay sends: unsubscribed, paused, already practised, weekly cap, long inactive, wrong local hour.</li><li>Tracking separates sent, clicked, started and completed, so a weak point can be located, not just noticed.</li></ul></aside>
+  <div class="article-body">
+<p>The product is organised around narrow grammar sections, so a learner doesn’t just “practise German”. They practise adjective endings after articles, or verbs with fixed prepositions, or connectors in B2 texts. That changes what a useful reminder looks like. “Come back to the app” is noise. “Come back to the section you practised three days ago, here’s the link” is something a learner can act on.</p>
+
+<h2>One schedule per learner and section</h2>
+
+<p>Every completed exercise creates or updates exactly one schedule for that learner and that section. The schedule has four steps.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/reminder-schedule.svg" alt="Timeline: practice in section X, then reminders at plus one day, plus three days, plus seven days and plus fourteen days. A box lists the guardrails checked before each send: unsubscribed, paused, already practised, weekly cap reached, long inactive, wrong local hour.">
+  <figcaption><strong>A fixed schedule with a reset.</strong> Practising the section again moves the schedule back to its first step instead of stacking more emails.</figcaption>
+</figure>
+
+<p>It isn’t an adaptive spaced-repetition model, on purpose. With the current base of active learners there isn’t enough data to fit one, and a fixed schedule is easy to reason about, easy to debug and easy to change later. The important property is the reset. If a learner returns to the section before the schedule finishes, the system doesn’t queue another reminder. The newest practice becomes the new starting point, so a schedule is a small state machine, never a growing pile of pending emails.</p>
+
+<h2>The useful work is in not sending</h2>
+
+<p>Before anything goes out, a processor that runs every hour asks a series of questions. Has the learner unsubscribed or paused? Have they already practised this section since the reminder was planned? Have they had their weekly maximum of emails? Have they been away so long that a gentler rhythm makes more sense? Is it the right hour where they live?</p>
+
+<p>The “already practised” check matters most. Without it, the system produces the most irritating email possible: a reminder to review something you reviewed yesterday, on your own. Technically that is a small state mismatch. To a learner it says the product isn’t paying attention.</p>
+
+<p>Local time matters more than template polish. Each schedule stores the learner’s preferred hour and timezone, taken from when they practised. A reminder that is on time in UTC but lands at 3 a.m. in someone’s day is mostly noise.</p>
+
+<h2>Measuring where it breaks</h2>
+
+<p>Every reminder is tracked through four states: sent, clicked, exercise started and exercise completed. “The email worked” is too coarse to act on. A click without a start points to a landing or routing problem. A start without a completion points to the exercise itself. A low click rate points to the subject line or to relevance.</p>
+
+<div class="takeaways">
+  <h2>If you’re building re-engagement</h2>
+  <ol>
+    <li>Tie reminders to the specific thing the user was doing, with a link straight back to it.</li>
+    <li>Prefer a simple schedule you understand over a model you can’t yet fit.</li>
+    <li>Spend most of the design on when not to send.</li>
+    <li>Track each stage separately, so you know where the drop happens.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/variety-is-a-sequencing-problem/"><span>← Previous</span><strong>Variety is a sequencing problem, not just a content problem</strong></a><a href="/articles/working-with-an-ai-engineer/" style="text-align:right"><span>Next →</span><strong>My engineer is an AI agent. This is how I manage it</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

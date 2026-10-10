@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What fast AI-built frontends hide: an SEO post-mortem · InfiniteGrammar</title>
+<meta name="description" content="Lovable and Claude Code got the product live quickly. They also let me ship a React single-page app that search engines barely saw. What went wrong, what I would choose today, and the rules I now give any coding agent before it touches routing.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/what-fast-frontends-hide/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/what-fast-frontends-hide/">
+<meta property="og:title" content="What fast AI-built frontends hide: an SEO post-mortem · InfiniteGrammar">
+<meta property="og:description" content="Lovable and Claude Code got the product live quickly. They also let me ship a React single-page app that search engines barely saw. What went wrong, what I would choose today, and the rules I now give any coding agent before it touches routing.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="What fast AI-built frontends hide: an SEO post-mortem · InfiniteGrammar">
+<meta name="twitter:description" content="Lovable and Claude Code got the product live quickly. They also let me ship a React single-page app that search engines barely saw. What went wrong, what I would choose today, and the rules I now give any coding agent before it touches routing.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "What fast AI-built frontends hide: an SEO post-mortem", "description": "Lovable and Claude Code got the product live quickly. They also let me ship a React single-page app that search engines barely saw. What went wrong, what I would choose today, and the rules I now give any coding agent before it touches routing.", "datePublished": "2026-03-22", "dateModified": "2026-10-08", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/what-fast-frontends-hide/", "url": "https://www.infinitegrammar.de/articles/what-fast-frontends-hide/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#agents">Building with AI agents</a></div>
+    <h1>What fast AI-built frontends hide: an SEO post-mortem</h1>
+    <p class="dek">Lovable and Claude Code got the product live quickly. They also let me ship a React single-page app that search engines barely saw. What went wrong, what I would choose today, and the rules I now give any coding agent before it touches routing.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-03-22">22 March 2026</time> <span class="sep">·</span> <span>Updated <time datetime="2026-10-08">8 October 2026</time></span> <span class="sep">·</span> <span>4 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>SEO turned out to be a rendering, routing and deployment problem before it was a content problem.</li><li>The expensive mistakes were architectural: meta tags patched on from outside, URLs changed while being crawled, and four lists of URLs drifting apart.</li><li>The fix was one route inventory that feeds prerendering, the sitemap, canonical tags, internal links and redirect tests.</li><li>Today I would pick a framework with built-in static generation, or define the SEO system on day one. Either way, the rules go to the agent first.</li></ul></aside>
+  <div class="article-body">
+<p>The first version of InfiniteGrammar.de was designed in <a href="https://lovable.dev/" rel="noopener">Lovable</a> and built out with Claude Code. That combination was fast. I had a working product, an admin area and dozens of content pages in a short time, and none of it felt risky, because everything I clicked on worked.</p>
+
+<p>The problem was in what I didn’t click on. The app was a React single-page application on Netlify. The browser received an empty shell and React drew the page. For a learner that’s fine. For a search engine deciding whether to index dozens of grammar pages, it is a weak signal unless you deliberately add the machinery to fix it. I added that machinery late, and in the wrong order.</p>
+
+<h2>The mistakes that mattered</h2>
+
+<p><strong>Treating meta tags as the SEO task.</strong> My first instinct was titles, descriptions and social preview tags. They improved how links looked when shared. They did nothing for indexing, because the crawler still faced a client-rendered shell. A page can have a perfect title and still be a weak page for search.</p>
+
+<p><strong>Patching SEO on from outside.</strong> I tried scripts that injected metadata after the build instead of making prerendered pages the real output. That created several sources of truth: one in React, one in scripts, sometimes a third in the sitemap or redirect rules. Once several systems define the same URLs, they drift, and the drift caused real problems.</p>
+
+<p><strong>Changing URLs while being crawled.</strong> Every change of URL structure needed redirects, and repeated changes created redirect chains that wasted crawl budget and blurred the signals. URL stability isn’t an implementation detail. It is a product decision.</p>
+
+<p><strong>Ignoring trailing slashes.</strong> On a host that serves prerendered pages as folders, <code>/page/</code> and <code>/page</code> are different: one returns the page, the other a redirect. When the sitemap, canonical tags, internal links and prerender list disagree on the slash, the site generates redirects to its own canonical pages.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/single-source.svg" alt="Before: React routes, the prerender script, sitemap.xml and redirect rules are four lists edited separately, so they drift apart. After: one route inventory feeds the prerendered pages, the sitemap, canonical tags, internal links and redirect tests.">
+  <figcaption><strong>The fix in one picture.</strong> One route inventory, and everything else generated from it.</figcaption>
+</figure>
+
+<p>The turning point was making prerendering part of the build itself, with Puppeteer rendering about 120 routes into real HTML documents that React takes over after loading. It works, but it is still more fragile than a framework with built-in static generation. It slows the build and can drift from what React renders in the browser.</p>
+
+<p>One more trap was outside the code entirely. Netlify’s post-processing features injected duplicate social tags taken from the base HTML, which appeared before the page’s own tags. Social crawlers take the first match, so link previews showed the wrong text even though the build was correct. Anything between your build output and the crawler is part of the SEO system.</p>
+
+<h2>What I’d choose today</h2>
+
+<p>For a content-heavy product that depends on search, I would start with a framework where every route produces HTML as a normal part of the build: Next.js, Astro or similar. If I stayed on React with Vite, I would set up the SEO system before launch, not after: one route inventory as the single source of truth, build-time prerendering for every indexable route, per-route canonical tags, a sitemap generated from the inventory, structured data for the main content types, robots rules separating public from private areas, one enforced trailing-slash policy, and redirect tests in the deployment checks.</p>
+
+<p>The broader lesson is about AI-assisted building. Fast UI iteration hides architectural debt, because everything a human clicks on works. The question I should have asked on day one was simple: does this stack produce stable, crawlable HTML for every page I want indexed?</p>
+
+<h2>The rules I give a coding agent now</h2>
+
+<p>These go into the project instructions before an agent touches routing:</p>
+
+<ul>
+  <li>Treat SEO as a rendering problem first. Every public route that should rank gets prerendered HTML at build time.</li>
+  <li>Use one route inventory for the sitemap, prerender targets, canonical tags and internal links. Never maintain the sitemap by hand.</li>
+  <li>Don’t change URL structures unless necessary. If you must, use single-hop permanent redirects, and never link internally to a redirecting URL.</li>
+  <li>Trailing-slash consistency is mandatory, not cosmetic.</li>
+  <li>Fail the build if an indexable route has no prerendered output, or if the sitemap and the route list disagree.</li>
+  <li>After every deploy, fetch a sample of live URLs and compare them with the build output. If they differ, something between the two is changing the HTML.</li>
+</ul>
+
+<p>Those rules later became the deterministic part of the <a href="/articles/seo-agent-cannot-grade-itself/">SEO autopilot</a>, where an agent has to prove each one with a frozen test.</p>
+
+<h2>The stack at a glance</h2>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Part</th><th>Technology</th><th>What I’d change</th></tr></thead>
+  <tbody>
+    <tr><td>Learner app and admin</td><td>React 18, TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query, Recharts, i18next</td><td>Split the admin into its own app so its heavy charts stay out of the learner bundle</td></tr>
+    <tr><td>Backend</td><td>Netlify Functions in TypeScript, raw SQL</td><td>A light query builder for simple reads and writes; keep raw SQL for analytics</td></tr>
+    <tr><td>Database</td><td>Neon (serverless Postgres)</td><td>Nothing; migrations now live in the generator repository with tests</td></tr>
+    <tr><td>Email</td><td>Resend</td><td>Remove the leftover second email library</td></tr>
+    <tr><td>Content pipeline</td><td>Python, OpenAI Batch API, resumable runs</td><td>Done since this was first written: verified pipeline, budgets, regression eval</td></tr>
+    <tr><td>Similarity analysis</td><td>Python, spaCy, scikit-learn, SciPy; rented CPU on Vast.ai</td><td>A scheduled run after every refill instead of a manual one</td></tr>
+  </tbody>
+</table></div>
+
+<div class="takeaways">
+  <h2>If you build with AI coding tools</h2>
+  <ol>
+    <li>Ask the architecture questions the UI can’t answer: what does a crawler, a screen reader or a slow phone actually receive?</li>
+    <li>Keep one source of truth for anything several systems need, such as URLs.</li>
+    <li>Treat your hosting configuration as part of the product.</li>
+    <li>Write your hard-won rules into the agent’s instructions, so you only learn each one once.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/seo-agent-cannot-grade-itself/"><span>← Previous</span><strong>My SEO agent isn’t allowed to grade its own homework</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>
