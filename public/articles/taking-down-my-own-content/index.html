@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Why I took 84% of my live exercises offline · InfiniteGrammar</title>
+<meta name="description" content="A re-check against the new standard passed 133 of 829 live exercises. Replacing the rest took four days of generation and a swap that took minutes, planned so that no section went empty and no learner lost their place.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/taking-down-my-own-content/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/taking-down-my-own-content/">
+<meta property="og:title" content="Why I took 84% of my live exercises offline · InfiniteGrammar">
+<meta property="og:description" content="A re-check against the new standard passed 133 of 829 live exercises. Replacing the rest took four days of generation and a swap that took minutes, planned so that no section went empty and no learner lost their place.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Why I took 84% of my live exercises offline · InfiniteGrammar">
+<meta name="twitter:description" content="A re-check against the new standard passed 133 of 829 live exercises. Replacing the rest took four days of generation and a swap that took minutes, planned so that no section went empty and no learner lost their place.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Why I took 84% of my live exercises offline", "description": "A re-check against the new standard passed 133 of 829 live exercises. Replacing the rest took four days of generation and a swap that took minutes, planned so that no section went empty and no learner lost their place.", "datePublished": "2026-10-09", "dateModified": "2026-10-09", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/taking-down-my-own-content/", "url": "https://www.infinitegrammar.de/articles/taking-down-my-own-content/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#ops">Running it in production</a></div>
+    <h1>Why I took 84% of my live exercises offline</h1>
+    <p class="dek">A re-check against the new standard passed 133 of 829 live exercises. Replacing the rest took four days of generation and a swap that took minutes, planned so that no section went empty and no learner lost their place.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-10-09">9 October 2026</time> <span class="sep">·</span> <span>3 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>New rule: every live exercise must pass the same checks as new ones. The re-check passed 133 of 829 (16%) and cost $19.</li><li>The editor gate is strict: on audited test data only about one in four of its rejections was truly flawed. I took the failures down anyway, and wrote down why.</li><li>Order of operations mattered more than speed: replacements first, then the takedown and the publish back to back, so 55 sections never sat empty.</li><li>Targets came from learner behaviour: each section got as many new exercises as its most active learners used in their first month there.</li></ul></aside>
+  <div class="article-body">
+<p>On 5 October I ran every live exercise on InfiniteGrammar.de through the same checks a new exercise has to pass in pipeline <span class="nowrap"><a class="ver" href="#pipeline-versions" data-ver="V6" aria-label="Pipeline version V6: mixed-grammar tolerance">V6</a>.</span> I expected a lot of failures. The library had been written by an older pipeline that graded its own work, and a partial clean-up a week earlier had already taken down more than 500 exercises, most of them for ambiguous answers.</p>
+
+<p>I didn’t expect 16%.</p>
+
+<div class="viz" data-spec='{"type":"funnel","title":"Live exercises re-checked against today’s standard","sub":"Each exercise stops at the first check it fails. No repairs: an exercise either passes as it is or comes down.","format":"int","data":[{"label":"Live exercises","value":829},{"label":"Pass the format rules","value":800,"drop":"−29 · format problems"},{"label":"Pass solvers and judge","value":447,"drop":"−353 · mostly a second right answer"},{"label":"Pass the coherence check","value":384,"drop":"−63 · the story doesn’t hold together"},{"label":"Pass the editor gate","value":133,"drop":"−251 · editor gate issues"}],"note":"Live audit of 5 October 2026. Cost: $19.22 at batch prices."}'></div>
+
+<p>133 of 829 passed. The other 696 failed somewhere, and more than half of those had a distractor that was also correct, the same problem that started the whole <a href="/articles/from-one-in-six-to-three-in-four/">quality project</a>.</p>
+
+<h2>Was the gate too strict?</h2>
+
+<p>251 of the failures came from the final check, the editor gate. I knew from calibration that it’s strict. On test exercises I had graded blind, only about one in four of its rejections was an exercise graded flawed. Most of the rest were usable, often with a minor issue.</p>
+
+<p>So taking down everything that failed meant taking down some good exercises. I decided to do it anyway, for two reasons. Learners can’t see which pipeline wrote an exercise, so one standard for everything they see is the only promise I can actually keep. And replacements were cheap: about eight cents each, and they pass the same bar. The takedown wrote an undo file, so it was reversible. A learner who stops trusting the answers isn’t.</p>
+
+<div class="callout decision"><span class="label">Decision</span><strong>Every live exercise must pass the production checks</strong>, whoever or whatever wrote it. Exercises that fail are deactivated with the reason recorded, never deleted, so the decision can be revisited if the checks change.</div>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<h2>How much to generate</h2>
+
+<p>A flat target of, say, 200 exercises per section would have been simple and wrong. Some sections had many active learners working through them quickly. Others had just a few keen learners. But the product promises “infinite grammar exercises in every grammar section, for every learner”. So each of the 86 sections got its own target: the number of exercises its most active learners used in their first month there.</p>
+
+<p>That came to 808 new exercises needed. At the yields measured earlier for each level, between 50% and 80%, that meant 1,379 attempts, estimated at $76.</p>
+
+<h2>The order of operations</h2>
+
+<p>The obvious sequence is to take the failures down and then refill. It would have left 55 sections completely empty for the four days the refill took. So the sequence went the other way.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/refill-sequence.svg" alt="Sequence: audit the 829 live exercises and store the verdicts (5 October); generate the refill, 1,379 attempts over 21 batch rounds, with nothing live changing (5 to 9 October); swap in minutes on 9 October by taking down 696 and publishing 974 back to back; result: 1,107 live exercises, all of which passed the current checks.">
+  <figcaption><strong>Generate first, swap last.</strong> For four days the audit verdicts sat in a file and learners saw the old library. The swap itself took minutes.</figcaption>
+</figure>
+
+<p>The other constraint was learner progress. Learners work through a section in order, and the app serves the lowest active exercise number above the last one they completed. Taken-down exercises keep their numbers and are simply skipped. New exercises are added after the end. So nobody repeats an exercise and nobody skips one they haven’t seen. Before the real run, I did a dry run of both the takedown and the refill, to make sure the whole operation would go through without a flaw.</p>
+
+<h2>What came out</h2>
+
+<p>The refill made 1,379 attempts over 21 batch rounds and accepted 974, or 71%, for $78.14. A random sample of 20 read as 14 clean, 6 with minor issues and none flawed. The live library went from 829 exercises of mixed quality to 1,107 that all pass today’s checks.</p>
+
+<div class="viz" data-spec='{"type":"bars","title":"Refill yield by CEFR grammar level","sub":"Accepted as a share of attempts.","format":"pct","max":1,"labelHead":"Level","valueHead":"Accepted","data":[{"label":"A1","note":"127 of 162","value":0.784},{"label":"A2","note":"203 of 308","value":0.659},{"label":"B1","note":"207 of 310","value":0.668},{"label":"B2","note":"248 of 339","value":0.732},{"label":"C1","note":"189 of 260","value":0.727}]}'></div>
+
+<div class="takeaways">
+  <h2>If you’re cleaning up generated content</h2>
+  <ol>
+    <li>Hold everything users see to one standard, and say openly what it costs you.</li>
+    <li>Generate the replacements before you take anything down.</li>
+    <li>Size content by your most engaged users, not by averages.</li>
+    <li>Keep bulk changes reversible: dry runs, undo files, counts before and after.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/cost-per-clean-exercise/"><span>← Previous</span><strong>Cost per clean exercise: the number that changed my model choice</strong></a><a href="/articles/a-cockpit-for-ai-content/" style="text-align:right"><span>Next →</span><strong>Three questions, three dashboards: a cockpit for an AI content product</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

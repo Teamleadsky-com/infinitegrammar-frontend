@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>From one in six to three in four: making an LLM content pipeline trustworthy · InfiniteGrammar</title>
+<meta name="description" content="My generated German exercises looked fine and quietly let learners down. I built the checks first and let the numbers choose the pipeline. Ten days later, 78% of drafts passed every check instead of 17%, at a quarter of the cost per accepted exercise.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/">
+<meta property="og:title" content="From one in six to three in four: making an LLM content pipeline trustworthy · InfiniteGrammar">
+<meta property="og:description" content="My generated German exercises looked fine and quietly let learners down. I built the checks first and let the numbers choose the pipeline. Ten days later, 78% of drafts passed every check instead of 17%, at a quarter of the cost per accepted exercise.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="From one in six to three in four: making an LLM content pipeline trustworthy · InfiniteGrammar">
+<meta name="twitter:description" content="My generated German exercises looked fine and quietly let learners down. I built the checks first and let the numbers choose the pipeline. Ten days later, 78% of drafts passed every check instead of 17%, at a quarter of the cost per accepted exercise.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "From one in six to three in four: making an LLM content pipeline trustworthy", "description": "My generated German exercises looked fine and quietly let learners down. I built the checks first and let the numbers choose the pipeline. Ten days later, 78% of drafts passed every check instead of 17%, at a quarter of the cost per accepted exercise.", "datePublished": "2026-05-10", "dateModified": "2026-10-10", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/", "url": "https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#start">Start here</a></div>
+    <h1>From one in six to three in four: making an LLM content pipeline trustworthy</h1>
+    <p class="dek">My generated German exercises looked fine and quietly let learners down. I built the checks first and let the numbers choose the pipeline. Ten days later, 78% of drafts passed every check instead of 17%, at a quarter of the cost per accepted exercise.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-05-10">10 May 2026</time> <span class="sep">·</span> <span>Updated <time datetime="2026-10-10">10 October 2026</time></span> <span class="sep">·</span> <span>6 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>In September 2026 a stricter check found a second correct answer in 35% of my live exercises. The old pipeline had approved every one of them.</li><li>I defined quality as checks, tested the judge before trusting it, then compared strategies and models on held-out tasks with pass rules written in advance.</li><li>On held-out tests, drafts passing every check rose from 17% to 78% and cost per accepted exercise fell from $0.23 to $0.058. A blind audit found no flawed exercise among those the final version accepted.</li><li>In production the new pipeline produced 974 exercises for $78, and a random sample of them showed only a few minor issues.</li></ul></aside>
+  <div class="article-body">
+<p>InfiniteGrammar.de sells one thing: a lot of practice on one narrow piece of German grammar. Every exercise is a short text with five to seven gaps, four options per gap and an explanation for each answer. Large language models write all of them. I’m the only person who could check them, and I can’t read thousands.</p>
+
+<p>For most of 2026 the pipeline <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V1" aria-label="Pipeline version V1: Original pipeline">V1</a>)</span> graded its own work. A model wrote an exercise, the same model reviewed it, and a failed draft was rewritten until it passed or ran out of attempts. About 84% passed. A separate checker pass then re-read the survivors and flagged roughly half of them, about a third of those for doubled words and stray punctuation that a regex could fix. It felt like a quality process.</p>
+
+<p>In late September I built a stricter check for the property that matters most in this format: exactly one option per gap should be correct. I ran it over the live library. <strong>411 of 1,186 exercises failed it</strong>, meaning a learner could defend a second answer in at least one gap. The old process had approved every one of them.</p>
+
+<p>This is the story of the ten days that followed, and of what changed in production afterwards.</p>
+
+<h2>Define “good” before choosing a model</h2>
+
+<p>The fix started with a definition, not with a better model. I wrote down what makes an exercise publishable as five checks it must pass and four scores it receives:</p>
+
+<ul>
+  <li><strong>G1 · Correct German</strong> once the right answers are filled in.</li>
+  <li><strong>G2 · Exactly one right answer</strong> in every gap.</li>
+  <li><strong>G3 · On topic:</strong> each wrong option differs from the answer only in the grammar point being practised.</li>
+  <li><strong>G4 · A correct explanation</strong> that names the deciding rule.</li>
+  <li><strong>G5 · Format rules</strong> that code can check for free, such as gap count or a capital letter that gives the answer away.</li>
+</ul>
+
+<p>Naturalness, level fit, how tempting the distractors are and how well the text hangs together became scores from 0 to 5. They rank exercises but never reject one. That split mattered more than I expected. Early versions of the judge failed perfectly good German for sounding slightly informal, and moving style out of the pass/fail checks removed most of those false alarms.</p>
+
+<h2>Test the judge before trusting it</h2>
+
+<p>An LLM judge is a model like any other, so it needs its own evaluation. The first version of my verifier graded five official telc exam texts, each with its official answer key, and failed three of them. On the hardest check it also changed its verdict on one gap in ten when I simply ran it twice.</p>
+
+<p>I rebuilt it against four kinds of test data and replaced the single “is there one right answer?” call with two independent solvers that must agree, plus a stronger adjudicator that only speaks when they don’t. That story has <a href="/articles/testing-the-llm-judge/">its own article</a>. In short, the check now finds 92–93% of real second answers, is right about 80% of the time when it raises one, and flips on 3% of gaps instead of 10%.</p>
+
+<h2>Change the shape of the pipeline</h2>
+
+<p>With a judge I could trust, I compared four ways of producing an exercise, using the same model on 30 held-out tasks. Rewriting a whole exercise after a failed review, which is what the old pipeline did, passed 7% of the time. Generating, verifying and then repairing only the gaps that failed passed 50%. That gap was larger than anything prompt tuning was likely to buy, so I postponed prompt optimisation and put the effort into the pipeline’s shape and the model.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/pipeline-today.svg" alt="The pipeline today: write the exercise, run free rule checks, two solvers and a judge decide whether each gap has exactly one right answer, failing gaps are repaired and re-checked, then a coherence check and an editor gate run before the exercise goes live. Anything still failing after its repair budget is stored as rejected and never served.">
+  <figcaption><strong>How an exercise reaches a learner today <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V6" aria-label="Pipeline version V6: mixed-grammar tolerance">V6</a>)</span>.</strong> Repairs touch only the failing gaps. Every exercise that fails after its repair budget is kept for analysis but never shown to anyone.
+  <dl class="codes" aria-label="Check codes in the diagram">
+    <div><dt>G1</dt><dd>Correct German with the answers filled in</dd></div>
+    <div><dt>G2</dt><dd>Exactly one right answer per gap</dd></div>
+    <div><dt>G3</dt><dd>Wrong options differ only in the grammar being practised</dd></div>
+    <div><dt>G4</dt><dd>The explanation is right and names the deciding rule</dd></div>
+    <div><dt>G5</dt><dd>Format rules, such as a capital letter that gives the answer away</dd></div>
+    <div><dt>G6</dt><dd>The story holds together: who does what, who “she” is</dd></div>
+    <div><dt>FG1–FG6</dt><dd>The editor gate’s six issue types, from a second right answer to mixed grammar</dd></div>
+  </dl></figcaption>
+</figure>
+
+<p>Then I chose the model by what I actually pay for: cost per accepted exercise, not price per token. On 60 tasks the system had never seen, the old pipeline <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V1" aria-label="Pipeline version V1: Original pipeline">V1</a>)</span> accepted 17% of attempts at $0.23 per accepted exercise. The new shape with a mid-sized model <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V2" aria-label="Pipeline version V2: Generate, verify, repair">V2</a>)</span> accepted 65% at $0.11.</p>
+
+<h2>Add what the checks couldn’t see</h2>
+
+<p>Reading accepted exercises by hand showed the next layer of problems. They weren’t in the gaps, they were in the story. In one, set in a shop, the shop assistant asked the customer, <span class="de">„Könnten Sie ihn bis heute Nachmittag reservieren?“</span> (“Could you reserve it until this afternoon?”). That’s the customer’s line, not the shop’s: the roles were reversed. In another, <span class="de">„diese Frau“</span> pointed at nobody. Every gap was fine and both exercises scored 0.95 out of 1.</p>
+
+<p>So I added a coherence check as its own stage after the gap checks <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V3" aria-label="Pipeline version V3: coherence check">V3</a>)</span>, moved the rules for good wrong answers into the writing prompt <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V4" aria-label="Pipeline version V4: design rules in the prompt">V4</a>)</span>, and then added a stronger writer and a final read by the same model acting as a senior editor, with six named issue types <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V5" aria-label="Pipeline version V5: stronger writer, editor gate">V5</a>)</span>. Each addition had to win a comparison whose pass rule I wrote down before running it (<a href="/articles/deciding-with-evidence/">how that worked</a>). The final configuration <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V6" aria-label="Pipeline version V6: mixed-grammar tolerance">V6</a>)</span> accepted 31 of 40 fresh tasks. A blind audit graded 20 of those clean, 11 as having minor issues and none as flawed.</p>
+
+<div class="viz" data-spec='{"type":"columns","title":"Share of attempts that pass every check","sub":"Held-out tasks the pipeline had never seen. Later versions face stricter checks, including an editor gate the old pipeline never had. Hover over or tap a version for what changed.","format":"pct","max":1,"labelHead":"Pipeline","valueHead":"Passed every check","data":[{"ver":"V1","label":"Original pipeline","note":"n = 60","value":0.1667},{"ver":"V2","label":"Generate, verify, repair","note":"n = 60","value":0.65},{"ver":"V5","label":"+ stronger writer, editor gate","note":"n = 40","value":0.75},{"ver":"V6","label":"+ mixed-grammar tolerance (today)","note":"n = 40","value":0.775,"emph":true}],"note":"Test sets: 60 held-out tasks (28 Sep) and 40 fresh confirmation tasks (3–4 Oct). Different task sets, so read the direction rather than the decimals."}'></div>
+
+<div class="viz" data-spec='{"type":"bars","title":"Accepted exercises that a blind audit graded as flawed","sub":"Lower is better. The grader never saw which version produced an exercise.","format":"pct","max":0.32,"labelHead":"Version","valueHead":"Graded flawed","data":[{"ver":"V3","label":"+ coherence check","note":"9 of 32","value":0.281},{"ver":"V4","label":"+ design rules in the prompt","note":"5 of 36","value":0.139},{"ver":"V5","label":"+ stronger writer, editor gate","note":"1 of 30","value":0.033},{"ver":"V6","label":"+ mixed-grammar tolerance (today)","note":"0 of 31","value":0,"display":"0%","emph":true}]}'></div>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<div class="stat-row">
+  <div class="tile"><div class="label">Cost per accepted exercise</div><div class="value"><span class="from">$0.23 →</span>$0.058</div><div class="sub">all checks and repairs included</div></div>
+  <div class="tile"><div class="label">First drafts that pass the gap checks</div><div class="value"><span class="from">8% →</span>70%</div><div class="sub">before any repair</div></div>
+  <div class="tile"><div class="label">Cost per clean exercise</div><div class="value">$0.089</div><div class="sub">accepted and graded clean</div></div>
+</div>
+
+<h2>In production</h2>
+
+<p>On 5 October I re-checked all 829 live exercises against the new standard. 133 passed, and the rest went offline once replacements were ready (<a href="/articles/taking-down-my-own-content/">how I did that without breaking anyone’s progress</a>). Over the following four days the replenishment pipeline made 1,379 attempts, accepted 974 of them and cost $78.14 in total. I read a random sample of 20 of the accepted ones: 14 clean, 6 with minor issues, none flawed.</p>
+
+<div class="stat-row">
+  <div class="tile"><div class="label">Accepted in the refill</div><div class="value">974</div><div class="sub">71% of 1,379 attempts</div></div>
+  <div class="tile"><div class="label">Cost per accepted exercise</div><div class="value">$0.080</div><div class="sub">$78.14 for the whole refill</div></div>
+  <div class="tile"><div class="label">Random sample of 20</div><div class="value">14 / 6 / 0</div><div class="sub">clean / minor / flawed</div></div>
+</div>
+
+<h2>What I’d do differently</h2>
+
+<p><strong>Build the test set before the first judge.</strong> I wrote a verifier, ran it on the live library and took 411 exercises offline on its word. Calibration later put that early check’s false-alarm rate at around 5–8%, so probably a few dozen good exercises went offline for nothing. Calibrate first, then act.</p>
+
+<p><strong>Write pass rules from day one.</strong> My first comparisons were judged after the fact. The later ones, with rules written before the run, were quicker to decide and much harder to argue with, including by me.</p>
+
+<div class="takeaways">
+  <h2>If you’re building with LLM output</h2>
+  <ol>
+    <li>Write down “good” as checks before you choose a model, and keep matters of taste in scores rather than gates.</li>
+    <li>Evaluate your judge on data with known answers, including examples that must pass.</li>
+    <li>Measure cost per accepted, or better per clean, output. Price per token is the wrong unit.</li>
+    <li>Repair the part that failed instead of regenerating everything.</li>
+    <li>Keep reading the output yourself. Every check I added came from reading.</li>
+  </ol>
+</div>
+
+<div class="callout caveat"><span class="label">About the numbers</span>Held-out tests used 30–60 tasks each, and not always the same tasks, so compare directions more than decimals. Costs are at OpenAI Batch API prices. Audits were blind: the grader didn’t know which version produced an exercise. Sources are the project’s run reports and decision log from September and October 2026.</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><span></span><a href="/articles/testing-the-llm-judge/" style="text-align:right"><span>Next →</span><strong>Before I trusted my LLM judge, I made it grade the answer key</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

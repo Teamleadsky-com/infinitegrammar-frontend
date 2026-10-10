@@ -405,52 +405,59 @@
   <!-- Articles -->
   <url>
     <loc>https://www.infinitegrammar.de/articles/</loc>
-    <lastmod>2026-09-25</lastmod>
+    <lastmod>2026-10-10</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/why-infinitegrammar-focuses-on-exam-grammar/</loc>
-    <lastmod>2026-03-01</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/about/</loc>
+    <lastmod>2026-10-10</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/gap-fill-quality-distractor-problem/</loc>
-    <lastmod>2026-03-05</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/from-one-in-six-to-three-in-four/</loc>
+    <lastmod>2026-10-10</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/batch-processing-exercise-generation/</loc>
-    <lastmod>2026-03-10</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/testing-the-llm-judge/</loc>
+    <lastmod>2026-10-05</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/measuring-exercise-diversity/</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/wrong-answers-are-the-product/</loc>
+    <lastmod>2026-10-09</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/similarity-calculation-vast-ai/</loc>
-    <lastmod>2026-03-15</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/deciding-with-evidence/</loc>
+    <lastmod>2026-10-06</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/reordering-exercises-product-problem/</loc>
-    <lastmod>2026-03-23</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/cost-per-clean-exercise/</loc>
+    <lastmod>2026-10-09</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/email-campaigns-learning-system/</loc>
+    <loc>https://www.infinitegrammar.de/articles/taking-down-my-own-content/</loc>
+    <lastmod>2026-10-09</lastmod>
+  </url>
+  <url>
+    <loc>https://www.infinitegrammar.de/articles/a-cockpit-for-ai-content/</loc>
+    <lastmod>2026-10-10</lastmod>
+  </url>
+  <url>
+    <loc>https://www.infinitegrammar.de/articles/variety-is-a-sequencing-problem/</loc>
+    <lastmod>2026-10-06</lastmod>
+  </url>
+  <url>
+    <loc>https://www.infinitegrammar.de/articles/reminders-that-know-what-you-practised/</loc>
     <lastmod>2026-03-20</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/tech-stack-content-heavy-language-product/</loc>
-    <lastmod>2026-03-22</lastmod>
+    <loc>https://www.infinitegrammar.de/articles/working-with-an-ai-engineer/</loc>
+    <lastmod>2026-10-09</lastmod>
   </url>
   <url>
-    <loc>https://www.infinitegrammar.de/articles/react-spa-seo-postmortem/</loc>
-    <lastmod>2026-03-22</lastmod>
-  </url>
-  <url>
-    <loc>https://www.infinitegrammar.de/articles/generation-checker-analysis/</loc>
-    <lastmod>2026-05-10</lastmod>
-  </url>
-
-  <url>
-    <loc>https://www.infinitegrammar.de/articles/seo-autopilot-autonomous-technical-seo/</loc>
+    <loc>https://www.infinitegrammar.de/articles/seo-agent-cannot-grade-itself/</loc>
     <lastmod>2026-09-25</lastmod>
+  </url>
+  <url>
+    <loc>https://www.infinitegrammar.de/articles/what-fast-frontends-hide/</loc>
+    <lastmod>2026-10-08</lastmod>
   </url>
 
 </urlset>

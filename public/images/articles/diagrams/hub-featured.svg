@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 330" width="520" height="330" role="img" aria-label="An exercise passing five checks">
+<title>An exercise passing five checks</title>
+<style>
+.t{font:600 15px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614} .tb{font:700 17px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614}
+.s{font:400 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#55544f} .xs{font:400 12px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#6b6a64}
+.k{font:700 11px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#6a3fd6} .big{font:750 30px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614;letter-spacing:-.02em}
+.de{font:italic 400 16px Georgia,'Source Serif 4',serif;fill:#161614}
+.box{fill:#ffffff;stroke:#d9d6ce;stroke-width:1.5} .bb{fill:#f2edfd;stroke:#c7b8f3;stroke-width:1.5}
+.bg{fill:#e9f6ee;stroke:#a7d8b8;stroke-width:1.5} .br{fill:#fdecea;stroke:#f0b3ac;stroke-width:1.5}
+.by{fill:#fff6e3;stroke:#ead19a;stroke-width:1.5} .bn{fill:#f4f3ef;stroke:#dedbd3;stroke-width:1.5}
+.ln{stroke:#9b998f;stroke-width:1.6;fill:none} .lnb{stroke:#6a3fd6;stroke-width:1.8;fill:none}
+.ar{fill:#9b998f} .arb{fill:#6a3fd6} .dot{fill:#6a3fd6} .dotn{fill:#b5b2a9}
+.ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
+.gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
+.s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
+@media (prefers-color-scheme: dark) {
+.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
+.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
+.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
+.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
+.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
+.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
+}
+</style>
+<rect x="14" y="24" width="300" height="282" rx="16" class="box"/>
+<text x="34" y="56" class="k" text-anchor="start">B1 · Reflexive Verben</text>
+<text x="34" y="92" class="de" text-anchor="start">Lena interessiert</text>
+<rect x="172" y="72" width="70" height="28" rx="7" class="gap"/>
+<text x="207" y="92" class="de" text-anchor="middle">sich</text>
+<text x="34" y="124" class="de" text-anchor="start">für regionale Produkte und</text>
+<text x="34" y="152" class="de" text-anchor="start">liest die Schilder genau.</text>
+<rect x="34" y="182" width="58" height="30" rx="8" class="bn"/>
+<text x="63" y="202" class="s" text-anchor="middle">mir</text>
+<rect x="100" y="182" width="58" height="30" rx="8" class="bn"/>
+<text x="129" y="202" class="s" text-anchor="middle">dir</text>
+<rect x="166" y="182" width="58" height="30" rx="8" class="bn"/>
+<text x="195" y="202" class="s" text-anchor="middle">ihm</text>
+<rect x="232" y="182" width="58" height="30" rx="8" class="bb"/>
+<text x="261" y="202" class="s" text-anchor="middle">sich</text>
+<text x="34" y="250" class="xs" text-anchor="start">Explanation: „sich für etwas interessieren“,</text>
+<text x="34" y="268" class="xs" text-anchor="start">third person singular → sich.</text>
+<circle cx="352" cy="60" r="9" class="ok"/><path d="M348 60 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="65" class="s" text-anchor="start">one right answer</text>
+<circle cx="352" cy="112" r="9" class="ok"/><path d="M348 112 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="117" class="s" text-anchor="start">on topic</text>
+<circle cx="352" cy="164" r="9" class="ok"/><path d="M348 164 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="169" class="s" text-anchor="start">explanation right</text>
+<circle cx="352" cy="216" r="9" class="ok"/><path d="M348 216 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="221" class="s" text-anchor="start">story holds up</text>
+<circle cx="352" cy="268" r="9" class="ok"/><path d="M348 268 l3 3 l5 -6" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="372" y="273" class="s" text-anchor="start">editor gate</text>
+</svg>

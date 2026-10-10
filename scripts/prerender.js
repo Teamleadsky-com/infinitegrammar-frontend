@@ -12,23 +12,9 @@ const PAGES = [
   // Homepage
   '/',
 
-  // Main pages
+  // Main pages (the /articles section is static: public/articles, built by scripts/build-articles.mjs)
   '/deutsche-grammatik/',
   '/pruefungszentren/',
-  '/articles/',
-
-  // Article pages
-  '/articles/why-infinitegrammar-focuses-on-exam-grammar/',
-  '/articles/gap-fill-quality-distractor-problem/',
-  '/articles/batch-processing-exercise-generation/',
-  '/articles/measuring-exercise-diversity/',
-  '/articles/similarity-calculation-vast-ai/',
-  '/articles/reordering-exercises-product-problem/',
-  '/articles/email-campaigns-learning-system/',
-  '/articles/tech-stack-content-heavy-language-product/',
-  '/articles/react-spa-seo-postmortem/',
-  '/articles/generation-checker-analysis/',
-  '/articles/seo-autopilot-autonomous-technical-seo/',
 
   // Exam center city pages
   '/pruefungszentren/telc-berlin/',

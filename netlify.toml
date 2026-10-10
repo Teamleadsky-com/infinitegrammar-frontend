@@ -505,6 +505,121 @@
   to = "/app-shell.html"
   status = 200
 
+# Articles section rebuilt on 2026-10-10 (static pages in public/articles). The old article URLs
+# move permanently to the new article that replaced them; both the bare and the trailing-slash form
+# are listed (see the client-only routes above for why). One hop each: no chains.
+[[redirects]]
+  from = "/articles/generation-checker-analysis"
+  to = "/articles/from-one-in-six-to-three-in-four/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/generation-checker-analysis/"
+  to = "/articles/from-one-in-six-to-three-in-four/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/gap-fill-quality-distractor-problem"
+  to = "/articles/wrong-answers-are-the-product/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/gap-fill-quality-distractor-problem/"
+  to = "/articles/wrong-answers-are-the-product/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/batch-processing-exercise-generation"
+  to = "/articles/cost-per-clean-exercise/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/batch-processing-exercise-generation/"
+  to = "/articles/cost-per-clean-exercise/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/measuring-exercise-diversity"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/measuring-exercise-diversity/"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/reordering-exercises-product-problem"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/reordering-exercises-product-problem/"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/similarity-calculation-vast-ai"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/similarity-calculation-vast-ai/"
+  to = "/articles/variety-is-a-sequencing-problem/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/email-campaigns-learning-system"
+  to = "/articles/reminders-that-know-what-you-practised/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/email-campaigns-learning-system/"
+  to = "/articles/reminders-that-know-what-you-practised/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/seo-autopilot-autonomous-technical-seo"
+  to = "/articles/seo-agent-cannot-grade-itself/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/seo-autopilot-autonomous-technical-seo/"
+  to = "/articles/seo-agent-cannot-grade-itself/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/react-spa-seo-postmortem"
+  to = "/articles/what-fast-frontends-hide/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/react-spa-seo-postmortem/"
+  to = "/articles/what-fast-frontends-hide/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/tech-stack-content-heavy-language-product"
+  to = "/articles/what-fast-frontends-hide/"
+  status = 301
+
+[[redirects]]
+  from = "/articles/tech-stack-content-heavy-language-product/"
+  to = "/articles/what-fast-frontends-hide/"
+  status = 301
+
+# The exam-grammar strategy article was removed without a replacement: 410 Gone tells search
+# engines it is gone on purpose. Same page as the 404 fallback below.
+[[redirects]]
+  from = "/articles/why-infinitegrammar-focuses-on-exam-grammar"
+  to = "/index.html"
+  status = 410
+
+[[redirects]]
+  from = "/articles/why-infinitegrammar-focuses-on-exam-grammar/"
+  to = "/index.html"
+  status = 410
+
 # Terminal fallback. Prerendered pages in dist/<path>/index.html are served as
 # static files BEFORE this rule is evaluated, so all 90 sitemap URLs stay 200.
 # Anything else is genuinely unknown: still serve the React shell so react-router

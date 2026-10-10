@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Variety is a sequencing problem, not just a content problem · InfiniteGrammar</title>
+<meta name="description" content="Generic sentence embeddings measured the wrong kind of similarity. What worked was a four-part score, a metric I had to replace after it lied to me, and a reordering rule that never moves anything a learner has already done.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/variety-is-a-sequencing-problem/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/variety-is-a-sequencing-problem/">
+<meta property="og:title" content="Variety is a sequencing problem, not just a content problem · InfiniteGrammar">
+<meta property="og:description" content="Generic sentence embeddings measured the wrong kind of similarity. What worked was a four-part score, a metric I had to replace after it lied to me, and a reordering rule that never moves anything a learner has already done.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Variety is a sequencing problem, not just a content problem · InfiniteGrammar">
+<meta name="twitter:description" content="Generic sentence embeddings measured the wrong kind of similarity. What worked was a four-part score, a metric I had to replace after it lied to me, and a reordering rule that never moves anything a learner has already done.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Variety is a sequencing problem, not just a content problem", "description": "Generic sentence embeddings measured the wrong kind of similarity. What worked was a four-part score, a metric I had to replace after it lied to me, and a reordering rule that never moves anything a learner has already done.", "datePublished": "2026-03-18", "dateModified": "2026-10-06", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/variety-is-a-sequencing-problem/", "url": "https://www.infinitegrammar.de/articles/variety-is-a-sequencing-problem/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#product">Product and learners</a></div>
+    <h1>Variety is a sequencing problem, not just a content problem</h1>
+    <p class="dek">Generic sentence embeddings measured the wrong kind of similarity. What worked was a four-part score, a metric I had to replace after it lied to me, and a reordering rule that never moves anything a learner has already done.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-03-18">18 March 2026</time> <span class="sep">·</span> <span>Updated <time datetime="2026-10-06">6 October 2026</time></span> <span class="sep">·</span> <span>4 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>Learners feel repetition in structure (the same sentence frame, the same answer pattern), not in topic. Generic embeddings measured topic.</li><li>A four-part similarity score covering words, answer forms, structure and part-of-speech patterns matched what actually felt repetitive.</li><li>My first ordering metric got better whenever I added exercises, even when the order stayed the same. A rank-based version fixed it.</li><li>Reordering never touches exercises a learner has already completed. Constraint first, optimisation second.</li></ul></aside>
+  <div class="article-body">
+<p>The product promises depth: hundreds of exercises on one narrow grammar topic. Depth has an obvious failure mode. Forty exercises can easily feel like the same exercise forty times, and a learner who feels that will stop, usually without saying why.</p>
+
+<p>Two questions follow. Are these exercises genuinely different? And even if they are, does the order a learner meets them in make them feel repetitive? A learner never sees a similarity matrix. A learner sees a sequence.</p>
+
+<h2>Embeddings answered the wrong question</h2>
+
+<p>The obvious first step was off-the-shelf sentence embeddings. They failed in two directions. Two exercises about travel that practise different grammar came out as very similar. Two exercises about different topics that use the same sentence frame and the same answer pattern came out as different. For a learner it’s exactly the other way round: the travel pair feels varied, and the second pair feels like a repeat.</p>
+
+<p>So the similarity score had to describe what “repetitive” means for this product. It ended up with four parts, each normalised and weighted before comparing exercises:</p>
+
+<ul>
+  <li><strong>Words in the filled-in text</strong>, which catches the same vocabulary field coming up again and again.</li>
+  <li><strong>Character patterns of the correct answers</strong>, which catches the same endings drilled with different words around them.</li>
+  <li><strong>Structure</strong>: gap count, text and answer length, where the gaps sit.</li>
+  <li><strong>Part-of-speech patterns</strong> from <a href="https://spacy.io/" rel="noopener">spaCy</a>, which catches the same sentence scaffold dressed in new vocabulary.</li>
+</ul>
+
+<p>The exact weights matter less than the decision behind them: similarity here is a product definition, not a generic NLP quantity.</p>
+
+<h2>Making a score usable</h2>
+
+<p>A section with 40 exercises has 780 pairs, and a list of 780 numbers is not something anyone can act on. The admin area shows the same data at three zoom levels: a heatmap for where the overlap is dense, a dendrogram for whether it forms families of near-variants, and a side-by-side view to decide whether a close pair is truly redundant or just related.</p>
+
+<figure class="wide">
+  <img src="/images/articles/site/admin-similarity-heatmap-grid.png" alt="Similarity heatmap for one section: each cell is the similarity between two exercises, coloured from low to high.">
+  <figcaption><strong>The heatmap</strong> shows where overlap is dense. Anything above about 0.5 is worth a direct look as a possible near-duplicate.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/articles/site/admin-similarity-pair-detail.png" alt="Two exercises side by side with their gaps and answers highlighted, at 32.92% similarity.">
+  <figcaption><strong>The pair view</strong> is where the decision happens: redundant, or merely related?</figcaption>
+</figure>
+
+<h2>The metric that lied to me</h2>
+
+<p>To compare orderings I needed a single number per section. My first one divided the average similarity of neighbouring exercises by the average similarity of all pairs. Lower meant better spacing. It looked sensible and it moved in the right direction after reordering.</p>
+
+<p>Then I added a batch of new exercises to a section without changing anything about the order, and the score changed anyway. The ratio depended on how many exercises there were and how similar the new ones were to everything else, not only on the order. A metric that improves when nothing has improved is worse than no metric, because you believe it.</p>
+
+<p>The replacement asks a rank question instead: where do the neighbouring pairs sit among all pairs in the section, from least to most similar? If neighbours come from the dissimilar end, the order is good, whatever the section’s size. A second measure looks a few steps ahead, weighting the next exercise most and the fifth one least, because a learner feels the immediate repeat most.</p>
+
+<h2>Reordering without breaking anyone’s place</h2>
+
+<p>The ordering itself is a classic heuristic: start with a greedy sequence that always picks the least similar next exercise, then improve it with 2-opt swaps until no swap helps. It’s quick and it isn’t optimal, which is fine. The interesting part is the constraint.</p>
+
+<p>Learners move through a section in order, and their progress is stored as the number of the last exercise they completed. Reorder the whole section and a returning learner might repeat something or skip something. So the rule is: anything at least one learner has completed stays where it is.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/progress-safe-reorder.svg" alt="Exercises 1 to 5 have been completed by at least one learner and stay frozen in their old order. Exercises 6 to 12 have not been seen and are reordered. The first free exercise is chosen to be the least similar to the last frozen one, because that is where a returning learner continues.">
+  <figcaption><strong>Constraint first, optimisation second.</strong> A weaker order that respects every learner’s place beats a better one that breaks it.</figcaption>
+</figure>
+
+<p>One detail sits at the boundary. The first exercise after the frozen part is chosen to be as unlike the last frozen one as possible, because that is exactly where a returning learner continues. When a reorder does renumber exercises, every learner’s progress pointer is remapped in the same database transaction. Near-duplicates are not deleted, by the way. They are spaced apart. A close variant twenty exercises later is good repetition; the same thing twice in a row is not.</p>
+
+<figure>
+  <img src="/images/articles/site/admin-neighbor-strip-before.png" alt="Similarity of each exercise to the next one to five exercises, before reordering, with high values such as 0.57 and 0.47 in the next-exercise column.">
+  <figcaption><strong>Before:</strong> the column for the very next exercise shows values such as 0.57 and 0.47, so neighbouring exercises overlap noticeably.</figcaption>
+</figure>
+
+<figure>
+  <img src="/images/articles/site/admin-neighbor-strip-after.png" alt="The same view after reordering, with most next-exercise values below 0.20.">
+  <figcaption><strong>After:</strong> most values in that column fall below 0.20.</figcaption>
+</figure>
+
+<div class="takeaways">
+  <h2>If you sequence content for learners</h2>
+  <ol>
+    <li>Define similarity from the user’s experience, not from a generic model’s idea of meaning.</li>
+    <li>Test a metric by changing something irrelevant. If it moves, it’s lying.</li>
+    <li>Treat existing users’ progress as a hard constraint and optimise inside it.</li>
+    <li>Space near-duplicates apart instead of deleting them; repetition is good, back-to-back repetition isn’t.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/a-cockpit-for-ai-content/"><span>← Previous</span><strong>Three questions, three dashboards: a cockpit for an AI content product</strong></a><a href="/articles/reminders-that-know-what-you-practised/" style="text-align:right"><span>Next →</span><strong>Reminders that know what you practised</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

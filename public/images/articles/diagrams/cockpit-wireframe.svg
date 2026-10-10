@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" width="880" height="420" role="img" aria-label="Cockpit wireframe: supply, quality and pipeline panels">
+<title>Cockpit wireframe: supply, quality and pipeline panels</title>
+<style>
+.t{font:600 15px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614} .tb{font:700 17px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614}
+.s{font:400 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#55544f} .xs{font:400 12px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#6b6a64}
+.k{font:700 11px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#6a3fd6} .big{font:750 30px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614;letter-spacing:-.02em}
+.de{font:italic 400 16px Georgia,'Source Serif 4',serif;fill:#161614}
+.box{fill:#ffffff;stroke:#d9d6ce;stroke-width:1.5} .bb{fill:#f2edfd;stroke:#c7b8f3;stroke-width:1.5}
+.bg{fill:#e9f6ee;stroke:#a7d8b8;stroke-width:1.5} .br{fill:#fdecea;stroke:#f0b3ac;stroke-width:1.5}
+.by{fill:#fff6e3;stroke:#ead19a;stroke-width:1.5} .bn{fill:#f4f3ef;stroke:#dedbd3;stroke-width:1.5}
+.ln{stroke:#9b998f;stroke-width:1.6;fill:none} .lnb{stroke:#6a3fd6;stroke-width:1.8;fill:none}
+.ar{fill:#9b998f} .arb{fill:#6a3fd6} .dot{fill:#6a3fd6} .dotn{fill:#b5b2a9}
+.ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
+.gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
+.s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
+@media (prefers-color-scheme: dark) {
+.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
+.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
+.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
+.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
+.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
+.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
+}
+</style>
+<rect x="20" y="20" width="270" height="380" rx="12" class="box"/>
+<text x="36" y="46" class="k" text-anchor="start">SUPPLY</text>
+<text x="36" y="68" class="t" text-anchor="start">Will anyone run out?</text>
+<text x="36" y="110" class="xs" text-anchor="start">praesens_grundform</text>
+<rect x="36" y="116" width="200" height="12" rx="3" class="sm"/>
+<rect x="36" y="116" width="153" height="12" rx="3" class="amb"/>
+<text x="244" y="126" class="xs" text-anchor="start">23/30</text>
+<text x="36" y="154" class="xs" text-anchor="start">adjektivdekl._einstieg</text>
+<rect x="36" y="160" width="200" height="12" rx="3" class="sm"/>
+<rect x="36" y="160" width="172" height="12" rx="3" class="amb"/>
+<text x="244" y="170" class="xs" text-anchor="start">25/29</text>
+<text x="36" y="198" class="xs" text-anchor="start">praepositionen_ort</text>
+<rect x="36" y="204" width="200" height="12" rx="3" class="sm"/>
+<text x="244" y="214" class="not" text-anchor="start">empty</text>
+<text x="36" y="242" class="xs" text-anchor="start">futur1_und_planung</text>
+<rect x="36" y="248" width="200" height="12" rx="3" class="sm"/>
+<rect x="36" y="248" width="12" height="12" rx="3" class="grn"/>
+<text x="244" y="258" class="xs" text-anchor="start">1/16</text>
+<text x="36" y="286" class="xs" text-anchor="start">fragenwoerter_a1</text>
+<rect x="36" y="292" width="200" height="12" rx="3" class="sm"/>
+<rect x="36" y="292" width="0" height="12" rx="3" class="grn"/>
+<text x="244" y="302" class="xs" text-anchor="start">0/12</text>
+<text x="36" y="330" class="xs" text-anchor="start">genitiv</text>
+<rect x="36" y="336" width="200" height="12" rx="3" class="sm"/>
+<rect x="36" y="336" width="11" height="12" rx="3" class="grn"/>
+<text x="244" y="346" class="xs" text-anchor="start">1/18</text>
+<rect x="305" y="20" width="270" height="380" rx="12" class="box"/>
+<text x="321" y="46" class="k" text-anchor="start">QUALITY</text>
+<text x="321" y="68" class="t" text-anchor="start">Is what learners see good?</text>
+<rect x="321" y="104" width="112" height="78" rx="10" class="bn"/>
+<text x="333" y="128" class="xs" text-anchor="start">Live</text>
+<text x="333" y="162" class="tb" text-anchor="start">1,107</text>
+<rect x="443" y="104" width="112" height="78" rx="10" class="bn"/>
+<text x="455" y="128" class="xs" text-anchor="start">Verified</text>
+<text x="455" y="162" class="tb" text-anchor="start">100%</text>
+<rect x="321" y="196" width="112" height="78" rx="10" class="bn"/>
+<text x="333" y="220" class="xs" text-anchor="start">Audit: clean</text>
+<text x="333" y="254" class="tb" text-anchor="start">66%</text>
+<rect x="443" y="196" width="112" height="78" rx="10" class="bn"/>
+<text x="455" y="220" class="xs" text-anchor="start">Open reports</text>
+<text x="455" y="254" class="tb" text-anchor="start">1</text>
+<text x="321" y="300" class="xs" text-anchor="start">Why exercises fail</text>
+<rect x="321" y="312" width="110" height="12" rx="3" class="s1"/>
+<text x="439" y="322" class="xs" text-anchor="start">2nd right answer</text>
+<rect x="321" y="338" width="62" height="12" rx="3" class="s1"/>
+<text x="391" y="348" class="xs" text-anchor="start">off topic</text>
+<rect x="321" y="364" width="40" height="12" rx="3" class="s1"/>
+<text x="369" y="374" class="xs" text-anchor="start">explanation</text>
+<rect x="590" y="20" width="270" height="380" rx="12" class="box"/>
+<text x="606" y="46" class="k" text-anchor="start">PIPELINES</text>
+<text x="606" y="68" class="t" text-anchor="start">What does quality cost?</text>
+<text x="606" y="110" class="xs" text-anchor="start">attempts</text>
+<rect x="606" y="116" width="230" height="12" rx="3" class="s1"/>
+<text x="606" y="144" class="xs" text-anchor="start">rules</text>
+<rect x="606" y="150" width="227" height="12" rx="3" class="s1"/>
+<text x="606" y="178" class="xs" text-anchor="start">solve + judge</text>
+<rect x="606" y="184" width="197" height="12" rx="3" class="s1"/>
+<text x="606" y="212" class="xs" text-anchor="start">coherence</text>
+<rect x="606" y="218" width="185" height="12" rx="3" class="s1"/>
+<text x="606" y="246" class="xs" text-anchor="start">editor gate</text>
+<rect x="606" y="252" width="162" height="12" rx="3" class="s1"/>
+<text x="606" y="300" class="xs" text-anchor="start">Cost per stage</text>
+<rect x="606" y="312" width="140" height="16" rx="3" class="s1"/><rect x="748" y="312" width="22" height="16" class="s2"/><rect x="772" y="312" width="20" height="16" rx="3" class="s3"/>
+<text x="606" y="346" class="xs" text-anchor="start">checking 78% · writing 11% · repair 10%</text>
+</svg>

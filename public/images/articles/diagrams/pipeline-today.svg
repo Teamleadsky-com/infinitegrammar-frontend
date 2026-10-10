@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" width="880" height="440" role="img" aria-label="How an exercise reaches a learner in pipeline V6: write, rules, solve and judge, repair, coherence, editor gate, live">
+<title>How an exercise reaches a learner in pipeline V6: write, rules, solve and judge, repair, coherence, editor gate, live</title>
+<style>
+.t{font:600 15px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614} .tb{font:700 17px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614}
+.s{font:400 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#55544f} .xs{font:400 12px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#6b6a64}
+.k{font:700 11px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;letter-spacing:.08em;fill:#6a3fd6} .big{font:750 30px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#161614;letter-spacing:-.02em}
+.de{font:italic 400 16px Georgia,'Source Serif 4',serif;fill:#161614}
+.box{fill:#ffffff;stroke:#d9d6ce;stroke-width:1.5} .bb{fill:#f2edfd;stroke:#c7b8f3;stroke-width:1.5}
+.bg{fill:#e9f6ee;stroke:#a7d8b8;stroke-width:1.5} .br{fill:#fdecea;stroke:#f0b3ac;stroke-width:1.5}
+.by{fill:#fff6e3;stroke:#ead19a;stroke-width:1.5} .bn{fill:#f4f3ef;stroke:#dedbd3;stroke-width:1.5}
+.ln{stroke:#9b998f;stroke-width:1.6;fill:none} .lnb{stroke:#6a3fd6;stroke-width:1.8;fill:none}
+.ar{fill:#9b998f} .arb{fill:#6a3fd6} .dot{fill:#6a3fd6} .dotn{fill:#b5b2a9}
+.ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
+.gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
+.s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
+@media (prefers-color-scheme: dark) {
+.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
+.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
+.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
+.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
+.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
+.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
+}
+</style>
+<text x="20" y="24" class="k" text-anchor="start">PIPELINE V6 · IN PRODUCTION SINCE 4 OCT 2026</text>
+<rect x="20" y="40" width="180" height="122" rx="12" class="bb"/>
+<text x="36" y="66" class="k" text-anchor="start">1 · WRITE</text>
+<text x="36" y="88" class="t" text-anchor="start">Draft the exercise</text>
+<text x="36" y="110" class="s" text-anchor="start">gpt-6.1-sol, from</text>
+<text x="36" y="128" class="s" text-anchor="start">section, level, topic</text>
+<rect x="230" y="40" width="180" height="122" rx="12" class="box"/>
+<text x="246" y="66" class="k" text-anchor="start">2 · RULES</text>
+<text x="246" y="88" class="t" text-anchor="start">Free checks</text>
+<text x="246" y="110" class="s" text-anchor="start">format, gap count,</text>
+<text x="246" y="128" class="s" text-anchor="start">giveaways (G5)</text>
+<rect x="440" y="40" width="280" height="122" rx="12" class="box"/>
+<text x="456" y="66" class="k" text-anchor="start">3 · SOLVE AND JUDGE</text>
+<text x="456" y="88" class="t" text-anchor="start">Exactly one right answer?</text>
+<text x="456" y="110" class="s" text-anchor="start">2 solvers must agree (G2)</text>
+<text x="456" y="128" class="s" text-anchor="start">judge: German, topic,</text>
+<text x="456" y="146" class="s" text-anchor="start">explanations (G1, G3, G4)</text>
+<rect x="750" y="40" width="115" height="122" rx="12" class="by"/>
+<text x="766" y="66" class="k" text-anchor="start">REPAIR</text>
+<text x="766" y="88" class="t" text-anchor="start">Fix only</text>
+<text x="766" y="109" class="t" text-anchor="start">failing gaps</text>
+<text x="766" y="131" class="s" text-anchor="start">max 2 rounds</text>
+<line x1="200" y1="101" x2="230" y2="101" class="ln"/>
+<polygon points="230.0,101.0 221.0,96.0 221.0,106.0" class="ar"/>
+<line x1="410" y1="101" x2="440" y2="101" class="ln"/>
+<polygon points="440.0,101.0 431.0,96.0 431.0,106.0" class="ar"/>
+<line x1="720" y1="82" x2="750" y2="82" class="ln"/>
+<polygon points="750.0,82.0 741.0,77.0 741.0,87.0" class="ar"/>
+<text x="735" y="74" class="xs" text-anchor="middle">fail</text>
+<line x1="750" y1="132" x2="720" y2="132" class="ln"/>
+<polygon points="720.0,132.0 729.0,137.0 729.0,127.0" class="ar"/>
+<text x="735" y="152" class="xs" text-anchor="middle">re-check</text>
+<line x1="580" y1="162" x2="580" y2="238" class="ln"/>
+<polygon points="580.0,238.0 585.0,229.0 575.0,229.0" class="ar"/>
+<text x="590" y="205" class="xs" text-anchor="start">all gap checks pass</text>
+<rect x="440" y="238" width="280" height="112" rx="12" class="box"/>
+<text x="456" y="264" class="k" text-anchor="start">4 · COHERENCE</text>
+<text x="456" y="286" class="t" text-anchor="start">Does the story hold up?</text>
+<text x="456" y="308" class="s" text-anchor="start">who does what, references,</text>
+<text x="456" y="326" class="s" text-anchor="start">contradictions (G6)</text>
+<rect x="230" y="238" width="180" height="112" rx="12" class="box"/>
+<text x="246" y="264" class="k" text-anchor="start">5 · EDITOR GATE</text>
+<text x="246" y="286" class="t" text-anchor="start">Senior-editor read</text>
+<text x="246" y="308" class="s" text-anchor="start">gpt-6.1-sol, issue</text>
+<text x="246" y="326" class="s" text-anchor="start">types FG1–FG6</text>
+<rect x="20" y="238" width="180" height="112" rx="12" class="bg"/>
+<text x="36" y="264" class="k" text-anchor="start">LIVE</text>
+<text x="36" y="286" class="t" text-anchor="start">Written as passed</text>
+<text x="36" y="308" class="s" text-anchor="start">served to learners</text>
+<line x1="440" y1="294" x2="410" y2="294" class="ln"/>
+<polygon points="410.0,294.0 419.0,299.0 419.0,289.0" class="ar"/>
+<line x1="230" y1="294" x2="200" y2="294" class="ln"/>
+<polygon points="200.0,294.0 209.0,299.0 209.0,289.0" class="ar"/>
+<rect x="230" y="378" width="635" height="44" rx="10" class="br"/>
+<circle cx="254" cy="400" r="9" class="no"/><path d="M250.5 396.5 l7 7 M257.5 396.5 l-7 7" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+<text x="274" y="405" class="s" text-anchor="start">Still failing after its repair budget: written as rejected, kept for analysis, never served</text>
+</svg>

@@ -56,8 +56,8 @@ describe('trailing-slash edge function', () => {
 
     it('adds the slash on the canonical host without changing it', async () => {
       await expectRedirect(
-        'https://www.infinitegrammar.de/articles/react-spa-seo-postmortem',
-        'https://www.infinitegrammar.de/articles/react-spa-seo-postmortem/'
+        'https://www.infinitegrammar.de/articles/what-fast-frontends-hide',
+        'https://www.infinitegrammar.de/articles/what-fast-frontends-hide/'
       );
     });
 
@@ -97,8 +97,8 @@ describe('trailing-slash edge function', () => {
           .matchAll(/<loc>([^<]+)<\/loc>/g),
       ].map((match) => new URL(match[1]).pathname);
 
-      expect(sitemapPaths).toHaveLength(90);
-      expect(CANONICAL_ROUTES.size).toBe(89);
+      expect(sitemapPaths).toHaveLength(92);
+      expect(CANONICAL_ROUTES.size).toBe(91);
       expect([...CANONICAL_ROUTES].sort()).toEqual(
         sitemapPaths.filter((p) => p !== '/').sort()
       );

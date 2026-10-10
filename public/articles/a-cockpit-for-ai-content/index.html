@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three questions, three dashboards: a cockpit for an AI content product · InfiniteGrammar</title>
+<meta name="description" content="Will anyone run out? Is what learners see good? What does quality cost? I wrote the spec and built the data layer behind three admin dashboards. The most useful thing in it turned out to be a definition.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/a-cockpit-for-ai-content/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/a-cockpit-for-ai-content/">
+<meta property="og:title" content="Three questions, three dashboards: a cockpit for an AI content product · InfiniteGrammar">
+<meta property="og:description" content="Will anyone run out? Is what learners see good? What does quality cost? I wrote the spec and built the data layer behind three admin dashboards. The most useful thing in it turned out to be a definition.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Three questions, three dashboards: a cockpit for an AI content product · InfiniteGrammar">
+<meta name="twitter:description" content="Will anyone run out? Is what learners see good? What does quality cost? I wrote the spec and built the data layer behind three admin dashboards. The most useful thing in it turned out to be a definition.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Three questions, three dashboards: a cockpit for an AI content product", "description": "Will anyone run out? Is what learners see good? What does quality cost? I wrote the spec and built the data layer behind three admin dashboards. The most useful thing in it turned out to be a definition.", "datePublished": "2026-10-10", "dateModified": "2026-10-10", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/a-cockpit-for-ai-content/", "url": "https://www.infinitegrammar.de/articles/a-cockpit-for-ai-content/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#ops">Running it in production</a></div>
+    <h1>Three questions, three dashboards: a cockpit for an AI content product</h1>
+    <p class="dek">Will anyone run out? Is what learners see good? What does quality cost? I wrote the spec and built the data layer behind three admin dashboards. The most useful thing in it turned out to be a definition.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-10-10">10 October 2026</time> <span class="sep">·</span> <span>3 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>Each dashboard answers one question, and every number comes from a database view, so the frontend only draws.</li><li>Supply is measured by the most advanced learner, not the average: a section turns red when anyone has only a few exercises left.</li><li>Before taking 696 exercises offline, I added a field recording why an exercise is inactive. Otherwise all of them would have shown up as learner complaints.</li><li>The first build showed 0% verified when the truth was 100%. The fix was one written definition and a data reference, not more code.</li></ul></aside>
+  <div class="article-body">
+<p>After the refill I had a library I trusted and no easy way to watch it. The numbers lived in run logs, Markdown reports and SQL queries I ran by hand. So I specified three dashboards for the admin area of InfiniteGrammar.de, built the data layer behind them, and built the frontend dashboards on top to support decision-making.</p>
+
+<p>The brief I gave myself was short: three questions, one dashboard each, and every number answerable without opening a terminal.</p>
+
+<figure>
+  <img src="/images/articles/diagrams/cockpit-wireframe.svg" alt="Wireframe with three panels. Supply: one bar per section showing used versus live exercises, coloured red, amber or green. Quality: tiles for 1,107 live exercises, 100% verified, 66% clean in audits and 1 open learner report, plus a chart of failure reasons. Pipelines: a funnel from 1,379 attempts to 974 accepted, and cost per stage split into checking, writing and repair.">
+  <figcaption><strong>Three questions, three panels.</strong> The wireframe uses real numbers from the October refill.</figcaption>
+</figure>
+
+<h2>Supply: will anyone run out?</h2>
+
+<p>The product promises practice that doesn’t run out on one narrow topic. That promise breaks the moment any single learner reaches the end of a section, even if the average learner is nowhere near it. So the supply view shows no averages. Each section is one bar. Its full length is the number of live exercises. The filled part is how many the most advanced learner has already done, and the colour turns amber, then red, as that learner nears the end.</p>
+
+<h2>Quality: is what learners see good?</h2>
+
+<p>Live exercises are split by their latest check. Removed exercises are split by why they were removed. That second part nearly went wrong.</p>
+
+<p>The existing admin tab listed every deactivated exercise as a learner report, with a reactivate button next to it. Pipeline rejections, and the takedown of 696 exercises I was about to run, would all have appeared there as complaints from learners. So before running the takedown I added a field that records why an exercise is inactive: learner report, admin decision, rejected at generation, live-audit takedown, or one of the old checkers. The takedown and the refill wrote it from the start, and a backfill labelled the 1,683 exercises that were already inactive.</p>
+
+<p>Failure reasons are stored as short issue codes, and the views translate them into plain labels such as “second correct answer” or “final gate: double error”. The rule for the interface is to show labels, never codes. Nobody outside the project should need to know what “G2” means.</p>
+
+<h2>Pipelines: what does quality cost?</h2>
+
+<p>Every production run, live audit and experiment is a row with its funnel, its cost per stage and model, and its yield per level. A scoreboard lists every generator configuration I have tested, the pipeline versions from <a class="ver" href="#pipeline-versions" data-ver="V1" aria-label="Pipeline version V1: Original pipeline">V1</a> to <a class="ver" href="#pipeline-versions" data-ver="V6" aria-label="Pipeline version V6: mixed-grammar tolerance">V6</a> and the variants that lost, with yield, cost per accepted and per clean exercise, audit grades, and the ID of the decision that adopted or rejected it. When I wonder whether an idea has already been tried, that is where I look first. The backfill loaded 37 past runs from their saved results.</p>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<h2>The definition that mattered most</h2>
+
+<p>The first build of the quality tab showed “Verified: 0%”. The real figure was 100%: every live exercise had passed the current checks.</p>
+
+<p>The 0% came from a rule that sounds reasonable. You choose which checkers to count, all of them or just one, and each exercise takes the verdict of the most recent check among them. Passed means verified, failed means failed, no verdict means not checked. It’s the rule most people would sketch on a whiteboard.</p>
+
+<p>It broke for two reasons. First, it only works if every checker records its passes as well as its failures. The old checkers only logged what they flagged, and the current pipeline stores its verdict on the exercise itself, so the dashboard found no verdict for almost any live exercise. Second, and more important, introducing a new version of the generation pipeline doesn’t always mean re-checking all the existing exercises. Because the latest checker versions proved to perform well, and the whole exercise base had been checked with them, the dashboard’s default became “All verifiers”: an exercise counts as verified when at least one verifier has approved it. You can see which verifier approved each exercise, and narrow the view to a single verifier.</p>
+
+<div class="takeaways">
+  <h2>If you’re building dashboards for an AI product</h2>
+  <ol>
+    <li>Give each dashboard one question, starting from the decision it supports.</li>
+    <li>If you promise users “enough”, measure supply against your most engaged user, not the average one.</li>
+    <li>Record why things happen when they happen. “Why is this inactive?” can’t be reconstructed later.</li>
+    <li>Define every metric once, in the data layer, and write the definition in plain words.</li>
+    <li>Ship the data contract before the charts.</li>
+  </ol>
+</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/taking-down-my-own-content/"><span>← Previous</span><strong>Why I took 84% of my live exercises offline</strong></a><a href="/articles/variety-is-a-sequencing-problem/" style="text-align:right"><span>Next →</span><strong>Variety is a sequencing problem, not just a content problem</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

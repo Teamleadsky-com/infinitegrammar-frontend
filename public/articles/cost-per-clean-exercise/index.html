@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-569909YP8G');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
+    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<!-- /Yandex.Metrika counter -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cost per clean exercise: the number that changed my model choice · InfiniteGrammar</title>
+<meta name="description" content="Per call, the stronger model costs more. Per clean exercise, the configuration built around it was almost four times cheaper. And four of every five dollars now pay for checking, not for writing.">
+<meta name="author" content="Aleksandr Zuravliov">
+<link rel="canonical" href="https://www.infinitegrammar.de/articles/cost-per-clean-exercise/">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.infinitegrammar.de/articles/cost-per-clean-exercise/">
+<meta property="og:title" content="Cost per clean exercise: the number that changed my model choice · InfiniteGrammar">
+<meta property="og:description" content="Per call, the stronger model costs more. Per clean exercise, the configuration built around it was almost four times cheaper. And four of every five dollars now pay for checking, not for writing.">
+<meta property="og:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<meta property="og:site_name" content="InfiniteGrammar">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cost per clean exercise: the number that changed my model choice · InfiniteGrammar">
+<meta name="twitter:description" content="Per call, the stronger model costs more. Per clean exercise, the configuration built around it was almost four times cheaper. And four of every five dollars now pay for checking, not for writing.">
+<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-articles.png">
+<meta name="twitter:image:alt" content="Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Cost per clean exercise: the number that changed my model choice", "description": "Per call, the stronger model costs more. Per clean exercise, the configuration built around it was almost four times cheaper. And four of every five dollars now pay for checking, not for writing.", "datePublished": "2026-03-10", "dateModified": "2026-10-09", "author": {"@type": "Person", "name": "Aleksandr Zuravliov", "url": "https://www.linkedin.com/in/aleksandrz/"}, "mainEntityOfPage": "https://www.infinitegrammar.de/articles/cost-per-clean-exercise/", "url": "https://www.infinitegrammar.de/articles/cost-per-clean-exercise/", "image": "https://www.infinitegrammar.de/images/og-articles.png"}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/articles/assets/site.css">
+</head>
+<body>
+<header class="site-header"><div class="inner">
+  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <nav class="nav" aria-label="Main">
+    <a href="/articles/" aria-current="page">Articles</a>
+    <a href="/articles/about/">About</a>
+    <a href="https://www.infinitegrammar.de/" rel="noopener">The product ↗</a>
+    <a class="cta" href="/articles/about/#contact">Contact</a>
+  </nav>
+</div></header>
+<main class="wrap">
+<article class="measure">
+  <header class="article-header">
+    <div class="crumbs"><a href="/articles/">Articles</a> · <a href="/articles/#ops">Running it in production</a></div>
+    <h1>Cost per clean exercise: the number that changed my model choice</h1>
+    <p class="dek">Per call, the stronger model costs more. Per clean exercise, the configuration built around it was almost four times cheaper. And four of every five dollars now pay for checking, not for writing.</p>
+    <div class="byline"><img src="/images/articles/site/author-alex.jpg" alt="Aleksandr Zuravliov"><div><strong>Aleksandr Zuravliov</strong> · AI product manager<br><time datetime="2026-03-10">10 March 2026</time> <span class="sep">·</span> <span>Updated <time datetime="2026-10-09">9 October 2026</time></span> <span class="sep">·</span> <span>4 min read</span></div></div>
+  </header>
+  <aside class="tldr" aria-label="The short version"><h2>The short version</h2><ul><li>Price per token is the wrong unit. I compare configurations by cost per accepted exercise and, once audits exist, by cost per clean one.</li><li>Switching to a stronger writer with an editor gate raised the cost per call but cut the cost per clean exercise from $0.372 to $0.098.</li><li>In the October refill, checking cost $62 of $79, writing $9 and repairs $8. An exercise is written once and then checked six or more times.</li><li>Batch prices halve the bill but stretch a run over days. Budget caps, quota stops and resumable state make that safe.</li></ul></aside>
+  <div class="article-body">
+<p>The old pipeline looked cheap. Generating an exercise cost about $0.036 including its own review, and an accepted one about $0.06. Then, in October, I re-checked the live library against the new standard, and only 16% of those exercises passed. They hadn’t been cheap at all. I had just been paying for them later: in learners meeting wrong answers, and now in replacements.</p>
+
+<p>That is the whole argument of this article. The unit that matters is the cost of an exercise you would actually put in front of a learner.</p>
+
+<h2>Three numbers, one that counts</h2>
+
+<p>Every configuration I tested was compared on three numbers: cost per attempt, cost per accepted exercise and, once blind audits existed, cost per clean exercise, meaning accepted and graded as having nothing wrong with it. The first is what the invoice shows. The last is what you are buying.</p>
+
+<p>The clearest case was the switch to a stronger writer with an editor gate <span class="nowrap">(<a class="ver" href="#pipeline-versions" data-ver="V5" aria-label="Pipeline version V5: stronger writer, editor gate">V5</a>)</span>. A call to the new writer costs more than a call to the old one, and the editor gate adds another expensive call per exercise. Judged by the bill per call, I would have kept the old configuration.</p>
+
+<div class="viz" data-spec='{"type":"grouped","title":"Cost per exercise you can actually use","sub":"40 fresh tasks per configuration, batch prices, all checks and repairs included.","format":"usd3","series":[{"name":"Per accepted exercise","key":"a","slot":1},{"name":"Per clean exercise","key":"c","slot":2}],"labelHead":"Pipeline version","data":[{"ver":"V4","label":"+ design rules in the prompt","values":{"a":0.104,"c":0.372}},{"ver":"V5","label":"+ stronger writer, editor gate","values":{"a":0.069,"c":0.098}},{"ver":"V6","label":"+ mixed-grammar tolerance (today)","values":{"a":0.058,"c":0.089}}],"note":"Clean = accepted and graded with no issues in a blind audit (7, 21 and 20 clean exercises respectively)."}'></div>
+
+<details class="versions" id="pipeline-versions"><summary>Pipeline versions: what V1–V6 mean</summary><ol><li><span class="ver static">V1</span><div><strong>Original pipeline</strong><span class="when">until Sep 2026</span><p>One model writes each exercise and reviews its own work. A draft that fails the review is rewritten from scratch until it passes or runs out of attempts. A separate checker pass flags problems afterwards.</p></div></li><li><span class="ver static">V2</span><div><strong>Generate, verify, repair</strong><span class="when">28 Sep 2026</span><p>A mid-sized model (gpt-5.6-terra) writes. A new verifier checks every gap: free format rules, two small solvers that must agree on the one right answer, a judge for the German, the topic and the explanations, and an adjudicator when the solvers disagree. Only the gaps that fail are repaired, at most twice.</p></div></li><li><span class="ver static">V3</span><div><strong>+ coherence check</strong><span class="when">30 Sep 2026</span><p>After every gap passes, a separate check reads the whole text: who does what, who a pronoun points to, whether facts contradict each other. A failure gets one text-only repair and a full re-check.</p></div></li><li><span class="ver static">V4</span><div><strong>+ design rules in the prompt</strong><span class="when">2 Oct 2026</span><p>The rules for good wrong answers move from the checks into the writing prompt: each distractor is wrong in one way only, inside the grammar being practised, and no exercise can be solved by a surface pattern.</p></div></li><li><span class="ver static">V5</span><div><strong>+ stronger writer, editor gate</strong><span class="when">3 Oct 2026</span><p>A frontier model (gpt-6.1-sol) writes and repairs. The same model then reads every finished exercise like a senior editor and rejects it for any of six named issue types: a second right answer, a double error, an option nobody would choose, a wrong key or explanation, a text problem, or mixed grammar.</p></div></li><li><span class="ver static">V6</span><div><strong>+ mixed-grammar tolerance</strong><span class="when">4 Oct 2026</span><p>Up to 30% of an exercise’s gaps may touch a neighbouring grammar point, and a fixed phrase counts as one choice. A surface pattern across the whole exercise is still fatal. This is the version in production today.</p></div></li></ol><p class="fine">Each version keeps everything before it. Charts and text name the version that produced a number.</p></details><script type="application/json" id="ig-versions">{"V1": {"name": "Original pipeline", "when": "until Sep 2026", "short": "One model writes each exercise and reviews its own work. Failed drafts are rewritten from scratch."}, "V2": {"name": "Generate, verify, repair", "when": "28 Sep 2026", "short": "A mid-sized model writes, a new verifier checks every gap, and only the failing gaps are repaired."}, "V3": {"name": "+ coherence check", "when": "30 Sep 2026", "short": "Adds a separate check that the whole story holds together."}, "V4": {"name": "+ design rules in the prompt", "when": "2 Oct 2026", "short": "Moves the rules for good wrong answers from the checks into the writing prompt."}, "V5": {"name": "+ stronger writer, editor gate", "when": "3 Oct 2026", "short": "A frontier model writes and repairs, and an editor gate reads every finished exercise."}, "V6": {"name": "+ mixed-grammar tolerance", "when": "4 Oct 2026", "short": "Tolerates up to 30% of gaps touching a neighbouring grammar point. In production today."}}</script>
+
+<p>The stronger writer passed more drafts at the first attempt, needed fewer repairs, and produced three times as many exercises that a grader found nothing wrong with: 21 clean out of 40 tasks instead of 7. Per clean exercise, it was 3.8 times cheaper. More expensive inputs, cheaper output.</p>
+
+<h2>Where the money goes</h2>
+
+<p>The October refill gave me the first full breakdown at production scale: 1,379 attempts, 974 accepted, every call attributed to the stage that made it.</p>
+
+<div class="viz" data-spec='{"type":"stack","title":"October refill: what $79 paid for","sub":"1,379 attempts, 974 accepted. Each call priced at batch rates and assigned to its stage.","format":"usd2","data":[{"label":"Checking (solvers, judge, adjudicator, coherence, editor gate)","value":61.99,"slot":1},{"label":"Writing first drafts","value":9.07,"slot":2},{"label":"Repairing failed parts","value":7.98,"slot":3}],"note":"The stage estimates add up to $79.03; the actual bill was $78.14."}'></div>
+
+<p>Checking took 78% of the money. That surprised me at first, and then it didn’t. An exercise is written once. It is then read by two solvers, a judge, sometimes an adjudicator, a coherence check and the editor gate, and every repair sends it through the gap checks again. For 1,379 attempts that came to more than 14,000 model calls.</p>
+
+<div class="table-wrap"><table>
+  <thead><tr><th>Stage</th><th>Model</th><th class="num">Calls</th><th class="num">Cost</th></tr></thead>
+  <tbody>
+    <tr><td>Solvers (two per check)</td><td>gpt-5-mini</td><td class="num">5,064</td><td class="num">$23.80</td></tr>
+    <tr><td>Judge</td><td>gpt-5.2</td><td class="num">2,532</td><td class="num">$17.98</td></tr>
+    <tr><td>Editor gate</td><td>gpt-6.1-sol</td><td class="num">1,603</td><td class="num">$12.61</td></tr>
+    <tr><td>Writing first drafts</td><td>gpt-6.1-sol</td><td class="num">1,379</td><td class="num">$9.07</td></tr>
+    <tr><td>Adjudicator (solvers disagree)</td><td>gpt-5.2</td><td class="num">437</td><td class="num">$3.62</td></tr>
+    <tr><td>Repairs after the editor gate</td><td>gpt-6.1-sol</td><td class="num">491</td><td class="num">$3.44</td></tr>
+    <tr><td>Gap repairs</td><td>gpt-6.1-sol</td><td class="num">540</td><td class="num">$3.43</td></tr>
+    <tr><td>Coherence check</td><td>gpt-5.2</td><td class="num">1,865</td><td class="num">$2.75</td></tr>
+    <tr><td>Strict re-check of repaired gaps</td><td>gpt-5.2</td><td class="num">317</td><td class="num">$1.23</td></tr>
+    <tr><td>Coherence repairs</td><td>gpt-6.1-sol</td><td class="num">193</td><td class="num">$1.11</td></tr>
+    <tr class="hl"><td><strong>Total</strong></td><td></td><td class="num"><strong>14,421</strong></td><td class="num"><strong>$79.03</strong></td></tr>
+  </tbody>
+</table></div>
+
+<p>I think this ratio is right, and I’d defend it to anyone who asks why checking costs almost seven times as much as writing. In a product where a wrong exercise does real damage, verification is the product, and writing is the cheap part. The question is how to spend less on it without seeing less.</p>
+
+<p>Two answers so far. The solvers, the biggest line, already use the smallest model that measured well for the job. And better first drafts mean fewer repairs and fewer re-checks. That is why the distractor rules moved from the checker into the writing prompt: first drafts passing every gap check went from 8% to 32% on the same tasks, and every draft that passes first time skips a repair and a whole round of checks.</p>
+
+<h2>Batch prices, batch time</h2>
+
+<p>Everything runs through OpenAI’s Batch API at half the normal price. The cost is time. A run is a sequence of rounds (write, check, repair, check again), and each round waits for its slowest batch. In the October refill, batches for the small models finished in minutes, while batches for the large model took anywhere from two to fourteen hours. The 1,379 attempts needed 21 rounds over four days.</p>
+
+<p>For a library refill that is fine. For anything a learner is waiting for it is not, and the two should never share a mode. The improvement I’d make next is cheap: once only a few dozen requests remain, send the tail through the normal API instead of the Batch API. That would cost a few dollars and save a day or two.</p>
+
+<h2>Making long runs safe to leave alone</h2>
+
+<p>A run that lasts four days has to be safe to walk away from.</p>
+
+<ul>
+  <li><strong>A budget cap per run.</strong> The run stops cleanly before it would cross the cap, and resumes only if the cap is raised.</li>
+  <li><strong>Quota errors stop the run, they don’t fail items.</strong> The account hit its spending limit twice during the refill. Each time the run saved its state, printed how to resume and exited. No exercise was ever marked as failed because of an API error.</li>
+  <li><strong>Everything resumes from cached responses.</strong> Running the same command again collects finished batches and carries on.</li>
+</ul>
+
+<h2>Compute that isn’t a model call</h2>
+
+<p>Not every cost is an API call. The similarity analysis that keeps exercise sequences varied (<a href="/articles/variety-is-a-sequencing-problem/">described here</a>) is plain CPU work. It runs on a rented CPU machine on Vast.ai, picked from offers under $0.10 an hour. The machine gets the code and a state file, never the database credentials, and only my own machine writes results back. A rented server can’t touch production data even if something goes wrong on it.</p>
+
+<div class="takeaways">
+  <h2>If you’re budgeting an LLM feature</h2>
+  <ol>
+    <li>Compare configurations by cost per good output. Price per token routinely points the wrong way.</li>
+    <li>Expect checking to cost more than generating, and treat that as the price of being right.</li>
+    <li>Spend less on checks by improving first drafts, not by removing checks.</li>
+    <li>Keep batch work and interactive work apart, and push long batch tails through the normal API.</li>
+    <li>Make long runs boring: budget caps, quota stops, resumable state.</li>
+  </ol>
+</div>
+
+<div class="callout caveat"><span class="label">About the numbers</span>Configuration comparisons used 40 fresh tasks each. The split of the refill by stage is an estimate: each call is priced at batch rates and assigned to the stage that made it. Those estimates add up to $79.03, about 1% more than the $78.14 OpenAI actually billed. Model names are as available on my account in October 2026.</div>
+
+  </div>
+  <aside class="author-box"><img src="/images/articles/site/author-alex.jpg" alt=""><div><strong>Aleksandr Zuravliov</strong> builds InfiniteGrammar.de end to end: product decisions, LLM pipelines, evals, data and the agents that write most of the code. <a href="/articles/about/">More about Aleksandr</a></div></aside>
+  <nav class="next" aria-label="More articles"><a href="/articles/deciding-with-evidence/"><span>← Previous</span><strong>Writing the rule before the test: how I chose prompts and models</strong></a><a href="/articles/taking-down-my-own-content/" style="text-align:right"><span>Next →</span><strong>Why I took 84% of my live exercises offline</strong></a></nav>
+</article>
+</main>
+<footer class="site-footer"><div class="inner">
+  <div>
+    <h4>About these notes</h4>
+    <p>Written by Aleksandr Zuravliov, who builds <a href="https://www.infinitegrammar.de/">InfiniteGrammar.de</a> alone with LLMs and AI coding agents. Numbers come from the project's own run logs and reports, with sample sizes stated.</p>
+  </div>
+  <div>
+    <h4>Read</h4>
+    <ul>
+      <li><a href="/articles/from-one-in-six-to-three-in-four/">Start here: the quality case study</a></li>
+      <li><a href="/articles/#tracks">All articles by topic</a></li>
+      <li><a href="/articles/about/">About me</a></li>
+    </ul>
+  </div>
+  <div>
+    <h4>Contact</h4>
+    <ul>
+      <li><a href="https://www.linkedin.com/in/aleksandrz/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a></li>
+    </ul>
+  </div>
+  <p class="fineprint">© 2026 Infinite Grammar.</p>
+</div></footer>
+<script src="/articles/assets/site.js"></script>
+</body>
+</html>

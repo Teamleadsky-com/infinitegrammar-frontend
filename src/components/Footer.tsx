@@ -4,7 +4,8 @@ const FOOTER_LINKS = [
   { href: "/", label: "Deutsche Grammatik üben" },
   { href: "/deutsche-grammatik/", label: "Grammatikreferenz" },
   { href: "/pruefungszentren/", label: "Prüfungszentren" },
-  { href: "/articles/", label: "Artikel" },
+  // Static section outside the React app: needs a full page load
+  { href: "/articles/", label: "Artikel", external: true },
 ];
 
 export const Footer = () => {
@@ -23,6 +24,7 @@ export const Footer = () => {
               href={link.href}
               className="hover:text-primary transition-colors underline"
               onClick={(e) => {
+                if ("external" in link && link.external) return;
                 e.preventDefault();
                 navigate(link.href);
               }}
