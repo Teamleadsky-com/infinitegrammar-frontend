@@ -339,10 +339,8 @@ function buildArticle(meta, prev, next) {
   nav += prev ? `<a href="${articleUrl(prev.slug)}"><span>← Previous</span><strong>${esc(prev.title)}</strong></a>` : '<span></span>';
   nav += next ? `<a href="${articleUrl(next.slug)}" style="text-align:right"><span>Next →</span><strong>${esc(next.title)}</strong></a>` : '';
   nav += '</nav>';
-  let dates = `<time datetime="${meta.date}">${fmtDate(meta.date)}</time>`;
-  if (meta.updated) {
-    dates += ` <span class="sep">·</span> <span>Updated <time datetime="${meta.updated}">${fmtDate(meta.updated)}</time></span>`;
-  }
+  // Only the publication date is shown; meta.updated feeds dateModified and the sitemap lastmod.
+  const dates = `<time datetime="${meta.date}">${fmtDate(meta.date)}</time>`;
   const canonical = `${SITE}${articleUrl(meta.slug)}`;
   const body = `<main class="wrap">
 <article class="measure">
