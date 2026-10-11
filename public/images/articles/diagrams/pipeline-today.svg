@@ -13,14 +13,6 @@
 .ok{fill:#0f7a3a} .no{fill:#b3261e} .okt{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#0f7a3a} .not{font:700 13px Inter,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;fill:#b3261e}
 .gap{fill:#ffffff;stroke:#6a3fd6;stroke-width:1.5}
 .s1{fill:#2a78d6} .s2{fill:#eb6834} .s3{fill:#1baf7a} .sm{fill:#d4d2cb} .red{fill:#d03b3b} .amb{fill:#e9a21a} .grn{fill:#1f9d55}
-@media (prefers-color-scheme: dark) {
-.t,.tb,.big,.de{fill:#f0efea} .s{fill:#c4c2ba} .xs{fill:#a29f96} .k{fill:#b8a4ff}
-.box{fill:#1d1d1b;stroke:#3b3a35} .bb{fill:#241e38;stroke:#4f418a} .bg{fill:#15291d;stroke:#2f6545}
-.br{fill:#331a18;stroke:#7a3b33} .by{fill:#2b2516;stroke:#6b5a2c} .bn{fill:#22211e;stroke:#3b3a35}
-.ln{stroke:#7b796f} .ar{fill:#7b796f} .lnb{stroke:#a58cf6} .arb,.dot{fill:#a58cf6} .dotn{fill:#55534c}
-.ok,.okt{fill:#5fd08a} .no,.not{fill:#ff8a80} .gap{fill:#1d1d1b;stroke:#a58cf6}
-.s1{fill:#3987e5} .s2{fill:#d95926} .s3{fill:#199e70} .sm{fill:#4a4944}
-}
 </style>
 <text x="20" y="24" class="k" text-anchor="start">PIPELINE V6 · IN PRODUCTION SINCE 4 OCT 2026</text>
 <rect x="20" y="40" width="180" height="122" rx="12" class="bb"/>

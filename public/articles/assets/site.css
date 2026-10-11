@@ -42,51 +42,6 @@
   --wide: 1080px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-    --bg: #161615;
-    --bg-elev: #1d1d1b;
-    --bg-sunk: #121211;
-    --ink: #f0efea;
-    --ink-2: #cbc9c1;
-    --ink-3: #9c9a91;
-    --line: #2e2d29;
-    --line-strong: #44423d;
-    --brand: #a58cf6;
-    --brand-ink: #c3b2ff;
-    --brand-wash: #241e38;
-    --accent-wash: #2b2516;
-    --good: #5fd08a;
-    --good-wash: #15291d;
-    --bad: #ff8a80;
-    --bad-wash: #331a18;
-    --code-bg: #22211e;
-    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .25);
-    --surface-1: #1a1a19;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #9a988e;
-    --grid: #2c2b28;
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-muted: #4d4c47;
-    --track: #232320;
-  }
-}
-:root[data-theme="dark"] {
-  color-scheme: dark;
-  --bg: #161615; --bg-elev: #1d1d1b; --bg-sunk: #121211;
-  --ink: #f0efea; --ink-2: #cbc9c1; --ink-3: #9c9a91;
-  --line: #2e2d29; --line-strong: #44423d;
-  --brand: #a58cf6; --brand-ink: #c3b2ff; --brand-wash: #241e38; --accent-wash: #2b2516;
-  --good: #5fd08a; --good-wash: #15291d; --bad: #ff8a80; --bad-wash: #331a18;
-  --code-bg: #22211e; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
-  --surface-1: #1a1a19; --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #9a988e;
-  --grid: #2c2b28; --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70;
-  --series-muted: #4d4c47; --track: #232320;
-}
 
 * { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
@@ -435,8 +390,6 @@ tr.hl td { background: var(--brand-wash); }
 .chip.amber { background: var(--accent-wash); color: #8a5a00; }
 .chip.green { background: var(--good-wash); color: var(--good); }
 .chip.grey { background: var(--bg-sunk); color: var(--ink-3); }
-:root[data-theme="dark"] .chip.amber { color: #f3c063; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .chip.amber { color: #f3c063; } }
 
 /* plan page */
 .plan h2 { border-top: 1px solid var(--line); padding-top: 28px; }
@@ -516,3 +469,11 @@ details.versions .fine { padding: 10px 16px 14px; margin: 0; font-size: 13.5px; 
 .li-badge:focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; }
 .li-badge svg { width: 22px; height: 22px; flex: none; }
 .nowrap { white-space: nowrap; }
+
+/* Added by scripts/build-articles.mjs: the homepage logo (LogoIcon + gradient wordmark). */
+.brand-logo { width: 28px; height: 28px; flex: none; }
+.brand-name {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: normal;
+  background: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 90% 70%));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
