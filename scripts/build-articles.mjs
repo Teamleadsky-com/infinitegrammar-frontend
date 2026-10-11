@@ -192,10 +192,48 @@ ${extra}${FONTS}
 `;
 }
 
+// The homepage logo: src/components/LogoIcon.tsx next to the gradient wordmark of LevelSelection.tsx.
+const LOGO_SVG = '<svg class="brand-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+  + '<circle cx="32" cy="32" r="32" fill="hsl(262 83% 58%)"/>'
+  + '<text x="32" y="44" text-anchor="middle" font-family="DejaVu Sans, Arial Black, Arial, sans-serif" font-size="42" font-weight="800" fill="#fff">G</text></svg>';
+
+const SITE_CSS_EXTRA = `
+/* Added by scripts/build-articles.mjs: the homepage logo (LogoIcon + gradient wordmark). */
+.brand-logo { width: 28px; height: 28px; flex: none; }
+.brand-name {
+  font-family: ui-sans-serif, system-ui, sans-serif; font-size: 24px; font-weight: 700; letter-spacing: normal;
+  background: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 90% 70%));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+`;
+
+/**
+ * The articles are light-only, like the homepage. The prototype's stylesheet and diagrams follow the
+ * OS dark mode (@media (prefers-color-scheme: dark) blocks, :root[data-theme="dark"] rules); drop them.
+ */
+function stripDarkMode(text, file) {
+  let out = text.replace(/^[^{}\n]*\[data-theme="dark"\][^{]*\{[^{}]*\}\n?/gm, '');
+  const open = /@media\s*\(prefers-color-scheme:\s*dark\)\s*\{/;
+  for (let m = out.match(open); m; m = out.match(open)) {
+    let depth = 0;
+    let end = m.index + m[0].length - 1;
+    for (; end < out.length; end++) {
+      if (out[end] === '{') depth++;
+      else if (out[end] === '}' && --depth === 0) break;
+    }
+    if (depth !== 0) throw new Error(`unbalanced dark-mode block in ${file}`);
+    out = out.slice(0, m.index) + out.slice(end + 1).replace(/^\n/, '');
+  }
+  if (/dark/.test(out.match(/prefers-color-scheme[^{]*/g)?.join(' ') || '') || out.includes('data-theme="dark"')) {
+    throw new Error(`dark-mode rules left in ${file}`);
+  }
+  return out;
+}
+
 function chromeTop(current) {
   const cur = (name) => (name === current ? ' aria-current="page"' : '');
   return `<header class="site-header"><div class="inner">
-  <a class="brand" href="/articles/"><span class="brand-mark">IG</span>Infinite Grammar <small>· Notes</small></a>
+  <a class="brand" href="/articles/">${LOGO_SVG}<span class="brand-name">Infinite Grammar</span> <small>· Notes</small></a>
   <nav class="nav" aria-label="Main">
     <a href="/articles/"${cur('articles')}>Articles</a>
     <a href="/articles/about/"${cur('about')}>About</a>
@@ -371,7 +409,9 @@ function copyReferencedImages() {
     const from = path.join(DEMO, 'images', rel);
     if (!fs.existsSync(from)) throw new Error(`missing image ${rel}`);
     fs.mkdirSync(path.join(IMG_OUT, path.dirname(rel)), { recursive: true });
-    fs.copyFileSync(from, path.join(IMG_OUT, rel));
+    const to = path.join(IMG_OUT, rel);
+    if (rel.endsWith('.svg')) fs.writeFileSync(to, stripDarkMode(fs.readFileSync(from, 'utf-8'), rel));
+    else fs.copyFileSync(from, to);
   }
   console.log(`copied ${used.size} images to ${path.relative(ROOT, IMG_OUT)}`);
 }
@@ -391,10 +431,10 @@ function main() {
   }]));
   buildPage('index', cards);
   buildPage('about', cards);
-  for (const asset of ['site.css', 'site.js']) {
-    fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
-    fs.copyFileSync(path.join(DEMO, 'assets', asset), path.join(OUT, 'assets', asset));
-  }
+  fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
+  const css = fs.readFileSync(path.join(DEMO, 'assets/site.css'), 'utf-8');
+  fs.writeFileSync(path.join(OUT, 'assets/site.css'), stripDarkMode(css, 'site.css') + SITE_CSS_EXTRA);
+  fs.copyFileSync(path.join(DEMO, 'assets/site.js'), path.join(OUT, 'assets/site.js'));
   copyReferencedImages();
 
   // Sitemap entries, for public/sitemap.xml
