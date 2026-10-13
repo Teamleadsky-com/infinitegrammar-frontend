@@ -56,7 +56,7 @@ const PAGE_META = {
 };
 
 const PAGE_URL = 'https://www.infinitegrammar.de/exercise-stats/';
-const OG_IMAGE = 'https://www.infinitegrammar.de/og-image.png';
+const OG_IMAGE = 'https://www.infinitegrammar.de/images/og-default.jpg';
 
 const ExerciseStats = () => {
   const navigate = useNavigate();
@@ -243,8 +243,8 @@ const ExerciseStats = () => {
         <meta property="og:url" content={PAGE_URL} />
         <meta property="og:type" content="website" />
         <meta property="og:image" content={OG_IMAGE} />
-        <meta property="og:image:width" content="1536" />
-        <meta property="og:image:height" content="1024" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta property="og:image:alt" content={pageTitle} />
         <meta property="og:site_name" content={BRAND_NAME} />
         <meta property="og:locale" content={isEnglish ? 'en_US' : 'de_DE'} />

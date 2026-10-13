@@ -30,7 +30,7 @@ const IMG_OUT = path.join(ROOT, 'public/images/articles');
 const SITE = 'https://www.infinitegrammar.de';
 // Social share card for every /articles page (LinkedIn etc.); kept outside public/images/articles,
 // which this script wipes on every run.
-const OG_IMAGE = `${SITE}/images/og-articles.png`;
+const OG_IMAGE = `${SITE}/images/og-articles.jpg`;
 const OG_IMAGE_ALT = 'Building AI Products That Deliver on Their Promise: notes by Aleksandr Zuravliov, InfiniteGrammar.de';
 const AUTHOR = 'Aleksandr Zuravliov';
 const LINKEDIN = 'https://www.linkedin.com/in/aleksandrz/';
@@ -174,7 +174,7 @@ ${ANALYTICS}<meta charset="utf-8">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${OG_IMAGE}">
 <meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="627">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="${OG_IMAGE_ALT}">
 <meta property="og:site_name" content="InfiniteGrammar">
 <meta name="twitter:card" content="summary_large_image">

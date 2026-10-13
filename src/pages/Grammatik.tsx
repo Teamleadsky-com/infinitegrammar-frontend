@@ -76,7 +76,7 @@ const Grammatik = () => {
         />
         <meta property="og:url" content="https://www.infinitegrammar.de/deutsche-grammatik/" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="https://www.infinitegrammar.de/og-image.png" />
+        <meta property="og:image" content="https://www.infinitegrammar.de/images/og-default.jpg" />
         <meta property="og:site_name" content={BRAND_NAME} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={pageTitle} />

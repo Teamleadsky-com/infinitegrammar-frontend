@@ -115,6 +115,15 @@ const PAGES = [
 // crawlers see it without executing JavaScript (INDEX-015).
 const APP_SHELL_FILE = 'app-shell.html';
 const NOINDEX_META = '<meta name="robots" content="noindex">';
+// Share preview for app links (e.g. an /exercise URL posted on LinkedIn). No og:url: the shell
+// serves many URLs and must not declare one (seo-audit).
+const SHARE_IMAGE_META = [
+  '<meta property="og:image" content="https://www.infinitegrammar.de/images/og-default.jpg">',
+  '<meta property="og:image:width" content="1200">',
+  '<meta property="og:image:height" content="630">',
+  '<meta name="twitter:card" content="summary_large_image">',
+  '<meta name="twitter:image" content="https://www.infinitegrammar.de/images/og-default.jpg">',
+].join('\n    ');
 
 function writeAppShell(distDir) {
   const rawShell = fs.readFileSync(path.join(distDir, 'index.html'), 'utf-8');
@@ -125,7 +134,7 @@ function writeAppShell(distDir) {
   if (!rawShell.includes(charsetTag)) {
     throw new Error(`Cannot inject noindex: "${charsetTag}" not found in dist/index.html`);
   }
-  const appShell = rawShell.replace(charsetTag, `${charsetTag}\n    ${NOINDEX_META}`);
+  const appShell = rawShell.replace(charsetTag, `${charsetTag}\n    ${NOINDEX_META}\n    ${SHARE_IMAGE_META}`);
   fs.writeFileSync(path.join(distDir, APP_SHELL_FILE), appShell);
   console.log(`✓ Saved: ${path.join(distDir, APP_SHELL_FILE)} (noindex app shell)`);
 }
