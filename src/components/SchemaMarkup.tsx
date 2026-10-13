@@ -61,7 +61,7 @@ export const SchemaMarkup = ({ type, data }: SchemaMarkupProps) => {
             '@type': 'WebPage',
             '@id': data.url
           },
-          image: data.image || 'https://www.infinitegrammar.de/og-image.png'
+          image: data.image || 'https://www.infinitegrammar.de/images/og-default.jpg'
         };
 
       case 'educational':
