@@ -36,7 +36,7 @@ const ASSET_PATHS = ['/assets/index-D4t9kPq2.js', '/assets/index-B7xQm1Za.css'];
  * overlap in public/_headers, or the no-overlap test below will fail for a
  * reason unrelated to document caching.
  */
-const IMAGE_PATHS = ['/og-image.png', '/favicon.ico', '/placeholder.svg'];
+const IMAGE_PATHS = ['/logo.png', '/favicon.ico', '/placeholder.svg'];
 
 /** Client-only routes that must never be publicly cached for an hour. */
 const APP_FUNCTIONAL_PATHS: string[] = routeClasses.exactRules
