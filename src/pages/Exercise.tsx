@@ -16,6 +16,7 @@ import { getGrammarSectionById } from "@/data/grammarSections";
 import { markExerciseCompleted, LEVEL_ORDER } from "@/utils/exerciseCompletion";
 import { toast } from "@/hooks/use-toast";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
+import { logExerciseEvent, newId } from "@/lib/exerciseEvents";
 
 // ⚙️ FEATURE SWITCH: Enable/disable report exercise button
 // Set to false to hide the report button, set to true to show it
@@ -439,6 +440,17 @@ const Exercise = () => {
     }
   };
 
+  // Exercise events (shown / started / submitted) for every visitor, including
+  // anonymous ones, to measure abandonment per exercise. One view = one display.
+  const viewRef = useRef<{ exercise: BackendExercise; viewId: string; started: boolean; submitted: boolean } | null>(null);
+  useEffect(() => {
+    if (!currentExercise || loadingExercises || EXERCISES_MAINTENANCE_MODE) return;
+    if (currentExercise.id === mockBackendExercise.id || viewRef.current?.exercise === currentExercise) return;
+    const viewId = newId();
+    viewRef.current = { exercise: currentExercise, viewId, started: false, submitted: false };
+    logExerciseEvent({ viewId, exerciseId: currentExercise.id, event: 'shown', userId: user?.id });
+  }, [currentExercise, loadingExercises]);
+
   // Scroll to top when exercise changes
   useEffect(() => {
     if (currentExercise) {
@@ -458,6 +470,11 @@ const Exercise = () => {
   const handleOptionSelect = (gapId: string, optionIndex: number) => {
     if (submitted) return;
     setSelectedAnswers({ ...selectedAnswers, [gapId]: optionIndex });
+    const view = viewRef.current;
+    if (view && !view.started) {
+      view.started = true;
+      logExerciseEvent({ viewId: view.viewId, exerciseId: view.exercise.id, event: 'started', userId: user?.id });
+    }
   };
 
   // Submit exercise completion to backend
@@ -526,6 +543,19 @@ const Exercise = () => {
 
     // Track exercise completion for stats
     incrementExercise(correctCount, exerciseData.gaps.length);
+
+    const view = viewRef.current;
+    if (view && !view.submitted) {
+      view.submitted = true;
+      logExerciseEvent({
+        viewId: view.viewId,
+        exerciseId: view.exercise.id,
+        event: 'submitted',
+        userId: user?.id,
+        correctAnswers: correctCount,
+        totalAnswers: exerciseData.gaps.length,
+      });
+    }
 
     // IMPORTANT: Mark exercise as seen/attempted regardless of score
     // This enables progression to next topic when all exercises have been attempted
