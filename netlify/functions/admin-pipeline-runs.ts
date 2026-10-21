@@ -3,6 +3,7 @@
  *
  * Generator pipeline runs (pipeline_runs), newest first, with yield and $ per accepted.
  * yield = accepted / (accepted + rejected); unfinished attempts are left out of it.
+ * has_trace: the run has a stage-by-stage trace (pipeline_attempts, migration 014) for the Pipeline trace tab.
  */
 
 import { Handler } from '@netlify/functions';
@@ -21,7 +22,8 @@ export const handler: Handler = async (event) => {
       SELECT run_id, kind, config, verifier_version, started_at, finished_at, status,
              attempts, accepted, rejected, unfinished, first_pass, repaired_accepted, spent_usd,
              round(100.0 * accepted / nullif(coalesce(accepted, 0) + coalesce(rejected, 0), 0))::int AS yield_pct,
-             round(spent_usd / nullif(accepted, 0), 4) AS usd_per_accepted
+             round(spent_usd / nullif(accepted, 0), 4) AS usd_per_accepted,
+             EXISTS (SELECT 1 FROM pipeline_attempts a WHERE a.run_id = pipeline_runs.run_id) AS has_trace
       FROM pipeline_runs
       ORDER BY coalesce(started_at, finished_at, loaded_at) DESC, run_id
     `;
@@ -44,6 +46,7 @@ export const handler: Handler = async (event) => {
         spentUsd: num(r.spent_usd),
         yieldPct: r.yield_pct,
         usdPerAccepted: num(r.usd_per_accepted),
+        hasTrace: r.has_trace,
       })),
     });
   } catch (error) {

@@ -32,6 +32,10 @@ type Detail = {
   avgCorrectPct: number | null;
 };
 
+// quality_report.repairs[].failing_gaps: the pipeline writes a string such as "[3]" or "[2, 5]"; accept an array too
+const failingGapsText = (value: unknown) =>
+  (Array.isArray(value) ? value.join(", ") : String(value ?? "").replace(/^\[|\]$/g, "")).trim() || "—";
+
 const Row = ({ label, children }: { label: string; children: React.ReactNode }) => (
   <div className="flex justify-between gap-4 py-1 text-sm border-b last:border-0">
     <span className="text-muted-foreground shrink-0">{label}</span>
@@ -70,7 +74,7 @@ const QualityRecord = ({ report, labels }: { report: Record<string, any>; labels
           <p className="text-xs text-muted-foreground mb-1">Repairs</p>
           {report.repairs.map((r: any) => (
             <p key={r.round} className="text-sm">
-              Round {r.round}: gaps {(r.failing_gaps || []).join(", ") || "—"} → {r.passed_after ? "passed" : "still failing"}
+              Round {r.round}: gaps {failingGapsText(r.failing_gaps)} → {r.passed_after ? "passed" : "still failing"}
             </p>
           ))}
         </div>

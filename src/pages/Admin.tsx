@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
@@ -32,6 +32,7 @@ import {
   Boxes,
   ClipboardCheck,
   GitBranch,
+  Workflow,
 } from "lucide-react";
 import {
   BarChart,
@@ -47,11 +48,17 @@ import { ProductMetrics } from "@/components/admin/ProductMetrics";
 import { SupplyDashboard } from "@/components/admin/SupplyDashboard";
 import { QualityDashboard } from "@/components/admin/QualityDashboard";
 import { PipelinesDashboard } from "@/components/admin/PipelinesDashboard";
+import { PipelineTraceDashboard } from "@/components/admin/PipelineTraceDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
 const Admin = () => {
   const navigate = useNavigate();
+  // The open tab lives in the URL (?tab=), so dashboards can link to each other (e.g. ?tab=trace&run=<id>)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get("tab") || "dashboard";
+  const setTab = (value: string, extra: Record<string, string> = {}) =>
+    setSearchParams(new URLSearchParams({ ...(value === "dashboard" ? {} : { tab: value }), ...extra }));
   const { t } = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -216,13 +223,13 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
+      <main className={`container mx-auto px-4 py-8 ${tab === "trace" ? "max-w-7xl" : "max-w-5xl"}`}>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-muted-foreground">Loading...</p>
           </div>
         ) : (
-          <Tabs defaultValue="dashboard" className="space-y-6">
+          <Tabs value={tab} onValueChange={(value) => setTab(value)} className="space-y-6">
             <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1">
               <TabsTrigger value="dashboard" className="gap-2">
                 <BarChart3 className="h-4 w-4" />
@@ -260,6 +267,10 @@ const Admin = () => {
               <TabsTrigger value="pipelines" className="gap-2">
                 <GitBranch className="h-4 w-4" />
                 Pipelines
+              </TabsTrigger>
+              <TabsTrigger value="trace" className="gap-2">
+                <Workflow className="h-4 w-4" />
+                Pipeline trace
               </TabsTrigger>
             </TabsList>
 
@@ -593,7 +604,11 @@ const Admin = () => {
             </TabsContent>
 
             <TabsContent value="pipelines" className="space-y-6">
-              <PipelinesDashboard apiBase={API_BASE} />
+              <PipelinesDashboard apiBase={API_BASE} onOpenTrace={(runId) => setTab("trace", { run: runId })} />
+            </TabsContent>
+
+            <TabsContent value="trace" className="space-y-6">
+              <PipelineTraceDashboard apiBase={API_BASE} onOpenExercise={(id) => setTab("quality", { exercise: id })} />
             </TabsContent>
           </Tabs>
         )}

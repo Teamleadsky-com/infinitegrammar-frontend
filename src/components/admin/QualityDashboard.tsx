@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -30,6 +31,20 @@ export const QualityDashboard = ({
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<ExerciseFilters>(DEFAULT_EXERCISE_FILTERS);
   const [openId, setOpenId] = useState<string | null>(null);
+  // ?exercise=<id> opens that exercise (link from the Pipeline trace tab)
+  const [searchParams, setSearchParams] = useSearchParams();
+  const linkedExercise = searchParams.get("exercise");
+  useEffect(() => {
+    if (linkedExercise) setOpenId(linkedExercise);
+  }, [linkedExercise]);
+  const closeDetail = () => {
+    setOpenId(null);
+    if (linkedExercise) {
+      const next = new URLSearchParams(searchParams);
+      next.delete("exercise");
+      setSearchParams(next, { replace: true });
+    }
+  };
 
   const loadKpis = useCallback(() => {
     fetchJson<KpiResponse>(`${apiBase}/admin-quality-kpis`)
@@ -112,7 +127,7 @@ export const QualityDashboard = ({
         </TabsContent>
       </Tabs>
 
-      <ExerciseDetailSheet apiBase={apiBase} exerciseId={openId} issueLabels={labels} onClose={() => setOpenId(null)} />
+      <ExerciseDetailSheet apiBase={apiBase} exerciseId={openId} issueLabels={labels} onClose={closeDetail} />
     </div>
   );
 };
