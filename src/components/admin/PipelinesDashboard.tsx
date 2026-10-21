@@ -33,6 +33,7 @@ const KINDS = [
   { key: "production", label: "Production" },
   { key: "live_audit", label: "Live audit" },
   { key: "experiment", label: "Experiment" },
+  { key: "regression", label: "Regression" },
 ];
 
 const duration = (start: string | null, end: string | null) => {
@@ -60,7 +61,7 @@ const TrendChart = ({ title, data, dataKey, format, unit }: { title: string; dat
   </Card>
 );
 
-export const PipelinesDashboard = ({ apiBase }: { apiBase: string }) => {
+export const PipelinesDashboard = ({ apiBase, onOpenTrace }: { apiBase: string; onOpenTrace?: (runId: string) => void }) => {
   const [runs, setRuns] = useState<PipelineRun[] | null>(null);
   const [configs, setConfigs] = useState<ConfigRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +142,8 @@ export const PipelinesDashboard = ({ apiBase }: { apiBase: string }) => {
                   <th className="py-2 pr-3 font-medium text-right">Unfinished</th>
                   <th className="py-2 pr-3 font-medium text-right">Yield</th>
                   <th className="py-2 pr-3 font-medium text-right">$ total</th>
-                  <th className="py-2 font-medium text-right">$ / accepted</th>
+                  <th className="py-2 pr-3 font-medium text-right">$ / accepted</th>
+                  <th className="py-2 font-medium"></th>
                 </tr>
               </thead>
               <tbody>
@@ -165,7 +167,18 @@ export const PipelinesDashboard = ({ apiBase }: { apiBase: string }) => {
                     <td className="py-2 pr-3 text-right">{r.unfinished ?? "—"}</td>
                     <td className="py-2 pr-3 text-right">{formatPct(r.yieldPct)}</td>
                     <td className="py-2 pr-3 text-right">{formatUsd(r.spentUsd)}</td>
-                    <td className="py-2 text-right">{formatUsd(r.usdPerAccepted)}</td>
+                    <td className="py-2 pr-3 text-right">{formatUsd(r.usdPerAccepted)}</td>
+                    <td className="py-2 text-right">
+                      {r.hasTrace && onOpenTrace && (
+                        <button
+                          type="button"
+                          className="text-xs text-primary underline decoration-dotted underline-offset-4 hover:decoration-solid"
+                          onClick={(e) => { e.stopPropagation(); onOpenTrace(r.runId); }}
+                        >
+                          Trace
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

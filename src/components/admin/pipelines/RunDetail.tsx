@@ -22,6 +22,7 @@ export type PipelineRun = {
   spentUsd: number | null;
   yieldPct: number | null;
   usdPerAccepted: number | null;
+  hasTrace?: boolean;
 };
 
 type Detail = {
