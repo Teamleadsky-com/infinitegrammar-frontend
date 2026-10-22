@@ -1,8 +1,8 @@
 import { expect, test, type Route } from "@playwright/test";
 
 // After submitting, "Erklärungen anzeigen" lists the explanation of every gap. The ones that belong
-// to wrong answers stand out (red box, ✗, "Falsch", the learner's answer struck through); the ones
-// of correct answers keep the calm style.
+// to wrong answers stand out (red box with ✗ "Erklärung", the learner's answer struck through,
+// "Deine Antwort: …"); the ones of correct answers keep the calm style.
 
 const exerciseApiFixture = {
   exercises: [
@@ -48,7 +48,9 @@ test("explanations of wrong answers are highlighted, with the learner's answer",
 
   const wrong = items.filter({ hasText: "EXPLANATION_TWO" });
   await expect(wrong).toHaveAttribute("data-wrong", "true");
-  await expect(wrong.getByText("Falsch")).toBeVisible();
+  await expect(wrong.getByText("Falsch")).toHaveCount(0);
+  await expect(wrong.getByText("Erklärung", { exact: true })).toBeVisible();
+  await expect(wrong.locator("svg.lucide-circle-x, svg.lucide-x-circle")).toHaveCount(1);
   await expect(wrong.getByText("Deine Antwort:", { exact: false })).toBeVisible();
   // the learner's answer is struck through, the correct one shown next to it
   await expect(wrong.locator(".line-through", { hasText: "trinken" }).first()).toBeVisible();

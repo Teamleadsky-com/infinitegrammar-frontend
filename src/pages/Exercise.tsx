@@ -659,7 +659,7 @@ const Exercise = () => {
             <div className="ml-4 pl-4 border-l-4 border-error bg-error-light p-3 rounded-r-lg">
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-error mb-1">
                 <XCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-                <span>{t('exercise.incorrect')}</span>
+                <span>{t('exercise.explanation')}</span>
                 {chosenOption && (
                   <span className="font-normal text-foreground">
                     · {t('exercise.yourAnswer')}: <span className="line-through">{chosenOption}</span> · {t('exercise.correctAnswer')}: <span className="font-semibold text-success">{correctOption}</span>
