@@ -23,6 +23,8 @@ interface ReportExerciseModalProps {
   exerciseId: string;
   exerciseText: string;
   gaps: Gap[];
+  /** Called once the report is saved: the exercise is inactive and should leave the screen */
+  onReported?: (exerciseId: string) => void;
 }
 
 export const ReportExerciseModal = ({
@@ -31,6 +33,7 @@ export const ReportExerciseModal = ({
   exerciseId,
   exerciseText,
   gaps,
+  onReported,
 }: ReportExerciseModalProps) => {
   const [reportText, setReportText] = useState("");
   const [honeypotName, setHoneypotName] = useState("");
@@ -63,7 +66,8 @@ export const ReportExerciseModal = ({
 
     try {
       const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
-      await fetch(`${API_BASE}/report-exercise`, {
+      // Saved on the exercise row (is_active = false, report_text, reported_at, report_source = 'learner')
+      const response = await fetch(`${API_BASE}/report-exercise`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -71,9 +75,13 @@ export const ReportExerciseModal = ({
           reportText,
         }),
       });
+      if (!response.ok) {
+        throw new Error(`Report not saved: HTTP ${response.status}`);
+      }
 
       setIsSubmitted(true);
       setError("");
+      onReported?.(exerciseId);
     } catch (err) {
       console.error(err);
       setError("Something went wrong. Please try again.");
@@ -182,8 +190,9 @@ export const ReportExerciseModal = ({
             <DialogHeader>
               <DialogTitle className="text-xl">✓ Thank you!</DialogTitle>
               <DialogDescription className="text-sm pt-2">
-                Your report has been submitted. We'll review it and fix the issue as
-                soon as possible.
+                Your report has been submitted and this exercise has been removed.
+                We'll review it and fix the issue as soon as possible. You can go on
+                with the next exercise.
               </DialogDescription>
             </DialogHeader>
 

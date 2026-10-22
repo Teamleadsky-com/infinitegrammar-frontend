@@ -62,7 +62,13 @@
     "grammarFocus": "Grammar Focus",
     "allGrammar": "All grammar",
     "cancel": "Cancel",
-    "apply": "Apply"
+    "apply": "Apply",
+    "nextSection": "Next section",
+    "levelUp": "Moving up to level {{level}}",
+    "startOver": "All levels done! Starting over with A1",
+    "explanation": "Explanation",
+    "yourAnswer": "Your answer",
+    "perfect": "Perfect! All answers correct."
   },
   "profile": {
     "title": "Profile",

@@ -11,9 +11,11 @@ import { WaitlistModal } from "@/components/WaitlistModal";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
+import { ConfettiBurst, SuccessCheck } from "@/components/ConfettiBurst";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
-import { markExerciseCompleted, LEVEL_ORDER } from "@/utils/exerciseCompletion";
+import { markExerciseCompleted } from "@/utils/exerciseCompletion";
+import { ProgressionStep, START_OVER_STEP, buildProgressionSteps, levelRank } from "@/utils/exerciseProgression";
 import { toast } from "@/hooks/use-toast";
 import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 import { logExerciseEvent, newId } from "@/lib/exerciseEvents";
@@ -29,6 +31,7 @@ interface BackendExercise {
   id: string;
   level: string;
   grammar_section_id: string;
+  grammar_section_name?: string;
   grammar_ui_topics: GrammarUiTopicId[];
   content_topic: string;
   model: string;
@@ -161,10 +164,14 @@ const Exercise = () => {
   const [isFetchingNext, setIsFetchingNext] = useState(false);
   const lastShownIdRef = useRef<string | null>(null);
   const shownExerciseIdsRef = useRef<Set<string>>(new Set());
-  // Progression tracking
-  const exhaustedGrammarSectionsRef = useRef<Map<string, Set<string>>>(new Map()); // level -> Set of exhausted grammar_section_ids
-  const exhaustedLevelsRef = useRef<Set<string>>(new Set());
-  const currentGrammarSectionRef = useRef<string | null>(null); // Track current grammar section for progression
+  // Progression tracking: the section and level of the exercise on screen (not the URL's)
+  const currentGrammarSectionRef = useRef<string | null>(null);
+  const currentLevelRef = useRef<string | null>(null);
+  // Set once the learner has done everything: progress is ignored and the curriculum starts over
+  const restartModeRef = useRef(false);
+  // The URL follows the section being practised; such an update must not reload the exercises
+  const skipRefetchRef = useRef(false);
+  const previousExerciseRef = useRef<BackendExercise | null>(null);
   const { stats, incrementExercise, shouldShowWaitlist, markWaitlistSeen } = useExerciseStats();
   const { user, isAuthenticated, refreshUser } = useAuth();
 
@@ -193,36 +200,36 @@ const Exercise = () => {
     availableExercisesRef.current = availableExercises;
   }, [availableExercises]);
 
-  // Fetch exercises from API when level or section changes
+  // Fetch exercises from API when level or section changes (not when the URL follows the progression)
   useEffect(() => {
+    if (skipRefetchRef.current) {
+      skipRefetchRef.current = false;
+      return;
+    }
     lastShownIdRef.current = null;
     shownExerciseIdsRef.current.clear();
-    exhaustedGrammarSectionsRef.current.clear();
-    exhaustedLevelsRef.current.clear();
+    availableExercisesRef.current = [];
+    setAvailableExercises([]);
+    previousExerciseRef.current = null;
     currentGrammarSectionRef.current = grammarSection || null;
+    currentLevelRef.current = null;
+    restartModeRef.current = false;
     setExercisesCompletedInBatch(0);
     fetchExercisesWithProgression(true);
   }, [level, section, grammarSection]);
 
-  // Get the next CEFR level
-  const getNextLevel = (currentLevel: string): string | null => {
-    const currentIndex = LEVEL_ORDER.indexOf(currentLevel.toLowerCase() as any);
-    if (currentIndex === -1 || currentIndex === LEVEL_ORDER.length - 1) {
-      return null;
-    }
-    return LEVEL_ORDER[currentIndex + 1];
+  const showExercise = (exercise: BackendExercise) => {
+    setCurrentExercise(exercise);
+    lastShownIdRef.current = exercise.id;
+    shownExerciseIdsRef.current.add(exercise.id);
+    currentGrammarSectionRef.current = exercise.grammar_section_id || null;
+    currentLevelRef.current = exercise.level || null;
   };
 
-  // Mark a grammar section as exhausted for a level
-  const markSectionExhausted = (levelKey: string, sectionId: string) => {
-    if (!exhaustedGrammarSectionsRef.current.has(levelKey)) {
-      exhaustedGrammarSectionsRef.current.set(levelKey, new Set());
-    }
-    exhaustedGrammarSectionsRef.current.get(levelKey)!.add(sectionId);
-    console.log(`Marked section ${sectionId} as exhausted for level ${levelKey}`);
-  };
-
-  // Fetch exercises with progression logic
+  // Fetch exercises with progression logic (src/utils/exerciseProgression.ts): the current
+  // section, the rest of its level, the higher levels, round to A1; when everything is done,
+  // start over with A1's first section. Exercises shown or queued in this session are excluded,
+  // so none is shown twice.
   const fetchExercisesWithProgression = async (isInitial: boolean = false) => {
     if (isInitial) {
       setLoadingExercises(true);
@@ -231,214 +238,125 @@ const Exercise = () => {
     }
 
     const API_BASE = import.meta.env.DEV ? 'http://localhost:8888/api' : '/api';
+    const userId = isAuthenticated && user?.id ? user.id : undefined;
 
-    // Progression steps:
-    // 1. Try current grammar section (if set)
-    // 2. Try same level, same topic (any grammar section)
-    // 3. Try same level, any topic
-    // 4. Try next higher level
-    // 5. Try random (no filters)
-
-    const progressionSteps: Array<{
-      level: string | null;
-      topic: string | null;
-      grammarSection: string | null;
-      afterSection?: string | null;
-      description: string;
-    }> = [];
-
-    // Step 1: Current grammar section (if specified)
-    if (currentGrammarSectionRef.current) {
-      progressionSteps.push({
-        level: level.toUpperCase(),
-        topic: null,
-        grammarSection: currentGrammarSectionRef.current,
-        description: `grammar section ${currentGrammarSectionRef.current} at ${level.toUpperCase()}`
+    const request = async (step: ProgressionStep): Promise<BackendExercise[]> => {
+      const seen = new Set([...shownExerciseIdsRef.current, ...availableExercisesRef.current.map((e) => e.id)]);
+      const response = await fetch(`${API_BASE}/exercises`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          level: step.level,
+          grammarSection: step.grammarSection,
+          topic: step.topic,
+          afterSection: step.afterSection,
+          restart: step.restart,
+          userId,
+          exclude: [...seen],
+          limit: 5,
+        }),
       });
-    }
-
-    // Step 2: Same level, same topic (any grammar section)
-    progressionSteps.push({
-      level: level.toUpperCase(),
-      topic: section,
-      grammarSection: null,
-      afterSection: currentGrammarSectionRef.current,
-      description: `topic ${section} at ${level.toUpperCase()}`
-    });
-
-    // Step 3: Same level, any topic
-    progressionSteps.push({
-      level: level.toUpperCase(),
-      topic: null,
-      grammarSection: null,
-      afterSection: currentGrammarSectionRef.current,
-      description: `any topic at ${level.toUpperCase()}`
-    });
-
-    // Step 4: Higher levels
-    let nextLevel = getNextLevel(level);
-    while (nextLevel) {
-      if (!exhaustedLevelsRef.current.has(nextLevel)) {
-        progressionSteps.push({
-          level: nextLevel.toUpperCase(),
-          topic: null,
-          grammarSection: null,
-          description: `any topic at ${nextLevel.toUpperCase()}`
-        });
+      if (!response.ok) {
+        console.warn(`HTTP ${response.status} for ${step.description}`);
+        return [];
       }
-      nextLevel = getNextLevel(nextLevel);
-    }
+      const data = await response.json();
+      return (data.exercises || []).filter((ex: BackendExercise) => !seen.has(ex.id));
+    };
 
-    // Step 5: Random (no level filter)
-    progressionSteps.push({
-      level: null,
-      topic: null,
-      grammarSection: null,
-      description: 'random exercises'
+    // Deduplicated when the answer arrives: a prefetch and a load can overlap and return the same batch
+    const accept = (exercises: BackendExercise[]) => {
+      const queued = availableExercisesRef.current;
+      const known = new Set([...shownExerciseIdsRef.current, ...queued.map((e) => e.id)]);
+      const fresh = exercises.filter((e, i) => !known.has(e.id) && exercises.findIndex((x) => x.id === e.id) === i);
+      if (isInitial) {
+        const [first, ...rest] = [...queued, ...fresh];
+        if (first) showExercise(first);
+        availableExercisesRef.current = rest;
+        setAvailableExercises(rest);
+      } else {
+        const updated = [...queued, ...fresh];
+        availableExercisesRef.current = updated;
+        setAvailableExercises(updated);
+      }
+      setLoadingExercises(false);
+      setIsFetchingNext(false);
+    };
+
+    const steps = buildProgressionSteps({
+      level: currentLevelRef.current || level,
+      currentSection: currentGrammarSectionRef.current,
+      topic: section,
+      restart: restartModeRef.current,
     });
-
-    // Try each progression step
-    for (const step of progressionSteps) {
+    for (const step of steps) {
       try {
-        let url = `${API_BASE}/exercises?limit=5`;
-
-        if (step.level) {
-          url += `&level=${step.level}`;
-        }
-
-        if (isAuthenticated && user?.id) {
-          url += `&userId=${user.id}`;
-        }
-
-        if (step.grammarSection) {
-          url += `&grammarSection=${step.grammarSection}`;
-        } else if (step.topic) {
-          url += `&topic=${step.topic}`;
-        }
-
-        if (step.afterSection) {
-          url += `&afterSection=${encodeURIComponent(step.afterSection)}`;
-        }
-
-        console.log(`Trying progression step: ${step.description}`, url);
-
-        const response = await fetch(url);
-
-        if (!response.ok) {
-          console.warn(`HTTP ${response.status} for ${step.description}`);
-          continue;
-        }
-
-        const data = await response.json();
-
-        if (data.exercises && data.exercises.length > 0) {
-          // Filter out exercises we've already shown
-          const newExercises = data.exercises.filter(
-            (ex: BackendExercise) => !shownExerciseIdsRef.current.has(ex.id)
-          );
-
-          if (newExercises.length > 0) {
-            console.log(`Found ${newExercises.length} new exercises from ${step.description}`);
-
-            // Track the grammar section of the first exercise
-            const firstExerciseSection = newExercises[0].grammar_section_id;
-            if (firstExerciseSection) {
-              currentGrammarSectionRef.current = firstExerciseSection;
-            }
-
-            if (isInitial) {
-              const [firstExercise, ...restExercises] = newExercises;
-              setCurrentExercise(firstExercise);
-              lastShownIdRef.current = firstExercise.id;
-              shownExerciseIdsRef.current.add(firstExercise.id);
-              availableExercisesRef.current = restExercises;
-              setAvailableExercises(restExercises);
-
-              // Show progression toast if level changed
-              if (step.level && step.level.toLowerCase() !== level.toLowerCase()) {
-                toast({
-                  title: "Level Up!",
-                  description: `Moving to ${step.level} exercises`,
-                });
-                // Update URL to reflect new level
-                const params = new URLSearchParams();
-                params.set("level", step.level.toLowerCase());
-                params.set("section", firstExercise.grammar_ui_topics?.[0] || section);
-                setSearchParams(params, { replace: true });
-              } else if (step.topic && step.topic !== section) {
-                toast({
-                  title: "Topic Changed",
-                  description: `Now practicing ${step.topic}`,
-                });
-              }
-
-              console.log('Initial exercise selected:', firstExercise.id, 'Available:', restExercises.length);
-            } else {
-              const updated = [...availableExercisesRef.current, ...newExercises];
-              availableExercisesRef.current = updated;
-              setAvailableExercises(updated);
-            }
-
-            setLoadingExercises(false);
-            setIsFetchingNext(false);
-            return; // Success, exit the function
-          } else {
-            console.log(`All exercises from ${step.description} already shown`);
-            // Mark this section/level as exhausted
-            if (step.grammarSection && step.level) {
-              markSectionExhausted(step.level, step.grammarSection);
-            }
-          }
-        } else {
-          console.log(`No exercises found for ${step.description}`);
-          // Mark this section/level as exhausted
-          if (step.grammarSection && step.level) {
-            markSectionExhausted(step.level, step.grammarSection);
-          } else if (step.level && !step.topic && !step.grammarSection) {
-            exhaustedLevelsRef.current.add(step.level.toLowerCase());
-            console.log(`Marked level ${step.level} as exhausted`);
-          }
+        const found = await request(step);
+        if (found.length > 0) {
+          console.log(`Found ${found.length} exercises: ${step.description}`);
+          accept(found);
+          return;
         }
       } catch (error) {
         console.error(`Error fetching from ${step.description}:`, error);
       }
     }
 
-    // If we get here, all progression steps failed
-    console.warn('All progression steps exhausted, clearing shown IDs and retrying...');
-    if (isInitial) {
-      // Clear everything and try again from the beginning
+    // Every level is done (or everything was shown in this session): start over with A1
+    if (!restartModeRef.current || shownExerciseIdsRef.current.size > 0) {
+      console.log('All levels completed, starting over with A1');
+      restartModeRef.current = true;
       shownExerciseIdsRef.current.clear();
-      exhaustedGrammarSectionsRef.current.clear();
-      exhaustedLevelsRef.current.clear();
-
-      // Fetch one more time, if still nothing, use mock
       try {
-        const url = `${API_BASE}/exercises?level=${level.toUpperCase()}&topic=${section}&limit=5`;
-        const response = await fetch(url);
-        const data = await response.json();
-
-        if (data.exercises && data.exercises.length > 0) {
-          const [firstExercise, ...restExercises] = data.exercises;
-          setCurrentExercise(firstExercise);
-          lastShownIdRef.current = firstExercise.id;
-          shownExerciseIdsRef.current.add(firstExercise.id);
-          availableExercisesRef.current = restExercises;
-          setAvailableExercises(restExercises);
-          console.log('Fallback exercise selected:', firstExercise.id, 'Available:', restExercises.length);
-        } else {
-          setCurrentExercise(mockBackendExercise);
-          availableExercisesRef.current = [];
-          setAvailableExercises([]);
+        const found = await request(START_OVER_STEP);
+        if (found.length > 0) {
+          accept(found);
+          return;
         }
-      } catch {
-        setCurrentExercise(mockBackendExercise);
+      } catch (error) {
+        console.error(`Error fetching from ${START_OVER_STEP.description}:`, error);
       }
+    }
+
+    if (isInitial) {
+      setCurrentExercise(mockBackendExercise);
+      availableExercisesRef.current = [];
+      setAvailableExercises([]);
       setLoadingExercises(false);
     } else {
       setIsFetchingNext(false);
     }
   };
+
+  // When the next exercise is in another section, say so, and keep the URL (level, topic,
+  // section) on the section being practised, so a reload continues there.
+  useEffect(() => {
+    if (!currentExercise || currentExercise.id === mockBackendExercise.id) return;
+    const prev = previousExerciseRef.current;
+    previousExerciseRef.current = currentExercise;
+    const cur = currentExercise;
+    const name = cur.grammar_section_name || getGrammarSectionById(cur.level.toLowerCase(), cur.grammar_section_id)?.name || cur.grammar_section_id;
+    const fromLevel = prev ? prev.level : level;
+    const moved = prev ? prev.grammar_section_id !== cur.grammar_section_id : cur.level.toLowerCase() !== level.toLowerCase();
+    // The section the learner opened stays as it is in the URL; only a move to another one is shown
+    if (!moved) return;
+    if (levelRank(cur.level) < levelRank(fromLevel)) {
+      toast({ title: t('exercise.startOver'), description: name });
+    } else if (cur.level.toLowerCase() !== fromLevel.toLowerCase()) {
+      toast({ title: t('exercise.levelUp', { level: cur.level.toUpperCase() }), description: name });
+    } else {
+      toast({ title: t('exercise.nextSection'), description: name });
+    }
+    const topic = cur.grammar_ui_topics?.[0] || section;
+    if (cur.level.toLowerCase() !== level.toLowerCase() || topic !== section || cur.grammar_section_id !== grammarSection) {
+      const params = new URLSearchParams(searchParams);
+      params.set("level", cur.level.toLowerCase());
+      params.set("section", topic);
+      params.set("grammar", cur.grammar_section_id);
+      skipRefetchRef.current = true;
+      setSearchParams(params, { replace: true });
+    }
+  }, [currentExercise]);
 
   // Exercise events (shown / started / submitted) for every visitor, including
   // anonymous ones, to measure abandonment per exercise. One view = one display.
@@ -605,8 +523,8 @@ const Exercise = () => {
     const newCount = exercisesCompletedInBatch + 1;
     setExercisesCompletedInBatch(newCount);
 
-    // Prefetch next batch when user completes 3 exercises
-    if (newCount === 3 && !isFetchingNext) {
+    // Prefetch next batch when user completes 3 exercises (an empty pool is loaded below instead)
+    if (newCount === 3 && !isFetchingNext && availableExercisesRef.current.length > 0) {
       console.log('Prefetching next batch of 5 exercises...');
       fetchExercisesWithProgression(false);
     }
@@ -628,15 +546,8 @@ const Exercise = () => {
       // Update ref immediately for consistency
       availableExercisesRef.current = remaining;
 
-      // Set the next exercise
-      setCurrentExercise(nextExercise);
-      lastShownIdRef.current = nextExercise.id;
-      shownExerciseIdsRef.current.add(nextExercise.id);
-
-      // Track the grammar section for progression
-      if (nextExercise.grammar_section_id) {
-        currentGrammarSectionRef.current = nextExercise.grammar_section_id;
-      }
+      // Set the next exercise (and its section and level for the progression)
+      showExercise(nextExercise);
 
       // Update state to match ref
       setAvailableExercises(remaining);
@@ -667,7 +578,8 @@ const Exercise = () => {
 
   // Get grammar section name if set
   const grammarSectionName = grammarSection
-    ? getGrammarSectionById(level, grammarSection)?.name
+    ? (currentExercise?.grammar_section_id === grammarSection && currentExercise.grammar_section_name) ||
+      getGrammarSectionById(level, grammarSection)?.name
     : null;
 
   const renderTextWithGaps = () => {
@@ -722,21 +634,49 @@ const Exercise = () => {
 
       lastIndex = gap.position + gapLength;
 
+      // The learner's answer decides the look: explanations of wrong answers stand out
+      const selected = selectedAnswers[gap.id];
+      const isWrong = selected !== gap.correct;
+      const chosenOption = selected !== undefined ? gap.options[selected] : null;
+
       // Create an item with text + answer + explanation
       items.push(
-        <div key={gap.id} className="mb-8">
-          {/* Text before the gap + the correct answer */}
+        <div key={gap.id} className="mb-8" data-testid="gap-explanation" data-wrong={isWrong}>
+          {/* Text before the gap + the learner's wrong answer (struck through) + the correct answer */}
           <div className="text-lg mb-3 leading-relaxed">
             <span className="text-foreground">{textBefore}</span>
+            {isWrong && chosenOption && (
+              <span className="px-2 py-1 ml-1 text-error line-through decoration-2 rounded bg-error-light">
+                {chosenOption}
+              </span>
+            )}
             <span className="px-3 py-1.5 mx-1 bg-success/20 text-success font-semibold rounded border-2 border-success/40">
               {correctOption}
             </span>
           </div>
-          {/* Explanation box */}
-          <div className="ml-4 pl-4 border-l-4 border-primary/30 bg-primary/5 p-3 rounded-r-lg">
-            <div className="text-xs font-semibold text-primary mb-1">Explanation:</div>
-            <div className="text-sm text-muted-foreground">{gap.explanation}</div>
-          </div>
+          {/* Explanation box: red with the learner's answer for a wrong answer, calm for a correct one */}
+          {isWrong ? (
+            <div className="ml-4 pl-4 border-l-4 border-error bg-error-light p-3 rounded-r-lg">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-error mb-1">
+                <XCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{t('exercise.incorrect')}</span>
+                {chosenOption && (
+                  <span className="font-normal text-foreground">
+                    · {t('exercise.yourAnswer')}: <span className="line-through">{chosenOption}</span> · {t('exercise.correctAnswer')}: <span className="font-semibold text-success">{correctOption}</span>
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-foreground">{gap.explanation}</div>
+            </div>
+          ) : (
+            <div className="ml-4 pl-4 border-l-4 border-primary/30 bg-primary/5 p-3 rounded-r-lg">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-1">
+                <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" aria-hidden="true" />
+                {t('exercise.explanation')}:
+              </div>
+              <div className="text-sm text-muted-foreground">{gap.explanation}</div>
+            </div>
+          )}
         </div>
       );
     });
@@ -804,7 +744,8 @@ const Exercise = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    // overflow-x-clip: the confetti of a perfect exercise must not widen the page on phones
+    <div className="min-h-screen bg-background overflow-x-clip">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -892,18 +833,21 @@ const Exercise = () => {
             <div className="space-y-6 animate-scale-in">
               <Card
                 className={cn(
-                  "p-6 text-center",
+                  "relative p-6 text-center",
                   correctCount === exerciseData.gaps.length
                     ? "bg-success-light border-success"
                     : "bg-card"
                 )}
               >
+                {/* Reward for a perfect exercise: a short confetti burst from behind a check badge */}
+                {showCelebration && <ConfettiBurst className="left-1/2 top-[52px]" />}
+                {correctCount === exerciseData.gaps.length && <SuccessCheck />}
                 <div className="text-4xl font-bold mb-2">
                   {correctCount} / {exerciseData.gaps.length}
                 </div>
-                <div className="text-muted-foreground">
+                <div className={correctCount === exerciseData.gaps.length ? "font-medium text-success" : "text-muted-foreground"}>
                   {correctCount === exerciseData.gaps.length
-                    ? "Perfect! All answers correct! 🎉"
+                    ? t('exercise.perfect')
                     : t('exercise.keepPracticing')}
                 </div>
               </Card>
@@ -927,13 +871,6 @@ const Exercise = () => {
           )}
         </div>
       </main>
-
-      {/* Celebration Overlay */}
-      {showCelebration && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <div className="text-8xl animate-celebrate">🎉</div>
-        </div>
-      )}
 
       {/* Waitlist Modal */}
       <WaitlistModal
@@ -961,6 +898,8 @@ const Exercise = () => {
           exerciseId={currentExercise?.id || "unknown"}
           exerciseText={currentExercise?.text || ""}
           gaps={currentExercise?.gaps || []}
+          // A reported exercise is taken down at once: show the next one, no need to solve it
+          onReported={handleNext}
         />
       )}
     </div>

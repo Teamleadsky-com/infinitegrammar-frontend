@@ -1,21 +1,67 @@
 /**
- * GET /api/exercises
+ * GET or POST /api/exercises
  *
- * Get exercises filtered by level, topic, or grammar section
- * Returns exercises progressively by order number based on user progress
+ * Get exercises filtered by level, topic, or grammar section.
+ * Sections follow curriculum order (grammar_sections.order_in_level); logged-in users get
+ * their exercises progressively by order number, after their progress in each section.
  *
- * Query parameters:
+ * Parameters (query string for GET, JSON body for POST):
  * - level: A1, A2, B1, B2, C1 (required with topic/grammarSection; without any
  *   filter, omitting it returns random exercises across all levels)
  * - topic: verben, artikel, adjektive, etc. (optional)
  * - grammarSection: grammar section ID (optional)
  * - afterSection: grammar section ID (optional) - for topic/level queries,
- *   sections after it in curriculum order come first
+ *   sections after it in curriculum order come first, then the earlier ones
  * - userId: user UUID (optional) - for progressive delivery
+ * - exclude: exercise IDs not to return, e.g. the ones already shown or queued in this
+ *   session (POST: array; GET: comma-separated)
+ * - restart: true to ignore the user's progress (starting the curriculum over)
+ * - limit: number of exercises (optional)
+ *
+ * Within a section: logged-in users get the exercises in order (order_number), anonymous
+ * visitors in random order.
  */
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders } from './_shared/db';
+
+type Params = {
+  level?: string;
+  topic?: string;
+  grammarSection?: string;
+  afterSection?: string;
+  userId?: string;
+  exclude?: string[];
+  restart?: boolean;
+  limit?: number | null;
+};
+
+const parseParams = (event: Parameters<Handler>[0]): Params => {
+  if (event.httpMethod === 'POST') {
+    const b = JSON.parse(event.body || '{}');
+    return {
+      level: b.level || undefined,
+      topic: b.topic || undefined,
+      grammarSection: b.grammarSection || undefined,
+      afterSection: b.afterSection || undefined,
+      userId: b.userId || undefined,
+      exclude: Array.isArray(b.exclude) ? b.exclude.filter((id: unknown) => typeof id === 'string') : [],
+      restart: b.restart === true,
+      limit: b.limit ? parseInt(String(b.limit), 10) : null,
+    };
+  }
+  const q = event.queryStringParameters || {};
+  return {
+    level: q.level,
+    topic: q.topic,
+    grammarSection: q.grammarSection,
+    afterSection: q.afterSection,
+    userId: q.userId,
+    exclude: q.exclude ? q.exclude.split(',').filter(Boolean) : [],
+    restart: q.restart === 'true' || q.restart === '1',
+    limit: q.limit ? parseInt(q.limit, 10) : null,
+  };
+};
 
 export const handler: Handler = async (event) => {
   // Handle CORS preflight
@@ -23,25 +69,22 @@ export const handler: Handler = async (event) => {
     return { statusCode: 200, headers: corsHeaders, body: '' };
   }
 
-  if (event.httpMethod !== 'GET') {
+  if (event.httpMethod !== 'GET' && event.httpMethod !== 'POST') {
     return createResponse(405, { error: 'Method not allowed' });
   }
 
   try {
-    const params = event.queryStringParameters || {};
+    const params = parseParams(event);
     const level = params.level?.toUpperCase();
     const topic = params.topic?.toLowerCase();
-    const grammarSection = params.grammarSection;
-    const userId = params.userId;
-    const afterSection = params.afterSection;
-    const limit = params.limit ? parseInt(params.limit, 10) : null;
+    const { grammarSection, afterSection, userId, limit } = params;
+    const exclude = params.exclude || [];
 
     if (!level && (grammarSection || topic)) {
       return createResponse(400, { error: 'Level parameter is required when filtering by topic or grammar section' });
     }
 
-    // Sections follow curriculum order (grammar_sections.order_in_level). Sections
-    // after `afterSection` come first, then earlier unfinished ones.
+    // Sections after `afterSection` come first, then the earlier ones.
     let afterOrder = 0;
     if (afterSection && level) {
       const afterResult = await sql`
@@ -53,308 +96,65 @@ export const handler: Handler = async (event) => {
       }
     }
 
-    // Get user progress to determine starting order number
-    let lastCompletedOrder = 0;
-    if (userId && grammarSection) {
-      const progressResult = await sql`
-        SELECT last_completed_exercise_order
-        FROM user_progress
-        WHERE user_id = ${userId}
-          AND grammar_section_id = ${grammarSection}
-      `;
-      if (progressResult.length > 0 && progressResult[0].last_completed_exercise_order) {
-        lastCompletedOrder = progressResult[0].last_completed_exercise_order;
-      }
-    }
+    // Logged-in users get the exercises after their progress in each section, unless restarting.
+    const progressive = !!userId && !params.restart;
+    // Exercises in order within a section for logged-in users, random for anonymous visitors.
+    const inOrder = !!userId;
 
-    // Build query with filters
-    let result;
-
-    if (!level) {
-      // Last-resort fallback: random exercises across all levels
-      result = await sql`
-        SELECT
-          e.id,
-          e.grammar_section_id,
-          e.level,
-          e.order_number,
-          e.text,
-          e.content_topic,
-          e.model,
-          gs.name as grammar_section_name,
-          COALESCE(
-            (SELECT json_agg(gut.topic)
-             FROM grammar_ui_topics gut
-             WHERE gut.grammar_section_id = e.grammar_section_id),
-            '[]'::json
-          ) as grammar_ui_topics,
-          json_agg(
-            json_build_object(
-              'no', eg.gap_number,
-              'correct', eg.correct_answer,
-              'distractors', eg.distractors,
-              'explanation', eg.explanation
-            ) ORDER BY eg.gap_number
-          ) as gaps
-        FROM exercises e
-        LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-        LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-        WHERE e.is_active = true
-        GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                 e.text, e.content_topic, e.model, gs.name
-        ORDER BY RANDOM()
-        ${limit ? sql`LIMIT ${limit}` : sql``}
-      `;
-    } else if (grammarSection) {
-      // Filter by grammar section (takes priority)
-      if (userId) {
-        // Progressive delivery for authenticated users
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-            AND e.grammar_section_id = ${grammarSection}
-            AND e.order_number > ${lastCompletedOrder}
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name
-          ORDER BY e.order_number ASC
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      } else {
-        // Random exercises for anonymous users
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-            AND e.grammar_section_id = ${grammarSection}
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name
-          ORDER BY RANDOM()
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      }
-    } else if (topic) {
-      // Filter by topic - return exercises progressively from all sections matching the topic
-      if (userId) {
-        // With user progress tracking
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps,
-            COALESCE(up.last_completed_exercise_order, 0) as user_last_order
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          LEFT JOIN user_progress up ON up.user_id = ${userId}
-            AND up.grammar_section_id = e.grammar_section_id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-            AND EXISTS (
+    const result = await sql`
+      SELECT
+        e.id,
+        e.grammar_section_id,
+        e.level,
+        e.order_number,
+        e.text,
+        e.content_topic,
+        e.model,
+        gs.name as grammar_section_name,
+        COALESCE(
+          (SELECT json_agg(gut.topic)
+           FROM grammar_ui_topics gut
+           WHERE gut.grammar_section_id = e.grammar_section_id),
+          '[]'::json
+        ) as grammar_ui_topics,
+        json_agg(
+          json_build_object(
+            'no', eg.gap_number,
+            'correct', eg.correct_answer,
+            'distractors', eg.distractors,
+            'explanation', eg.explanation
+          ) ORDER BY eg.gap_number
+        ) as gaps
+      FROM exercises e
+      LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
+      LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
+      ${progressive
+        ? sql`LEFT JOIN user_progress up ON up.user_id = ${userId} AND up.grammar_section_id = e.grammar_section_id`
+        : sql``}
+      WHERE e.is_active = true
+        ${level ? sql`AND e.level = ${level}` : sql``}
+        ${grammarSection ? sql`AND e.grammar_section_id = ${grammarSection}` : sql``}
+        ${topic && !grammarSection
+          ? sql`AND EXISTS (
               SELECT 1 FROM grammar_ui_topics gut
-              WHERE gut.grammar_section_id = e.grammar_section_id
-              AND gut.topic = ${topic}
-            )
-            AND e.order_number > COALESCE(up.last_completed_exercise_order, 0)
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name, gs.order_in_level,
-                   up.last_completed_exercise_order
-          ORDER BY (gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
-                   gs.order_in_level ASC NULLS LAST,
-                   e.grammar_section_id ASC, e.order_number ASC
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      } else {
-        // Without user tracking - return random exercises
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-            AND EXISTS (
-              SELECT 1 FROM grammar_ui_topics gut
-              WHERE gut.grammar_section_id = e.grammar_section_id
-              AND gut.topic = ${topic}
-            )
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name
-          ORDER BY RANDOM()
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      }
-    } else {
-      // No additional filters - return all exercises for level progressively
-      if (userId) {
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          LEFT JOIN user_progress up ON up.user_id = ${userId}
-            AND up.grammar_section_id = e.grammar_section_id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-            AND e.order_number > COALESCE(up.last_completed_exercise_order, 0)
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name, gs.order_in_level
-          ORDER BY (gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
-                   gs.order_in_level ASC NULLS LAST,
-                   e.grammar_section_id ASC, e.order_number ASC
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      } else {
-        // Without user tracking - return random exercises
-        result = await sql`
-          SELECT
-            e.id,
-            e.grammar_section_id,
-            e.level,
-            e.order_number,
-            e.text,
-            e.content_topic,
-            e.model,
-            gs.name as grammar_section_name,
-            COALESCE(
-              (SELECT json_agg(gut.topic)
-               FROM grammar_ui_topics gut
-               WHERE gut.grammar_section_id = e.grammar_section_id),
-              '[]'::json
-            ) as grammar_ui_topics,
-            json_agg(
-              json_build_object(
-                'no', eg.gap_number,
-                'correct', eg.correct_answer,
-                'distractors', eg.distractors,
-                'explanation', eg.explanation
-              ) ORDER BY eg.gap_number
-            ) as gaps
-          FROM exercises e
-          LEFT JOIN exercise_gaps eg ON e.id = eg.exercise_id
-          LEFT JOIN grammar_sections gs ON e.grammar_section_id = gs.id
-          WHERE e.level = ${level}
-            AND e.is_active = true
-          GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
-                   e.text, e.content_topic, e.model, gs.name
-          ORDER BY RANDOM()
-          ${limit ? sql`LIMIT ${limit}` : sql``}
-        `;
-      }
-    }
+              WHERE gut.grammar_section_id = e.grammar_section_id AND gut.topic = ${topic}
+            )`
+          : sql``}
+        ${progressive ? sql`AND e.order_number > COALESCE(up.last_completed_exercise_order, 0)` : sql``}
+        ${exclude.length ? sql`AND NOT (e.id = ANY(${exclude}::text[]))` : sql``}
+      GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
+               e.text, e.content_topic, e.model, gs.name, gs.order_in_level
+      ORDER BY
+        ${!level
+          ? sql`RANDOM()`
+          : grammarSection
+            ? (inOrder ? sql`e.order_number ASC` : sql`RANDOM()`)
+            : sql`(gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
+                  gs.order_in_level ASC NULLS LAST,
+                  e.grammar_section_id ASC,
+                  ${inOrder ? sql`e.order_number ASC` : sql`RANDOM()`}`}
+      ${limit ? sql`LIMIT ${limit}` : sql``}
+    `;
 
     // Format the response
     const exercises = result.map((row: any) => ({
@@ -373,7 +173,7 @@ export const handler: Handler = async (event) => {
     return createResponse(200, {
       exercises: exercises,
       count: exercises.length,
-      filters: { level, topic, grammarSection, afterSection, limit },
+      filters: { level, topic, grammarSection, afterSection, limit, restart: !!params.restart, excluded: exclude.length },
     });
 
   } catch (error) {
