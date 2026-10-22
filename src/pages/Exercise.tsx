@@ -633,21 +633,49 @@ const Exercise = () => {
 
       lastIndex = gap.position + gapLength;
 
+      // The learner's answer decides the look: explanations of wrong answers stand out
+      const selected = selectedAnswers[gap.id];
+      const isWrong = selected !== gap.correct;
+      const chosenOption = selected !== undefined ? gap.options[selected] : null;
+
       // Create an item with text + answer + explanation
       items.push(
-        <div key={gap.id} className="mb-8">
-          {/* Text before the gap + the correct answer */}
+        <div key={gap.id} className="mb-8" data-testid="gap-explanation" data-wrong={isWrong}>
+          {/* Text before the gap + the learner's wrong answer (struck through) + the correct answer */}
           <div className="text-lg mb-3 leading-relaxed">
             <span className="text-foreground">{textBefore}</span>
+            {isWrong && chosenOption && (
+              <span className="px-2 py-1 ml-1 text-error line-through decoration-2 rounded bg-error-light">
+                {chosenOption}
+              </span>
+            )}
             <span className="px-3 py-1.5 mx-1 bg-success/20 text-success font-semibold rounded border-2 border-success/40">
               {correctOption}
             </span>
           </div>
-          {/* Explanation box */}
-          <div className="ml-4 pl-4 border-l-4 border-primary/30 bg-primary/5 p-3 rounded-r-lg">
-            <div className="text-xs font-semibold text-primary mb-1">Explanation:</div>
-            <div className="text-sm text-muted-foreground">{gap.explanation}</div>
-          </div>
+          {/* Explanation box: red with the learner's answer for a wrong answer, calm for a correct one */}
+          {isWrong ? (
+            <div className="ml-4 pl-4 border-l-4 border-error bg-error-light p-3 rounded-r-lg">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-error mb-1">
+                <XCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                <span>{t('exercise.incorrect')}</span>
+                {chosenOption && (
+                  <span className="font-normal text-foreground">
+                    · {t('exercise.yourAnswer')}: <span className="line-through">{chosenOption}</span> · {t('exercise.correctAnswer')}: <span className="font-semibold text-success">{correctOption}</span>
+                  </span>
+                )}
+              </div>
+              <div className="text-sm text-foreground">{gap.explanation}</div>
+            </div>
+          ) : (
+            <div className="ml-4 pl-4 border-l-4 border-primary/30 bg-primary/5 p-3 rounded-r-lg">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-primary mb-1">
+                <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0" aria-hidden="true" />
+                {t('exercise.explanation')}:
+              </div>
+              <div className="text-sm text-muted-foreground">{gap.explanation}</div>
+            </div>
+          )}
         </div>
       );
     });

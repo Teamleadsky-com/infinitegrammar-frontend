@@ -65,7 +65,9 @@
     "apply": "Apply",
     "nextSection": "Next section",
     "levelUp": "Moving up to level {{level}}",
-    "startOver": "All levels done! Starting over with A1"
+    "startOver": "All levels done! Starting over with A1",
+    "explanation": "Explanation",
+    "yourAnswer": "Your answer"
   },
   "profile": {
     "title": "Profile",

@@ -65,7 +65,9 @@
     "apply": "Anwenden",
     "nextSection": "Nächster Abschnitt",
     "levelUp": "Weiter mit Niveau {{level}}",
-    "startOver": "Alle Niveaus geschafft! Weiter mit A1"
+    "startOver": "Alle Niveaus geschafft! Weiter mit A1",
+    "explanation": "Erklärung",
+    "yourAnswer": "Deine Antwort"
   },
   "profile": {
     "title": "Profil",
