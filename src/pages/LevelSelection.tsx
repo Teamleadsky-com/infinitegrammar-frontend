@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
@@ -33,6 +33,18 @@ const LevelSelection = () => {
   const { t, i18n } = useTranslation();
   const { isAuthenticated } = useAuth();
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
+  const topicsRef = useRef<HTMLDivElement>(null);
+
+  // A level alone starts nothing: on phones the topics are below the fold, so take the learner there
+  const handleLevelClick = (levelId: string) => {
+    setSelectedLevel(levelId);
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      requestAnimationFrame(() =>
+        topicsRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }),
+      );
+    }
+  };
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
 
@@ -154,6 +166,7 @@ const LevelSelection = () => {
               {t('common.appName')}
             </div>
           </div>
+          {/* On phones the buttons show only their icons; the labels stay for screen readers */}
           <div className="flex gap-2">
             <LanguageSwitcher />
             <Button
@@ -163,7 +176,7 @@ const LevelSelection = () => {
               className="gap-2"
             >
               <BarChart3 className="h-4 w-4" />
-              {t('nav.statistics')}
+              <span className="sr-only sm:not-sr-only">{t('nav.statistics')}</span>
             </Button>
             {isAuthenticated ? (
               <Button
@@ -173,7 +186,7 @@ const LevelSelection = () => {
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
-                {t('nav.profile')}
+                <span className="sr-only sm:not-sr-only">{t('nav.profile')}</span>
               </Button>
             ) : (
               <Button
@@ -183,7 +196,7 @@ const LevelSelection = () => {
                 className="gap-2"
               >
                 <User className="h-4 w-4" />
-                {t('nav.account')}
+                <span className="sr-only sm:not-sr-only">{t('nav.account')}</span>
               </Button>
             )}
           </div>
@@ -229,7 +242,7 @@ const LevelSelection = () => {
                       ? "bg-primary border-primary shadow-lg scale-105"
                       : "bg-gradient-card hover:border-primary"
                   }`}
-                  onClick={() => setSelectedLevel(level.id)}
+                  onClick={() => handleLevelClick(level.id)}
                 >
                   <div className={`text-3xl font-bold mb-2 group-hover:scale-110 transition-transform ${
                     selectedLevel === level.id ? "text-primary-foreground" : "text-primary"
@@ -244,8 +257,8 @@ const LevelSelection = () => {
             </div>
           </div>
 
-          {/* Section Selection */}
-          <div className="animate-fade-in" style={{ animationDelay: "0.2s" }}>
+          {/* Section Selection (scroll-mt keeps its heading below the sticky header) */}
+          <div ref={topicsRef} className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.2s" }}>
             <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sections.map((section) => (
@@ -272,7 +285,7 @@ const LevelSelection = () => {
             >
               {t('levelSelection.startRandom')}
             </Button>
-            <div className="mt-3 flex items-center justify-center gap-4">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
               <button
                 onClick={() => navigate("/exercise-stats/")}
                 className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
