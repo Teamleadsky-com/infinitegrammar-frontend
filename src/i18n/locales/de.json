@@ -62,7 +62,10 @@
     "grammarFocus": "Grammatikfokus",
     "allGrammar": "Alle Grammatik",
     "cancel": "Abbrechen",
-    "apply": "Anwenden"
+    "apply": "Anwenden",
+    "nextSection": "Nächster Abschnitt",
+    "levelUp": "Weiter mit Niveau {{level}}",
+    "startOver": "Alle Niveaus geschafft! Weiter mit A1"
   },
   "profile": {
     "title": "Profil",
