@@ -961,6 +961,8 @@ const Exercise = () => {
           exerciseId={currentExercise?.id || "unknown"}
           exerciseText={currentExercise?.text || ""}
           gaps={currentExercise?.gaps || []}
+          // A reported exercise is taken down at once: show the next one, no need to solve it
+          onReported={handleNext}
         />
       )}
     </div>
