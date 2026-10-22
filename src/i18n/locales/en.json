@@ -67,7 +67,8 @@
     "levelUp": "Moving up to level {{level}}",
     "startOver": "All levels done! Starting over with A1",
     "explanation": "Explanation",
-    "yourAnswer": "Your answer"
+    "yourAnswer": "Your answer",
+    "perfect": "Perfect! All answers correct."
   },
   "profile": {
     "title": "Profile",

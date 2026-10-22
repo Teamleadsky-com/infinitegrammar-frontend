@@ -11,6 +11,7 @@ import { WaitlistModal } from "@/components/WaitlistModal";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { ExerciseSettingsDialog } from "@/components/ExerciseSettingsDialog";
 import { ReportExerciseModal } from "@/components/ReportExerciseModal";
+import { ConfettiBurst, SuccessCheck } from "@/components/ConfettiBurst";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { getGrammarSectionById } from "@/data/grammarSections";
 import { markExerciseCompleted } from "@/utils/exerciseCompletion";
@@ -743,7 +744,8 @@ const Exercise = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    // overflow-x-clip: the confetti of a perfect exercise must not widen the page on phones
+    <div className="min-h-screen bg-background overflow-x-clip">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4">
@@ -831,18 +833,21 @@ const Exercise = () => {
             <div className="space-y-6 animate-scale-in">
               <Card
                 className={cn(
-                  "p-6 text-center",
+                  "relative p-6 text-center",
                   correctCount === exerciseData.gaps.length
                     ? "bg-success-light border-success"
                     : "bg-card"
                 )}
               >
+                {/* Reward for a perfect exercise: a short confetti burst from behind a check badge */}
+                {showCelebration && <ConfettiBurst className="left-1/2 top-[52px]" />}
+                {correctCount === exerciseData.gaps.length && <SuccessCheck />}
                 <div className="text-4xl font-bold mb-2">
                   {correctCount} / {exerciseData.gaps.length}
                 </div>
-                <div className="text-muted-foreground">
+                <div className={correctCount === exerciseData.gaps.length ? "font-medium text-success" : "text-muted-foreground"}>
                   {correctCount === exerciseData.gaps.length
-                    ? "Perfect! All answers correct! 🎉"
+                    ? t('exercise.perfect')
                     : t('exercise.keepPracticing')}
                 </div>
               </Card>
@@ -866,13 +871,6 @@ const Exercise = () => {
           )}
         </div>
       </main>
-
-      {/* Celebration Overlay */}
-      {showCelebration && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <div className="text-8xl animate-celebrate">🎉</div>
-        </div>
-      )}
 
       {/* Waitlist Modal */}
       <WaitlistModal

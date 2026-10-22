@@ -100,6 +100,20 @@ export default {
           "25%": { transform: "translateX(-4px)" },
           "75%": { transform: "translateX(4px)" },
         },
+        // Reward for a perfect exercise (src/components/ConfettiBurst.tsx)
+        "confetti-burst": {
+          "0%": { transform: "translate(0, 0) rotate(0deg) scale(0.4)", opacity: "1" },
+          "70%": { opacity: "1" },
+          "100%": { transform: "translate(var(--dx), var(--dy)) rotate(var(--rot)) scale(1)", opacity: "0" },
+        },
+        "pop-in": {
+          "0%": { transform: "scale(0.4)", opacity: "0" },
+          "60%": { transform: "scale(1.08)", opacity: "1" },
+          "100%": { transform: "scale(1)", opacity: "1" },
+        },
+        "draw-check": {
+          to: { strokeDashoffset: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -108,6 +122,9 @@ export default {
         "scale-in": "scale-in 0.3s ease-out",
         "celebrate": "celebrate 0.6s ease-in-out",
         "shake": "shake 0.4s ease-in-out",
+        "confetti-burst": "confetti-burst 1.1s cubic-bezier(0.15, 0.75, 0.35, 1) both",
+        "pop-in": "pop-in 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2) both",
+        "draw-check": "draw-check 0.35s ease-out 0.2s forwards",
       },
     },
   },
