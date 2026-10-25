@@ -19,7 +19,8 @@
  * - limit: number of exercises (optional)
  *
  * Within a section: logged-in users get the exercises in order (order_number), anonymous
- * visitors in random order.
+ * visitors the section's starter exercises first (starter_exercises.position, migration 009),
+ * then the others in random order.
  */
 
 import { Handler } from '@netlify/functions';
@@ -98,8 +99,10 @@ export const handler: Handler = async (event) => {
 
     // Logged-in users get the exercises after their progress in each section, unless restarting.
     const progressive = !!userId && !params.restart;
-    // Exercises in order within a section for logged-in users, random for anonymous visitors.
+    // Exercises in order within a section for logged-in users; for anonymous visitors the
+    // section's starter exercises first, then random.
     const inOrder = !!userId;
+    const anonymousOrder = sql`(se.position IS NULL), se.position, RANDOM()`;
 
     const result = await sql`
       SELECT
@@ -131,6 +134,7 @@ export const handler: Handler = async (event) => {
       ${progressive
         ? sql`LEFT JOIN user_progress up ON up.user_id = ${userId} AND up.grammar_section_id = e.grammar_section_id`
         : sql``}
+      ${inOrder ? sql`` : sql`LEFT JOIN starter_exercises se ON se.exercise_id = e.id`}
       WHERE e.is_active = true
         ${level ? sql`AND e.level = ${level}` : sql``}
         ${grammarSection ? sql`AND e.grammar_section_id = ${grammarSection}` : sql``}
@@ -144,15 +148,16 @@ export const handler: Handler = async (event) => {
         ${exclude.length ? sql`AND NOT (e.id = ANY(${exclude}::text[]))` : sql``}
       GROUP BY e.id, e.grammar_section_id, e.level, e.order_number,
                e.text, e.content_topic, e.model, gs.name, gs.order_in_level
+               ${inOrder ? sql`` : sql`, se.position`}
       ORDER BY
         ${!level
           ? sql`RANDOM()`
           : grammarSection
-            ? (inOrder ? sql`e.order_number ASC` : sql`RANDOM()`)
+            ? (inOrder ? sql`e.order_number ASC` : anonymousOrder)
             : sql`(gs.order_in_level <= ${afterOrder}) ASC NULLS LAST,
                   gs.order_in_level ASC NULLS LAST,
                   e.grammar_section_id ASC,
-                  ${inOrder ? sql`e.order_number ASC` : sql`RANDOM()`}`}
+                  ${inOrder ? sql`e.order_number ASC` : anonymousOrder}`}
       ${limit ? sql`LIMIT ${limit}` : sql``}
     `;
 

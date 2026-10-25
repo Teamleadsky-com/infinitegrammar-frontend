@@ -30,6 +30,9 @@ export const newId = (): string =>
 
 const SESSION_ID = newId();
 
+/** This tab's session: the same id the exercise events carry, sent along when an account is created. */
+export const getSessionId = (): string => SESSION_ID;
+
 /** Automated browsers (end-to-end tests, crawlers that run JavaScript) are not visitors. */
 export const isAutomated = (nav: Pick<Navigator, 'webdriver' | 'userAgent'> | undefined = globalThis.navigator): boolean =>
   !nav || nav.webdriver === true || /bot|crawl|spider|headless|lighthouse|prerender/i.test(nav.userAgent || '');
