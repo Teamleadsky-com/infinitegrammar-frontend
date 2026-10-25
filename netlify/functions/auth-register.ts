@@ -7,7 +7,9 @@
  * {
  *   email: string,
  *   password: string,
- *   name: string (optional)
+ *   name: string (optional),
+ *   session_id: string (optional) - the anonymous session (exercise_view_events.session_id) the
+ *     account was created in, for the starter-exercises experiment (session_signups, migration 009)
  * }
  */
 
@@ -31,7 +33,7 @@ export const handler: Handler = async (event) => {
       return createResponse(400, { error: 'Request body is required' });
     }
 
-    const { email, password, name } = JSON.parse(event.body);
+    const { email, password, name, session_id } = JSON.parse(event.body);
 
     // Validate email
     if (!email || !email.includes('@')) {
@@ -71,6 +73,18 @@ export const handler: Handler = async (event) => {
     `;
 
     const user = result[0];
+
+    // Link the anonymous session the account was created in (never fails the registration)
+    if (typeof session_id === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(session_id)) {
+      try {
+        await sql`
+          INSERT INTO session_signups (session_id, user_id) VALUES (${session_id}::uuid, ${user.id}::uuid)
+          ON CONFLICT DO NOTHING
+        `;
+      } catch (linkError) {
+        console.warn('session_signups not stored:', (linkError as { message?: string })?.message);
+      }
+    }
 
     // Send welcome email (don't fail registration if email fails)
     try {

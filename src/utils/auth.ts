@@ -3,6 +3,7 @@
  */
 
 import { trackSignUp, trackLogin } from './analytics';
+import { getSessionId } from '@/lib/exerciseEvents';
 
 const API_BASE = import.meta.env.DEV
   ? 'http://localhost:8888/api'
@@ -49,7 +50,8 @@ export async function register(data: RegisterData): Promise<AuthResponse> {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(data),
+    // session_id links the account to this tab's anonymous exercise session (starter-exercises experiment)
+    body: JSON.stringify({ ...data, session_id: getSessionId() }),
   });
 
   if (!response.ok) {

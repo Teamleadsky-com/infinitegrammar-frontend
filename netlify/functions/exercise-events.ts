@@ -16,7 +16,8 @@
  * }
  *
  * Always answers 202 for a well-formed event, stored or not: logging must never
- * affect the exercise page. Crawlers are dropped by user agent.
+ * affect the exercise page. Crawlers are dropped by user agent. starter_position records the
+ * exercise's starter slot at that moment (starter_exercises, migration 009).
  */
 
 import { Handler } from '@netlify/functions';
@@ -51,10 +52,11 @@ export const handler: Handler = async (event) => {
   try {
     await sql`
       INSERT INTO exercise_view_events
-        (view_id, session_id, exercise_id, user_id, event, correct_answers, total_answers)
+        (view_id, session_id, exercise_id, user_id, event, correct_answers, total_answers, starter_position)
       VALUES
         (${parsed.view_id}::uuid, ${parsed.session_id}::uuid, ${parsed.exercise_id},
-         ${parsed.user_id}::uuid, ${parsed.event}, ${parsed.correct_answers}, ${parsed.total_answers})
+         ${parsed.user_id}::uuid, ${parsed.event}, ${parsed.correct_answers}, ${parsed.total_answers},
+         (SELECT position FROM starter_exercises WHERE exercise_id = ${parsed.exercise_id}))
       ON CONFLICT (view_id, event) DO NOTHING
     `;
     return createResponse(202, { stored: true });
