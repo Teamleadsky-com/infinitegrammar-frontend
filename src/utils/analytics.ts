@@ -3,7 +3,7 @@
  * Using GA4 Measurement Protocol API
  */
 
-const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-569909YP8G';
+const MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'G-E1DX6F9ZLP';
 const API_SECRET = import.meta.env.VITE_GA_API_SECRET;
 
 /**
