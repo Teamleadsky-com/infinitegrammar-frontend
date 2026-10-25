@@ -99,12 +99,12 @@ const FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">'
 
 // Same counters as the app's index.html
 const ANALYTICS = `<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-569909YP8G"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E1DX6F9ZLP"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-569909YP8G');
+  gtag('config', 'G-E1DX6F9ZLP');
 </script>
 <!-- Yandex.Metrika counter -->
 <script type="text/javascript">
