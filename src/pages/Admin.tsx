@@ -33,6 +33,7 @@ import {
   ClipboardCheck,
   GitBranch,
   Workflow,
+  UserPlus,
 } from "lucide-react";
 import {
   BarChart,
@@ -49,6 +50,7 @@ import { SupplyDashboard } from "@/components/admin/SupplyDashboard";
 import { QualityDashboard } from "@/components/admin/QualityDashboard";
 import { PipelinesDashboard } from "@/components/admin/PipelinesDashboard";
 import { PipelineTraceDashboard } from "@/components/admin/PipelineTraceDashboard";
+import { OnboardingDashboard } from "@/components/admin/OnboardingDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
@@ -67,7 +69,8 @@ const Admin = () => {
   };
   const rawTab = searchParams.get("tab");
   const [tab, legacyView] = (rawTab && LEGACY_TABS[rawTab]) || [rawTab || "metrics", null];
-  const view = searchParams.get("view") || legacyView || (tab === "campaign" ? "overview" : "runs");
+  const DEFAULT_VIEWS: Record<string, string> = { metrics: "engagement", campaign: "overview", pipeline: "runs" };
+  const view = searchParams.get("view") || legacyView || DEFAULT_VIEWS[tab] || "";
   const setTab = (value: string, extra: Record<string, string> = {}) =>
     setSearchParams(new URLSearchParams({ ...(value === "metrics" ? {} : { tab: value }), ...extra }));
   const setView = (value: string) => setTab(tab, { view: value });
@@ -601,9 +604,20 @@ const Admin = () => {
               <SimilarityDashboard apiBase={API_BASE} />
             </TabsContent>
 
-            {/* Product Metrics Tab */}
-            <TabsContent value="metrics" className="space-y-6">
-              <ProductMetrics apiBase={API_BASE} />
+            {/* User Metrics: engagement of registered users, and the onboarding of new visitors */}
+            <TabsContent value="metrics" className="mt-0">
+              <Tabs value={view} onValueChange={setView}>
+                <TabsList className="inline-flex flex-wrap h-auto justify-start mb-4">
+                  <TabsTrigger value="engagement" className="gap-2"><TrendingUp className="h-4 w-4" />Engagement</TabsTrigger>
+                  <TabsTrigger value="onboarding" className="gap-2"><UserPlus className="h-4 w-4" />Onboarding</TabsTrigger>
+                </TabsList>
+                <TabsContent value="engagement" className="space-y-6 mt-0">
+                  <ProductMetrics apiBase={API_BASE} />
+                </TabsContent>
+                <TabsContent value="onboarding" className="space-y-6 mt-0">
+                  <OnboardingDashboard apiBase={API_BASE} />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             <TabsContent value="supply" className="space-y-6">
