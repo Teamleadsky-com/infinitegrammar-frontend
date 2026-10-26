@@ -14,11 +14,21 @@ type Section = { sectionId: string; sectionName: string | null; level: string | 
 type Data = {
   period: string;
   trackingSince: string | null;
-  funnel: { sessions: number; started: number; completed1: number; completed3: number; signups: number; views: number; completions: number };
+  funnel: {
+    sessions: number; started: number; completed1: number; completed3: number; views: number; completions: number;
+    // sessions of each step that created a profile in the same tab
+    signups: number; signupsStarted: number; signupsCompleted1: number; signupsCompleted3: number;
+  };
   depth: Array<{ k: number; shown: number; completed: number }>;
   firstExercise: { untouched: number; abandoned: number; completed: number };
   daily: Array<{ day: string; sessions: number; completed1: number; signups: number; profiles: number }>;
   signupTrackingSince: string;
+  // page views (migration 010); null until page tracking exists
+  pages: null | {
+    trackingSince: string | null;
+    visits: number; withPages: number; withExercise: number; signups: number; signupsWithoutExercise: number;
+    landing: Array<{ page: string; sessions: number; leftAfterOnePage: number; reachedExercise: number; completed: number; signups: number; signupsWithoutExercise: number }>;
+  };
   profiles: { total: number; afterExercises: number; linkedWithoutExercises: number; notLinked: number; beforeTracking: number; practised: number };
   entry: Array<Section & { sessions: number; completed1: number; signups: number; avgShown: number | null; starterFirst: boolean }>;
   sections: Array<Section & { sessions: number; views: number; started: number; completed: number; scorePct: number | null; hasStarters: boolean }>;
@@ -42,6 +52,17 @@ const C = {
 
 const pct = (n: number, of: number) => (of ? `${Math.round((100 * n) / of)}%` : "–");
 
+const PAGE_LABELS: Record<string, string> = {
+  home: "Homepage",
+  grammar: "Grammar pages",
+  exam_centers: "Exam centres",
+  exercise: "Exercise (direct link)",
+  exercise_stats: "Exercise statistics",
+  auth: "Sign-in / sign-up",
+  account: "Account pages",
+  other: "Other",
+};
+
 const Tile = ({ label, value, sub }: { label: string; value: string | number; sub?: string }) => (
   <Card className="p-4">
     <p className="text-xs text-muted-foreground">{label}</p>
@@ -57,23 +78,38 @@ const SectionLabel = ({ s }: { s: Section }) => (
   </span>
 );
 
-/** The funnel as horizontal bars: count, share of sessions, and the drop from the step before. */
-const Funnel = ({ steps, total }: { steps: Array<{ label: string; n: number; help: string }>; total: number }) => (
-  <div className="space-y-3">
+/**
+ * The funnel as horizontal bars: sessions at each step (share of all sessions, drop from the step before),
+ * and under each step the sessions of that step that created a profile in the same tab (share of the step).
+ */
+const Funnel = ({ steps, total }: { steps: Array<{ label: string; n: number; profiles: number; help: string }>; total: number }) => (
+  <div className="space-y-4">
     {steps.map((step, i) => {
       const prev = i > 0 ? steps[i - 1].n : null;
       const drop = prev ? prev - step.n : 0;
+      const width = (n: number) => (total ? `${(100 * n) / total}%` : 0);
       return (
-        <div key={step.label} className="grid grid-cols-[minmax(9rem,14rem)_1fr_auto] items-center gap-3" title={step.help}>
-          <span className="text-sm">{step.label}</span>
-          <div className="h-7 rounded bg-muted/60 overflow-hidden">
-            <div className="h-full rounded" style={{ width: total ? `${(100 * step.n) / total}%` : 0, background: C.primary, minWidth: step.n ? 4 : 0 }} />
+        <div key={step.label} className="space-y-1" title={step.help}>
+          <div className="grid grid-cols-[minmax(9rem,14rem)_1fr_auto] items-center gap-3">
+            <span className="text-sm">{step.label}</span>
+            <div className="h-7 rounded bg-muted/60 overflow-hidden">
+              <div className="h-full rounded" style={{ width: width(step.n), background: C.primary, minWidth: step.n ? 4 : 0 }} />
+            </div>
+            <span className="text-sm tabular-nums whitespace-nowrap w-40 text-right">
+              <span className="font-semibold">{step.n}</span>
+              <span className="text-muted-foreground"> · {pct(step.n, total)}</span>
+              {prev !== null && drop > 0 && <span className="text-xs text-muted-foreground"> · −{pct(drop, prev)}</span>}
+            </span>
           </div>
-          <span className="text-sm tabular-nums whitespace-nowrap w-40 text-right">
-            <span className="font-semibold">{step.n}</span>
-            <span className="text-muted-foreground"> · {pct(step.n, total)}</span>
-            {prev !== null && drop > 0 && <span className="text-xs text-muted-foreground"> · −{pct(drop, prev)}</span>}
-          </span>
+          <div className="grid grid-cols-[minmax(9rem,14rem)_1fr_auto] items-center gap-3">
+            <span className="text-xs text-muted-foreground pl-3">…and created a profile</span>
+            <div className="h-2.5 rounded bg-muted/40 overflow-hidden">
+              <div className="h-full rounded" style={{ width: width(step.profiles), background: C.dropped, minWidth: step.profiles ? 3 : 0 }} />
+            </div>
+            <span className="text-xs tabular-nums whitespace-nowrap w-40 text-right text-muted-foreground">
+              <span className="font-semibold text-foreground">{step.profiles}</span> · {pct(step.profiles, step.n)} of this step
+            </span>
+          </div>
         </div>
       );
     })}
@@ -139,48 +175,37 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
         <>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
             <Tile label="New-visitor sessions" value={f.sessions} sub="at least one exercise shown" />
-            <Tile label="Completed an exercise" value={pct(f.completed1, f.sessions)} sub={`${f.completed1} sessions`} />
-            <Tile label="New profiles" value={data.profiles.total} sub={`${data.profiles.practised} practised after signing up`} />
             <Tile label="Exercises per session" value={f.sessions ? (f.views / f.sessions).toFixed(1) : "–"} sub="shown, on average" />
+            <Tile label="Completed an exercise" value={pct(f.completed1, f.sessions)} sub={`${f.completed1} sessions`} />
             <Tile label="Exercises completed" value={pct(f.completions, f.views)} sub={`${f.completions} of ${f.views} shown`} />
+            <Tile label="New profiles" value={data.profiles.total} sub={`${data.profiles.practised} practised after signing up`} />
           </div>
 
           <Card className="p-4 md:p-6">
             <h4 className="font-semibold">Funnel</h4>
-            <p className="text-sm text-muted-foreground mb-4">Share of sessions at each step; the small number is the drop from the step before.</p>
+            <p className="text-sm text-muted-foreground mb-4">
+              Sessions at each step (share of all sessions; the small number is the drop from the step before), and under each step
+              the sessions of that step that created a profile in the same tab (share of the step).
+            </p>
             <Funnel
-              total={f.sessions}
+              total={data.pages ? Math.max(data.pages.visits, f.sessions) : f.sessions}
               steps={[
-                { label: "Exercise shown", n: f.sessions, help: "Sessions with at least one exercise shown" },
-                { label: "First answer chosen", n: f.started, help: "Picked an answer in at least one exercise" },
-                { label: "Exercise completed", n: f.completed1, help: "Checked the answers of at least one exercise" },
-                { label: "3+ exercises completed", n: f.completed3, help: "Checked the answers of three or more exercises" },
-                { label: "Profile created (same tab)", n: f.signups, help: "An account was created in the same tab after the exercises" },
+                ...(data.pages
+                  ? [{ label: "Visited the site", n: Math.max(data.pages.visits, f.sessions), profiles: data.pages.signups, help: "Sessions with a page of the app or an exercise shown" }]
+                  : []),
+                { label: "Exercise shown", n: f.sessions, profiles: f.signups, help: "Sessions with at least one exercise shown" },
+                { label: "First answer chosen", n: f.started, profiles: f.signupsStarted, help: "Picked an answer in at least one exercise" },
+                { label: "Exercise completed", n: f.completed1, profiles: f.signupsCompleted1, help: "Checked the answers of at least one exercise" },
+                { label: "3+ exercises completed", n: f.completed3, profiles: f.signupsCompleted3, help: "Checked the answers of three or more exercises" },
               ]}
             />
-          </Card>
-
-          <Card className="p-4 md:p-6">
-            <h4 className="font-semibold">New profiles</h4>
-            <p className="text-sm text-muted-foreground mb-4">
-              Every account created in the period (your excluded accounts don't count), and how it relates to the new-visitor sessions above.
+            <p className="text-xs text-muted-foreground mt-4">
+              In total {data.profiles.total} new profile{data.profiles.total === 1 ? "" : "s"} in the period, {f.signups} of them created in a
+              tab with these exercises
+              {data.pages && <>, {data.pages.signupsWithoutExercise} in a tab before any exercise was shown</>}. The others signed up without a tracked session
+              {data.profiles.beforeTracking > 0 && <> ({data.profiles.beforeTracking} before signup tracking started on {formatDate(data.signupTrackingSince)})</>}.
+              {" "}{data.profiles.practised} of the {data.profiles.total} practised after signing up.
             </p>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
-              {([
-                ["All new profiles", data.profiles.total, "accounts created in the period"],
-                ["After exercises", data.profiles.afterExercises, "signed up in the same tab after practising (in the funnel)"],
-                ["Without exercises first", data.profiles.linkedWithoutExercises, "signed up before doing an exercise"],
-                ["Not linked", data.profiles.notLinked, "no session sent at signup, e.g. a tab running an older version of the site"],
-                ["Before signup tracking", data.profiles.beforeTracking, `created before ${formatDate(data.signupTrackingSince)}`],
-                ["Practised after signup", data.profiles.practised, "completed at least one exercise with the account"],
-              ] as const).map(([label, n, help]) => (
-                <div key={label}>
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  <p className="text-xl font-semibold tabular-nums">{n}</p>
-                  <p className="text-xs text-muted-foreground">{help}</p>
-                </div>
-              ))}
-            </div>
           </Card>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -246,10 +271,50 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
           </Card>
 
           <Card className="p-4 md:p-6">
-            <h4 className="font-semibold">Where new visitors land</h4>
+            <h4 className="font-semibold">Landing pages</h4>
             <p className="text-sm text-muted-foreground mb-3">
-              The section of the first exercise in each session. Homepage and other page landings aren't tracked here (see Google Analytics).
+              The first page of each session, and what happened next. "Left after one page": no other page, no exercise and no profile.
+              {data.pages?.trackingSince && <> Page tracking since {formatDate(data.pages.trackingSince)}.</>}
             </p>
+            {!data.pages ? (
+              <p className="text-sm text-muted-foreground">Page views aren't tracked yet (migration 010).</p>
+            ) : data.pages.landing.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No page views in this period.</p>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b text-left text-xs text-muted-foreground">
+                      <th className="py-2 pr-3 font-medium">Landing page</th>
+                      <th className="py-2 pr-3 font-medium text-right">Sessions</th>
+                      <th className="py-2 pr-3 font-medium text-right">Left after one page</th>
+                      <th className="py-2 pr-3 font-medium text-right">Reached an exercise</th>
+                      <th className="py-2 pr-3 font-medium text-right">Completed an exercise</th>
+                      <th className="py-2 pr-3 font-medium text-right">Profiles</th>
+                      <th className="py-2 font-medium text-right">of which before any exercise</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.pages.landing.map((l) => (
+                      <tr key={l.page} className="border-b last:border-0">
+                        <td className="py-2 pr-3">{PAGE_LABELS[l.page] || l.page}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums font-medium">{l.sessions}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums">{l.leftAfterOnePage} <span className="text-muted-foreground">· {pct(l.leftAfterOnePage, l.sessions)}</span></td>
+                        <td className="py-2 pr-3 text-right tabular-nums">{l.reachedExercise} <span className="text-muted-foreground">· {pct(l.reachedExercise, l.sessions)}</span></td>
+                        <td className="py-2 pr-3 text-right tabular-nums">{l.completed} <span className="text-muted-foreground">· {pct(l.completed, l.sessions)}</span></td>
+                        <td className="py-2 pr-3 text-right tabular-nums">{l.signups}</td>
+                        <td className="py-2 text-right tabular-nums">{l.signupsWithoutExercise}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </Card>
+
+          <Card className="p-4 md:p-6">
+            <h4 className="font-semibold">First exercise: section</h4>
+            <p className="text-sm text-muted-foreground mb-3">The section of the first exercise in each session.</p>
             {data.entry.length === 0 ? <p className="text-sm text-muted-foreground">No sessions in this period.</p> : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">

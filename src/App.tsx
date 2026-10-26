@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { PageViewTracker } from "@/components/PageViewTracker";
 import { HtmlLang } from "@/components/HtmlLang";
 import LevelSelection from "./pages/LevelSelection";
 import Exercise from "./pages/Exercise";
@@ -35,6 +36,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <ScrollToTop />
+            <PageViewTracker />
             <HtmlLang />
             <Routes>
               <Route path="/" element={<LevelSelection />} />
