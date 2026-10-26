@@ -139,10 +139,10 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
         <>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
             <Tile label="New-visitor sessions" value={f.sessions} sub="at least one exercise shown" />
-            <Tile label="Completed an exercise" value={pct(f.completed1, f.sessions)} sub={`${f.completed1} sessions`} />
-            <Tile label="New profiles" value={data.profiles.total} sub={`${data.profiles.practised} practised after signing up`} />
             <Tile label="Exercises per session" value={f.sessions ? (f.views / f.sessions).toFixed(1) : "–"} sub="shown, on average" />
+            <Tile label="Completed an exercise" value={pct(f.completed1, f.sessions)} sub={`${f.completed1} sessions`} />
             <Tile label="Exercises completed" value={pct(f.completions, f.views)} sub={`${f.completions} of ${f.views} shown`} />
+            <Tile label="New profiles" value={data.profiles.total} sub={`${data.profiles.practised} practised after signing up`} />
           </div>
 
           <Card className="p-4 md:p-6">
