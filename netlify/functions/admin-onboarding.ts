@@ -10,6 +10,11 @@
  * daily sessions and signups, entry sections (where sessions land), activity per section, and the
  * funnel across starter positions 1..10.
  *
+ * pages (migration 010, page_view_events; null before it exists): visits of the app before an exercise,
+ * landing pages (the first page of a session), sessions that leave after one page, and profiles created
+ * without an exercise. A visit is an anonymous session with a page view or an exercise shown, counted from
+ * its first activity in the period.
+ *
  * profiles: every account created in the period (users, excluding analytics_excluded_users), not only
  * the ones linked to a tracked session: after exercises in the same tab, linked without an exercise
  * before signup, or not linked (e.g. a tab that ran an older version of the site). users.created_at is
@@ -83,6 +88,9 @@ export const handler: Handler = async (event) => {
                count(*) FILTER (WHERE submitted > 0)::int AS completed1,
                count(*) FILTER (WHERE submitted >= 3)::int AS completed3,
                count(su.session_id)::int AS signups,
+               count(su.session_id) FILTER (WHERE started > 0)::int AS signups_started,
+               count(su.session_id) FILTER (WHERE submitted > 0)::int AS signups_completed1,
+               count(su.session_id) FILTER (WHERE submitted >= 3)::int AS signups_completed3,
                coalesce(sum(shown), 0)::int AS views,
                coalesce(sum(submitted), 0)::int AS completions
         FROM sess LEFT JOIN session_signups su USING (session_id)`,
@@ -152,6 +160,12 @@ export const handler: Handler = async (event) => {
         SELECT to_char(created_at, 'YYYY-MM-DD') AS day, count(*)::int AS profiles FROM p GROUP BY 1`,
     ]);
 
+    // Page views (migration 010): optional, so the dashboard works before the table exists
+    const pages = await loadPages(since).catch((error) => {
+      console.warn('admin-onboarding: page views unavailable:', (error as { message?: string })?.message);
+      return null;
+    });
+
     // Days with sessions or new profiles, from the first tracked day
     const firstDay = range[0]?.first_event ? new Date(range[0].first_event).toISOString().slice(0, 10) : '';
     const byDay = new Map<string, { day: string; sessions: number; completed1: number; signups: number; profiles: number }>();
@@ -174,6 +188,9 @@ export const handler: Handler = async (event) => {
         completed1: f.completed1 ?? 0,
         completed3: f.completed3 ?? 0,
         signups: f.signups ?? 0,
+        signupsStarted: f.signups_started ?? 0,
+        signupsCompleted1: f.signups_completed1 ?? 0,
+        signupsCompleted3: f.signups_completed3 ?? 0,
         views: f.views ?? 0,
         completions: f.completions ?? 0,
       },
@@ -181,6 +198,7 @@ export const handler: Handler = async (event) => {
       firstExercise: firstExercise[0] || { untouched: 0, abandoned: 0, completed: 0 },
       daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
       signupTrackingSince: SIGNUP_TRACKING_SINCE,
+      pages,
       profiles: {
         total: profiles[0]?.total ?? 0,
         afterExercises: profiles[0]?.after_exercises ?? 0,
@@ -216,3 +234,69 @@ export const handler: Handler = async (event) => {
     return handleError(error);
   }
 };
+
+/** Visits, landing pages and pre-exercise signups from page_view_events (migration 010). */
+async function loadPages(since: string) {
+  const visitsBase = sql`
+    WITH pv AS (
+      SELECT session_id, min(created_at) AS at, count(*)::int AS n
+      FROM page_view_events WHERE user_id IS NULL GROUP BY session_id
+    ), exs AS (
+      SELECT session_id, min(created_at) FILTER (WHERE event = 'shown') AS shown_at, bool_or(event = 'submitted') AS completed
+      FROM exercise_view_events WHERE user_id IS NULL GROUP BY session_id
+    ), visits AS (
+      SELECT coalesce(pv.session_id, exs.session_id) AS session_id,
+             least(pv.at, exs.shown_at) AS first_at,
+             coalesce(pv.n, 0) AS pages,
+             exs.shown_at IS NOT NULL AS saw_exercise,
+             coalesce(exs.completed, false) AS completed,
+             su.session_id IS NOT NULL AS signed_up
+      FROM pv FULL JOIN exs USING (session_id)
+      LEFT JOIN session_signups su ON su.session_id = coalesce(pv.session_id, exs.session_id)
+      WHERE least(pv.at, exs.shown_at) >= ${since}::timestamptz
+    ), landing AS (
+      SELECT DISTINCT ON (session_id) session_id, page
+      FROM page_view_events WHERE user_id IS NULL
+      ORDER BY session_id, created_at, id
+    )`;
+
+  const [totals, landing, tracking] = await Promise.all([
+    sql`${visitsBase}
+      SELECT count(*)::int AS visits,
+             count(*) FILTER (WHERE pages > 0)::int AS with_pages,
+             count(*) FILTER (WHERE saw_exercise)::int AS with_exercise,
+             count(*) FILTER (WHERE signed_up)::int AS signups,
+             count(*) FILTER (WHERE signed_up AND NOT saw_exercise)::int AS signups_without_exercise
+      FROM visits`,
+    sql`${visitsBase}
+      SELECT l.page,
+             count(*)::int AS sessions,
+             count(*) FILTER (WHERE v.pages <= 1 AND NOT v.saw_exercise AND NOT v.signed_up)::int AS left_after_one_page,
+             count(*) FILTER (WHERE v.saw_exercise)::int AS reached_exercise,
+             count(*) FILTER (WHERE v.completed)::int AS completed,
+             count(*) FILTER (WHERE v.signed_up)::int AS signups,
+             count(*) FILTER (WHERE v.signed_up AND NOT v.saw_exercise)::int AS signups_without_exercise
+      FROM visits v JOIN landing l USING (session_id)
+      GROUP BY l.page ORDER BY sessions DESC, l.page`,
+    sql`SELECT min(created_at) AS since FROM page_view_events`,
+  ]);
+
+  const t: any = totals[0] || {};
+  return {
+    trackingSince: tracking[0]?.since ?? null,
+    visits: t.visits ?? 0,
+    withPages: t.with_pages ?? 0,
+    withExercise: t.with_exercise ?? 0,
+    signups: t.signups ?? 0,
+    signupsWithoutExercise: t.signups_without_exercise ?? 0,
+    landing: landing.map((l: any) => ({
+      page: l.page,
+      sessions: l.sessions,
+      leftAfterOnePage: l.left_after_one_page,
+      reachedExercise: l.reached_exercise,
+      completed: l.completed,
+      signups: l.signups,
+      signupsWithoutExercise: l.signups_without_exercise,
+    })),
+  };
+}
