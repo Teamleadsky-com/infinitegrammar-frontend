@@ -43,6 +43,33 @@ test("Pipeline groups runs and trace; a run's Trace link opens the trace sub-tab
   await expect(page.getByRole("tab", { name: "Trace" })).toHaveAttribute("data-state", "active");
 });
 
+test("User Metrics has Engagement and Onboarding; Onboarding shows the new-visitor funnel", async ({ page }) => {
+  await page.route("**/api/admin-onboarding**", (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        period: "30", trackingSince: "2026-10-23T14:05:59Z",
+        funnel: { sessions: 40, started: 20, completed1: 16, completed3: 4, signups: 2, views: 90, completions: 45 },
+        depth: [{ k: 1, shown: 40, completed: 16 }, { k: 2, shown: 12, completed: 6 }],
+        firstExercise: { untouched: 22, abandoned: 2, completed: 16 },
+        daily: [{ day: "2026-10-25", sessions: 40, completed1: 16, signups: 2 }],
+        entry: [{ sectionId: "s1", sectionName: "Satzbau", level: "A1", sessions: 40, completed1: 16, signups: 2, avgShown: 2.3, starterFirst: true }],
+        sections: [{ sectionId: "s1", sectionName: "Satzbau", level: "A1", sessions: 40, views: 90, started: 50, completed: 45, scorePct: 80, hasStarters: true }],
+        starters: [{ position: 1, shown: 30, started: 15, completed: 14 }],
+      }),
+    }),
+  );
+  await openAdmin(page, "?tab=metrics");
+  await expect(page.getByRole("tab", { name: "Engagement" })).toHaveAttribute("data-state", "active");
+  await page.getByRole("tab", { name: "Onboarding" }).click();
+  await expect(page).toHaveURL(/view=onboarding/); // User Metrics is the default tab: no tab= in the URL
+  await expect(page.getByRole("heading", { name: "Funnel" })).toBeVisible();
+  await expect(page.getByText("Profile created", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Where new visitors land")).toBeVisible();
+  await expect(page.getByText("5%", { exact: true })).toBeVisible(); // 2 profiles of 40 sessions
+});
+
 test("links to the former separate tabs land on their new place", async ({ page }) => {
   await openAdmin(page, "?tab=templates");
   await expect(page.getByRole("tab", { name: "Kampagne" })).toHaveAttribute("data-state", "active");
