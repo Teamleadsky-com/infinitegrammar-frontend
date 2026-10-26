@@ -17,7 +17,9 @@ type Data = {
   funnel: { sessions: number; started: number; completed1: number; completed3: number; signups: number; views: number; completions: number };
   depth: Array<{ k: number; shown: number; completed: number }>;
   firstExercise: { untouched: number; abandoned: number; completed: number };
-  daily: Array<{ day: string; sessions: number; completed1: number; signups: number }>;
+  daily: Array<{ day: string; sessions: number; completed1: number; signups: number; profiles: number }>;
+  signupTrackingSince: string;
+  profiles: { total: number; afterExercises: number; linkedWithoutExercises: number; notLinked: number; beforeTracking: number; practised: number };
   entry: Array<Section & { sessions: number; completed1: number; signups: number; avgShown: number | null; starterFirst: boolean }>;
   sections: Array<Section & { sessions: number; views: number; started: number; completed: number; scorePct: number | null; hasStarters: boolean }>;
   starters: Array<{ position: number; shown: number; started: number; completed: number }>;
@@ -138,7 +140,7 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
             <Tile label="New-visitor sessions" value={f.sessions} sub="at least one exercise shown" />
             <Tile label="Completed an exercise" value={pct(f.completed1, f.sessions)} sub={`${f.completed1} sessions`} />
-            <Tile label="Created a profile" value={pct(f.signups, f.sessions)} sub={`${f.signups} sessions`} />
+            <Tile label="New profiles" value={data.profiles.total} sub={`${data.profiles.practised} practised after signing up`} />
             <Tile label="Exercises per session" value={f.sessions ? (f.views / f.sessions).toFixed(1) : "–"} sub="shown, on average" />
             <Tile label="Exercises completed" value={pct(f.completions, f.views)} sub={`${f.completions} of ${f.views} shown`} />
           </div>
@@ -153,9 +155,32 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
                 { label: "First answer chosen", n: f.started, help: "Picked an answer in at least one exercise" },
                 { label: "Exercise completed", n: f.completed1, help: "Checked the answers of at least one exercise" },
                 { label: "3+ exercises completed", n: f.completed3, help: "Checked the answers of three or more exercises" },
-                { label: "Profile created", n: f.signups, help: "An account was created in the same tab" },
+                { label: "Profile created (same tab)", n: f.signups, help: "An account was created in the same tab after the exercises" },
               ]}
             />
+          </Card>
+
+          <Card className="p-4 md:p-6">
+            <h4 className="font-semibold">New profiles</h4>
+            <p className="text-sm text-muted-foreground mb-4">
+              Every account created in the period (your excluded accounts don't count), and how it relates to the new-visitor sessions above.
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
+              {([
+                ["All new profiles", data.profiles.total, "accounts created in the period"],
+                ["After exercises", data.profiles.afterExercises, "signed up in the same tab after practising (in the funnel)"],
+                ["Without exercises first", data.profiles.linkedWithoutExercises, "signed up before doing an exercise"],
+                ["Not linked", data.profiles.notLinked, "no session sent at signup, e.g. a tab running an older version of the site"],
+                ["Before signup tracking", data.profiles.beforeTracking, `created before ${formatDate(data.signupTrackingSince)}`],
+                ["Practised after signup", data.profiles.practised, "completed at least one exercise with the account"],
+              ] as const).map(([label, n, help]) => (
+                <div key={label}>
+                  <p className="text-xs text-muted-foreground">{label}</p>
+                  <p className="text-xl font-semibold tabular-nums">{n}</p>
+                  <p className="text-xs text-muted-foreground">{help}</p>
+                </div>
+              ))}
+            </div>
           </Card>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -201,7 +226,7 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
 
           <Card className="p-4 md:p-6">
             <h4 className="font-semibold">Per day</h4>
-            <p className="text-sm text-muted-foreground mb-2">New-visitor sessions by the day of their first exercise (UTC).</p>
+            <p className="text-sm text-muted-foreground mb-2">New-visitor sessions by the day of their first exercise, and new profiles by the day they were created (UTC).</p>
             {data.daily.length === 0 ? (
               <p className="text-sm text-muted-foreground">No sessions in this period.</p>
             ) : (
@@ -214,7 +239,7 @@ export const OnboardingDashboard = ({ apiBase }: { apiBase: string }) => {
                   <Legend wrapperStyle={{ fontSize: 12 }} />
                   <Bar dataKey="sessions" name="Sessions" fill={C.primary} radius={[4, 4, 0, 0]} isAnimationActive={false} />
                   <Bar dataKey="completed1" name="Completed an exercise" fill={C.done} radius={[4, 4, 0, 0]} isAnimationActive={false} />
-                  <Bar dataKey="signups" name="Profile created" fill={C.dropped} radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                  <Bar dataKey="profiles" name="New profiles" fill={C.dropped} radius={[4, 4, 0, 0]} isAnimationActive={false} />
                 </BarChart>
               </ResponsiveContainer>
             )}

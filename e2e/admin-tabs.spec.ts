@@ -53,7 +53,9 @@ test("User Metrics has Engagement and Onboarding; Onboarding shows the new-visit
         funnel: { sessions: 40, started: 20, completed1: 16, completed3: 4, signups: 2, views: 90, completions: 45 },
         depth: [{ k: 1, shown: 40, completed: 16 }, { k: 2, shown: 12, completed: 6 }],
         firstExercise: { untouched: 22, abandoned: 2, completed: 16 },
-        daily: [{ day: "2026-10-25", sessions: 40, completed1: 16, signups: 2 }],
+        daily: [{ day: "2026-10-25", sessions: 40, completed1: 16, signups: 2, profiles: 3 }],
+        signupTrackingSince: "2026-10-25T15:00:00Z",
+        profiles: { total: 3, afterExercises: 2, linkedWithoutExercises: 0, notLinked: 1, beforeTracking: 0, practised: 2 },
         entry: [{ sectionId: "s1", sectionName: "Satzbau", level: "A1", sessions: 40, completed1: 16, signups: 2, avgShown: 2.3, starterFirst: true }],
         sections: [{ sectionId: "s1", sectionName: "Satzbau", level: "A1", sessions: 40, views: 90, started: 50, completed: 45, scorePct: 80, hasStarters: true }],
         starters: [{ position: 1, shown: 30, started: 15, completed: 14 }],
@@ -65,9 +67,11 @@ test("User Metrics has Engagement and Onboarding; Onboarding shows the new-visit
   await page.getByRole("tab", { name: "Onboarding" }).click();
   await expect(page).toHaveURL(/view=onboarding/); // User Metrics is the default tab: no tab= in the URL
   await expect(page.getByRole("heading", { name: "Funnel" })).toBeVisible();
-  await expect(page.getByText("Profile created", { exact: true }).first()).toBeVisible();
+  await expect(page.getByText("Profile created (same tab)", { exact: true })).toBeVisible();
   await expect(page.getByText("Where new visitors land")).toBeVisible();
-  await expect(page.getByText("5%", { exact: true })).toBeVisible(); // 2 profiles of 40 sessions
+  await expect(page.getByText("2 practised after signing up")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "New profiles" })).toBeVisible();
+  await expect(page.getByText("Not linked", { exact: true })).toBeVisible();
 });
 
 test("links to the former separate tabs land on their new place", async ({ page }) => {

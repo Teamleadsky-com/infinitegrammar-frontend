@@ -9,12 +9,20 @@
  * Returns: funnel totals, how far sessions get (depth 1..10), what happens to the first exercise,
  * daily sessions and signups, entry sections (where sessions land), activity per section, and the
  * funnel across starter positions 1..10.
+ *
+ * profiles: every account created in the period (users, excluding analytics_excluded_users), not only
+ * the ones linked to a tracked session: after exercises in the same tab, linked without an exercise
+ * before signup, or not linked (e.g. a tab that ran an older version of the site). users.created_at is
+ * a timestamp without time zone in UTC.
  */
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders, num } from './_shared/db';
 
 const PERIODS: Record<string, number | null> = { '7': 7, '30': 30, '90': 90, all: null };
+
+// Signups send their session id since this deploy (#286); accounts created earlier can't be linked
+const SIGNUP_TRACKING_SINCE = '2026-10-25T15:00:00Z';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -56,7 +64,19 @@ export const handler: Handler = async (event) => {
         SELECT views.* FROM views JOIN sess USING (session_id)
       )`;
 
-    const [funnel, depth, firstExercise, daily, entry, sections, starters, range] = await Promise.all([
+    const profilesBase = sql`
+      WITH p AS (
+        SELECT u.id, u.created_at FROM users u
+        WHERE u.created_at >= (${since}::timestamptz AT TIME ZONE 'UTC')
+          AND u.id NOT IN (SELECT user_id FROM analytics_excluded_users)
+      ), linked AS (
+        SELECT p.id, p.created_at, s.session_id,
+               EXISTS (SELECT 1 FROM exercise_view_events e
+                       WHERE e.session_id = s.session_id AND e.user_id IS NULL AND e.event = 'shown') AS after_exercises
+        FROM p LEFT JOIN session_signups s ON s.user_id = p.id
+      )`;
+
+    const [funnel, depth, firstExercise, daily, entry, sections, starters, range, profiles, profilesDaily] = await Promise.all([
       sql`${base}
         SELECT count(*)::int AS sessions,
                count(*) FILTER (WHERE started > 0)::int AS started,
@@ -120,7 +140,28 @@ export const handler: Handler = async (event) => {
         FROM v WHERE starter_position IS NOT NULL
         GROUP BY 1 ORDER BY 1`,
       sql`SELECT min(created_at) AS first_event FROM exercise_view_events`,
+      sql`${profilesBase}
+        SELECT count(*)::int AS total,
+               count(*) FILTER (WHERE l.session_id IS NOT NULL AND l.after_exercises)::int AS after_exercises,
+               count(*) FILTER (WHERE l.session_id IS NOT NULL AND NOT l.after_exercises)::int AS linked_without_exercises,
+               count(*) FILTER (WHERE l.session_id IS NULL AND l.created_at >= (${SIGNUP_TRACKING_SINCE}::timestamptz AT TIME ZONE 'UTC'))::int AS not_linked,
+               count(*) FILTER (WHERE l.session_id IS NULL AND l.created_at < (${SIGNUP_TRACKING_SINCE}::timestamptz AT TIME ZONE 'UTC'))::int AS before_tracking,
+               count(*) FILTER (WHERE EXISTS (SELECT 1 FROM exercise_completions c WHERE c.user_id = l.id))::int AS practised
+        FROM linked l`,
+      sql`${profilesBase}
+        SELECT to_char(created_at, 'YYYY-MM-DD') AS day, count(*)::int AS profiles FROM p GROUP BY 1`,
     ]);
+
+    // Days with sessions or new profiles, from the first tracked day
+    const firstDay = range[0]?.first_event ? new Date(range[0].first_event).toISOString().slice(0, 10) : '';
+    const byDay = new Map<string, { day: string; sessions: number; completed1: number; signups: number; profiles: number }>();
+    for (const d of daily as any[]) byDay.set(d.day, { day: d.day, sessions: d.sessions, completed1: d.completed1, signups: d.signups, profiles: 0 });
+    for (const d of profilesDaily as any[]) {
+      if (d.day < firstDay) continue;
+      const row = byDay.get(d.day) || { day: d.day, sessions: 0, completed1: 0, signups: 0, profiles: 0 };
+      row.profiles = d.profiles;
+      byDay.set(d.day, row);
+    }
 
     const f: any = funnel[0] || {};
     return createResponse(200, {
@@ -138,7 +179,16 @@ export const handler: Handler = async (event) => {
       },
       depth: depth.map((d: any) => ({ k: d.k, shown: d.shown, completed: d.completed })),
       firstExercise: firstExercise[0] || { untouched: 0, abandoned: 0, completed: 0 },
-      daily: daily.map((d: any) => ({ day: d.day, sessions: d.sessions, completed1: d.completed1, signups: d.signups })),
+      daily: [...byDay.values()].sort((a, b) => a.day.localeCompare(b.day)),
+      signupTrackingSince: SIGNUP_TRACKING_SINCE,
+      profiles: {
+        total: profiles[0]?.total ?? 0,
+        afterExercises: profiles[0]?.after_exercises ?? 0,
+        linkedWithoutExercises: profiles[0]?.linked_without_exercises ?? 0,
+        notLinked: profiles[0]?.not_linked ?? 0,
+        beforeTracking: profiles[0]?.before_tracking ?? 0,
+        practised: profiles[0]?.practised ?? 0,
+      },
       entry: entry.map((e: any) => ({
         sectionId: e.section_id,
         sectionName: e.section_name,
