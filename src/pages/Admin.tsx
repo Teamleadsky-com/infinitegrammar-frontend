@@ -54,11 +54,23 @@ const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
 const Admin = () => {
   const navigate = useNavigate();
-  // The open tab lives in the URL (?tab=), so dashboards can link to each other (e.g. ?tab=trace&run=<id>)
+  // The open page lives in the URL: ?tab= for the page, ?view= for its sub-tab (Campaign, Pipeline), so
+  // dashboards can link to each other (e.g. ?tab=pipeline&view=trace&run=<id>). Links to the former
+  // separate tabs (?tab=templates, ?tab=trace, ...) open their new place.
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get("tab") || "dashboard";
+  const LEGACY_TABS: Record<string, [string, string]> = {
+    dashboard: ["campaign", "overview"],
+    templates: ["campaign", "templates"],
+    settings: ["campaign", "settings"],
+    pipelines: ["pipeline", "runs"],
+    trace: ["pipeline", "trace"],
+  };
+  const rawTab = searchParams.get("tab");
+  const [tab, legacyView] = (rawTab && LEGACY_TABS[rawTab]) || [rawTab || "metrics", null];
+  const view = searchParams.get("view") || legacyView || (tab === "campaign" ? "overview" : "runs");
   const setTab = (value: string, extra: Record<string, string> = {}) =>
-    setSearchParams(new URLSearchParams({ ...(value === "dashboard" ? {} : { tab: value }), ...extra }));
+    setSearchParams(new URLSearchParams({ ...(value === "metrics" ? {} : { tab: value }), ...extra }));
+  const setView = (value: string) => setTab(tab, { view: value });
   const { t } = useTranslation();
   const { user, isLoading: authLoading } = useAuth();
   const { toast } = useToast();
@@ -223,7 +235,7 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className={`container mx-auto px-4 py-8 ${tab === "trace" ? "max-w-7xl" : "max-w-5xl"}`}>
+      <main className={`container mx-auto px-4 py-8 ${tab === "pipeline" && view === "trace" ? "max-w-7xl" : "max-w-5xl"}`}>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-muted-foreground">Loading...</p>
@@ -231,25 +243,13 @@ const Admin = () => {
         ) : (
           <Tabs value={tab} onValueChange={(value) => setTab(value)} className="space-y-6">
             <TabsList className="flex flex-wrap h-auto w-full justify-start gap-1">
-              <TabsTrigger value="dashboard" className="gap-2">
-                <BarChart3 className="h-4 w-4" />
-                {t("admin.dashboard")}
-              </TabsTrigger>
-              <TabsTrigger value="templates" className="gap-2">
-                <FileText className="h-4 w-4" />
-                {t("admin.templates")}
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="gap-2">
-                <Settings className="h-4 w-4" />
-                {t("admin.settings")}
-              </TabsTrigger>
-              <TabsTrigger value="similarity" className="gap-2">
-                <ShieldCheck className="h-4 w-4" />
-                {t("admin.similarity.tabLabel", "Similarity")}
-              </TabsTrigger>
               <TabsTrigger value="metrics" className="gap-2">
                 <TrendingUp className="h-4 w-4" />
-                Metrics
+                User Metrics
+              </TabsTrigger>
+              <TabsTrigger value="campaign" className="gap-2">
+                <Mail className="h-4 w-4" />
+                {t("admin.dashboard")}
               </TabsTrigger>
               <TabsTrigger value="supply" className="gap-2">
                 <Boxes className="h-4 w-4" />
@@ -264,18 +264,27 @@ const Admin = () => {
                   </Badge>
                 )}
               </TabsTrigger>
-              <TabsTrigger value="pipelines" className="gap-2">
+              <TabsTrigger value="pipeline" className="gap-2">
                 <GitBranch className="h-4 w-4" />
-                Pipelines
+                Pipeline
               </TabsTrigger>
-              <TabsTrigger value="trace" className="gap-2">
-                <Workflow className="h-4 w-4" />
-                Pipeline trace
+              <TabsTrigger value="similarity" className="gap-2">
+                <ShieldCheck className="h-4 w-4" />
+                {t("admin.similarity.tabLabel", "Similarity")}
               </TabsTrigger>
             </TabsList>
 
-            {/* Dashboard Tab */}
-            <TabsContent value="dashboard" className="space-y-6">
+            {/* Campaign: overview, templates and settings as sub-tabs */}
+            <TabsContent value="campaign" className="mt-0">
+            <Tabs value={view} onValueChange={setView}>
+            <TabsList className="inline-flex flex-wrap h-auto justify-start mb-4">
+              <TabsTrigger value="overview" className="gap-2"><BarChart3 className="h-4 w-4" />{t("admin.campaignOverview")}</TabsTrigger>
+              <TabsTrigger value="templates" className="gap-2"><FileText className="h-4 w-4" />{t("admin.campaignTemplates")}</TabsTrigger>
+              <TabsTrigger value="settings" className="gap-2"><Settings className="h-4 w-4" />{t("admin.campaignSettings")}</TabsTrigger>
+            </TabsList>
+
+            {/* Overview */}
+            <TabsContent value="overview" className="space-y-6 mt-0">
               {/* Campaign Toggle */}
               <Card className="p-6 animate-fade-in">
                 <div className="flex items-center justify-between">
@@ -393,8 +402,8 @@ const Admin = () => {
               </Card>
             </TabsContent>
 
-            {/* Templates Tab */}
-            <TabsContent value="templates" className="space-y-6">
+            {/* Templates */}
+            <TabsContent value="templates" className="space-y-6 mt-0">
               {data?.templates?.map((template: any) => (
                 <Card key={template.id} className="p-6 animate-fade-in">
                   <div className="flex items-center justify-between mb-4">
@@ -495,8 +504,8 @@ const Admin = () => {
               ))}
             </TabsContent>
 
-            {/* Settings Tab */}
-            <TabsContent value="settings">
+            {/* Settings */}
+            <TabsContent value="settings" className="mt-0">
               <Card className="p-6 animate-fade-in">
                 <h3 className="text-lg font-semibold mb-6">{t("admin.campaignRules")}</h3>
                 <div className="space-y-6">
@@ -584,6 +593,8 @@ const Admin = () => {
                 </div>
               </Card>
             </TabsContent>
+            </Tabs>
+            </TabsContent>
 
             {/* Similarity Tab */}
             <TabsContent value="similarity" className="space-y-6">
@@ -603,12 +614,20 @@ const Admin = () => {
               <QualityDashboard apiBase={API_BASE} onLearnerReportsChange={setLearnerReports} />
             </TabsContent>
 
-            <TabsContent value="pipelines" className="space-y-6">
-              <PipelinesDashboard apiBase={API_BASE} onOpenTrace={(runId) => setTab("trace", { run: runId })} />
-            </TabsContent>
-
-            <TabsContent value="trace" className="space-y-6">
-              <PipelineTraceDashboard apiBase={API_BASE} onOpenExercise={(id) => setTab("quality", { exercise: id })} />
+            {/* Pipeline: runs and the stage-by-stage trace as sub-tabs */}
+            <TabsContent value="pipeline" className="mt-0">
+              <Tabs value={view} onValueChange={setView}>
+                <TabsList className="inline-flex flex-wrap h-auto justify-start mb-4">
+                  <TabsTrigger value="runs" className="gap-2"><GitBranch className="h-4 w-4" />Runs</TabsTrigger>
+                  <TabsTrigger value="trace" className="gap-2"><Workflow className="h-4 w-4" />Trace</TabsTrigger>
+                </TabsList>
+                <TabsContent value="runs" className="space-y-6 mt-0">
+                  <PipelinesDashboard apiBase={API_BASE} onOpenTrace={(runId) => setTab("pipeline", { view: "trace", run: runId })} />
+                </TabsContent>
+                <TabsContent value="trace" className="space-y-6 mt-0">
+                  <PipelineTraceDashboard apiBase={API_BASE} onOpenExercise={(id) => setTab("quality", { exercise: id })} />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
           </Tabs>
         )}
