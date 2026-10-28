@@ -119,7 +119,7 @@ const StepCard = ({
   );
 };
 
-const AttemptDetailView = ({
+export const AttemptDetailView = ({
   apiBase,
   runId,
   attemptId,
