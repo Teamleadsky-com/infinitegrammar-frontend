@@ -34,6 +34,7 @@ import {
   GitBranch,
   Workflow,
   UserPlus,
+  FlaskConical,
 } from "lucide-react";
 import {
   BarChart,
@@ -51,6 +52,7 @@ import { QualityDashboard } from "@/components/admin/QualityDashboard";
 import { PipelinesDashboard } from "@/components/admin/PipelinesDashboard";
 import { PipelineTraceDashboard } from "@/components/admin/PipelineTraceDashboard";
 import { OnboardingDashboard } from "@/components/admin/OnboardingDashboard";
+import { BenchDashboard } from "@/components/admin/BenchDashboard";
 
 const ADMIN_EMAIL = "aleksandr.zuravliov1@gmail.com";
 
@@ -238,7 +240,7 @@ const Admin = () => {
         </div>
       </header>
 
-      <main className={`container mx-auto px-4 py-8 ${tab === "pipeline" && view === "trace" ? "max-w-7xl" : "max-w-5xl"}`}>
+      <main className={`container mx-auto px-4 py-8 ${tab === "pipeline" && (view === "trace" || view === "bench") ? "max-w-7xl" : "max-w-5xl"}`}>
         {loading ? (
           <div className="flex items-center justify-center py-12">
             <p className="text-muted-foreground">Loading...</p>
@@ -634,12 +636,16 @@ const Admin = () => {
                 <TabsList className="inline-flex flex-wrap h-auto justify-start mb-4">
                   <TabsTrigger value="runs" className="gap-2"><GitBranch className="h-4 w-4" />Runs</TabsTrigger>
                   <TabsTrigger value="trace" className="gap-2"><Workflow className="h-4 w-4" />Trace</TabsTrigger>
+                  <TabsTrigger value="bench" className="gap-2"><FlaskConical className="h-4 w-4" />Verifier benchmark</TabsTrigger>
                 </TabsList>
                 <TabsContent value="runs" className="space-y-6 mt-0">
                   <PipelinesDashboard apiBase={API_BASE} onOpenTrace={(runId) => setTab("pipeline", { view: "trace", run: runId })} />
                 </TabsContent>
                 <TabsContent value="trace" className="space-y-6 mt-0">
                   <PipelineTraceDashboard apiBase={API_BASE} onOpenExercise={(id) => setTab("quality", { exercise: id })} />
+                </TabsContent>
+                <TabsContent value="bench" className="space-y-6 mt-0">
+                  <BenchDashboard apiBase={API_BASE} onOpenTrace={(runId) => setTab("pipeline", { view: "trace", run: runId })} />
                 </TabsContent>
               </Tabs>
             </TabsContent>
