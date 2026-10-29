@@ -3,6 +3,7 @@ import { Info } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { TooltipPortal } from "@radix-ui/react-tooltip";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { formatInterval, formatRate, outcome, OUTCOME_LABELS, verdictRight, wilson } from "@/lib/bench";
 
@@ -35,7 +36,10 @@ export const PrevalencePicker = ({ value, onChange }: { value: number; onChange:
   </div>
 );
 
-/** A small info icon with a definition on hover. */
+/**
+ * A small info icon with a definition on hover. The text is portalled to the page body, so table cells
+ * with whitespace-nowrap and scrolling table containers neither stop it wrapping nor clip it.
+ */
 export const Help = ({ children }: { children: ReactNode }) => (
   <Tooltip>
     <TooltipTrigger asChild>
@@ -43,7 +47,11 @@ export const Help = ({ children }: { children: ReactNode }) => (
         <Info className="h-3.5 w-3.5" />
       </button>
     </TooltipTrigger>
-    <TooltipContent className="max-w-xs text-xs font-normal leading-relaxed">{children}</TooltipContent>
+    <TooltipPortal>
+      <TooltipContent collisionPadding={16} className="max-w-xs whitespace-normal break-words text-left text-xs font-normal leading-relaxed">
+        {children}
+      </TooltipContent>
+    </TooltipPortal>
   </Tooltip>
 );
 
