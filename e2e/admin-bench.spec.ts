@@ -100,3 +100,20 @@ test("the benchmark links to the run in the Pipeline trace", async ({ page }) =>
   await page.getByRole("button", { name: "Open in Pipeline trace" }).last().click();
   await expect(page).toHaveURL(/tab=pipeline&view=trace&run=bench_a/);
 });
+
+test("metric definitions wrap in their tooltip and stay inside the viewport", async ({ page }) => {
+  await setUp(page);
+  await page.getByRole("columnheader", { name: /PPV/ }).getByRole("button", { name: "Definition" }).hover(); // the longest header definition
+  const tip = page.getByRole("tooltip");
+  await expect(tip).toContainText("Precision rescaled to production");
+  const content = page.locator("[data-radix-popper-content-wrapper] > div").first();
+  const box = (await content.boundingBox())!;
+  const viewport = page.viewportSize()!;
+  expect(box.width).toBeLessThanOrEqual(330); // max-w-xs
+  expect(box.height).toBeGreaterThan(60); // several lines, not one cut line
+  expect(box.x).toBeGreaterThanOrEqual(0);
+  expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
+  const scrolls = await content.evaluate((el) => el.scrollWidth > el.clientWidth + 1);
+  expect(scrolls).toBe(false);
+  await page.screenshot({ path: test.info().outputPath("tooltip.png") });
+});
