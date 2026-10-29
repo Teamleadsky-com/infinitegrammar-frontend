@@ -8,6 +8,7 @@
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders, num } from './_shared/db';
+import { typeMetric } from './_shared/bench';
 
 const item = (r: any) => ({
   attemptId: r.attempt_id,
@@ -77,11 +78,10 @@ export const handler: Handler = async (event) => {
         WHERE a.run_id = ${runId} AND b.run_id = ${compare} AND a.done AND b.done
         ORDER BY (a.planted_type = 'clean'), a.planted_type, a.attempt_id
       `,
-      sql`SELECT planted_type, type_label, type_order, n, rejected, rejected_pct FROM v_bench_type_metrics WHERE run_id = ${runId} ORDER BY type_order`,
-      sql`SELECT planted_type, type_label, type_order, n, rejected, rejected_pct FROM v_bench_type_metrics WHERE run_id = ${compare} ORDER BY type_order`,
+      sql`SELECT * FROM v_bench_type_metrics WHERE run_id = ${runId} ORDER BY type_order`,
+      sql`SELECT * FROM v_bench_type_metrics WHERE run_id = ${compare} ORDER BY type_order`,
     ]);
 
-    const types = (t: any) => ({ type: t.planted_type, label: t.type_label, order: t.type_order, n: t.n, rejected: t.rejected, rejectedPct: num(t.rejected_pct) });
     return createResponse(200, {
       subsetsDiffer: a.subset !== b.subset,
       subsets: { a: a.subset, b: b.subset },
@@ -97,8 +97,8 @@ export const handler: Handler = async (event) => {
         aCodes: r.a_codes || [],
         bCodes: r.b_codes || [],
       })),
-      typesA: typesA.map(types),
-      typesB: typesB.map(types),
+      typesA: typesA.map(typeMetric),
+      typesB: typesB.map(typeMetric),
     });
   } catch (error) {
     return handleError(error);

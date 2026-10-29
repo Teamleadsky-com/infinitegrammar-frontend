@@ -7,7 +7,7 @@ import { fetchJson } from "../dashboardShared";
 import { ExerciseView, IssueCodeChips } from "../trace/TraceBits";
 import { AttemptDetailView } from "../trace/AttemptSheet";
 import { TraceExercise, diffExercise, exercisesDiffer } from "@/lib/pipelineTrace";
-import { verdictLabel, verdictRight } from "@/lib/bench";
+import { OutcomeBadge } from "./BenchBits";
 
 // Stage names of the Pipeline trace (v_pipeline_stage_labels)
 const STAGE_LABELS: Record<string, string> = {
@@ -39,19 +39,6 @@ type BenchItem = {
   cleanTwin: string | null;
 };
 type ItemData = { item: BenchItem; parentExercise: TraceExercise | null; itemExercise: TraceExercise | null };
-
-export const VerdictBadge = ({ plantedType, rejected }: { plantedType: string; rejected: boolean }) => (
-  <Badge
-    variant="outline"
-    className={
-      verdictRight(plantedType, rejected)
-        ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-950/50 dark:text-green-300"
-        : "bg-red-100 text-red-800 border-red-200 dark:bg-red-950/50 dark:text-red-300"
-    }
-  >
-    {rejected ? "rejected" : "accepted"} · {verdictLabel(plantedType, rejected)}
-  </Badge>
-);
 
 /**
  * A benchmark item (spec §5.6.5): what was planted, the item compared with its clean parent, and the steps
@@ -104,7 +91,7 @@ export const BenchItemSheet = ({
                 <span className="text-sm font-medium">{it.typeLabel}</span>
                 {it.plantedVariant && <Badge variant="outline">{it.plantedVariant}</Badge>}
                 {it.plantedAuthor && <Badge variant="secondary">by {it.plantedAuthor}</Badge>}
-                {runs.length === 1 && <VerdictBadge plantedType={it.plantedType} rejected={it.rejected} />}
+                {runs.length === 1 && <OutcomeBadge plantedType={it.plantedType} rejected={it.rejected} />}
               </div>
               {it.plantedNote && <p className="text-sm">{it.plantedNote}</p>}
               <div className="flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted-foreground">

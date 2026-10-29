@@ -1,7 +1,8 @@
 import { expect, test, type Page, type Route } from "@playwright/test";
 
 // Admin Pipeline -> Verifier benchmark (generator spec §5.6), against intercepted API responses: the runs
-// table with rates and their n, one run by defect type and stage, and two runs compared.
+// table in standard metrics with their n and 95% intervals, one run (confusion matrix, defect types, stages,
+// outcomes) and two runs compared pairwise.
 
 const run = (id: string, config: string, tag: string, detection: number, falseRejects: number) => ({
   runId: id, config, tag, dataset: "verifier_bench_v1", subset: "pilot", status: "finished", mode: "sync",
@@ -54,29 +55,43 @@ async function setUp(page: Page) {
   await expect(page.getByRole("heading", { name: "Verifier benchmark" })).toBeVisible({ timeout: 15_000 });
 }
 
-test("runs table shows rates with their n, and a run opens by type, stage and item", async ({ page }) => {
+test("runs table shows standard metrics with n and intervals, and a run opens by outcome, type and stage", async ({ page }) => {
   await setUp(page);
-  await expect(page.getByText("94.4% (n = 18)")).toBeVisible();
-  await expect(page.getByText("16.7% (n = 6)")).toBeVisible();
-  await expect(page.getByText("The pilot subset has 18 planted and 6 clean items")).toBeVisible();
+  await expect(page.getByText("The positive class is a flawed exercise", { exact: false })).toBeVisible();
+  await expect(page.getByText("17 / 18 · CI 74–99%")).toBeVisible();
+  await expect(page.getByText("1 / 6 · CI 3–56%")).toBeVisible();
+  await expect(page.getByText("The pilot subset has 18 flawed and 6 clean items", { exact: false })).toBeVisible();
+  // PPV at the default 20% flawed, from TPR 17/18 and FPR 1/6 (= precision_at_20_pct of the view)
+  await expect(page.getByRole("cell", { name: "58.6%" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recall vs false-positive rate" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recall by defect type, all setups" })).toBeVisible();
+
+  await page.getByText("Method, metric definitions and FAQ").click();
+  await expect(page.getByText("Why not F1?")).toBeVisible();
 
   await page.getByText("verifier_bench_sub6").click();
-  await expect(page.getByRole("heading", { name: "By defect type", exact: true })).toBeVisible();
-  await expect(page.getByText("Clean items rejected: false rejects, lower is better")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Confusion matrix" })).toBeVisible();
+  await expect(page.getByText("Missed (FN):")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Recall by defect type", exact: true })).toBeVisible();
+  await expect(page.getByText("Clean items rejected: FPR, lower is better")).toBeVisible();
   await expect(page.getByRole("cell", { name: "Final gate (FG1-FG6)" })).toBeVisible();
-  await expect(page.getByText("accepted · missed")).toBeVisible();
-  await expect(page.getByText("rejected · false reject")).toBeVisible();
+  await expect(page.getByText("FNmissed")).toBeVisible();
+  await expect(page.getByText("FPclean rejected")).toBeVisible();
 });
 
-test("two runs of the same dataset compare with the exact McNemar test", async ({ page }) => {
+test("two runs of the same dataset compare pairwise: McNemar, Newcombe interval and who is right", async ({ page }) => {
   await setUp(page);
   await page.getByRole("checkbox", { name: "Compare bench_a" }).click();
   await page.getByRole("checkbox", { name: "Compare bench_b" }).click();
   await page.getByRole("button", { name: "Compare A and B" }).click();
-  await expect(page.getByText("A: sub6 · B: fg2")).toBeVisible();
+  await expect(page.getByText("A: sub6").first()).toBeVisible();
   await expect(page.getByText("p = 1.00 · could be chance").first()).toBeVisible();
+  await expect(page.getByText("95% CI of B − A")).toBeVisible();
+  await expect(page.getByText("needs at least 6 discordant items", { exact: false })).toBeVisible();
   await expect(page.getByText("Items where A and B differ (1)")).toBeVisible();
   await expect(page.getByRole("cell", { name: "vb1-p4-P10-9" })).toBeVisible();
+  await page.getByRole("button", { name: "B right (0)" }).click();
+  await expect(page.getByRole("cell", { name: "vb1-p4-P10-9" })).toHaveCount(0);
 });
 
 test("the benchmark links to the run in the Pipeline trace", async ({ page }) => {
