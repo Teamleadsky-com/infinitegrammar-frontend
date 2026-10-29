@@ -41,8 +41,15 @@ jobs:
             "${PRODUCTION_URL}/robots.txt" \
             --output /tmp/robots.txt
 
-          grep -qi "Sitemap: ${EXPECTED_SITEMAP_URL}" /tmp/robots.txt
-          grep -qi "Disallow: /admin" /tmp/robots.txt
+          grep -qi "Sitemap: ${EXPECTED_SITEMAP_URL}" /tmp/robots.txt \
+            || { echo "::error::robots.txt does not reference ${EXPECTED_SITEMAP_URL}"; exit 1; }
+
+          # INDEX-015: app routes (/admin, /exercise, ...) are crawlable and serve a noindex meta tag.
+          # A robots.txt block would hide that noindex and leave them eligible as URL-only results.
+          if grep -Eqi '^[[:space:]]*Disallow:[[:space:]]*/admin([/?*]|[[:space:]]*$)' /tmp/robots.txt; then
+            echo "::error::robots.txt must not disallow /admin (INDEX-015: app routes are crawlable and noindex)"
+            exit 1
+          fi
 
           curl \
             --fail \
@@ -53,7 +60,8 @@ jobs:
             "${EXPECTED_SITEMAP_URL}" \
             --output /tmp/sitemap.xml
 
-          grep -Eqi "<(urlset|sitemapindex)[^>]*>" /tmp/sitemap.xml
+          grep -Eqi "<(urlset|sitemapindex)[^>]*>" /tmp/sitemap.xml \
+            || { echo "::error::${EXPECTED_SITEMAP_URL} is not a sitemap"; exit 1; }
 
           curl \
             --fail \
@@ -64,7 +72,20 @@ jobs:
             "${PRODUCTION_URL}/" \
             --output /tmp/home.html
 
-          grep -qi "<html" /tmp/home.html
+          grep -qi "<html" /tmp/home.html \
+            || { echo "::error::the homepage did not return HTML"; exit 1; }
+
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --location \
+            --max-time 30 \
+            "${PRODUCTION_URL}/admin/" \
+            --output /tmp/admin.html
+
+          grep -Eqi '<meta[^>]+name="robots"[^>]+content="[^"]*noindex' /tmp/admin.html \
+            || { echo "::error::/admin/ must serve <meta name=\"robots\" content=\"noindex\"> (INDEX-015)"; exit 1; }
 
           echo "Production smoke check passed."
 
