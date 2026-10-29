@@ -28,7 +28,18 @@ export type BenchRun = {
   finalGateModel: string | null;
 };
 
-export type BenchTypeMetric = { type: string; label: string; order: number; n: number; rejected: number; rejectedPct: number | null };
+/** One run's result for one planted type (or clean): rejected = TP for a planted type, FP for clean. */
+export type BenchTypeMetric = {
+  type: string;
+  label: string;
+  order: number;
+  n: number;
+  rejected: number;
+  rejectedPct: number | null;
+  rejectedExpected: number;
+  nWithGap: number;
+  atGap: number;
+};
 
 export type BenchItemRow = {
   attemptId: string;
@@ -51,4 +62,19 @@ export type BenchItemRow = {
   costUsd: number | null;
   callSeconds: number | null;
   wallSeconds: number | null;
+};
+
+/** One run's result for one stage (v_bench_stage_metrics): own = the flawed items of the types the stage targets. */
+export type BenchStageMetric = {
+  stage: string;
+  label: string;
+  order: number;
+  plantedN: number;
+  plantedFlagged: number;
+  ownN: number;
+  ownFlagged: number;
+  ownRecallPct: number | null;
+  cleanN: number;
+  cleanFlagged: number;
+  cleanFlaggedPct: number | null;
 };

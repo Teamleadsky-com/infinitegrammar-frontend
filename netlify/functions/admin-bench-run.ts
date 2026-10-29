@@ -7,6 +7,7 @@
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders, num } from './_shared/db';
+import { typeMetric } from './_shared/bench';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -35,17 +36,7 @@ export const handler: Handler = async (event) => {
     ]);
 
     return createResponse(200, {
-      types: types.map((t: any) => ({
-        type: t.planted_type,
-        label: t.type_label,
-        order: t.type_order,
-        n: t.n,
-        rejected: t.rejected,
-        rejectedPct: num(t.rejected_pct),
-        rejectedExpected: t.rejected_expected,
-        nWithGap: t.n_with_gap,
-        atGap: t.at_gap,
-      })),
+      types: types.map(typeMetric),
       stages: stages.map((s: any) => ({
         stage: s.stage,
         label: s.stage_label,

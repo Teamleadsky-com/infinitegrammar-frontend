@@ -3,11 +3,13 @@
  *
  * Verifier benchmark runs (generator spec §5.6.1; migration 015 views): one row per run of
  * v_bench_runs, newest first, with detection, false rejects, balanced accuracy, precision at 20% and
- * 50% flawed, cost and time per item; plus the defect type labels (v_bench_type_labels).
+ * 50% flawed, cost and time per item; plus the defect type labels (v_bench_type_labels) and every run's
+ * results by defect type (v_bench_type_metrics), for the defect type × run heatmap.
  */
 
 import { Handler } from '@netlify/functions';
 import { sql, createResponse, handleError, corsHeaders, num } from './_shared/db';
+import { typeMetric } from './_shared/bench';
 
 export const handler: Handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
@@ -18,7 +20,7 @@ export const handler: Handler = async (event) => {
   }
 
   try {
-    const [runs, labels] = await Promise.all([
+    const [runs, labels, types] = await Promise.all([
       sql`
         SELECT run_id, config, tag, dataset, subset, status, mode, started_at, finished_at, items, done, planted,
                caught, caught_expected, clean, false_rejects, detection_pct, false_reject_pct, balanced_accuracy_pct,
@@ -28,7 +30,14 @@ export const handler: Handler = async (event) => {
         ORDER BY started_at DESC NULLS LAST, run_id
       `,
       sql`SELECT planted_type, type_label, type_order FROM v_bench_type_labels ORDER BY type_order`,
+      sql`
+        SELECT run_id, planted_type, type_label, type_order, n, rejected, rejected_pct, rejected_expected, n_with_gap, at_gap
+        FROM v_bench_type_metrics ORDER BY run_id, type_order
+      `,
     ]);
+
+    const typesByRun: Record<string, unknown[]> = {};
+    for (const t of types as any[]) (typesByRun[t.run_id] ||= []).push(typeMetric(t));
 
     return createResponse(200, {
       runs: runs.map((r: any) => ({
@@ -60,6 +69,7 @@ export const handler: Handler = async (event) => {
         models: r.models || [],
         finalGateModel: r.final_gate_model,
       })),
+      typesByRun,
       typeLabels: labels.map((l: any) => ({ type: l.planted_type, label: l.type_label, order: l.type_order })),
     });
   } catch (error) {
