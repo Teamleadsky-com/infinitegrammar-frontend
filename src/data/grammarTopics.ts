@@ -63,7 +63,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-wortstellung',
     slug: 'wortstellung-regeln-lernen',
-    title: 'Deutsche Wortstellung A1',
+    title: 'Wortstellung',
     level: 'A1',
     category: 'satzbau',
     shortDescription: 'Grundlegende Satzstellung im Deutschen',
@@ -73,7 +73,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-praesens',
     slug: 'praesens-gegenwart-deutsch',
-    title: 'Deutsche Präsens A1',
+    title: 'Präsens',
     level: 'A1',
     category: 'zeiten',
     shortDescription: 'Gegenwart: regelmäßige und unregelmäßige Verben',
@@ -83,7 +83,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-imperativ',
     slug: 'imperativ-befehlsform-deutsch',
-    title: 'Deutsche Imperativ A1',
+    title: 'Imperativ',
     level: 'A1',
     category: 'zeiten',
     shortDescription: 'Befehlsform: du, ihr, Sie',
@@ -93,7 +93,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-artikel-nominativ',
     slug: 'artikel-nominativ-der-die-das',
-    title: 'Deutsche Artikel Nominativ A1',
+    title: 'Artikel Nominativ',
     level: 'A1',
     category: 'nomen',
     shortDescription: 'Bestimmte und unbestimmte Artikel',
@@ -103,7 +103,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-personalpronomen',
     slug: 'personalpronomen-nominativ-ich-du-er',
-    title: 'Deutsche Personalpronomen Nominativ A1',
+    title: 'Personalpronomen Nominativ',
     level: 'A1',
     category: 'nomen',
     shortDescription: 'ich, du, er, sie, es, wir, ihr, sie',
@@ -113,7 +113,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-pluralbildung',
     slug: 'pluralbildung-plural-deutsch-lernen',
-    title: 'Deutsche Pluralbildung A1',
+    title: 'Pluralbildung',
     level: 'A1',
     category: 'nomen',
     shortDescription: 'Wie man den Plural bildet',
@@ -123,7 +123,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-praepositionen-ort',
     slug: 'lokale-praepositionen-ort-deutsch',
-    title: 'Deutsche Präpositionen Ort A1',
+    title: 'Präpositionen Ort',
     level: 'A1',
     category: 'kasus',
     shortDescription: 'in, auf, an, bei, vor, hinter, ...',
@@ -133,7 +133,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-zeitpraepositionen',
     slug: 'temporale-praepositionen-zeit-deutsch',
-    title: 'Deutsche Zeitpräpositionen A1',
+    title: 'Zeitpräpositionen',
     level: 'A1',
     category: 'kasus',
     shortDescription: 'um, am, im, von...bis',
@@ -143,7 +143,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a1-adjektive-grundform',
     slug: 'adjektive-grundform-deutsch',
-    title: 'Deutsche Adjektive Grundform A1',
+    title: 'Adjektive Grundform',
     level: 'A1',
     category: 'adjektive',
     shortDescription: 'Prädikative und adverbiale Verwendung',
@@ -155,7 +155,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-komplexe-saetze',
     slug: 'komplexe-saetze-nebensaetze-deutsch',
-    title: 'Komplexe Sätze A2',
+    title: 'Komplexe Sätze',
     level: 'A2',
     category: 'satzbau',
     shortDescription: 'Hauptsatz + Hauptsatz, erste Nebensätze',
@@ -165,7 +165,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-perfekt-praeteritum',
     slug: 'perfekt-praeteritum-vergangenheit-deutsch',
-    title: 'Perfekt vs. Präteritum A2',
+    title: 'Perfekt vs. Präteritum',
     level: 'A2',
     category: 'zeiten',
     shortDescription: 'Unterschied zwischen Perfekt und Präteritum',
@@ -175,7 +175,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-modalverben',
     slug: 'modalverben-koennen-muessen-wollen-deutsch',
-    title: 'Deutsche Modalverben A2',
+    title: 'Modalverben',
     level: 'A2',
     category: 'zeiten',
     shortDescription: 'können, müssen, wollen, sollen, dürfen, mögen',
@@ -185,7 +185,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-trennbare-verben',
     slug: 'trennbare-verben-aufstehen-einkaufen',
-    title: 'Trennbare Verben A2',
+    title: 'Trennbare Verben',
     level: 'A2',
     category: 'verben',
     shortDescription: 'aufstehen, einkaufen, mitnehmen, ...',
@@ -195,7 +195,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-pronomen-grundlagen',
     slug: 'pronomen-akkusativ-dativ-deutsch',
-    title: 'Pronomen Grundlagen A2',
+    title: 'Pronomen Grundlagen',
     level: 'A2',
     category: 'nomen',
     shortDescription: 'Akkusativ- und Dativpronomen',
@@ -205,7 +205,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-artikel-kasus',
     slug: 'artikel-kasus-vier-faelle-deutsch',
-    title: 'Artikel & Kasus A2',
+    title: 'Artikel & Kasus',
     level: 'A2',
     category: 'nomen',
     shortDescription: 'Nominativ, Akkusativ, Dativ',
@@ -215,7 +215,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-praepositionen-ort-richtung',
     slug: 'praepositionen-ort-richtung-wo-wohin',
-    title: 'Präpositionen Ort & Richtung A2',
+    title: 'Präpositionen Ort & Richtung',
     level: 'A2',
     category: 'kasus',
     shortDescription: 'Lokale Präpositionen erweitert',
@@ -225,7 +225,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-adjektivdeklination-einstieg',
     slug: 'adjektivdeklination-einstieg-endungen',
-    title: 'Adjektivdeklination Einstieg A2',
+    title: 'Adjektivdeklination Einstieg',
     level: 'A2',
     category: 'adjektive',
     shortDescription: 'Erste Endungen bei attributiven Adjektiven',
@@ -235,7 +235,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'a2-komparativ-superlativ',
     slug: 'komparativ-superlativ-steigerung-adjektive',
-    title: 'Komparativ & Superlativ A2',
+    title: 'Komparativ & Superlativ',
     level: 'A2',
     category: 'adjektive',
     shortDescription: 'Steigerung von Adjektiven',
@@ -247,7 +247,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-nebensaetze-konjunktionen',
     slug: 'nebensaetze-konjunktionen-weil-dass-obwohl',
-    title: 'Nebensätze & Konjunktionen B1',
+    title: 'Nebensätze & Konjunktionen',
     level: 'B1',
     category: 'satzbau',
     shortDescription: 'weil, dass, obwohl, während, ...',
@@ -257,7 +257,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-relativsaetze',
     slug: 'relativsaetze-relativpronomen-deutsch',
-    title: 'Deutsche Relativsätze B1',
+    title: 'Relativsätze',
     level: 'B1',
     category: 'satzbau',
     shortDescription: 'der, die, das als Relativpronomen',
@@ -267,7 +267,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-indirekte-fragen',
     slug: 'indirekte-fragen-ob-wann-wo-wie',
-    title: 'Indirekte Fragen B1',
+    title: 'Indirekte Fragen',
     level: 'B1',
     category: 'satzbau',
     shortDescription: 'Ich weiß nicht, ob/wann/wo/...',
@@ -277,7 +277,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-futur',
     slug: 'futur-1-zukunft-deutsch-werden',
-    title: 'Futur I B1',
+    title: 'Futur I',
     level: 'B1',
     category: 'zeiten',
     shortDescription: 'Zukunft mit werden + Infinitiv',
@@ -287,7 +287,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-modalverben-praeteritum',
     slug: 'modalverben-praeteritum-konnte-musste',
-    title: 'Modalverben Präteritum B1',
+    title: 'Modalverben Präteritum',
     level: 'B1',
     category: 'zeiten',
     shortDescription: 'konnte, musste, wollte, ...',
@@ -297,7 +297,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-konjunktiv-2',
     slug: 'konjunktiv-2-wuensche-hoeflichkeit',
-    title: 'Konjunktiv II B1',
+    title: 'Konjunktiv II',
     level: 'B1',
     category: 'zeiten',
     shortDescription: 'Wünsche und Höflichkeit',
@@ -307,7 +307,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-reflexive-verben',
     slug: 'reflexive-verben-sich-freuen-erinnern',
-    title: 'Reflexive Verben B1',
+    title: 'Reflexive Verben',
     level: 'B1',
     category: 'verben',
     shortDescription: 'sich freuen, sich erinnern, ...',
@@ -317,7 +317,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-verben-mit-praeposition',
     slug: 'verben-mit-praeposition-warten-auf-denken-an',
-    title: 'Verben mit Präposition B1',
+    title: 'Verben mit Präposition',
     level: 'B1',
     category: 'verben',
     shortDescription: 'warten auf, denken an, sich freuen über, ...',
@@ -327,7 +327,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-wechselpraepositionen',
     slug: 'wechselpraepositionen-wo-wohin-dativ-akkusativ',
-    title: 'Wechselpräpositionen: Wo? Wohin? B1',
+    title: 'Wechselpräpositionen – Wo? Wohin?',
     level: 'B1',
     category: 'kasus',
     shortDescription: 'Dativ (wo?) vs. Akkusativ (wohin?)',
@@ -337,7 +337,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-praepositionen-ort-zeit',
     slug: 'praepositionen-ort-zeit-kombiniert',
-    title: 'Präpositionen Ort & Zeit B1',
+    title: 'Präpositionen Ort & Zeit',
     level: 'B1',
     category: 'kasus',
     shortDescription: 'Kombination lokaler und temporaler Angaben',
@@ -347,7 +347,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-adjektivdeklination-nom-akk',
     slug: 'adjektivdeklination-nominativ-akkusativ-b1',
-    title: 'Adjektivdeklination Nom/Akk B1',
+    title: 'Adjektivdeklination Nom/Akk',
     level: 'B1',
     category: 'adjektive',
     shortDescription: 'Systematischer Einstieg: Nominativ und Akkusativ',
@@ -357,7 +357,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b1-passiv-einstieg',
     slug: 'passiv-einstieg-vorgangspassiv-werden',
-    title: 'Passiv Einstieg B1',
+    title: 'Passiv Einstieg',
     level: 'B1',
     category: 'passiv',
     shortDescription: 'Vorgangspassiv Präsens und Präteritum',
@@ -369,7 +369,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-infinitivsaetze',
     slug: 'infinitivsaetze-um-zu-ohne-zu',
-    title: 'Infinitivsätze B2',
+    title: 'Infinitivsätze',
     level: 'B2',
     category: 'satzbau',
     shortDescription: 'um...zu, ohne...zu, (an)statt...zu',
@@ -379,7 +379,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-konjunktiv-2-konditionalsaetze',
     slug: 'konjunktiv-2-irreale-bedingungen-wenn',
-    title: 'Konjunktiv II: Konditionalsätze B2',
+    title: 'Konjunktiv II – Konditionalsätze',
     level: 'B2',
     category: 'zeiten',
     shortDescription: 'Irreale Bedingungen: Wenn ich Zeit hätte, ...',
@@ -389,7 +389,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-indirekte-rede',
     slug: 'indirekte-rede-konjunktiv-1-2',
-    title: 'Indirekte Rede B2',
+    title: 'Indirekte Rede',
     level: 'B2',
     category: 'zeiten',
     shortDescription: 'Er sagt, dass er komme / käme',
@@ -399,7 +399,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-nomen-verb-verbindungen',
     slug: 'nomen-verb-verbindungen-funktionsverben',
-    title: 'Nomen-Verb-Verbindungen B2',
+    title: 'Nomen-Verb-Verbindungen',
     level: 'B2',
     category: 'verben',
     shortDescription: 'zur Verfügung stellen, in Betracht ziehen, ...',
@@ -409,7 +409,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-feste-praeposition-rektion',
     slug: 'feste-praepositionen-rektion-verben-nomen',
-    title: 'Feste Präpositionen & Rektion B2',
+    title: 'Feste Präpositionen & Rektion',
     level: 'B2',
     category: 'verben',
     shortDescription: 'Verben, Nomen, Adjektive mit festen Präpositionen',
@@ -419,7 +419,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-adjektivdeklination-system',
     slug: 'adjektivdeklination-komplett-alle-faelle',
-    title: 'Adjektivdeklination: Das System B2',
+    title: 'Adjektivdeklination – das System',
     level: 'B2',
     category: 'adjektive',
     shortDescription: 'Alle vier Fälle systematisch',
@@ -429,7 +429,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-passiv-vertieft',
     slug: 'passiv-vertieft-zustandspassiv-modalverben',
-    title: 'Passiv vertieft B2',
+    title: 'Passiv vertieft',
     level: 'B2',
     category: 'passiv',
     shortDescription: 'Zustandspassiv, Passiv mit Modalverben',
@@ -439,7 +439,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-nominalisierung',
     slug: 'nominalisierung-nominalphrasen-verben-adjektive',
-    title: 'Nominalisierung B2',
+    title: 'Nominalisierung',
     level: 'B2',
     category: 'passiv',
     shortDescription: 'Von Verben und Adjektiven zu Nomen',
@@ -449,7 +449,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'b2-genitiv-erweiterung',
     slug: 'genitiv-erweiterung-genitivattribute',
-    title: 'Erweiterter Genitivgebrauch B2',
+    title: 'Erweiterter Genitivgebrauch',
     level: 'B2',
     category: 'genitiv',
     shortDescription: 'Genitivattribute, Genitivpräpositionen',
@@ -461,7 +461,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-komplexer-satzbau',
     slug: 'komplexer-satzbau-mehrfache-einbettung',
-    title: 'Komplexer Satzbau C1',
+    title: 'Komplexer Satzbau',
     level: 'C1',
     category: 'satzbau',
     shortDescription: 'Mehrfache Einbettung, Satzklammern',
@@ -471,7 +471,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-konjunktiv-1-berichtssprache',
     slug: 'konjunktiv-1-berichtssprache-journalismus',
-    title: 'Konjunktiv I Berichtssprache C1',
+    title: 'Konjunktiv I Berichtssprache',
     level: 'C1',
     category: 'zeiten',
     shortDescription: 'Journalistische indirekte Rede',
@@ -481,7 +481,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-funktionsverbgefuege',
     slug: 'funktionsverbgefuege-gehobene-sprache',
-    title: 'Funktionsverbgefüge C1',
+    title: 'Funktionsverbgefüge',
     level: 'C1',
     category: 'verben',
     shortDescription: 'zum Ausdruck bringen, in Erscheinung treten, ...',
@@ -491,7 +491,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-feste-verbindungen',
     slug: 'feste-verbindungen-idiome-kollokationen',
-    title: 'Feste Verbindungen C1',
+    title: 'Feste Verbindungen',
     level: 'C1',
     category: 'verben',
     shortDescription: 'Idiomatische Ausdrücke und Kollokationen',
@@ -501,7 +501,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-verben-mit-praeposition-advanced',
     slug: 'verben-mit-praeposition-fortgeschritten-c1',
-    title: 'Verben mit Präposition C1',
+    title: 'Verben mit Präposition',
     level: 'C1',
     category: 'verben',
     shortDescription: 'Erweiterte Rektion gehobener Sprache',
@@ -511,7 +511,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-komplexe-praepositionsausdruecke',
     slug: 'komplexe-praepositionsausdruecke-mehrteilig',
-    title: 'Komplexe präpositionale Ausdrücke C1',
+    title: 'Komplexe präpositionale Ausdrücke',
     level: 'C1',
     category: 'kasus',
     shortDescription: 'im Hinblick auf, im Zuge von, ...',
@@ -521,7 +521,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-adjektivdeklination-komplex',
     slug: 'adjektivdeklination-komplex-nominalgruppen',
-    title: 'Adjektivdeklination: Komplexe Nominalgruppen C1',
+    title: 'Adjektivdeklination – komplexe Nominalgruppen',
     level: 'C1',
     category: 'adjektive',
     shortDescription: 'Mehrere Adjektive, erweiterte Attribute',
@@ -531,7 +531,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-passiv-komplex',
     slug: 'passiv-komplex-ersatzformen-unpersoenlich',
-    title: 'Passiv komplex C1',
+    title: 'Passiv komplex',
     level: 'C1',
     category: 'passiv',
     shortDescription: 'Passiversatzformen, unpersönliches Passiv',
@@ -541,7 +541,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-nominalstil',
     slug: 'nominalstil-informationsverdichtung',
-    title: 'Nominalstil & Informationsverdichtung C1',
+    title: 'Nominalstil & Informationsverdichtung',
     level: 'C1',
     category: 'passiv',
     shortDescription: 'Verdichtung durch Nominalisierung',
@@ -551,7 +551,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-partizipialkonstruktionen',
     slug: 'partizipialkonstruktionen-erweiterte-attribute',
-    title: 'Partizipialkonstruktionen C1',
+    title: 'Partizipialkonstruktionen',
     level: 'C1',
     category: 'passiv',
     shortDescription: 'Erweiterte Partizipialattribute',
@@ -561,7 +561,7 @@ export const grammarTopics: GrammarTopic[] = [
   {
     id: 'c1-genitiv-gehobene-sprache',
     slug: 'genitiv-gehobene-sprache-genitivketten',
-    title: 'Genitiv gehobene Sprache C1',
+    title: 'Genitiv gehobene Sprache',
     level: 'C1',
     category: 'genitiv',
     shortDescription: 'Genitivketten, Stilniveau',
