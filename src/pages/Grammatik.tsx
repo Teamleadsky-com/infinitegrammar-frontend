@@ -55,7 +55,7 @@ const Grammatik = () => {
   // Filter topics based on search query
   const filteredTopics = searchQuery
     ? grammarTopics.filter((topic) =>
-        topic.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        `${topic.title} ${topic.level}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
         topic.shortDescription.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];

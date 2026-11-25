@@ -17,6 +17,8 @@ export const MAX_TITLE_WITH_BRAND = 65;
 export interface BuildPageTitleOptions {
   /** Append the brand suffix even when the result exceeds MAX_TITLE_WITH_BRAND. */
   forceBrand?: boolean;
+  /** Title budget the brand must fit inside. Defaults to MAX_TITLE_WITH_BRAND. */
+  maxLength?: number;
 }
 
 export function buildPageTitle(baseTitle: string, options: BuildPageTitleOptions = {}): string {
@@ -26,7 +28,8 @@ export function buildPageTitle(baseTitle: string, options: BuildPageTitleOptions
   if (base.endsWith(BRAND_SUFFIX)) return base;
   if (options.forceBrand) return `${base}${BRAND_SUFFIX}`;
 
-  return base.length + BRAND_SUFFIX.length <= MAX_TITLE_WITH_BRAND
+  const budget = options.maxLength ?? MAX_TITLE_WITH_BRAND;
+  return base.length + BRAND_SUFFIX.length <= budget
     ? `${base}${BRAND_SUFFIX}`
     : base;
 }

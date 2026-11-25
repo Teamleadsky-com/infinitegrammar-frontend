@@ -16,7 +16,8 @@ import { ComingSoonModal } from '@/components/ComingSoonModal';
 import { SchemaMarkup } from '@/components/SchemaMarkup';
 import { SeoBreadcrumb } from '@/components/SeoBreadcrumb';
 import { Footer } from '@/components/Footer';
-import { BRAND_NAME, buildPageTitle } from '@/lib/seoTitle';
+import { BRAND_NAME } from '@/lib/seoTitle';
+import { lessonHeading, lessonPageTitle } from '@/lib/lessonTitle';
 import { EXERCISES_MAINTENANCE_MODE } from '@/config/features';
 import { useState } from 'react';
 
@@ -44,7 +45,8 @@ const GrammatikContent = () => {
   const content = getTopicContent(topic.id);
   const relatedTopics = getRelatedTopics(topic.id);
 
-  const pageTitle = buildPageTitle(`${topic.title}: Regeln & Beispiele einfach erklärt`);
+  const pageTitle = lessonPageTitle(topic);
+  const pageHeading = lessonHeading(topic);
   const pageDescription = topic.metaDescription;
   const pageUrl = `https://www.infinitegrammar.de/deutsche-grammatik/${levelCode}-niveau-lernen/${slug}/`;
 
@@ -74,7 +76,7 @@ const GrammatikContent = () => {
           <SchemaMarkup
             type="article"
             data={{
-              headline: `${topic.title}: Regeln einfach erklärt`,
+              headline: pageHeading,
               description: pageDescription,
               url: pageUrl,
               datePublished: '2025-12-15T10:00:00+01:00',
@@ -164,7 +166,7 @@ const GrammatikContent = () => {
         {/* Hero */}
         <div className="mb-4 md:mb-8 animate-fade-in">
           <div className="flex items-start justify-between gap-2 mb-3 md:mb-4">
-            <h1 className="text-2xl md:text-4xl font-bold">{topic.title}: Regeln einfach erklärt</h1>
+            <h1 className="text-2xl md:text-4xl font-bold">{pageHeading}</h1>
             <ShareButton
               url={pageUrl}
               title={pageTitle}
