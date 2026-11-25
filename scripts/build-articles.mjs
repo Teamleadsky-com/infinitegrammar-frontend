@@ -97,7 +97,7 @@ const FONTS = '<link rel="preconnect" href="https://fonts.googleapis.com">'
   + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;650;700;750'
   + '&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">';
 
-// Same counters as the app's index.html
+// Same analytics tag as the app's index.html
 const ANALYTICS = `<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-E1DX6F9ZLP"></script>
 <script>
@@ -106,17 +106,6 @@ const ANALYTICS = `<!-- Google tag (gtag.js) -->
   gtag('js', new Date());
   gtag('config', 'G-E1DX6F9ZLP');
 </script>
-<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=106880972', 'ym');
-    ym(106880972, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script>
-<!-- /Yandex.Metrika counter -->
 `;
 
 const LINKEDIN_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="24" height="24" rx="4" fill="#fff"/>'
