@@ -33,6 +33,21 @@ describe('home page copy', () => {
     expect(locales.de.examRows.map((r) => r.level)).toEqual(['B1', 'B2', 'C1']);
   });
 
+  it('marks every exam the same way in German and English', () => {
+    const grammarOf = (rows: typeof locales.de.examRows) =>
+      rows.map((r) => r.exams.map((e) => ('grammar' in e ? e.grammar : null)));
+    expect(grammarOf(locales.en.examRows)).toEqual(grammarOf(locales.de.examRows));
+    for (const copy of Object.values(locales)) {
+      for (const row of copy.examRows) {
+        expect(row.exams.length).toBeGreaterThan(0);
+        for (const exam of row.exams) {
+          expect(exam.name.trim()).not.toBe('');
+          if ('grammar' in exam) expect(['section', 'writing']).toContain(exam.grammar);
+        }
+      }
+    }
+  });
+
   it('names DTZ and Goethe and no longer claims full TestDaF grammar coverage', () => {
     for (const copy of Object.values(locales)) {
       const text = JSON.stringify(copy);

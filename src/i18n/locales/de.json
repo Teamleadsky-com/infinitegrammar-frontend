@@ -14,12 +14,10 @@
     "subtitle": "Übe deutsche Grammatik mit endlosen interaktiven Lückentextübungen",
     "h1": "Sprachbausteine üben für telc – und Grammatik fürs Schreiben",
     "introText": "Deutsche Grammatik üben von A1 bis C1: mit Lückentexten und sofortigem Feedback. Für telc trainierst du die Sprachbausteine, für DTZ, Goethe-Zertifikat und TestDaF die Grammatik, die im Schreiben zählt. Kostenlos und ohne Anmeldung.",
-    "benefit1": "Alle Niveaus (A1-C1)",
-    "benefit2": "Sofortiges Feedback",
-    "benefit3": "Unbegrenzt üben",
-    "benefit4": "Kostenlos",
     "selectLevel": "Niveau wählen",
     "selectTopic": "Thema wählen",
+    "selectTopicFor": "Thema wählen für {{level}}",
+    "anyLevelHint": "Ohne gewähltes Niveau suchen wir eins zufällig aus.",
     "beginner": "Anfänger",
     "elementary": "Grundstufe",
     "intermediate": "Mittelstufe",
@@ -27,33 +25,62 @@
     "advanced": "Fortgeschritten",
     "quickStart": "Oder direkt loslegen",
     "startRandom": "Zufällige Übung starten",
+    "startRandomAtLevel": "Zufällige {{level}}-Übung starten",
     "exerciseStats": "Übungsstatistiken",
     "examCenters": "Prüfungszentren",
     "grammarReference": "Grammatikreferenz",
     "articles": "Artikel",
     "examTitle": "Für welche Prüfung?",
     "examLead": "Dein Ziel bestimmt das Niveau. Die Prüfung bestimmt, wo Grammatik zählt.",
-    "examCaption": "Prüfungsziele mit passender Prüfung und Niveau",
-    "examColGoal": "Ziel",
-    "examColExam": "Prüfung",
-    "examColLevel": "Niveau",
     "examRows": [
       {
         "goal": "Einbürgerung oder Niederlassungserlaubnis",
-        "exams": "DTZ, telc Deutsch B1, Goethe-Zertifikat B1",
-        "level": "B1"
+        "level": "B1",
+        "exams": [
+          {
+            "name": "DTZ",
+            "grammar": "writing"
+          },
+          {
+            "name": "telc Deutsch B1",
+            "grammar": "section"
+          },
+          {
+            "name": "Goethe-Zertifikat B1",
+            "grammar": "writing"
+          }
+        ]
       },
       {
         "goal": "Pflege",
-        "exams": "B2-Prüfung, die deine Anerkennungsstelle akzeptiert",
-        "level": "B2"
+        "level": "B2",
+        "exams": [
+          {
+            "name": "B2-Prüfung, die deine Anerkennungsstelle akzeptiert"
+          }
+        ]
       },
       {
         "goal": "Studium",
-        "exams": "telc Deutsch C1 Hochschule, TestDaF (TDN 4), DSH-2",
-        "level": "C1"
+        "level": "C1",
+        "exams": [
+          {
+            "name": "telc Deutsch C1 Hochschule",
+            "grammar": "section"
+          },
+          {
+            "name": "TestDaF (TDN 4)",
+            "grammar": "writing"
+          },
+          {
+            "name": "DSH-2",
+            "grammar": "section"
+          }
+        ]
       }
     ],
+    "examWithGrammar": "mit Grammatikteil",
+    "examWithoutGrammar": "ohne Grammatikteil",
     "withGrammarTitle": "Prüfungen mit Grammatikteil",
     "withGrammarText": "telc Deutsch B1, B2 und C1 Hochschule bewerten Grammatik direkt: in den Sprachbausteinen. Bei telc Deutsch B1 sind das 20 Aufgaben und 10 % der Punkte. Die Lückentexte hier folgen demselben Prinzip: Lücke im Text, mehrere Antworten, eine ist richtig. Bei der DSH heißt der Grammatikteil „wissenschaftssprachliche Strukturen“.",
     "withoutGrammarTitle": "Prüfungen ohne Grammatikteil",
@@ -93,12 +120,15 @@
         "a": "Wähle ein Niveau von A1 bis C1 und ein Thema. Du füllst die Lücken im Text, wählst jeweils aus mehreren Antworten und siehst sofort, ob du richtig liegst – mit Erklärung."
       },
       {
-        "q": "Ist InfiniteGrammar kostenlos?",
+        "q": "Ist Infinite Grammar kostenlos?",
         "a": "Ja. Alle Übungen sind kostenlos und ohne Anmeldung nutzbar, so oft du willst."
       }
     ],
     "metaTitle": "Sprachbausteine üben für telc & Grammatik | InfiniteGrammar",
-    "metaDescription": "Deutsche Grammatik üben: Sprachbausteine für telc B1–C1, Grammatik fürs Schreiben für DTZ, Goethe & TestDaF. Lückentexte A1–C1, kostenlos."
+    "metaDescription": "Deutsche Grammatik üben: Sprachbausteine für telc B1–C1, Grammatik fürs Schreiben für DTZ, Goethe & TestDaF. Lückentexte A1–C1, kostenlos.",
+    "closingTitle": "Direkt mit einer Übung anfangen",
+    "closingText": "Wähle oben Niveau und Thema oder starte eine zufällige Übung. Kostenlos und ohne Anmeldung.",
+    "closingChoose": "Niveau und Thema wählen"
   },
   "exercise": {
     "title": "Übung",

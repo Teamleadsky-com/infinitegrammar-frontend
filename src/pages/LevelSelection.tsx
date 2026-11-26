@@ -34,7 +34,9 @@ const GRAMMAR_OVERVIEW_PATH = "/deutsche-grammatik/";
 const levelPath = (level: string) => `/deutsche-grammatik/${level.toLowerCase()}-niveau-lernen/`;
 const categoryPath = (category: string) => `/deutsche-grammatik/thema/${category}/`;
 
-type ExamRow = { goal: string; exams: string; level: string };
+// grammar: "section" = the exam has its own grammar part (e.g. telc Sprachbausteine), "writing" = grammar only counts in writing
+type ExamGrammar = "section" | "writing";
+type ExamRow = { goal: string; level: string; exams: { name: string; grammar?: ExamGrammar }[] };
 type FaqItem = { q: string; a: string };
 
 const LevelSelection = () => {
@@ -70,6 +72,8 @@ const LevelSelection = () => {
     { id: "b2", name: "B2", description: t('levelSelection.upperIntermediate') },
     { id: "c1", name: "C1", description: t('levelSelection.advanced') },
   ];
+
+  const selectedLevelName = levels.find((level) => level.id === selectedLevel)?.name;
 
   const examRowsValue = t('levelSelection.examRows', { returnObjects: true });
   const examRows: ExamRow[] = Array.isArray(examRowsValue) ? examRowsValue : [];
@@ -116,12 +120,11 @@ const LevelSelection = () => {
       return;
     }
 
-    // Randomly select a level and section
-    const randomLevel = levels[Math.floor(Math.random() * levels.length)].id;
+    // A chosen level is respected; only the topic (and, without a choice, the level) is random
+    const level = selectedLevel ?? levels[Math.floor(Math.random() * levels.length)].id;
     const randomSection = sections[Math.floor(Math.random() * sections.length)].id;
 
-    // Navigate with the random level and section (same as clicking a specific topic)
-    navigate(`/exercise?level=${randomLevel}&section=${randomSection}`);
+    navigate(`/exercise?level=${level}&section=${randomSection}`);
   };
 
   return (
@@ -211,7 +214,7 @@ const LevelSelection = () => {
               </Button>
             ) : (
               <Button
-                variant="default"
+                variant="ghost"
                 size="sm"
                 onClick={handleSignInClick}
                 className="gap-2"
@@ -224,263 +227,372 @@ const LevelSelection = () => {
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 md:py-12">
-        <div className="max-w-4xl mx-auto">
-          {/* SEO Hero Section */}
-          <div className="text-center mb-8 md:mb-12 animate-fade-in">
-            <h1 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4">
-              {t('levelSelection.h1')}
-            </h1>
-            <p className="text-base md:text-lg text-muted-foreground mb-4 leading-relaxed max-w-3xl mx-auto">
-              {t('levelSelection.introText')}
-            </p>
-            <div className="flex flex-wrap justify-center gap-3 md:gap-4 text-sm text-muted-foreground">
-              <span className="inline-flex items-center gap-1">
-                <span className="text-primary">✓</span> {t('levelSelection.benefit1')}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="text-primary">✓</span> {t('levelSelection.benefit2')}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="text-primary">✓</span> {t('levelSelection.benefit3')}
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <span className="text-primary">✓</span> {t('levelSelection.benefit4')}
-              </span>
-            </div>
-          </div>
-
-          {/* Level Selection */}
-          <div className="mb-12 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-              {levels.map((level) => (
-                <Card
-                  key={level.id}
-                  className={`p-6 text-center cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 group ${
-                    selectedLevel === level.id
-                      ? "bg-primary border-primary shadow-lg scale-105"
-                      : "bg-gradient-card hover:border-primary"
-                  }`}
-                  onClick={() => handleLevelClick(level.id)}
+      {/* Main Content: an app band (hero + chooser) followed by guide bands for the exam info, links and FAQ */}
+      <main className="flex-1">
+        {/* App band: the exercise chooser leads the page */}
+        <section
+          id="uebung"
+          aria-labelledby="home-title"
+          className="scroll-mt-20 border-b border-primary/10 bg-[hsl(var(--surface-app))]"
+        >
+          <div className="container mx-auto px-4 pt-10 pb-12 md:pt-16 md:pb-16">
+            <div className="max-w-4xl mx-auto">
+              {/* SEO Hero Section */}
+              <div className="text-center mb-10 md:mb-14 animate-fade-in">
+                <h1
+                  id="home-title"
+                  className="text-3xl md:text-5xl font-bold tracking-tight text-balance mb-4 md:mb-5"
                 >
-                  <div className={`text-3xl font-bold mb-2 group-hover:scale-110 transition-transform ${
-                    selectedLevel === level.id ? "text-primary-foreground" : "text-primary"
-                  }`}>
-                    {level.name}
-                  </div>
-                  <div className={`text-sm ${
-                    selectedLevel === level.id ? "text-primary-foreground/80" : "text-muted-foreground"
-                  }`}>{level.description}</div>
-                </Card>
-              ))}
-            </div>
-          </div>
+                  {t('levelSelection.h1')}
+                </h1>
+                <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty max-w-[62ch] mx-auto">
+                  {t('levelSelection.introText')}
+                </p>
+              </div>
 
-          {/* Section Selection (scroll-mt keeps its heading below the sticky header) */}
-          <div ref={topicsRef} className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.2s" }}>
-            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {sections.map((section) => (
+              {/* Level Selection */}
+              <div className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-5">
+                  {t('levelSelection.selectLevel')}
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  {levels.map((level) => (
+                    <Card
+                      key={level.id}
+                      className={`p-6 text-center cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 group ${
+                        selectedLevel === level.id
+                          ? "bg-primary border-primary shadow-lg scale-105"
+                          : "bg-gradient-card hover:border-primary"
+                      }`}
+                      onClick={() => handleLevelClick(level.id)}
+                    >
+                      <div className={`text-3xl font-bold mb-2 group-hover:scale-110 transition-transform ${
+                        selectedLevel === level.id ? "text-primary-foreground" : "text-primary"
+                      }`}>
+                        {level.name}
+                      </div>
+                      <div className={`text-sm ${
+                        selectedLevel === level.id ? "text-primary-foreground/80" : "text-muted-foreground"
+                      }`}>{level.description}</div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section Selection (scroll-mt keeps its heading below the sticky header) */}
+              <div
+                ref={topicsRef}
+                className="mt-10 md:mt-14 animate-fade-in scroll-mt-24"
+                style={{ animationDelay: "0.2s" }}
+              >
+                {/* Names the level the topic will use, so a topic without a level is never a surprise */}
+                <div aria-live="polite" className="mb-4 md:mb-5">
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+                    {selectedLevelName
+                      ? t('levelSelection.selectTopicFor', { level: selectedLevelName })
+                      : t('levelSelection.selectTopic')}
+                  </h2>
+                  {!selectedLevelName && (
+                    <p className="mt-1 text-sm text-foreground/70">{t('levelSelection.anyLevelHint')}</p>
+                  )}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                  {sections.map((section) => (
+                    <Button
+                      key={section.id}
+                      variant="outline"
+                      size="lg"
+                      onClick={() => handleTopicClick(section.id)}
+                      className="h-auto py-5 text-lg font-semibold border border-primary/20 bg-card text-foreground shadow-sm hover:border-primary/60 hover:bg-card hover:text-primary hover:shadow-md"
+                    >
+                      {section.name}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Start */}
+              <div className="mt-10 md:mt-12 text-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
+                <p className="text-foreground/70 mb-4">{t('levelSelection.quickStart')}</p>
                 <Button
-                  key={section.id}
-                  variant="outline"
                   size="lg"
-                  onClick={() => handleTopicClick(section.id)}
-                  className="h-auto py-6 text-lg"
+                  onClick={handleStartRandomExercise}
+                  className="text-lg"
+                  style={{ backgroundImage: "var(--gradient-cta)" }}
                 >
-                  {section.name}
+                  {selectedLevelName
+                    ? t('levelSelection.startRandomAtLevel', { level: selectedLevelName })
+                    : t('levelSelection.startRandom')}
                 </Button>
-              ))}
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+                  <button
+                    onClick={() => navigate("/exercise-stats/")}
+                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
+                  >
+                    {t('levelSelection.exerciseStats')}
+                  </button>
+                  <a
+                    href="/pruefungszentren/"
+                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/pruefungszentren/");
+                    }}
+                  >
+                    {t('levelSelection.examCenters')}
+                  </a>
+                  <a
+                    href="/deutsche-grammatik/"
+                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate("/deutsche-grammatik/");
+                    }}
+                  >
+                    {t('levelSelection.grammarReference')}
+                  </a>
+                  <a
+                    href="/articles/"
+                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
+                  >
+                    {t('levelSelection.articles')}
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
+        </section>
 
-          {/* Quick Start */}
-          <div className="mt-12 text-center animate-fade-in" style={{ animationDelay: "0.3s" }}>
-            <p className="text-muted-foreground mb-4">{t('levelSelection.quickStart')}</p>
-            <Button
-              size="lg"
-              onClick={handleStartRandomExercise}
-              className="text-lg"
-            >
-              {t('levelSelection.startRandom')}
-            </Button>
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-              <button
-                onClick={() => navigate("/exercise-stats/")}
-                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
-              >
-                {t('levelSelection.exerciseStats')}
-              </button>
-              <a
-                href="/pruefungszentren/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/pruefungszentren/");
-                }}
-              >
-                {t('levelSelection.examCenters')}
-              </a>
-              <a
-                href="/deutsche-grammatik/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate("/deutsche-grammatik/");
-                }}
-              >
-                {t('levelSelection.grammarReference')}
-              </a>
-              <a
-                href="/articles/"
-                className="text-xs text-muted-foreground hover:text-primary transition-colors underline"
-              >
-                {t('levelSelection.articles')}
-              </a>
-            </div>
-          </div>
+        {/* Exam guide: which exam for which goal, and where grammar counts */}
+        <section aria-labelledby="exam-guide-title" className="bg-card border-b">
+          <div className="container mx-auto px-4 py-14 md:py-20">
+            <div className="max-w-4xl mx-auto">
+              <h2 id="exam-guide-title" className="text-xl md:text-2xl font-semibold tracking-tight text-balance mb-2">
+                {t('levelSelection.examTitle')}
+              </h2>
+              <p className="text-foreground/80 leading-relaxed text-pretty max-w-[65ch] mb-8 md:mb-10">
+                {t('levelSelection.examLead')}
+              </p>
 
-          {/* Exam guide: which exam for which goal, and where grammar counts */}
-          <section
-            aria-labelledby="exam-guide-title"
-            className="mt-16 animate-fade-in"
-            style={{ animationDelay: "0.35s" }}
-          >
-            <h2 id="exam-guide-title" className="text-2xl md:text-3xl font-bold mb-3">
-              {t('levelSelection.examTitle')}
-            </h2>
-            <p className="text-muted-foreground mb-6">{t('levelSelection.examLead')}</p>
-
-            <div className="overflow-x-auto rounded-lg border mb-8">
-              <table className="w-full text-left text-sm md:text-base">
-                <caption className="sr-only">{t('levelSelection.examCaption')}</caption>
-                <thead className="bg-muted/50">
-                  <tr>
-                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColGoal')}</th>
-                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColExam')}</th>
-                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColLevel')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {examRows.map((row) => (
-                    <tr key={row.level} className="border-t align-top">
-                      <th scope="row" className="px-3 py-3 md:px-4 font-medium">{row.goal}</th>
-                      <td className="px-3 py-3 md:px-4 text-muted-foreground">{row.exams}</td>
-                      <td className="px-3 py-3 md:px-4">
+              {/* One column per goal, led by the level it needs and that level's place on the A1–C1 scale */}
+              <ul className="grid md:grid-cols-3 md:gap-10">
+                {examRows.map((row) => {
+                  const position = levels.findIndex((level) => level.name === row.level);
+                  return (
+                    <li
+                      key={row.level}
+                      className="grid grid-cols-[4.75rem_1fr] gap-x-4 border-t py-7 first:border-t-0 first:pt-0 md:block md:border-t-0 md:py-0"
+                    >
+                      <div aria-hidden="true">
+                        <div className="text-5xl font-bold leading-none tracking-tight text-primary md:text-7xl">
+                          {row.level}
+                        </div>
+                        <div className="mt-3 flex gap-1">
+                          {levels.map((level, index) => (
+                            <span
+                              key={level.id}
+                              className={`h-1.5 w-3 rounded-full md:w-6 ${index <= position ? "bg-primary" : "bg-primary/15"}`}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div className="md:mt-6">
+                        {/* Two lines reserved on desktop so the exam lists start at the same height */}
+                        <h3 className="text-lg font-semibold leading-snug md:min-h-[3.5rem]">
+                          <span className="sr-only">{row.level}: </span>
+                          {row.goal}
+                        </h3>
+                        <ul className="mt-3 space-y-2 text-[15px] text-foreground/80">
+                          {(Array.isArray(row.exams) ? row.exams : []).map((exam) => (
+                            <li key={exam.name} className="flex items-center gap-2.5">
+                              {exam.grammar && (
+                                <>
+                                  <span
+                                    aria-hidden="true"
+                                    className={`h-2.5 w-2.5 shrink-0 rounded-full ${
+                                      exam.grammar === "section" ? "bg-primary" : "border-2 border-primary"
+                                    }`}
+                                  />
+                                  <span className="sr-only">
+                                    (
+                                    {t(
+                                      exam.grammar === "section"
+                                        ? "levelSelection.examWithGrammar"
+                                        : "levelSelection.examWithoutGrammar",
+                                    )}
+                                    )
+                                  </span>
+                                </>
+                              )}
+                              <span>{exam.name}</span>
+                            </li>
+                          ))}
+                        </ul>
                         <a
                           href={levelPath(row.level)}
                           onClick={handleInternalLink(levelPath(row.level))}
-                          className="font-semibold text-primary hover:underline"
+                          className="mt-4 inline-block font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:decoration-primary"
                         >
-                          {row.level}
+                          {t('levelSelection.levelLink', { level: row.level })}
                         </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{t('levelSelection.withGrammarTitle')}</h3>
-                <p className="text-muted-foreground leading-relaxed">{t('levelSelection.withGrammarText')}</p>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2">{t('levelSelection.withoutGrammarTitle')}</h3>
-                <p className="text-muted-foreground leading-relaxed">{t('levelSelection.withoutGrammarText')}</p>
-              </div>
-            </div>
-          </section>
-
-          {/* Grammar reference: every level page and every topic page */}
-          <section aria-labelledby="grammar-browse-title" className="mt-16">
-            <h2 id="grammar-browse-title" className="text-2xl md:text-3xl font-bold mb-3">
-              {t('levelSelection.browseTitle')}
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              <Trans
-                i18nKey="levelSelection.browseLead"
-                components={{
-                  overview: (
-                    <a
-                      href={GRAMMAR_OVERVIEW_PATH}
-                      onClick={handleInternalLink(GRAMMAR_OVERVIEW_PATH)}
-                      className="font-medium text-primary hover:underline"
-                    />
-                  ),
-                }}
-              />
-            </p>
-
-            <div className="grid gap-8 md:grid-cols-2">
-              <div>
-                <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByLevel')}</h3>
-                <ul className="space-y-2">
-                  {levels.map((level) => (
-                    <li key={level.id}>
-                      <a
-                        href={levelPath(level.id)}
-                        onClick={handleInternalLink(levelPath(level.id))}
-                        className="font-medium text-primary hover:underline"
-                      >
-                        {t('levelSelection.levelLink', { level: level.name })}
-                      </a>
-                      <span className="text-muted-foreground">: {t(`levelSelection.levelTopics.${level.id}`)}</span>
+                      </div>
                     </li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByTopic')}</h3>
-                <ul className="flex flex-wrap gap-2">
-                  {categoryLinks.map(([id, category]) => (
-                    <li key={id}>
-                      <a
-                        href={categoryPath(id)}
-                        onClick={handleInternalLink(categoryPath(id))}
-                        className="inline-block rounded-full border px-3 py-1 text-sm transition-colors hover:border-primary hover:text-primary"
-                      >
-                        {category.name}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                  );
+                })}
+              </ul>
+
+              {/* Legend for the dots: exams with their own grammar section vs. grammar only in writing */}
+              <div className="mt-10 grid rounded-2xl bg-[hsl(var(--surface-app))] md:mt-12 md:grid-cols-2">
+                <div className="p-6 md:p-8">
+                  <h3 className="flex items-center gap-2.5 text-lg font-semibold">
+                    <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
+                    {t('levelSelection.withGrammarTitle')}
+                  </h3>
+                  <p className="mt-3 text-foreground/80 leading-relaxed text-pretty">{t('levelSelection.withGrammarText')}</p>
+                </div>
+                <div className="border-t border-primary/10 p-6 md:border-l md:border-t-0 md:p-8">
+                  <h3 className="flex items-center gap-2.5 text-lg font-semibold">
+                    <span aria-hidden="true" className="h-2.5 w-2.5 shrink-0 rounded-full border-2 border-primary" />
+                    {t('levelSelection.withoutGrammarTitle')}
+                  </h3>
+                  <p className="mt-3 text-foreground/80 leading-relaxed text-pretty">{t('levelSelection.withoutGrammarText')}</p>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* FAQ: visible answers and FAQPage schema come from the same list */}
-          <section aria-labelledby="faq-title" className="mt-16 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <h2 id="faq-title" className="text-2xl md:text-3xl font-bold mb-6 text-center">{t('levelSelection.faqTitle')}</h2>
+        {/* Grammar reference: every level page and every topic page */}
+        <section aria-labelledby="grammar-browse-title" className="border-b">
+          <div className="container mx-auto px-4 py-14 md:py-20">
+            <div className="max-w-4xl mx-auto">
+              <h2 id="grammar-browse-title" className="text-xl md:text-2xl font-semibold tracking-tight text-balance mb-2">
+                {t('levelSelection.browseTitle')}
+              </h2>
+              <p className="text-foreground/80 leading-relaxed text-pretty max-w-[65ch] mb-8">
+                <Trans
+                  i18nKey="levelSelection.browseLead"
+                  components={{
+                    overview: (
+                      <a
+                        href={GRAMMAR_OVERVIEW_PATH}
+                        onClick={handleInternalLink(GRAMMAR_OVERVIEW_PATH)}
+                        className="font-medium text-primary underline-offset-4 hover:underline"
+                      />
+                    ),
+                  }}
+                />
+              </p>
 
-            <Accordion type="single" collapsible className="w-full">
-              {faqItems.map((item, index) => (
-                <AccordionItem key={item.q} value={`item-${index + 1}`}>
-                  <AccordionTrigger className="text-left">{item.q}</AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">{item.a}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+              <div className="grid gap-10 md:grid-cols-2">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByLevel')}</h3>
+                  <ul className="space-y-3">
+                    {levels.map((level) => (
+                      <li key={level.id} className="text-pretty">
+                        <a
+                          href={levelPath(level.id)}
+                          onClick={handleInternalLink(levelPath(level.id))}
+                          className="font-semibold text-primary underline-offset-4 hover:underline"
+                        >
+                          {t('levelSelection.levelLink', { level: level.name })}
+                        </a>
+                        <span className="text-foreground/80">: {t(`levelSelection.levelTopics.${level.id}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByTopic')}</h3>
+                  <ul className="flex flex-wrap gap-2">
+                    {categoryLinks.map(([id, category]) => (
+                      <li key={id}>
+                        <a
+                          href={categoryPath(id)}
+                          onClick={handleInternalLink(categoryPath(id))}
+                          className="inline-flex min-h-10 items-center rounded-full border bg-card px-4 text-sm transition-colors hover:border-primary hover:text-primary"
+                        >
+                          {category.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <script type="application/ld+json">
-              {JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "FAQPage",
-                "mainEntity": faqItems.map((item) => ({
-                  "@type": "Question",
-                  "name": item.q,
-                  "acceptedAnswer": {
-                    "@type": "Answer",
-                    "text": item.a
-                  }
-                }))
-              })}
-            </script>
-          </section>
-        </div>
+        {/* FAQ: visible answers and FAQPage schema come from the same list */}
+        <section aria-labelledby="faq-title" className="bg-card">
+          <div className="container mx-auto px-4 py-14 md:py-20">
+            <div className="max-w-3xl mx-auto">
+              <h2 id="faq-title" className="text-xl md:text-2xl font-semibold tracking-tight text-balance mb-4">
+                {t('levelSelection.faqTitle')}
+              </h2>
+
+              <Accordion type="single" collapsible className="w-full">
+                {faqItems.map((item, index) => (
+                  <AccordionItem key={item.q} value={`item-${index + 1}`}>
+                    <AccordionTrigger className="text-left text-base font-semibold">{item.q}</AccordionTrigger>
+                    <AccordionContent className="text-base leading-relaxed text-foreground/80 text-pretty">
+                      {item.a}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+
+              <script type="application/ld+json">
+                {JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  "mainEntity": faqItems.map((item) => ({
+                    "@type": "Question",
+                    "name": item.q,
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": item.a
+                    }
+                  }))
+                })}
+              </script>
+            </div>
+          </div>
+        </section>
+
+        {/* Closing band: the page ends on the action, not on the last FAQ answer */}
+        <section aria-labelledby="closing-title" className="bg-primary text-primary-foreground">
+          <div className="container mx-auto px-4 py-12 md:py-16">
+            <div className="max-w-4xl mx-auto flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between md:gap-10">
+              <div>
+                <h2 id="closing-title" className="text-2xl md:text-3xl font-bold tracking-tight text-balance">
+                  {t('levelSelection.closingTitle')}
+                </h2>
+                <p className="mt-2 text-primary-foreground/90 text-pretty max-w-[48ch]">
+                  {t('levelSelection.closingText')}
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3 md:shrink-0">
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  onClick={handleStartRandomExercise}
+                  className="bg-card text-primary shadow-md hover:bg-card/90"
+                >
+                  {selectedLevelName
+                    ? t('levelSelection.startRandomAtLevel', { level: selectedLevelName })
+                    : t('levelSelection.startRandom')}
+                </Button>
+                <a
+                  href="#uebung"
+                  className="font-medium underline underline-offset-4 decoration-primary-foreground/50 hover:decoration-primary-foreground"
+                >
+                  {t('levelSelection.closingChoose')}
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       {/* Waitlist Modal */}
