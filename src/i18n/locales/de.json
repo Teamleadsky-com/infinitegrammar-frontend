@@ -1,7 +1,8 @@
 {
   "common": {
     "appName": "Infinite Grammar",
-    "language": "Sprache"
+    "language": "Sprache",
+    "allRightsReserved": "Alle Rechte vorbehalten."
   },
   "nav": {
     "statistics": "Ergebnisse",
@@ -15,6 +16,7 @@
     "h1": "Sprachbausteine üben für telc – und Grammatik fürs Schreiben",
     "introText": "Deutsche Grammatik üben von A1 bis C1: mit Lückentexten und sofortigem Feedback. Für telc trainierst du die Sprachbausteine, für DTZ, Goethe-Zertifikat und TestDaF die Grammatik, die im Schreiben zählt. Kostenlos und ohne Anmeldung.",
     "selectLevel": "Niveau wählen",
+    "goalLabel": "Dein Ziel:",
     "selectTopic": "Thema wählen",
     "selectTopicFor": "Thema wählen für {{level}}",
     "anyLevelHint": "Ohne gewähltes Niveau suchen wir eins zufällig aus.",
@@ -31,6 +33,7 @@
     "examRows": [
       {
         "goal": "Einbürgerung oder Niederlassungserlaubnis",
+        "short": "Einbürgerung",
         "level": "B1",
         "exams": [
           {
@@ -49,6 +52,7 @@
       },
       {
         "goal": "Pflege",
+        "short": "Pflege",
         "level": "B2",
         "exams": [
           {
@@ -58,6 +62,7 @@
       },
       {
         "goal": "Studium",
+        "short": "Studium",
         "level": "C1",
         "exams": [
           {
@@ -75,6 +80,7 @@
         ]
       }
     ],
+    "practiceLevel": "{{level}} üben",
     "examWithGrammar": "mit Grammatikteil",
     "examWithoutGrammar": "ohne Grammatikteil",
     "withGrammarTitle": "Prüfungen mit Grammatikteil",

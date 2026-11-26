@@ -120,6 +120,13 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
   }
+
+  /* Links get the same brand focus ring as buttons instead of the browser's default outline */
+  a:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 }
 
 /* Article content styling */

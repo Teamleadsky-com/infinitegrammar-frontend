@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Trans, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
@@ -36,7 +35,14 @@ const categoryPath = (category: string) => `/deutsche-grammatik/thema/${category
 
 // grammar: "section" = the exam has its own grammar part (e.g. telc Sprachbausteine), "writing" = grammar only counts in writing
 type ExamGrammar = "section" | "writing";
-type ExamRow = { goal: string; level: string; exams: { name: string; grammar?: ExamGrammar }[] };
+
+// Exams shown on the level cards: only exams the page itself names (exam section and its legend)
+const LEVEL_EXAMS: Record<string, string> = {
+  b1: "DTZ, telc, Goethe",
+  b2: "telc",
+  c1: "telc, TestDaF, DSH",
+};
+type ExamRow = { goal: string; short: string; level: string; exams: { name: string; grammar?: ExamGrammar }[] };
 type FaqItem = { q: string; a: string };
 
 const LevelSelection = () => {
@@ -46,15 +52,28 @@ const LevelSelection = () => {
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const topicsRef = useRef<HTMLDivElement>(null);
 
-  // A level alone starts nothing: on phones the topics are below the fold, so take the learner there
+  const scrollToTopics = () => {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    requestAnimationFrame(() =>
+      topicsRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }),
+    );
+  };
+
+  // Clicking the chosen level again clears it. A level alone starts nothing: on phones the topics
+  // are below the fold, so take the learner there
   const handleLevelClick = (levelId: string) => {
-    setSelectedLevel(levelId);
-    if (window.matchMedia("(max-width: 767px)").matches) {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      requestAnimationFrame(() =>
-        topicsRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" }),
-      );
+    if (selectedLevel === levelId) {
+      setSelectedLevel(null);
+      return;
     }
+    setSelectedLevel(levelId);
+    if (window.matchMedia("(max-width: 767px)").matches) scrollToTopics();
+  };
+
+  // "B2 üben" in the exam section: choose the goal's level and go up to the topics
+  const handlePracticeLevel = (levelId: string) => {
+    setSelectedLevel(levelId);
+    scrollToTopics();
   };
   const [showWaitlistModal, setShowWaitlistModal] = useState(false);
   const [showComingSoonModal, setShowComingSoonModal] = useState(false);
@@ -240,44 +259,92 @@ const LevelSelection = () => {
           <div className="container mx-auto px-4 pt-10 pb-12 md:pt-16 md:pb-16">
             <div className="max-w-4xl mx-auto">
               {/* SEO Hero Section */}
-              <div className="text-center mb-10 md:mb-14 animate-fade-in">
+              <div className="text-left sm:text-center mb-10 md:mb-14 animate-fade-in">
                 <h1
                   id="home-title"
                   className="text-3xl md:text-5xl font-bold tracking-tight text-balance mb-4 md:mb-5"
                 >
                   {t('levelSelection.h1')}
                 </h1>
-                <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty max-w-[62ch] mx-auto">
+                <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty max-w-[62ch] sm:mx-auto">
                   {t('levelSelection.introText')}
                 </p>
               </div>
 
               {/* Level Selection */}
               <div className="animate-fade-in" style={{ animationDelay: "0.1s" }}>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-5">
+                <h2 id="level-heading" className="text-2xl md:text-3xl font-bold tracking-tight mb-4 md:mb-5">
                   {t('levelSelection.selectLevel')}
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                  {levels.map((level) => (
-                    <Card
-                      key={level.id}
-                      className={`p-6 text-center cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border-2 group ${
-                        selectedLevel === level.id
-                          ? "bg-primary border-primary shadow-lg scale-105"
-                          : "bg-gradient-card hover:border-primary"
-                      }`}
-                      onClick={() => handleLevelClick(level.id)}
-                    >
-                      <div className={`text-3xl font-bold mb-2 group-hover:scale-110 transition-transform ${
-                        selectedLevel === level.id ? "text-primary-foreground" : "text-primary"
-                      }`}>
-                        {level.name}
-                      </div>
-                      <div className={`text-sm ${
-                        selectedLevel === level.id ? "text-primary-foreground/80" : "text-muted-foreground"
-                      }`}>{level.description}</div>
-                    </Card>
-                  ))}
+                {/* Toggle buttons: reachable with Tab, announced as pressed; clicking the chosen level again clears it */}
+                <div role="group" aria-labelledby="level-heading" className="grid grid-cols-3 gap-2.5 sm:gap-4 md:grid-cols-5">
+                  {levels.map((level, index) => {
+                    const selected = selectedLevel === level.id;
+                    const exams = LEVEL_EXAMS[level.id];
+                    return (
+                      <button
+                        key={level.id}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => handleLevelClick(level.id)}
+                        className={`flex flex-col items-center rounded-lg border-2 px-2 py-4 text-center shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:px-3 sm:py-5 ${
+                          selected
+                            ? "border-primary bg-primary text-primary-foreground shadow-lg"
+                            : "border-border bg-gradient-card hover:border-primary/60 hover:shadow-md"
+                        }`}
+                      >
+                        <span className={`text-2xl font-bold leading-none tracking-tight sm:text-3xl ${selected ? "" : "text-primary"}`}>
+                          {level.name}
+                        </span>
+                        {/* Position on the A1–C1 scale, as in the exam section */}
+                        <span aria-hidden="true" className="mt-2.5 flex gap-0.5">
+                          {levels.map((step, stepIndex) => (
+                            <span
+                              key={step.id}
+                              className={`h-1 w-2.5 rounded-full sm:w-3 ${
+                                stepIndex <= index
+                                  ? selected ? "bg-primary-foreground" : "bg-primary"
+                                  : selected ? "bg-primary-foreground/30" : "bg-primary/15"
+                              }`}
+                            />
+                          ))}
+                        </span>
+                        <span className={`mt-2 text-xs leading-tight sm:text-sm ${selected ? "text-primary-foreground/90" : "text-muted-foreground"}`}>
+                          {level.description}
+                        </span>
+                        {exams && (
+                          <span className={`mt-1 text-[11px] font-semibold leading-tight sm:text-xs ${selected ? "text-primary-foreground" : "text-primary"}`}>
+                            {exams}
+                          </span>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Goal shortcuts: the goal already decides the level */}
+                <div className="mt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
+                  <span className="w-full text-sm text-foreground/70 sm:mr-1 sm:w-auto">{t('levelSelection.goalLabel')}</span>
+                  {examRows.map((row) => {
+                    const levelId = row.level.toLowerCase();
+                    const selected = selectedLevel === levelId;
+                    return (
+                      <button
+                        key={row.level}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => handleLevelClick(levelId)}
+                        className={`inline-flex min-h-10 items-center gap-1.5 rounded-full border px-2.5 text-[13px] min-[390px]:gap-2 min-[390px]:px-3 min-[390px]:text-sm sm:px-3.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
+                          selected
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : "border-primary/20 bg-card text-foreground hover:border-primary/60"
+                        }`}
+                      >
+                        <span>{row.short}</span>
+                        <span className={`font-bold ${selected ? "" : "text-primary"}`}>{row.level}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -295,7 +362,7 @@ const LevelSelection = () => {
                       : t('levelSelection.selectTopic')}
                   </h2>
                   {!selectedLevelName && (
-                    <p className="mt-1 text-sm text-foreground/70">{t('levelSelection.anyLevelHint')}</p>
+                    <p className="mt-1 text-sm text-foreground/70 text-pretty">{t('levelSelection.anyLevelHint')}</p>
                   )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
@@ -318,9 +385,9 @@ const LevelSelection = () => {
                 <p className="text-foreground/70 mb-4">{t('levelSelection.quickStart')}</p>
                 <Button
                   size="lg"
+                  variant="outline"
                   onClick={handleStartRandomExercise}
-                  className="text-lg"
-                  style={{ backgroundImage: "var(--gradient-cta)" }}
+                  className="border border-primary/30 bg-card text-base font-semibold text-primary hover:border-primary hover:bg-card hover:text-primary"
                 >
                   {selectedLevelName
                     ? t('levelSelection.startRandomAtLevel', { level: selectedLevelName })
@@ -338,8 +405,19 @@ const LevelSelection = () => {
               <h2 id="exam-guide-title" className="text-xl md:text-2xl font-semibold tracking-tight text-balance mb-2">
                 {t('levelSelection.examTitle')}
               </h2>
-              <p className="text-foreground/80 leading-relaxed text-pretty max-w-[65ch] mb-8 md:mb-10">
+              <p className="text-foreground/80 leading-relaxed text-pretty max-w-[65ch] mb-4">
                 {t('levelSelection.examLead')}
+              </p>
+              {/* Key for the dots, before the lists that use them (each exam also carries the text for screen readers) */}
+              <p aria-hidden="true" className="mb-8 flex flex-wrap gap-x-6 gap-y-1 text-sm text-foreground/80 md:mb-10">
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-primary" />
+                  {t('levelSelection.examWithGrammar')}
+                </span>
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full border-2 border-primary" />
+                  {t('levelSelection.examWithoutGrammar')}
+                </span>
               </p>
 
               {/* One column per goal, led by the level it needs and that level's place on the A1–C1 scale */}
@@ -396,13 +474,23 @@ const LevelSelection = () => {
                             </li>
                           ))}
                         </ul>
-                        <a
-                          href={levelPath(row.level)}
-                          onClick={handleInternalLink(levelPath(row.level))}
-                          className="mt-4 inline-block font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:decoration-primary"
-                        >
-                          {t('levelSelection.levelLink', { level: row.level })}
-                        </a>
+                        <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handlePracticeLevel(row.level.toLowerCase())}
+                            className="font-semibold"
+                          >
+                            {t('levelSelection.practiceLevel', { level: row.level })}
+                          </Button>
+                          <a
+                            href={levelPath(row.level)}
+                            onClick={handleInternalLink(levelPath(row.level))}
+                            className="font-semibold text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:decoration-primary"
+                          >
+                            {t('levelSelection.levelLink', { level: row.level })}
+                          </a>
+                        </div>
                       </div>
                     </li>
                   );
