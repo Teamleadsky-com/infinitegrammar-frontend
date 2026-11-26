@@ -184,11 +184,11 @@ const LevelSelection = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          {/* The name stays on one line: it steps down in size on phones, and below 360px only the logo
-              shows (the name stays for screen readers), so the header never wraps or scrolls sideways */}
+          {/* The name always shows on one line: it steps down in size on narrow phones so the header never
+              wraps between "Infinite" and "Grammar" or scrolls sideways */}
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
             <LogoIcon className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" />
-            <div className="whitespace-nowrap text-base font-bold bg-gradient-primary bg-clip-text text-transparent max-[359px]:sr-only min-[375px]:text-lg sm:text-2xl">
+            <div className="whitespace-nowrap text-sm font-bold bg-gradient-primary bg-clip-text text-transparent min-[360px]:text-base min-[375px]:text-lg sm:text-2xl">
               {t('common.appName')}
             </div>
           </div>
@@ -199,7 +199,7 @@ const LevelSelection = () => {
               variant="ghost"
               size="sm"
               onClick={() => navigate("/statistics/")}
-              className="gap-2 px-2.5 sm:px-3"
+              className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
             >
               <BarChart3 className="h-4 w-4" />
               <span className="sr-only sm:not-sr-only">{t('nav.statistics')}</span>
@@ -209,7 +209,7 @@ const LevelSelection = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/profile/")}
-                className="gap-2 px-2.5 sm:px-3"
+                className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
               >
                 <User className="h-4 w-4" />
                 <span className="sr-only sm:not-sr-only">{t('nav.profile')}</span>
@@ -219,7 +219,7 @@ const LevelSelection = () => {
                 variant="ghost"
                 size="sm"
                 onClick={handleSignInClick}
-                className="gap-2 px-2.5 sm:px-3"
+                className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
               >
                 <User className="h-4 w-4" />
                 <span className="sr-only sm:not-sr-only">{t('nav.account')}</span>
