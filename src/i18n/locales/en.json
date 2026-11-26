@@ -14,12 +14,10 @@
     "subtitle": "Practice German grammar with endless interactive gap-fill exercises",
     "h1": "Practice Sprachbausteine for telc – and grammar for writing",
     "introText": "Practice German grammar from A1 to C1 with gap-fill exercises and instant feedback. For telc you train the Sprachbausteine; for DTZ, Goethe-Zertifikat and TestDaF, the grammar that counts in writing. Free and without registration.",
-    "benefit1": "All levels (A1-C1)",
-    "benefit2": "Instant feedback",
-    "benefit3": "Unlimited practice",
-    "benefit4": "Free",
     "selectLevel": "Select Level",
     "selectTopic": "Select Topic",
+    "selectTopicFor": "Select topic for {{level}}",
+    "anyLevelHint": "No level selected: we'll pick one at random.",
     "beginner": "Beginner",
     "elementary": "Elementary",
     "intermediate": "Intermediate",
@@ -27,33 +25,62 @@
     "advanced": "Advanced",
     "quickStart": "Or jump right in",
     "startRandom": "Start Random Exercise",
+    "startRandomAtLevel": "Start random {{level}} exercise",
     "exerciseStats": "Exercises Stats",
     "examCenters": "Exam Centers",
     "grammarReference": "Grammar Reference",
     "articles": "Articles",
     "examTitle": "Which exam?",
     "examLead": "Your goal sets the level. The exam decides where grammar counts.",
-    "examCaption": "Exam goals with matching exam and level",
-    "examColGoal": "Goal",
-    "examColExam": "Exam",
-    "examColLevel": "Level",
     "examRows": [
       {
         "goal": "Citizenship or permanent residence (Niederlassungserlaubnis)",
-        "exams": "DTZ, telc Deutsch B1, Goethe-Zertifikat B1",
-        "level": "B1"
+        "level": "B1",
+        "exams": [
+          {
+            "name": "DTZ",
+            "grammar": "writing"
+          },
+          {
+            "name": "telc Deutsch B1",
+            "grammar": "section"
+          },
+          {
+            "name": "Goethe-Zertifikat B1",
+            "grammar": "writing"
+          }
+        ]
       },
       {
         "goal": "Nursing (Pflege)",
-        "exams": "A B2 exam accepted by your recognition authority",
-        "level": "B2"
+        "level": "B2",
+        "exams": [
+          {
+            "name": "A B2 exam accepted by your recognition authority"
+          }
+        ]
       },
       {
         "goal": "University",
-        "exams": "telc Deutsch C1 Hochschule, TestDaF (TDN 4), DSH-2",
-        "level": "C1"
+        "level": "C1",
+        "exams": [
+          {
+            "name": "telc Deutsch C1 Hochschule",
+            "grammar": "section"
+          },
+          {
+            "name": "TestDaF (TDN 4)",
+            "grammar": "writing"
+          },
+          {
+            "name": "DSH-2",
+            "grammar": "section"
+          }
+        ]
       }
     ],
+    "examWithGrammar": "with a grammar section",
+    "examWithoutGrammar": "without a grammar section",
     "withGrammarTitle": "Exams with a grammar section",
     "withGrammarText": "telc Deutsch B1, B2 and C1 Hochschule score grammar directly, in the Sprachbausteine. In telc Deutsch B1 that is 20 items and 10% of the points. The gap-fill exercises here follow the same principle: a gap in the text, several answers, one is correct. In the DSH, the grammar section is called „wissenschaftssprachliche Strukturen“ (academic language structures).",
     "withoutGrammarTitle": "Exams without a grammar section",
@@ -93,12 +120,15 @@
         "a": "Choose a level from A1 to C1 and a topic. You fill the gaps in the text, choose from several answers each time and see straight away whether you are right – with an explanation."
       },
       {
-        "q": "Is InfiniteGrammar free?",
+        "q": "Is Infinite Grammar free?",
         "a": "Yes. All exercises are free and can be used without registration, as often as you like."
       }
     ],
     "metaTitle": "Practice telc Sprachbausteine & Grammar | InfiniteGrammar",
-    "metaDescription": "Practice telc Sprachbausteine (B1–C1) and grammar for writing in DTZ, Goethe and TestDaF. German gap-fill exercises A1–C1 with instant feedback, free."
+    "metaDescription": "Practice telc Sprachbausteine (B1–C1) and grammar for writing in DTZ, Goethe and TestDaF. German gap-fill exercises A1–C1 with instant feedback, free.",
+    "closingTitle": "Start with an exercise",
+    "closingText": "Pick a level and topic above, or start a random exercise. Free and without registration.",
+    "closingChoose": "Choose level and topic"
   },
   "exercise": {
     "title": "Exercise",

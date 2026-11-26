@@ -50,7 +50,11 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 90% 70%));
     --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(250 100% 99%));
-    
+    /* Darker than --gradient-primary so white button text keeps >= 4.5:1 at the light end (5.15:1) */
+    --gradient-cta: linear-gradient(135deg, hsl(262 83% 50%), hsl(262 80% 60%));
+    /* Tinted band behind the home page's exercise chooser */
+    --surface-app: 258 100% 97%;
+
     --shadow-sm: 0 2px 8px -2px hsl(262 83% 58% / 0.1);
     --shadow-md: 0 4px 16px -4px hsl(262 83% 58% / 0.15);
     --shadow-lg: 0 8px 32px -8px hsl(262 83% 58% / 0.2);
@@ -99,7 +103,9 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(262 83% 58%), hsl(262 90% 70%));
     --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(142 76% 50%));
     --gradient-card: linear-gradient(180deg, hsl(240 10% 12%), hsl(240 10% 10%));
-    
+    --gradient-cta: linear-gradient(135deg, hsl(262 83% 50%), hsl(262 80% 60%));
+    --surface-app: 255 25% 12%;
+
     --shadow-sm: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
     --shadow-md: 0 4px 16px -4px hsl(0 0% 0% / 0.4);
     --shadow-lg: 0 8px 32px -8px hsl(0 0% 0% / 0.5);
