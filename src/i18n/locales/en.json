@@ -26,10 +26,6 @@
     "quickStart": "Or jump right in",
     "startRandom": "Start Random Exercise",
     "startRandomAtLevel": "Start random {{level}} exercise",
-    "exerciseStats": "Exercises Stats",
-    "examCenters": "Exam Centers",
-    "grammarReference": "Grammar Reference",
-    "articles": "Articles",
     "examTitle": "Which exam?",
     "examLead": "Your goal sets the level. The exam decides where grammar counts.",
     "examRows": [

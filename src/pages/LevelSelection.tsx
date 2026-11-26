@@ -184,20 +184,22 @@ const LevelSelection = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <LogoIcon className="h-7 w-7" />
-            <div className="text-2xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+          {/* On phones the name wraps onto two lines; tight line spacing keeps "Infinite" and "Grammar"
+              together as one stacked wordmark instead of two loose lines */}
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+            <LogoIcon className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" />
+            <div className="pb-0.5 text-2xl font-bold leading-none bg-gradient-primary bg-clip-text text-transparent sm:pb-0 sm:leading-8">
               {t('common.appName')}
             </div>
           </div>
           {/* On phones the buttons show only their icons; the labels stay for screen readers */}
-          <div className="flex gap-2">
+          <div className="flex shrink-0 items-center gap-0.5 sm:gap-2">
             <LanguageSwitcher />
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate("/statistics/")}
-              className="gap-2"
+              className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
             >
               <BarChart3 className="h-4 w-4" />
               <span className="sr-only sm:not-sr-only">{t('nav.statistics')}</span>
@@ -207,7 +209,7 @@ const LevelSelection = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => navigate("/profile/")}
-                className="gap-2"
+                className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
               >
                 <User className="h-4 w-4" />
                 <span className="sr-only sm:not-sr-only">{t('nav.profile')}</span>
@@ -217,7 +219,7 @@ const LevelSelection = () => {
                 variant="ghost"
                 size="sm"
                 onClick={handleSignInClick}
-                className="gap-2"
+                className="gap-2 px-2 min-[360px]:px-2.5 sm:px-3"
               >
                 <User className="h-4 w-4" />
                 <span className="sr-only sm:not-sr-only">{t('nav.account')}</span>
@@ -324,40 +326,6 @@ const LevelSelection = () => {
                     ? t('levelSelection.startRandomAtLevel', { level: selectedLevelName })
                     : t('levelSelection.startRandom')}
                 </Button>
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-                  <button
-                    onClick={() => navigate("/exercise-stats/")}
-                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
-                  >
-                    {t('levelSelection.exerciseStats')}
-                  </button>
-                  <a
-                    href="/pruefungszentren/"
-                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/pruefungszentren/");
-                    }}
-                  >
-                    {t('levelSelection.examCenters')}
-                  </a>
-                  <a
-                    href="/deutsche-grammatik/"
-                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigate("/deutsche-grammatik/");
-                    }}
-                  >
-                    {t('levelSelection.grammarReference')}
-                  </a>
-                  <a
-                    href="/articles/"
-                    className="text-xs text-foreground/70 hover:text-primary transition-colors underline"
-                  >
-                    {t('levelSelection.articles')}
-                  </a>
-                </div>
               </div>
             </div>
           </div>

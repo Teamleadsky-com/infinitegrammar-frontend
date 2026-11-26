@@ -26,10 +26,6 @@
     "quickStart": "Oder direkt loslegen",
     "startRandom": "Zufällige Übung starten",
     "startRandomAtLevel": "Zufällige {{level}}-Übung starten",
-    "exerciseStats": "Übungsstatistiken",
-    "examCenters": "Prüfungszentren",
-    "grammarReference": "Grammatikreferenz",
-    "articles": "Artikel",
     "examTitle": "Für welche Prüfung?",
     "examLead": "Dein Ziel bestimmt das Niveau. Die Prüfung bestimmt, wo Grammatik zählt.",
     "examRows": [
