@@ -1,7 +1,8 @@
 {
   "common": {
     "appName": "Infinite Grammar",
-    "language": "Language"
+    "language": "Language",
+    "allRightsReserved": "All rights reserved."
   },
   "nav": {
     "statistics": "Results",
@@ -15,6 +16,7 @@
     "h1": "Practice Sprachbausteine for telc – and grammar for writing",
     "introText": "Practice German grammar from A1 to C1 with gap-fill exercises and instant feedback. For telc you train the Sprachbausteine; for DTZ, Goethe-Zertifikat and TestDaF, the grammar that counts in writing. Free and without registration.",
     "selectLevel": "Select Level",
+    "goalLabel": "Your goal:",
     "selectTopic": "Select Topic",
     "selectTopicFor": "Select topic for {{level}}",
     "anyLevelHint": "No level selected: we'll pick one at random.",
@@ -31,6 +33,7 @@
     "examRows": [
       {
         "goal": "Citizenship or permanent residence (Niederlassungserlaubnis)",
+        "short": "Citizenship",
         "level": "B1",
         "exams": [
           {
@@ -49,6 +52,7 @@
       },
       {
         "goal": "Nursing (Pflege)",
+        "short": "Nursing",
         "level": "B2",
         "exams": [
           {
@@ -58,6 +62,7 @@
       },
       {
         "goal": "University",
+        "short": "University",
         "level": "C1",
         "exams": [
           {
@@ -75,6 +80,7 @@
         ]
       }
     ],
+    "practiceLevel": "Practise {{level}}",
     "examWithGrammar": "with a grammar section",
     "examWithoutGrammar": "without a grammar section",
     "withGrammarTitle": "Exams with a grammar section",

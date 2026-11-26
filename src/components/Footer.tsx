@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FOOTER_LINKS = [
   { href: "/", label: "Deutsche Grammatik üben" },
@@ -10,6 +11,7 @@ const FOOTER_LINKS = [
 
 export const Footer = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   return (
     <footer className="border-t bg-card/50 mt-auto">
@@ -33,7 +35,7 @@ export const Footer = () => {
             </a>
           ))}
         </nav>
-        © 2026 Infinite Grammar. All rights reserved.
+        © 2026 {t('common.appName')}. {t('common.allRightsReserved')}
       </div>
     </footer>
   );
