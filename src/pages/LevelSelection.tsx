@@ -184,11 +184,11 @@ const LevelSelection = () => {
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          {/* The name always shows on one line: it steps down in size on narrow phones so the header never
-              wraps between "Infinite" and "Grammar" or scrolls sideways */}
+          {/* On phones the name wraps onto two lines; tight line spacing keeps "Infinite" and "Grammar"
+              together as one stacked wordmark instead of two loose lines */}
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
             <LogoIcon className="h-6 w-6 shrink-0 sm:h-7 sm:w-7" />
-            <div className="whitespace-nowrap text-sm font-bold bg-gradient-primary bg-clip-text text-transparent min-[360px]:text-base min-[375px]:text-lg sm:text-2xl">
+            <div className="pb-0.5 text-2xl font-bold leading-none bg-gradient-primary bg-clip-text text-transparent sm:pb-0 sm:leading-8">
               {t('common.appName')}
             </div>
           </div>
