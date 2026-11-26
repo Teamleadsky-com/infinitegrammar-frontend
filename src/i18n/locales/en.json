@@ -12,8 +12,8 @@
   "levelSelection": {
     "title": "Choose Your Level",
     "subtitle": "Practice German grammar with endless interactive gap-fill exercises",
-    "h1": "Practice German Grammar: Gap-Fill Exercises A1-C1",
-    "introText": "Train German grammar with unlimited gap-fill exercises. Perfect for telc and TestDaF preparation. Practice verbs, articles, prepositions, subjunctive and more – free and without registration.",
+    "h1": "Practice Sprachbausteine for telc – and grammar for writing",
+    "introText": "Practice German grammar from A1 to C1 with gap-fill exercises and instant feedback. For telc you train the Sprachbausteine; for DTZ, Goethe-Zertifikat and TestDaF, the grammar that counts in writing. Free and without registration.",
     "benefit1": "All levels (A1-C1)",
     "benefit2": "Instant feedback",
     "benefit3": "Unlimited practice",
@@ -31,15 +31,74 @@
     "examCenters": "Exam Centers",
     "grammarReference": "Grammar Reference",
     "articles": "Articles",
+    "examTitle": "Which exam?",
+    "examLead": "Your goal sets the level. The exam decides where grammar counts.",
+    "examCaption": "Exam goals with matching exam and level",
+    "examColGoal": "Goal",
+    "examColExam": "Exam",
+    "examColLevel": "Level",
+    "examRows": [
+      {
+        "goal": "Citizenship or permanent residence (Niederlassungserlaubnis)",
+        "exams": "DTZ, telc Deutsch B1, Goethe-Zertifikat B1",
+        "level": "B1"
+      },
+      {
+        "goal": "Nursing (Pflege)",
+        "exams": "A B2 exam accepted by your recognition authority",
+        "level": "B2"
+      },
+      {
+        "goal": "University",
+        "exams": "telc Deutsch C1 Hochschule, TestDaF (TDN 4), DSH-2",
+        "level": "C1"
+      }
+    ],
+    "withGrammarTitle": "Exams with a grammar section",
+    "withGrammarText": "telc Deutsch B1, B2 and C1 Hochschule score grammar directly, in the Sprachbausteine. In telc Deutsch B1 that is 20 items and 10% of the points. The gap-fill exercises here follow the same principle: a gap in the text, several answers, one is correct. In the DSH, the grammar section is called „wissenschaftssprachliche Strukturen“ (academic language structures).",
+    "withoutGrammarTitle": "Exams without a grammar section",
+    "withoutGrammarText": "DTZ, Goethe-Zertifikat and TestDaF test reading, listening, writing and speaking. Grammar counts through formal accuracy in writing. For the DTZ this matters even more since 1 November 2026: an overall B1 result now requires at least A2 in writing (§ 10 IntTestV).",
+    "browseTitle": "Grammar by level and topic",
+    "browseLead": "Rules, examples and exercises for every topic are in the <overview>grammar reference</overview>.",
+    "browseByLevel": "By level",
+    "browseByTopic": "By topic",
+    "levelLink": "Grammar {{level}}",
+    "levelTopics": {
+      "a1": "present tense, articles, word order",
+      "a2": "Perfekt, modal verbs, adjective endings",
+      "b1": "subordinate clauses, Konjunktiv II, passive",
+      "b2": "reported speech, noun-verb combinations, nominalization",
+      "c1": "nominal style, Konjunktiv I, participle constructions"
+    },
     "faqTitle": "Frequently Asked Questions",
-    "faqQ1": "How do the gap-fill exercises work?",
-    "faqA1": "Select your level (A1-C1) and a grammar topic. Fill in the gaps in the text and receive instant feedback with explanations.",
-    "faqQ2": "Is InfiniteGrammar free?",
-    "faqA2": "Yes, all exercises are completely free. You can practice unlimited without registration.",
-    "faqQ3": "Are the exercises suitable for telc and TestDaF?",
-    "faqA3": "Yes, our exercises cover all grammar topics that appear in telc and TestDaF exams (A1-C1).",
-    "metaTitle": "Practice German Grammar A1-C1: Gap-Fill Exercises for telc & TestDaF | InfiniteGrammar",
-    "metaDescription": "Practice German grammar with interactive gap-fill exercises: Verbs, articles, prepositions & more. ✓ A1 to C1 ✓ For telc & TestDaF ✓ Free ✓ Unlimited"
+    "faq": [
+      {
+        "q": "What are the Sprachbausteine in telc exams?",
+        "a": "The Sprachbausteine are the scored grammar section of telc Deutsch B1, B2 and C1 Hochschule. You fill gaps in texts by choosing from given answers. In telc Deutsch B1 there are 20 items, worth 10% of the total points."
+      },
+      {
+        "q": "Where does grammar count in DTZ, Goethe-Zertifikat and TestDaF?",
+        "a": "In writing: DTZ, Goethe-Zertifikat and TestDaF have no separate grammar section, but the formal accuracy of your texts is assessed. Mistakes with endings, word order or tenses therefore cost points."
+      },
+      {
+        "q": "What has changed in the DTZ since 1 November 2026?",
+        "a": "For an overall B1 result you now also need at least A2 in writing (§ 10 IntTestV). A blank or very weak writing section costs you the B1, even if speaking and listening/reading are at B1."
+      },
+      {
+        "q": "Are the exercises enough to prepare for telc or TestDaF?",
+        "a": "Not on their own. They train grammar specifically: the Sprachbausteine for telc, and the grammar that counts in writing for TestDaF. Practice reading, listening, speaking and writing itself separately, ideally with official model tests."
+      },
+      {
+        "q": "How do the exercises work?",
+        "a": "Choose a level from A1 to C1 and a topic. You fill the gaps in the text, choose from several answers each time and see straight away whether you are right – with an explanation."
+      },
+      {
+        "q": "Is InfiniteGrammar free?",
+        "a": "Yes. All exercises are free and can be used without registration, as often as you like."
+      }
+    ],
+    "metaTitle": "Practice telc Sprachbausteine & Grammar | InfiniteGrammar",
+    "metaDescription": "Practice telc Sprachbausteine (B1–C1) and grammar for writing in DTZ, Goethe and TestDaF. German gap-fill exercises A1–C1 with instant feedback, free."
   },
   "exercise": {
     "title": "Exercise",

@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import {
 import { BarChart3, User } from "lucide-react";
 import { LogoIcon } from "@/components/LogoIcon";
 import { getAllGrammarUiTopics } from "@/data/grammarSections";
+import { grammarCategories } from "@/data/grammarTopics";
 import { WaitlistModal } from "@/components/WaitlistModal";
 import { ComingSoonModal } from "@/components/ComingSoonModal";
 import { useAuth } from "@/contexts/AuthContext";
@@ -27,6 +28,14 @@ import { EXERCISES_MAINTENANCE_MODE } from "@/config/features";
 const SIGN_IN_SHOWS_WAITLIST = 0;
 
 const sections = getAllGrammarUiTopics();
+const categoryLinks = Object.entries(grammarCategories);
+
+const GRAMMAR_OVERVIEW_PATH = "/deutsche-grammatik/";
+const levelPath = (level: string) => `/deutsche-grammatik/${level.toLowerCase()}-niveau-lernen/`;
+const categoryPath = (category: string) => `/deutsche-grammatik/thema/${category}/`;
+
+type ExamRow = { goal: string; exams: string; level: string };
+type FaqItem = { q: string; a: string };
 
 const LevelSelection = () => {
   const navigate = useNavigate();
@@ -61,6 +70,18 @@ const LevelSelection = () => {
     { id: "b2", name: "B2", description: t('levelSelection.upperIntermediate') },
     { id: "c1", name: "C1", description: t('levelSelection.advanced') },
   ];
+
+  const examRowsValue = t('levelSelection.examRows', { returnObjects: true });
+  const examRows: ExamRow[] = Array.isArray(examRowsValue) ? examRowsValue : [];
+  const faqValue = t('levelSelection.faq', { returnObjects: true });
+  const faqItems: FaqItem[] = Array.isArray(faqValue) ? faqValue : [];
+
+  // Real <a href> for crawlers; plain left-clicks stay in the SPA, modified clicks open normally
+  const handleInternalLink = (path: string) => (e: MouseEvent<HTMLAnchorElement>) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    navigate(path);
+  };
 
   const handleSignInClick = () => {
     if (SIGN_IN_SHOWS_WAITLIST === 1) {
@@ -136,7 +157,7 @@ const LevelSelection = () => {
           url: pageUrl,
           educationalLevel: 'A1-C1',
           learningResourceType: 'Interactive Exercise Platform',
-          keywords: ['German Grammar', 'Gap-Fill Exercises', 'telc', 'TestDaF', 'German Learning']
+          keywords: ['Deutsche Grammatik', 'Sprachbausteine', 'telc', 'DTZ', 'Goethe-Zertifikat', 'TestDaF', 'DSH', 'Lückentext']
         }}
       />
       <script type="application/ld+json">
@@ -232,7 +253,7 @@ const LevelSelection = () => {
 
           {/* Level Selection */}
           <div className="mb-12 animate-fade-in" style={{ animationDelay: "0.1s" }}>
-            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h3>
+            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectLevel')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
               {levels.map((level) => (
                 <Card
@@ -259,7 +280,7 @@ const LevelSelection = () => {
 
           {/* Section Selection (scroll-mt keeps its heading below the sticky header) */}
           <div ref={topicsRef} className="animate-fade-in scroll-mt-24" style={{ animationDelay: "0.2s" }}>
-            <h3 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h3>
+            <h2 className="text-xl font-semibold mb-4">{t('levelSelection.selectTopic')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {sections.map((section) => (
                 <Button
@@ -321,73 +342,144 @@ const LevelSelection = () => {
             </div>
           </div>
 
-          {/* FAQ Section for SEO */}
-          <div className="mt-16 animate-fade-in" style={{ animationDelay: "0.4s" }}>
-            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center">{t('levelSelection.faqTitle')}</h2>
+          {/* Exam guide: which exam for which goal, and where grammar counts */}
+          <section
+            aria-labelledby="exam-guide-title"
+            className="mt-16 animate-fade-in"
+            style={{ animationDelay: "0.35s" }}
+          >
+            <h2 id="exam-guide-title" className="text-2xl md:text-3xl font-bold mb-3">
+              {t('levelSelection.examTitle')}
+            </h2>
+            <p className="text-muted-foreground mb-6">{t('levelSelection.examLead')}</p>
+
+            <div className="overflow-x-auto rounded-lg border mb-8">
+              <table className="w-full text-left text-sm md:text-base">
+                <caption className="sr-only">{t('levelSelection.examCaption')}</caption>
+                <thead className="bg-muted/50">
+                  <tr>
+                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColGoal')}</th>
+                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColExam')}</th>
+                    <th scope="col" className="px-3 py-2 md:px-4 font-semibold">{t('levelSelection.examColLevel')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {examRows.map((row) => (
+                    <tr key={row.level} className="border-t align-top">
+                      <th scope="row" className="px-3 py-3 md:px-4 font-medium">{row.goal}</th>
+                      <td className="px-3 py-3 md:px-4 text-muted-foreground">{row.exams}</td>
+                      <td className="px-3 py-3 md:px-4">
+                        <a
+                          href={levelPath(row.level)}
+                          onClick={handleInternalLink(levelPath(row.level))}
+                          className="font-semibold text-primary hover:underline"
+                        >
+                          {row.level}
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">{t('levelSelection.withGrammarTitle')}</h3>
+                <p className="text-muted-foreground leading-relaxed">{t('levelSelection.withGrammarText')}</p>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-2">{t('levelSelection.withoutGrammarTitle')}</h3>
+                <p className="text-muted-foreground leading-relaxed">{t('levelSelection.withoutGrammarText')}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* Grammar reference: every level page and every topic page */}
+          <section aria-labelledby="grammar-browse-title" className="mt-16">
+            <h2 id="grammar-browse-title" className="text-2xl md:text-3xl font-bold mb-3">
+              {t('levelSelection.browseTitle')}
+            </h2>
+            <p className="text-muted-foreground mb-6">
+              <Trans
+                i18nKey="levelSelection.browseLead"
+                components={{
+                  overview: (
+                    <a
+                      href={GRAMMAR_OVERVIEW_PATH}
+                      onClick={handleInternalLink(GRAMMAR_OVERVIEW_PATH)}
+                      className="font-medium text-primary hover:underline"
+                    />
+                  ),
+                }}
+              />
+            </p>
+
+            <div className="grid gap-8 md:grid-cols-2">
+              <div>
+                <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByLevel')}</h3>
+                <ul className="space-y-2">
+                  {levels.map((level) => (
+                    <li key={level.id}>
+                      <a
+                        href={levelPath(level.id)}
+                        onClick={handleInternalLink(levelPath(level.id))}
+                        className="font-medium text-primary hover:underline"
+                      >
+                        {t('levelSelection.levelLink', { level: level.name })}
+                      </a>
+                      <span className="text-muted-foreground">: {t(`levelSelection.levelTopics.${level.id}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-3">{t('levelSelection.browseByTopic')}</h3>
+                <ul className="flex flex-wrap gap-2">
+                  {categoryLinks.map(([id, category]) => (
+                    <li key={id}>
+                      <a
+                        href={categoryPath(id)}
+                        onClick={handleInternalLink(categoryPath(id))}
+                        className="inline-block rounded-full border px-3 py-1 text-sm transition-colors hover:border-primary hover:text-primary"
+                      >
+                        {category.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ: visible answers and FAQPage schema come from the same list */}
+          <section aria-labelledby="faq-title" className="mt-16 animate-fade-in" style={{ animationDelay: "0.4s" }}>
+            <h2 id="faq-title" className="text-2xl md:text-3xl font-bold mb-6 text-center">{t('levelSelection.faqTitle')}</h2>
 
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="item-1">
-                <AccordionTrigger className="text-left">
-                  {t('levelSelection.faqQ1')}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {t('levelSelection.faqA1')}
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-2">
-                <AccordionTrigger className="text-left">
-                  {t('levelSelection.faqQ2')}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {t('levelSelection.faqA2')}
-                </AccordionContent>
-              </AccordionItem>
-
-              <AccordionItem value="item-3">
-                <AccordionTrigger className="text-left">
-                  {t('levelSelection.faqQ3')}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">
-                  {t('levelSelection.faqA3')}
-                </AccordionContent>
-              </AccordionItem>
+              {faqItems.map((item, index) => (
+                <AccordionItem key={item.q} value={`item-${index + 1}`}>
+                  <AccordionTrigger className="text-left">{item.q}</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground">{item.a}</AccordionContent>
+                </AccordionItem>
+              ))}
             </Accordion>
 
-            {/* FAQ Schema */}
             <script type="application/ld+json">
               {JSON.stringify({
                 "@context": "https://schema.org",
                 "@type": "FAQPage",
-                "mainEntity": [
-                  {
-                    "@type": "Question",
-                    "name": t('levelSelection.faqQ1'),
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": t('levelSelection.faqA1')
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": t('levelSelection.faqQ2'),
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": t('levelSelection.faqA2')
-                    }
-                  },
-                  {
-                    "@type": "Question",
-                    "name": t('levelSelection.faqQ3'),
-                    "acceptedAnswer": {
-                      "@type": "Answer",
-                      "text": t('levelSelection.faqA3')
-                    }
+                "mainEntity": faqItems.map((item) => ({
+                  "@type": "Question",
+                  "name": item.q,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": item.a
                   }
-                ]
+                }))
               })}
             </script>
-          </div>
+          </section>
         </div>
       </main>
 
